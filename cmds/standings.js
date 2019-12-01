@@ -2,6 +2,8 @@ const Discord = require("discord.js");
 const request = require("request");
 const config = require("../config.json");
 
+var prefix = config.prefix;
+
 module.exports.run = (client, message, args) => {
   var url;
   var embed = new Discord.RichEmbed();
@@ -125,8 +127,33 @@ module.exports.run = (client, message, args) => {
           break;
       }
       break;
+    case "Help":
+    case "help":
+      message.channel.send({embed: {
+        color: 16711680,
+        title: "NHL Standings: Command Help",
+        fields: [
+          {
+            name: prefix + "standings div [division name]",
+            value: "Prints the standings for the specified division. Defaults to the Metro."
+          },
+          {
+            name: prefix + "standings conf [conference name]",
+            value: "Prints the standings for the specified conference. Defaults to the East."
+          },
+          {
+            name: prefix + "standings league",
+            value: "Prints the standings for the league."
+          },
+          {
+            name: prefix + "standings wild [conference name]",
+            value: "Prints a the divsion leader and the wild cards for the specified conference.  Defaults to the East."
+          }
+        ]
+      }});
+      break;
     default:
-      message.channel.send("Must enter standing type d, c, l, or w");
+      message.channel.send("Must enter standing type d, c, l, w, or help");
       return;
   }
 

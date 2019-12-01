@@ -13,8 +13,8 @@ module.exports.run = (client, message, args) => {
         value: "Prints up to the next specified number of Flyers games.  The default is 5."
       },
       {
-        name: prefix + "standings [division]",
-        value: "Prints the standings for the specified division (Metro is the default)."
+        name: prefix + "standings help",
+        value: "Prints the help information for the standings command."
       },
       {
         name: prefix + "career [player's full name]",

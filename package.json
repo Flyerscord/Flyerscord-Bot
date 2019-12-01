@@ -1,0 +1,19 @@
+{
+    "name": "nhl_helper",
+    "version": "1.0.0",
+    "description": "NHL help bot",
+    "main": "node nhl_helper.js",
+    "scripts": {
+      "start": "node 1nhl_helper.js"
+    },
+    "engines": {
+      "node": "8.4.0"
+    },
+    "author": "flyerzrule",
+    "license": "MIT",
+    "dependencies": {
+      "discord.js": "^11.3.2",
+      "request": "^2.86.0",
+      "express": "^4.16.4"
+    }
+  }

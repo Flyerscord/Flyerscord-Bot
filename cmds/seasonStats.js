@@ -122,7 +122,7 @@ module.exports.run = (client, message, args) => {
         }});
       }
     } else {
-      message.channel.send("Incorrect name!");
+      message.channel.send("Incorrect name! Enter a first and last name.");
     }
   });
 }

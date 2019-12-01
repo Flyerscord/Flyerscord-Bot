@@ -6,7 +6,7 @@ const discord = require("discord.js");
 module.exports.run = (client, message, args) => {
   var url = "https://statsapi.web.nhl.com/api/v1/teams?expand=team.roster";
 
-  
+  console.log("Running Player Refresh...");
   request({url: url, json: true }, function (error, response, body) {
     if (!error && response.statusCode === 200) {
       var jsonObj = {};
@@ -32,6 +32,7 @@ module.exports.run = (client, message, args) => {
         });
     }
   });
+  console.log("Done Running Player Refresh!");
 }
 
 module.exports.help = {

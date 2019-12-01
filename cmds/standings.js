@@ -167,8 +167,6 @@ module.exports.run = (client, message, args) => {
         var whichDivision = obj.records[divisionNum];
         var divisionName = whichDivision.division.name;
 
-        console.log(whichDivision);
-
         embed.setTitle("NHL Standings: " + divisionName);
 
         // Cycles through the teams in the division

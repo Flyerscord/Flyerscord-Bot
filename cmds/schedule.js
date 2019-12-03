@@ -12,7 +12,7 @@ module.exports.run = (client, message, args) => {
   var startDate = d.getFullYear() + "-" + currentMonth + "-" + d.getDate();
   var endDate = nextYear + "-" + currentMonth + "-" + d.getDate();
 
-  console.log(startDate);
+  //console.log(startDate);
 
   var url = "https://statsapi.web.nhl.com/api/v1/schedule?teamId=4&startDate=" + startDate + "&endDate=" + endDate;
   const embed = new Discord.RichEmbed();
@@ -35,7 +35,7 @@ module.exports.run = (client, message, args) => {
   } else {
     gamesToPrint = 5;
   }
-  console.log("Games: " + gamesToPrint);
+  //console.log("Games: " + gamesToPrint);
   
   if (gamesToPrint > 0) {
     request({url: url, json: true }, function (error, response, body) {
@@ -58,7 +58,7 @@ module.exports.run = (client, message, args) => {
             var d = new Date(date);
 
             var gameMonth = d.getMonth() + 1;
-            var gameHour = d.getHours() - 4;
+            var gameHour = d.getHours();
             var gameMinute = d.getMinutes();
             var gameDay = d.getDate();
 

@@ -4,18 +4,18 @@ const config = require("./config.json");
 const fs = require("fs");
 
 const express = require("express");
-const app = express(); 
+const app = express();
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
 
 // http://expressjs.com/en/starter/basic-routing.html
-app.get('/', function(request, response) {
+app.get('/', function (request, response) {
   response.sendFile(__dirname + '/webpage/index.html');
 });
 
 // listen for requests :)
-const listener = app.listen(process.env.PORT, function() {
+const listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
 
@@ -40,43 +40,43 @@ process.on('warning', (warning) => {
 client.on('error', console.error);
 
 fs.readdir("./cmds/", (err, files) => {
-    if (err)
-        console.error(err);
-    let jsFiles = files.filter(f => f.split(".").pop() === "js");
+  if (err)
+    console.error(err);
+  let jsFiles = files.filter(f => f.split(".").pop() === "js");
 
-    if (jsFiles.length <= 0){
-        console.log("No commands to load!");
-        return;
-    }
+  if (jsFiles.length <= 0) {
+    console.log("No commands to load!");
+    return;
+  }
 
-    console.log(`Loading ${jsFiles.length} commands!`);
+  console.log(`Loading ${jsFiles.length} commands!`);
 
-    jsFiles.forEach((f, i) => {
-        let props = require(`./cmds/${f}`);
-        console.log(`${i + 1}: ${f} loaded!`);
-        client.commands.set(props.help.name, props);
-    });
+  jsFiles.forEach((f, i) => {
+    let props = require(`./cmds/${f}`);
+    console.log(`${i + 1}: ${f} loaded!`);
+    client.commands.set(props.help.name, props);
+  });
 });
 
 client.on("ready", () => {
-    console.log("Bot is ready!");
+  console.log("Bot is ready!");
 });
 
 client.on("message", message => {
-    if (message.author.bot) return; // ignores all bots
-    if (message.channel.type != "text") return; // ignores all dm's
-    if (!message.content.startsWith(prefix)) return; // ignores all messages that dont start with the prefix
+  if (message.author.bot) return; // ignores all bots
+  if (message.channel.type != "text") return; // ignores all dm's
+  if (!message.content.startsWith(prefix)) return; // ignores all messages that dont start with the prefix
 
-    let messageArray = message.content.split(" ");
-    let command  = messageArray[0];
-    let args = messageArray.slice(1);
+  let messageArray = message.content.split(" ");
+  let command = messageArray[0];
+  let args = messageArray.slice(1);
 
-    let cmd = client.commands.get(command.slice(prefix.length));
-    try {
-        if (cmd) cmd.run(client, message, args);
-    } catch (err) {
-        console.error(err);
-    }
+  let cmd = client.commands.get(command.slice(prefix.length));
+  try {
+    if (cmd) cmd.run(client, message, args);
+  } catch (err) {
+    console.error(err);
+  }
 });
 
 client.login(config.token);

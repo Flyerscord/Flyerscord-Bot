@@ -1,45 +1,43 @@
-const fs = require('fs');
+const team_info = require("../team_info/team_info.json");
 
-const team_info = require('../team_info/team_info.json');
-
-function getID (teamName) {
-    return team_info[teamName].id;
+function getID(teamName) {
+  return team_info[teamName].id;
 }
 
-function getAwayColor (teamName) {
-    let color = team_info[teamName].awayColor;
-    color = color.replace("#", "0x");
-    return parseInt(color);
+function getAwayColor(teamName) {
+  let color = team_info[teamName].awayColor;
+  color = color.replace("#", "0x");
+  return parseInt(color);
 }
 
-function getHomeColor (teamName) {
-    let color = team_info[teamName].homeColor;
-    color = color.replace("#", "0x");
-    return parseInt(color);
+function getHomeColor(teamName) {
+  let color = team_info[teamName].homeColor;
+  color = color.replace("#", "0x");
+  return parseInt(color);
 }
 
-function getDivision (teamName) {
-    return team_info[teamName].division;
+function getDivision(teamName) {
+  return team_info[teamName].division;
 }
 
-function getConference (teamName) {
-    return team_info[teamName].conference;
+function getConference(teamName) {
+  return team_info[teamName].conference;
 }
 
-function getEmoji (teamName) {
-    return team_info[teamName].emoji;
+function getEmoji(teamName) {
+  return team_info[teamName].emoji;
 }
 
-function getLogo (teamName) {
-    return team_info[teamName].logo;
+function getLogo(teamName) {
+  return team_info[teamName].logo;
 }
 
-function getTeamURL (teamName) {
-    return team_info[teamName].teamURL;
+function getTeamURL(teamName) {
+  return team_info[teamName].teamURL;
 }
 
-function getTimezone (teamName) {
-    return team_info[teamName].timezone;
+function getTimezone(teamName) {
+  return team_info[teamName].timezone;
 }
 
 module.exports.getID = getID;

@@ -25,7 +25,7 @@ module.exports.run = async (client, message, args) => {
         message.channel.send(
           `The ${team} have a ${
             standings.data[standings.data.length - 1]
-          } percent chance of making the postseason`
+          }% chance of making the playoffs`
         );
       }
     );

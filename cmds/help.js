@@ -23,6 +23,10 @@ module.exports.run = (client, message, args) => {
       {
         name: prefix + "season [player's full name]",
         value: "Prints a players stats for the current season."
+      },
+      {
+        name: prefix + "chance [team name]",
+        value: "Prints a team's chance at making the playoffs."
       }
     ]
   }});

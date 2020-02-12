@@ -247,7 +247,7 @@
     "homeColor": "#B5985A",
     "division": "Pacific",
     "conference": "Western",
-    "emoji": ":ducks:",
+    "emoji": "ducks",
     "logo": "https://nhl.bamcontent.com/images/photos/281720124/256x256/cut.png",
     "teamURL": "http://www.anaheimducks.com",
     "timezone": "US/Pacific"
@@ -324,7 +324,7 @@
     "homeColor": "#8C2633",
     "division": "Pacific",
     "conference": "Conference",
-    "emoji": ":coyotes:",
+    "emoji": "coyotes",
     "logo": "https://nhl.bamcontent.com/images/photos/281720888/256x256/cut.png",
     "teamURL": "http://www.arizonacoyotes.com",
     "timezone": "US/Arizona"

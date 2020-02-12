@@ -4,7 +4,8 @@
   "description": "NHL help bot",
   "main": "node nhl_helper.js",
   "scripts": {
-    "start": "node 1nhl_helper.js"
+    "start": "node nhl_helper.js",
+    "nodemon": "nodemon nhl_helper.js"
   },
   "engines": {
     "node": "8.4.0"

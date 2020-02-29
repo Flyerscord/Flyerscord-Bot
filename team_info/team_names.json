@@ -1,82 +1,318 @@
 {
-  "njd": "New Jersey Devils",
-  "devils": "New Jersey Devils",
-  "nyi": "New York Islanders",
-  "islanders": "New York Islanders",
-  "isles": "New York Islanders",
-  "nyr": "New York Rangers",
-  "rangers": "New York Rangers",
-  "rags": "New York Rangers",
-  "phi": "Philadelphia Flyers",
-  "flyers": "Philadelphia Flyers",
-  "pit": "Pittsburgh Penguins",
-  "penguins": "Pittsburgh Penguins",
-  "shittsburgh": "Pittsburgh Penguins",
-  "pens": "Pittsburgh Penguins",
-  "bos": "Boston Bruins",
-  "bruins": "Boston Bruins",
-  "buf": "Buffalo Sabres",
-  "sabres": "Buffalo Sabres",
-  "mon": "Montreal Canadiens",
-  "habs": "Montreal Canadiens",
-  "canadiens": "Montreal Canadiens",
-  "ott": "Ottawa Senators",
-  "sens": "Ottawa Senators",
-  "senators": "Ottawa Senators",
-  "tor": "Toronto Maple Leafs",
-  "leafs": "Toronto Maple Leafs",
-  "maple leafs": "Toronto Maple Leafs",
-  "car": "Carolina Hurricanes",
-  "canes": "Carolina Hurricanes",
-  "hurricanes": "Carolina Hurricanes",
-  "pan": "Florida Panthers",
-  "panthers": "Florida Panthers",
-  "tbl": "Tampa Bay Lightning",
-  "lightning": "Tampa Bay Lightning",
-  "was": "Washington Capitals",
-  "caps": "Washington Capitals",
-  "capitals": "Washington Capitals",
-  "chi": "Chicago Blackhawks",
-  "hawks": "Chicago Blackhawks",
-  "blackhawks": "Chicago Blackhawks",
-  "det": "Detroit Red Wings",
-  "wings": "Detroit Red Wings",
-  "redwings": "Detroit Red Wings",
-  "red wings": "Detroit Red Wings",
-  "nas": "Nashville Predators",
-  "preds": "Nashville Predators",
-  "predators": "Nashville Predators",
-  "stl": "St. Louis Blues",
-  "blues": "St. Louis Blues",
-  "cal": "Calgary Flames",
-  "flames": "Calgary Flames",
-  "col": "Colorado Avalanche",
-  "avs": "Colorado Avalanche",
-  "aves": "Colorado Avalanche",
-  "avalanche": "Colorado Avalanche",
-  "edm": "Edmonton Oilers",
-  "oilers": "Edmonton Oilers",
-  "van": "Vancouver Canucks",
-  "canucks": "Vancouver Canucks",
-  "anh": "Anaheim Ducks",
-  "ducks": "Anaheim Ducks",
-  "dal": "Dallas Stars",
-  "stars": "Dallas Stars",
-  "lak": "Los Angeles Kings",
-  "kings": "Los Angeles Kings",
-  "sjs": "San Jose Sharks",
-  "sharks": "San Jose Sharks",
-  "cbj": "Columbus Blue Jackets",
-  "blue jackets": "Columbus Blue Jackets",
-  "min": "Minnesota Wild",
-  "wild": "Minnesota Wild",
-  "win": "Winnipeg Jets",
-  "jets": "Winnipeg Jets",
-  "ari": "Arizona Coyotes",
-  "yotes": "Arizona Coyotes",
-  "coyotes": "Arizona Coyotes",
-  "vgk": "Las Vegas Golden Knights",
-  "knights": "Las Vegas Golden Knights",
-  "vegas": "Las Vegas Golden Knights",
-  "golden knights": "Las Vegas Golden Knights"
+  "devils": {
+    "name":  "New Jersey Devils",
+    "tag": "NJD"
+  },
+    "nyi": {
+    "name":  "New York Islanders",
+    "tag": "NYI"
+  },
+  "islanders": {
+    "name":  "New York Islanders",
+    "tag": "NYI"
+  },
+  "isles": {
+    "name":  "New York Islanders",
+    "tag": "NYI"
+  },
+    "nyr": {
+    "name":  "New York Rangers",
+    "tag": "NYR"
+  },
+  "rangers": {
+    "name":  "New York Rangers",
+    "tag": "NYR"
+  },
+  "rags": {
+    "name":  "New York Rangers",
+    "tag": "NYR"
+  },
+  "phi": {
+    "name":  "Philadelphia Flyers",
+    "tag": "PHI"
+  },
+  "flyers": {
+    "name":  "Philadelphia Flyers",
+    "tag": "PHI"
+  },
+  "pit": {
+    "name":  "Pittsburgh Penguins",
+    "tag": "PIT"
+  },
+  "penguins": {
+    "name":  "Pittsburgh Penguins",
+    "tag": "PIT"
+  },
+  "shittsburgh": {
+    "name":  "Pittsburgh Penguins",
+    "tag": "PIT"
+  },
+  "pens": {
+    "name":  "Pittsburgh Penguins",
+    "tag": "PIT"
+  },
+  "bos": {
+    "name":  "Boston Bruins",
+    "tag": "BOS"
+  },
+  "bruins": {
+    "name":  "Boston Bruins",
+    "tag": "BOS"
+  },
+  "buf": {
+    "name":  "Buffalo Sabres",
+    "tag": "BUF"
+  },
+  "sabres": {
+    "name":  "Buffalo Sabres",
+    "tag": "BUF"
+  },
+  "mon": {
+    "name":  "Montreal Canadiens",
+    "tag": "MTL"
+  },
+  "habs": {
+    "name":  "Montreal Canadiens",
+    "tag": "MTL"
+  },
+  "canadiens": {
+    "name":  "Montreal Canadiens",
+    "tag": "MTL"
+  },
+  "ott": {
+    "name":  "Ottawa Senators",
+    "tag": "OTT"
+  },
+  "sens": {
+    "name":  "Ottawa Senators",
+    "tag": "OTT"
+  },
+  "senators": {
+    "name":  "Ottawa Senators",
+    "tag": "OTT"
+  },
+    "tor": {
+    "name":  "Toronto Maple Leafs",
+    "tag": "TOR"
+  },
+  "leafs": {
+    "name":  "Toronto Maple Leafs",
+    "tag": "TOR"
+  },
+  "maple leafs": {
+    "name":  "Toronto Maple Leafs",
+    "tag": "TOR"
+  },
+  "car": {
+    "name":  "Carolina Hurricanes",
+    "tag": "CAR"
+  },
+  "canes": {
+    "name":  "Carolina Hurricanes",
+    "tag": "CAR"
+  },
+  "hurricanes": {
+    "name":  "Carolina Hurricanes",
+    "tag": "CAR"
+  },
+  "fla": {
+    "name":  "Florida Panthers",
+    "tag": "FLA"
+  },
+  "panthers": {
+    "name":  "Florida Panthers",
+    "tag": "FLA"
+  },
+    "tbl": {
+    "name":  "Tampa Bay Lightning",
+    "tag": "TBL"
+  },
+  "lightning": {
+    "name":  "Tampa Bay Lightning",
+    "tag": "TBL"
+  },
+  "was": {
+    "name":  "Washington Capitals",
+    "tag": "WSH"
+  },
+  "caps": {
+    "name":  "Washington Capitals",
+    "tag": "WSH"
+  },
+  "capitals": {
+    "name":  "Washington Capitals",
+    "tag": "WSH"
+  },
+  "chi": {
+    "name":  "Chicago Blackhawks",
+    "tag": "CHI"
+  },
+  "hawks": {
+    "name":  "Chicago Blackhawks",
+    "tag": "CHI"
+  },
+  "blackhawks": {
+    "name":  "Chicago Blackhawks",
+    "tag": "CHI"
+  },
+  "det": {
+    "name":  "Detroit Red Wings",
+    "tag": "DET"
+  },
+  "wings": {
+    "name":  "Detroit Red Wings",
+    "tag": "DET"
+  },
+  "redwings": {
+    "name":  "Detroit Red Wings",
+    "tag": "DET"
+  },
+  "red wings": {
+    "name":  "Detroit Red Wings",
+    "tag": "DET"
+  },
+    "nas": {
+    "name":  "Nashville Predators",
+    "tag": "NSH"
+  },
+  "preds": {
+    "name":  "Nashville Predators",
+    "tag": "NSH"
+  },
+  "predators": {
+    "name":  "Nashville Predators",
+    "tag": "NSH"
+  },
+  "stl": {
+    "name":  "St. Louis Blues",
+    "tag": "STL"
+  },
+  "blues": {
+    "name":  "St. Louis Blues",
+    "tag": "STL"
+  },
+  "cal": {
+    "name":  "Calgary Flames",
+    "tag": "CGY"
+  },
+  "flames": {
+    "name":  "Calgary Flames",
+    "tag": "CGY"
+  },
+  "col": {
+    "name":  "Colorado Avalanche",
+    "tag": "COL"
+  },
+  "avs": {
+    "name":  "Colorado Avalanche",
+    "tag": "COL"
+  },
+  "aves": {
+    "name":  "Colorado Avalanche",
+    "tag": "COL"
+  },
+  "avalanche": {
+    "name":  "Colorado Avalanche",
+    "tag": "COL"
+  },
+  "edm": {
+    "name":  "Edmonton Oilers",
+    "tag": "EDM"
+  },
+  "oilers": {
+    "name":  "Edmonton Oilers",
+    "tag": "EDM"
+  },
+  "van": {
+    "name":  "Vancouver Canucks",
+    "tag": "VAN"
+  },
+  "canucks": {
+    "name":  "Vancouver Canucks",
+    "tag": "VAN"
+  },
+  "anh": {
+    "name":  "Anaheim Ducks",
+    "tag": "ANA"
+  },
+  "ducks": {
+    "name":  "Anaheim Ducks",
+    "tag": "ANA"
+  },
+  "dal": {
+    "name":  "Dallas Stars",
+    "tag": "DAL"
+  },
+  "stars": {
+    "name":  "Dallas Stars",
+    "tag": "DAL"
+  },
+  "lak": {
+    "name":  "Los Angeles Kings",
+    "tag": "LAK"
+  },
+  "kings": {
+    "name":  "Los Angeles Kings",
+    "tag": "LAK"
+  },
+  "sjs": {
+    "name":  "San Jose Sharks",
+    "tag": "SJS"
+  },
+  "sharks": {
+    "name":  "San Jose Sharks",
+    "tag": "SJS"
+  },
+  "cbj": {
+    "name":  "Columbus Blue Jackets",
+    "tag": "CBJ"
+  },
+  "blue jackets": {
+    "name":  "Columbus Blue Jackets",
+    "tag": "CBJ"
+  },
+  "min": {
+    "name":  "Minnesota Wild",
+    "tag": "MIN"
+  },
+  "wild": {
+    "name":  "Minnesota Wild",
+    "tag": "MIN"
+  },
+  "win": {
+    "name":  "Winnipeg Jets",
+    "tag": "WPG"
+  },
+  "jets": {
+    "name":  "Winnipeg Jets",
+    "tag": "WPG"
+  },
+  "ari": {
+    "name":  "Arizona Coyotes",
+    "tag": "ARI"
+  },
+  "yotes": {
+    "name":  "Arizona Coyotes",
+    "tag": "ARI"
+  },
+  "coyotes": {
+    "name":  "Arizona Coyotes",
+    "tag": "ARI"
+  },
+  "vgk": {
+    "name":  "Las Vegas Golden Knights",
+    "tag": "VGK"
+  },
+  "knights": {
+    "name":  "Las Vegas Golden Knights",
+    "tag": "VGK"
+  },
+  "vegas": {
+    "name":  "Las Vegas Golden Knights",
+    "tag": "VGK"
+  },
+  "golden knights": {
+    "name":  "Las Vegas Golden Knights",
+    "tag": "VGK"
+  }
 }

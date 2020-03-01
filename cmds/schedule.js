@@ -3,18 +3,24 @@ const request = require("request");
 const config = require("../config.json");
 
 module.exports.run = (client, message, args) => {
+  console.log("here");
 
   const d = new Date();
 
   var nextYear = d.getFullYear() + 1;
   var currentMonth = d.getMonth() + 1;
 
+  var nextDate = d.getDate();
+  if (currentMonth == 2 && nextDate == 29) {
+    nextDate = 28;
+  }
+
   var startDate = d.getFullYear() + "-" + currentMonth + "-" + d.getDate();
-  var endDate = nextYear + "-" + currentMonth + "-" + d.getDate();
+  var endDate = nextYear + "-" + currentMonth + "-" + nextDate;
 
-  //console.log(startDate);
-
+  
   var url = "https://statsapi.web.nhl.com/api/v1/schedule?teamId=4&startDate=" + startDate + "&endDate=" + endDate;
+  console.log(url);
   const embed = new Discord.RichEmbed();
   
   var gamesToPrint;
@@ -119,8 +125,9 @@ module.exports.run = (client, message, args) => {
 
         embed.setFooter("Type " + config.prefix +"help to view commands");
         embed.setColor(0xf74902);
-
         message.channel.send({embed});
+      } else {
+        console.error("Error with API request");
       }
     });
   }

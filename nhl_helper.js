@@ -19,7 +19,6 @@ const listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
 
-
 var prefix = null;
 if (config.testMode) {
   prefix = '!';
@@ -28,7 +27,6 @@ if (config.testMode) {
 }
 
 client.commands = new Discord.Collection();
-
 
 // Set up handlers for process events
 process.on('unhandledRejection', function (err, p) {

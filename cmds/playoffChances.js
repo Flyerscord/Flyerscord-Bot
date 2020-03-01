@@ -28,7 +28,7 @@ module.exports.run = async (client, message, args) => {
 
   var teamTag = teamNames.getTeamTagFromAbrev(a);
   var teamName = teamNames.getTeamNameFromAbrev(a);
-  var fileName = `chance-files/chances-${month}-${day}-${year}.csv`;
+  var fileName = `chance-files/chances-${month + 1}-${day}-${year}.csv`;
 
   if (teamTag == -1) {
     message.channel.send("Team not found!");

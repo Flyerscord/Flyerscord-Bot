@@ -2,9 +2,7 @@ const Discord = require("discord.js");
 const request = require("request");
 const config = require("../config.json");
 
-module.exports.run = (client, message, args) => {
-  console.log("here");
-
+module.exports.run = async (client, message, args) => {
   const d = new Date();
 
   var nextYear = d.getFullYear() + 1;
@@ -20,7 +18,6 @@ module.exports.run = (client, message, args) => {
 
   
   var url = "https://statsapi.web.nhl.com/api/v1/schedule?teamId=4&startDate=" + startDate + "&endDate=" + endDate;
-  console.log(url);
   const embed = new Discord.RichEmbed();
   
   var gamesToPrint;

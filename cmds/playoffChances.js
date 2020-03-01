@@ -3,12 +3,16 @@ const fs = require("fs");
 const csv = require("csv-parser");
 
 const teamNames = require("../helpers/teamNames.js");
+const teamInfo = require("../helpers/teamInfo.js");
 const results = [];
 
 var msg = null;
+var myClient = null;
 
 module.exports.run = async (client, message, args) => {
   msg = message;
+  myClient = client;
+
   const date = new Date();
   var year = date.getFullYear();
   var month = date.getMonth();
@@ -49,6 +53,9 @@ module.exports.run = async (client, message, args) => {
 };
 
 function readFile(fileName, teamTag, teamName) {
+  var teamEmoji = myClient.emojis.find(
+    emoji => emoji.name === teamInfo.getEmoji(teamName)
+  );
   fs.createReadStream(fileName)
     .pipe(csv())
     .on("data", data => results.push(data))
@@ -56,7 +63,7 @@ function readFile(fileName, teamTag, teamName) {
       var chance = results[results.length - 1][teamTag] * 100;
       chance = chance.toFixed(2);
       msg.channel.send(
-        `The ${teamName} have a ${chance}% chance of making the playoffs!`
+        `${teamEmoji} The ${teamName} have a ${chance}% chance of making the playoffs! ${teamEmoji}`
       );
     });
 }

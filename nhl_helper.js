@@ -19,7 +19,13 @@ const listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
 
-const prefix = config.prefix;
+
+var prefix = null;
+if (config.testMode) {
+  prefix = '!';
+} else {
+  prefix = config.prefix;
+}
 
 client.commands = new Discord.Collection();
 
@@ -79,5 +85,9 @@ client.on("message", message => {
   }
 });
 
-client.login(config.token);
-// client.login(config.testToken);
+if (config.testMode) {
+  client.login(config.testToken);
+} else {
+  client.login(config.token);
+}
+  

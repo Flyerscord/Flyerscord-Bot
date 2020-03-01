@@ -3,7 +3,7 @@ const config = require("../config.json");
 
 var prefix = config.prefix;
 
-module.exports.run = (client, message, args) => {
+module.exports.run = async (client, message, args) => {
   message.channel.send({embed: {
     color: 16711680,
     title: "NHL Bot Help",

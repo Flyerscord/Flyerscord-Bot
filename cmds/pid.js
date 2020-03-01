@@ -2,7 +2,7 @@ const request = require("request");
 const playerIds = require("../team_info/player_ids.json");
 const config = require("../config.json");
 
-module.exports.run = (client, message, args) => {
+module.exports.run = async (client, message, args) => {
  if (args.length == 0) {
    message.channel.send("You need to give a player's first and last name! It is caps sensitive!");
  } else {

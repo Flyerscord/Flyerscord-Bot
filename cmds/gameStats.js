@@ -2,7 +2,7 @@ const request = require("request");
 const Discord = require("discord.js");
 const teamInfo = require("../helpers/teamInfo.js");
 
-module.exports.run = (client, message, args) => {
+module.exports.run = async (client, message, args) => {
   url = "https://statsapi.web.nhl.com/api/v1/game/2018020004/boxscore";
 
   request({ url: url, json: true }, function(error, response, body) {

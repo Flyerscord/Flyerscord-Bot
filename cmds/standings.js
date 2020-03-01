@@ -4,7 +4,7 @@ const config = require("../config.json");
 
 var prefix = config.prefix;
 
-module.exports.run = (client, message, args) => {
+module.exports.run = async (client, message, args) => {
   var url;
   var embed = new Discord.RichEmbed();
 

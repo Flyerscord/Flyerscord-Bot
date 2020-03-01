@@ -1,6 +1,6 @@
 const moment = require("moment");
 
-module.exports.run = (client, message, args) => {
+module.exports.run = async (client, message, args) => {
   var startDate = moment();
   var endDate = moment("2020-2-24 15:00:00", "YYYY-M-DD HH:mm:ss");
   var secondsDiff = endDate.diff(startDate, "seconds");

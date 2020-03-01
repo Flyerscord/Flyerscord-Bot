@@ -1,4 +1,4 @@
-module.exports.run = (client, message, args) => {
+module.exports.run = async (client, message, args) => {
     message.channel.send("I am online!");
 }
 

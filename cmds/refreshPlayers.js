@@ -3,7 +3,7 @@ const fs = require("fs");
 const discord = require("discord.js");
 
 
-module.exports.run = (client, message, args) => {
+module.exports.run = async (client, message, args) => {
   var url = "https://statsapi.web.nhl.com/api/v1/teams?expand=team.roster";
 
   console.log("Running Player Refresh...");

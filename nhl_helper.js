@@ -73,7 +73,7 @@ client.on("message", (message) => {
     // message.author.id == 159985870458322944
     message.author.id == 140656762960347136
   ) {
-    let regex = /level ([0-9]+) !/;
+    let regex = /level ([0-9]+)/;
     let res = message.content.match(regex);
     let pNum = res[1];
     exec(

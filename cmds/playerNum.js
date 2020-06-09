@@ -21,16 +21,20 @@ module.exports.run = async (client, message, args) => {
             `The following Flyers players have had the number ${pNum}:\n${stdout}`
           );
         } else {
-          message.channel.send(
-            `No Flyers player has ever had the number ${pNum}!`
-          );
+          if (pNum == 0) {
+            message.channel.send(
+              `The following Flyers players have had the number ${pNum}:\nGritty`
+            );
+          } else {
+            message.channel.send(
+              `No Flyers player has ever had the number ${pNum}!`
+            );
+          }
         }
       }
     );
   } else {
-    message.channel.send(
-      `A player number is required.`
-    );
+    message.channel.send(`A player number is required.`);
   }
 };
 

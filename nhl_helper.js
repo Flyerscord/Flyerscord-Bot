@@ -4,22 +4,6 @@ const config = require("./config.json");
 const fs = require("fs");
 const { exec } = require("child_process");
 
-const express = require("express");
-const app = express();
-
-// http://expressjs.com/en/starter/static-files.html
-app.use(express.static("public"));
-
-// http://expressjs.com/en/starter/basic-routing.html
-app.get("/", function (request, response) {
-  response.sendFile(__dirname + "/webpage/index.html");
-});
-
-// listen for requests :)
-const listener = app.listen(process.env.PORT, function () {
-  console.log("Your app is listening on port " + listener.address().port);
-});
-
 var prefix = null;
 if (config.testMode) {
   prefix = "!";
@@ -87,12 +71,13 @@ client.on("message", (message) => {
           return;
         }
         if (stdout.length != 0) {
+          let names = createNamesMessage(stdout);
           message.channel.send(
-            `The following Flyers players have had the number ${pNum}:\n${stdout}`
+            `Flyers players that have had the number **${pNum}**:\n${names}`
           );
         } else {
           message.channel.send(
-            `No Flyers player has ever had the number ${pNum}!`
+            `No Flyers player has ever had the number **${pNum}**!`
           );
         }
       }
@@ -119,4 +104,23 @@ if (config.testMode) {
   client.login(config.testToken);
 } else {
   client.login(config.token);
+}
+
+function createNamesMessage(stdout) {
+  const spacing = 25;
+  var result = "```\n";
+
+  var names = stdout.split("\n");
+  names.forEach((name, i) => {
+    if (i != names.length - 1) {
+      if (i % 2 == 0) {
+        // Needs the spacing
+        result = `${result}${name.padEnd(spacing)}`;
+      } else {
+        // In the second column
+        result = `${result}${name}\n`;
+      }
+    }
+  });
+  return result + "```";
 }

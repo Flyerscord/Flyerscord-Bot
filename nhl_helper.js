@@ -54,7 +54,7 @@ client.on("message", (message) => {
   if (
     message.content.includes("you just advanced") &&
     // MEE6 user ID
-    message.author.id == 159985870458322944
+    message.author.id == 796849687436066826
   ) {
     let regex = /level ([0-9]+)/;
     let res = message.content.match(regex);

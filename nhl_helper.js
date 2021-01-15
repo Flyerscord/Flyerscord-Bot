@@ -3,6 +3,7 @@ const client = new Discord.Client();
 const config = require("./config.json");
 const fs = require("fs");
 const { exec } = require("child_process");
+const request = require("request");
 
 var prefix = null;
 if (config.testMode) {
@@ -105,58 +106,58 @@ if (config.testMode) {
   client.login(config.token);
 }
 
-var lastUpdateTime = 0;
-
+var currentGame = null;
+var nextPlay = 0;
 // Check for live game data every 30 seconds
-setInterval(checkGameData, 30);
+setInterval(checkGameData, 1000);
 
 function checkGameData() {
-  var currentGame = getCurrentGame();
-  if (currentGame != 0) {
-    var url = `https://statsapi.web.nhl.com/api/v1/game/${currentGame}/feed/live/diffPatch?startTimecode=${lastUpdateTime}`;
-    request({ url: url, json: true }, function (error, response, body) {
-      if (!error && response.statusCode === 200) {
-        let string = JSON.stringify(body);
-        var obj = JSON.parse(string);
-
-        var allPlays = obj.liveData.plays.allPlays;
-
-        // Loop through all of the events since the last check
-        allPlays.forEach((play) => {
-          let eventType = play.result.eventTypeId;
-          if (eventType == "PERIOD_START") {
-            sendPeriodStartMessage(play);
-          } else if (eventType == "PERIOD_END") {
-            sendPeriodEndMessage(play);
-          } else if (eventType == "GAME_END") {
-            sendGameEndMessage(play);
-          } else if (eventType == "GOAL") {
-            sendGoalMessage(play);
-          }
-        });
-      }
-    });
-  }
-  lastUpdateTime = getDateTime();
-}
-
-// If there is a game for the current day, get the game id
-function getCurrentGame() {
   var date = getDate();
-  var url = `https://statsapi.web.nhl.com/api/v1/schedule?teamId=4&date=${date}`;
+  var url = `https://statsapi.web.nhl.com/api/v1/schedule?teamId=1&date=${date}`;
   request({ url: url, json: true }, function (error, response, body) {
     if (!error && response.statusCode === 200) {
       let string = JSON.stringify(body);
       var obj = JSON.parse(string);
-      if (obj.dates.length == 1) {
-        return obj.dates[0].games[0].gamePk;
+      if (obj.dates[0].games.length != 0) {
+        currentGame = obj.dates[0].games[0].gamePk;
       } else {
-        return 0;
+        currentGame = 0;
       }
     } else {
-      return 0;
+      currentGame = 0;
     }
   });
+
+  if (currentGame) {
+    // console.log("There is a live game!");
+    var url = `https://statsapi.web.nhl.com/api/v1/game/${currentGame}/feed/live`;
+    request({ url: url, json: true }, function (error, response, body) {
+      if (!error && response.statusCode === 200) {
+        let string = JSON.stringify(body);
+        var obj = JSON.parse(string);
+        if (obj.liveData.plays) {
+          var allPlays = obj.liveData.plays.allPlays;
+          var cutPlays = allPlays.slice(nextPlay);
+          // Loop through all of the events since the last check
+          cutPlays.forEach((play) => {
+            let eventType = play.result.eventTypeId;
+            if (eventType == "PERIOD_START") {
+              sendPeriodStartMessage(play);
+            } else if (eventType == "PERIOD_END") {
+              sendPeriodEndMessage(play);
+            } else if (eventType == "GAME_END") {
+              sendGameEndMessage(play);
+            } else if (eventType == "GOAL") {
+              sendGoalMessage(play);
+            }
+          });
+          nextPlay = allPlays.length;
+        }
+      }
+    });
+  } else {
+    console.log("There is no live game!");
+  }
 }
 
 // Gets the current date in the format: YYYY-MM-DD
@@ -170,32 +171,32 @@ function getDate() {
   return `${year}-${month}-${day}`;
 }
 
-// Gets the current date and time in the format: YYYYMMDD_hhmmss
-function getDateTime() {
-  let ts = Date.now();
-  let date = new Date(ts);
-  let day = date.getDate();
-  let month = date.getMonth() + 1;
-  let year = date.getFullYear();
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let seconds = date.getSeconds();
-
-  return `${year}${month}${day}_${hours}${minutes}${seconds}`;
-}
-
 function sendGoalMessage(play) {
   var embed = new Discord.RichEmbed();
+  logEvent("Goal");
 }
 
 function sendPeriodStartMessage(play) {
   var embed = new Discord.RichEmbed();
+  logEvent("Period Start");
 }
 
 function sendPeriodEndMessage(play) {
   var embed = new Discord.RichEmbed();
+  logEvent("Period End");
 }
 
 function sendGameEndMessage(play) {
   var embed = new Discord.RichEmbed();
+  logEvent("Game End");
+}
+
+function logEvent(event) {
+  let ts = Date.now();
+  let date = new Date(ts);
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let seconds = date.getSeconds();
+  var time = `${hours}:${minutes}:${seconds}`;
+  console.log(`${time} - ${event}`);
 }

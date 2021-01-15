@@ -106,30 +106,16 @@ if (config.testMode) {
   client.login(config.token);
 }
 
-var currentGame = null;
+var currentGame = 0;
 var nextPlay = 0;
-// Check for live game data every 30 seconds
+var notificationChannel = "236400898300051457";
+var periodRole = "799754763755323392";
+// Check for live game data every second
 setInterval(checkGameData, 1000);
 
 function checkGameData() {
-  var date = getDate();
-  var url = `https://statsapi.web.nhl.com/api/v1/schedule?teamId=1&date=${date}`;
-  request({ url: url, json: true }, function (error, response, body) {
-    if (!error && response.statusCode === 200) {
-      let string = JSON.stringify(body);
-      var obj = JSON.parse(string);
-      if (obj.dates[0].games.length != 0) {
-        currentGame = obj.dates[0].games[0].gamePk;
-      } else {
-        currentGame = 0;
-      }
-    } else {
-      currentGame = 0;
-    }
-  });
-
-  if (currentGame) {
-    // console.log("There is a live game!");
+  getCurrentGame();
+  if (currentGame != 0) {
     var url = `https://statsapi.web.nhl.com/api/v1/game/${currentGame}/feed/live`;
     request({ url: url, json: true }, function (error, response, body) {
       if (!error && response.statusCode === 200) {
@@ -143,13 +129,14 @@ function checkGameData() {
             let eventType = play.result.eventTypeId;
             if (eventType == "PERIOD_START") {
               sendPeriodStartMessage(play);
-            } else if (eventType == "PERIOD_END") {
-              sendPeriodEndMessage(play);
-            } else if (eventType == "GAME_END") {
-              sendGameEndMessage(play);
-            } else if (eventType == "GOAL") {
-              sendGoalMessage(play);
             }
+            // else if (eventType == "PERIOD_END") {
+            //   sendPeriodEndMessage(play);
+            // } else if (eventType == "GAME_END") {
+            //   sendGameEndMessage(play);
+            // } else if (eventType == "GOAL") {
+            //   sendGoalMessage(play);
+            // }
           });
           nextPlay = allPlays.length;
         }
@@ -158,6 +145,24 @@ function checkGameData() {
   } else {
     console.log("There is no live game!");
   }
+}
+
+function getCurrentGame() {
+  var date = getDate();
+  var url = `https://statsapi.web.nhl.com/api/v1/schedule?teamId=4&date=${date}`;
+  request({ url: url, json: true }, function (error, response, body) {
+    if (!error && response.statusCode === 200) {
+      let string = JSON.stringify(body);
+      var obj = JSON.parse(string);
+      if (obj.dates[0].games.length != 0) {
+        currentGame = obj.dates[0].games[0].gamePk;
+      } else {
+        currentGame = 0;
+      }
+    } else {
+      currentGame = 0;
+    }
+  });
 }
 
 // Gets the current date in the format: YYYY-MM-DD
@@ -177,17 +182,27 @@ function sendGoalMessage(play) {
 }
 
 function sendPeriodStartMessage(play) {
-  var embed = new Discord.RichEmbed();
-  logEvent("Period Start");
+  var msg = null;
+  if (
+    play.about.ordinalNum == "1st" ||
+    play.about.ordinalNum == "2nd" ||
+    play.about.ordinalNum == "3rd"
+  ) {
+    msg = `The ${play.about.ordinalNum} period is starting!`;
+  } else if (play.about.ordinalNum == "OT") {
+    msg = "Overtime is starting!";
+  } else if (play.about.ordinalNum == "SO") {
+    msg = "The shootout is starting!";
+  }
+  logEvent(msg);
+  client.channels.get(notificationChannel).send(`<@&${periodRole}> ${msg}`);
 }
 
 function sendPeriodEndMessage(play) {
-  var embed = new Discord.RichEmbed();
   logEvent("Period End");
 }
 
 function sendGameEndMessage(play) {
-  var embed = new Discord.RichEmbed();
   logEvent("Game End");
 }
 

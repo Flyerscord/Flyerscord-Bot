@@ -55,7 +55,7 @@ client.on("message", (message) => {
   if (
     message.content.includes("you just advanced") &&
     // MEE6 user ID
-    message.author.id == 159985870458322944
+    message.author.id == 796849687436066826
   ) {
     let regex = /level ([0-9]+)/;
     let res = message.content.match(regex);
@@ -72,12 +72,13 @@ client.on("message", (message) => {
           return;
         }
         if (stdout.length != 0) {
+          let names = createNamesMessage(stdout);
           message.channel.send(
-            `The following Flyers players have had the number ${pNum}:\n${stdout}`
+            `Flyers players that have had the number **${pNum}**:\n${names}`
           );
         } else {
           message.channel.send(
-            `No Flyers player has ever had the number ${pNum}!`
+            `No Flyers player has ever had the number **${pNum}**!`
           );
         }
       }
@@ -214,4 +215,23 @@ function logEvent(event) {
   let seconds = date.getSeconds();
   var time = `${hours}:${minutes}:${seconds}`;
   console.log(`${time} - ${event}`);
+}
+
+function createNamesMessage(stdout) {
+  const spacing = 25;
+  var result = "```\n";
+
+  var names = stdout.split("\n");
+  names.forEach((name, i) => {
+    if (i != names.length - 1) {
+      if (i % 2 == 0) {
+        // Needs the spacing
+        result = `${result}${name.padEnd(spacing)}`;
+      } else {
+        // In the second column
+        result = `${result}${name}\n`;
+      }
+    }
+  });
+  return result + "```";
 }

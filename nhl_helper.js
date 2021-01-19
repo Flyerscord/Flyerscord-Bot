@@ -155,8 +155,12 @@ function getCurrentGame() {
     if (!error && response.statusCode === 200) {
       let string = JSON.stringify(body);
       var obj = JSON.parse(string);
-      if (obj.dates[0].games.length != 0) {
-        currentGame = obj.dates[0].games[0].gamePk;
+      if (obj.dates.length > 0) {
+        if (obj.dates[0].games.length > 0) {
+          currentGame = obj.dates[0].games[0].gamePk;
+        } else {
+          currentGame = 0;
+        }
       } else {
         currentGame = 0;
       }

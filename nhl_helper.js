@@ -144,7 +144,7 @@ function checkGameData() {
       }
     });
   } else {
-    console.log("There is no live game!");
+    //console.log("There is no live game!");
   }
 }
 

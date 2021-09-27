@@ -2,12 +2,12 @@ const moment = require("moment");
 
 module.exports.run = async (client, message, args) => {
   var startDate = moment();
-  var endDate = moment("2021-1-13 17:30:00", "YYYY-M-DD HH:mm:ss");
+  var endDate = moment("2021-10-15 19:00:00", "YYYY-M-DD HH:mm:ss");
   var secondsDiff = endDate.diff(startDate, "seconds");
   //   console.log(secondsDiff);
 
   if (secondsDiff <= 0) {
-    message.channel.send("The **2021 NHL Season** has started!");
+    message.channel.send("The **2021-22 Flyers Season** has started!");
   } else {
     const secondsInDay = 60 * 60 * 24;
     const secondsInHour = 60 * 60;
@@ -19,7 +19,7 @@ module.exports.run = async (client, message, args) => {
     var minutes = 0;
     var seconds = 0;
 
-    var stringHeader = "The **2021 NHL Season** starts in";
+    var stringHeader = "The **2021-22 Flyers Season** starts in";
 
     days = Math.floor(secondsDiff / secondsInDay);
     remainder = secondsDiff - days * secondsInDay;

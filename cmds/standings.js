@@ -6,7 +6,7 @@ var prefix = config.prefix;
 
 module.exports.run = async (client, message, args) => {
   var url;
-  var embed = new Discord.RichEmbed();
+  var embed = new Discord.MessageEmbed();
 
   var divisionNum;
   var conferenceNum;
@@ -129,28 +129,33 @@ module.exports.run = async (client, message, args) => {
       break;
     case "Help":
     case "help":
-      message.channel.send({embed: {
-        color: 16711680,
-        title: "NHL Standings: Command Help",
-        fields: [
-          {
-            name: prefix + "standings div [division name]",
-            value: "Prints the standings for the specified division. Defaults to the Metro."
-          },
-          {
-            name: prefix + "standings conf [conference name]",
-            value: "Prints the standings for the specified conference. Defaults to the East."
-          },
-          {
-            name: prefix + "standings league",
-            value: "Prints the standings for the league."
-          },
-          {
-            name: prefix + "standings wild [conference name]",
-            value: "Prints a the divsion leader and the wild cards for the specified conference.  Defaults to the East."
-          }
-        ]
-      }});
+      message.channel.send({
+        embed: {
+          color: 16711680,
+          title: "NHL Standings: Command Help",
+          fields: [
+            {
+              name: prefix + "standings div [division name]",
+              value:
+                "Prints the standings for the specified division. Defaults to the Metro.",
+            },
+            {
+              name: prefix + "standings conf [conference name]",
+              value:
+                "Prints the standings for the specified conference. Defaults to the East.",
+            },
+            {
+              name: prefix + "standings league",
+              value: "Prints the standings for the league.",
+            },
+            {
+              name: prefix + "standings wild [conference name]",
+              value:
+                "Prints a the divsion leader and the wild cards for the specified conference.  Defaults to the East.",
+            },
+          ],
+        },
+      });
       break;
     default:
       message.channel.send("Must enter standing type d, c, l, w, or help");
@@ -175,7 +180,23 @@ module.exports.run = async (client, message, args) => {
           var teamName = whichTeam.team.name;
 
           var goalDif = whichTeam.goalsScored - whichTeam.goalsAgainst;
-          embed.addField(whichTeam.divisionRank + ") " + teamName, "GP: " + whichTeam.gamesPlayed + " | Points: " + whichTeam.points + " | Record: " + whichTeam.leagueRecord.wins + "-" + whichTeam.leagueRecord.losses + "-" + whichTeam.leagueRecord.ot + " | Goal Dif: " + goalDif + " | Streak: " + whichTeam.streak.streakCode);
+          embed.addField(
+            whichTeam.divisionRank + ") " + teamName,
+            "GP: " +
+              whichTeam.gamesPlayed +
+              " | Points: " +
+              whichTeam.points +
+              " | Record: " +
+              whichTeam.leagueRecord.wins +
+              "-" +
+              whichTeam.leagueRecord.losses +
+              "-" +
+              whichTeam.leagueRecord.ot +
+              " | Goal Dif: " +
+              goalDif +
+              " | Streak: " +
+              whichTeam.streak.streakCode
+          );
         }
         embed.setColor(0x000000);
         embed.setFooter("Type " + config.prefix + "help to view commands");
@@ -202,7 +223,23 @@ module.exports.run = async (client, message, args) => {
           var teamName = whichTeam.team.name;
 
           var goalDif = whichTeam.goalsScored - whichTeam.goalsAgainst;
-          embed.addField(whichTeam.conferenceRank + ") " + teamName, "GP: " + whichTeam.gamesPlayed + " | Points: " + whichTeam.points + " | Record: " + whichTeam.leagueRecord.wins + "-" + whichTeam.leagueRecord.losses + "-" + whichTeam.leagueRecord.ot + " | Goal Dif: " + goalDif + " | Streak: " + whichTeam.streak.streakCode);
+          embed.addField(
+            whichTeam.conferenceRank + ") " + teamName,
+            "GP: " +
+              whichTeam.gamesPlayed +
+              " | Points: " +
+              whichTeam.points +
+              " | Record: " +
+              whichTeam.leagueRecord.wins +
+              "-" +
+              whichTeam.leagueRecord.losses +
+              "-" +
+              whichTeam.leagueRecord.ot +
+              " | Goal Dif: " +
+              goalDif +
+              " | Streak: " +
+              whichTeam.streak.streakCode
+          );
         }
         embed.setColor(0x000000);
         embed.setFooter("Type " + config.prefix + "help to view commands");
@@ -229,14 +266,30 @@ module.exports.run = async (client, message, args) => {
           var teamName = whichTeam.team.name;
 
           var goalDif = whichTeam.goalsScored - whichTeam.goalsAgainst;
-          embed.addField(whichTeam.leagueRank + ") " + teamName, "GP: " + whichTeam.gamesPlayed + " | Points: " + whichTeam.points + " | Record: " + whichTeam.leagueRecord.wins + "-" + whichTeam.leagueRecord.losses + "-" + whichTeam.leagueRecord.ot + " | Goal Dif: " + goalDif + " | Streak: " + whichTeam.streak.streakCode);
+          embed.addField(
+            whichTeam.leagueRank + ") " + teamName,
+            "GP: " +
+              whichTeam.gamesPlayed +
+              " | Points: " +
+              whichTeam.points +
+              " | Record: " +
+              whichTeam.leagueRecord.wins +
+              "-" +
+              whichTeam.leagueRecord.losses +
+              "-" +
+              whichTeam.leagueRecord.ot +
+              " | Goal Dif: " +
+              goalDif +
+              " | Streak: " +
+              whichTeam.streak.streakCode
+          );
         }
         embed.setColor(0x000000);
         embed.setFooter("Type " + config.prefix + "help to view commands");
 
         message.channel.send({ embed });
 
-        embed = new Discord.RichEmbed();
+        embed = new Discord.MessageEmbed();
         embed.setTitle("NHL Standings: League Part 2");
 
         // Cycles through the teams in the second half of the league
@@ -245,7 +298,23 @@ module.exports.run = async (client, message, args) => {
           var teamName = whichTeam.team.name;
 
           var goalDif = whichTeam.goalsScored - whichTeam.goalsAgainst;
-          embed.addField(whichTeam.leagueRank + ") " + teamName, "GP: " + whichTeam.gamesPlayed + " | Points: " + whichTeam.points + " | Record: " + whichTeam.leagueRecord.wins + "-" + whichTeam.leagueRecord.losses + "-" + whichTeam.leagueRecord.ot + " | Goal Dif: " + goalDif + " | Streak: " + whichTeam.streak.streakCode);
+          embed.addField(
+            whichTeam.leagueRank + ") " + teamName,
+            "GP: " +
+              whichTeam.gamesPlayed +
+              " | Points: " +
+              whichTeam.points +
+              " | Record: " +
+              whichTeam.leagueRecord.wins +
+              "-" +
+              whichTeam.leagueRecord.losses +
+              "-" +
+              whichTeam.leagueRecord.ot +
+              " | Goal Dif: " +
+              goalDif +
+              " | Streak: " +
+              whichTeam.streak.streakCode
+          );
         }
         embed.setColor(0x000000);
         embed.setFooter("Type " + config.prefix + "help to view commands");
@@ -271,7 +340,23 @@ module.exports.run = async (client, message, args) => {
           var teamName = whichTeam.team.name;
 
           var goalDif = whichTeam.goalsScored - whichTeam.goalsAgainst;
-          embed.addField(whichTeam.divisionRank + ") " + teamName, "GP: " + whichTeam.gamesPlayed + " | Points: " + whichTeam.points + " | Record: " + whichTeam.leagueRecord.wins + "-" + whichTeam.leagueRecord.losses + "-" + whichTeam.leagueRecord.ot + " | Goal Dif: " + goalDif + " | Streak: " + whichTeam.streak.streakCode);
+          embed.addField(
+            whichTeam.divisionRank + ") " + teamName,
+            "GP: " +
+              whichTeam.gamesPlayed +
+              " | Points: " +
+              whichTeam.points +
+              " | Record: " +
+              whichTeam.leagueRecord.wins +
+              "-" +
+              whichTeam.leagueRecord.losses +
+              "-" +
+              whichTeam.leagueRecord.ot +
+              " | Goal Dif: " +
+              goalDif +
+              " | Streak: " +
+              whichTeam.streak.streakCode
+          );
         }
 
         embed.setColor(0x000000);
@@ -279,7 +364,7 @@ module.exports.run = async (client, message, args) => {
 
         message.channel.send({ embed });
 
-        embed = new Discord.RichEmbed();
+        embed = new Discord.MessageEmbed();
 
         // Second Div Leaders
         whichObj = obj.records[cardDiv2Num];
@@ -290,7 +375,23 @@ module.exports.run = async (client, message, args) => {
           var teamName = whichTeam.team.name;
 
           var goalDif = whichTeam.goalsScored - whichTeam.goalsAgainst;
-          embed.addField(whichTeam.divisionRank + ") " + teamName, "GP: " + whichTeam.gamesPlayed + " | Points: " + whichTeam.points + " | Record: " + whichTeam.leagueRecord.wins + "-" + whichTeam.leagueRecord.losses + "-" + whichTeam.leagueRecord.ot + " | Goal Dif: " + goalDif + " | Streak: " + whichTeam.streak.streakCode);
+          embed.addField(
+            whichTeam.divisionRank + ") " + teamName,
+            "GP: " +
+              whichTeam.gamesPlayed +
+              " | Points: " +
+              whichTeam.points +
+              " | Record: " +
+              whichTeam.leagueRecord.wins +
+              "-" +
+              whichTeam.leagueRecord.losses +
+              "-" +
+              whichTeam.leagueRecord.ot +
+              " | Goal Dif: " +
+              goalDif +
+              " | Streak: " +
+              whichTeam.streak.streakCode
+          );
         }
 
         embed.setColor(0x000000);
@@ -298,7 +399,7 @@ module.exports.run = async (client, message, args) => {
 
         message.channel.send({ embed });
 
-        embed = new Discord.RichEmbed();
+        embed = new Discord.MessageEmbed();
 
         // Conference Wild cards
         whichObj = obj.records[cardWildNum];
@@ -310,10 +411,41 @@ module.exports.run = async (client, message, args) => {
 
           var goalDif = whichTeam.goalsScored - whichTeam.goalsAgainst;
           if (whichTeam.wildCardRank == "1" || whichTeam.wildCardRank == "2") {
-            embed.addField(whichTeam.wildCardRank + ") " + teamName + " *", "GP: " + whichTeam.gamesPlayed + " | Points: " + whichTeam.points + " | Record: " + whichTeam.leagueRecord.wins + "-" + whichTeam.leagueRecord.losses + "-" + whichTeam.leagueRecord.ot + " | Goal Dif: " + goalDif + " | Streak: " + whichTeam.streak.streakCode);
-          }
-          else {
-            embed.addField(whichTeam.wildCardRank + ") " + teamName, "GP: " + whichTeam.gamesPlayed + " | Points: " + whichTeam.points + " | Record: " + whichTeam.leagueRecord.wins + "-" + whichTeam.leagueRecord.losses + "-" + whichTeam.leagueRecord.ot + " | Goal Dif: " + goalDif + " | Streak: " + whichTeam.streak.streakCode);
+            embed.addField(
+              whichTeam.wildCardRank + ") " + teamName + " *",
+              "GP: " +
+                whichTeam.gamesPlayed +
+                " | Points: " +
+                whichTeam.points +
+                " | Record: " +
+                whichTeam.leagueRecord.wins +
+                "-" +
+                whichTeam.leagueRecord.losses +
+                "-" +
+                whichTeam.leagueRecord.ot +
+                " | Goal Dif: " +
+                goalDif +
+                " | Streak: " +
+                whichTeam.streak.streakCode
+            );
+          } else {
+            embed.addField(
+              whichTeam.wildCardRank + ") " + teamName,
+              "GP: " +
+                whichTeam.gamesPlayed +
+                " | Points: " +
+                whichTeam.points +
+                " | Record: " +
+                whichTeam.leagueRecord.wins +
+                "-" +
+                whichTeam.leagueRecord.losses +
+                "-" +
+                whichTeam.leagueRecord.ot +
+                " | Goal Dif: " +
+                goalDif +
+                " | Streak: " +
+                whichTeam.streak.streakCode
+            );
           }
         }
 
@@ -329,8 +461,8 @@ module.exports.run = async (client, message, args) => {
     console.log("Type of standing was not defined!");
     return;
   }
-}
+};
 
 module.exports.help = {
-  name: "standings"
-}
+  name: "standings",
+};

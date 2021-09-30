@@ -16,12 +16,15 @@ module.exports.run = async (client, message, args) => {
   var startDate = d.getFullYear() + "-" + currentMonth + "-" + d.getDate();
   var endDate = nextYear + "-" + currentMonth + "-" + nextDate;
 
-  
-  var url = "https://statsapi.web.nhl.com/api/v1/schedule?teamId=4&startDate=" + startDate + "&endDate=" + endDate;
-  const embed = new Discord.RichEmbed();
-  
+  var url =
+    "https://statsapi.web.nhl.com/api/v1/schedule?teamId=4&startDate=" +
+    startDate +
+    "&endDate=" +
+    endDate;
+  const embed = new Discord.MessageEmbed();
+
   var gamesToPrint;
-  
+
   if (args[0]) {
     var arg = parseInt(args[0], 10);
     if (!isNaN(arg)) {
@@ -32,16 +35,20 @@ module.exports.run = async (client, message, args) => {
         gamesToPrint = args[0];
       }
     } else {
-      message.channel.send("ERROR: Format is \"" + config.prefix + "schedule [number]\".  Default is 5.");
+      message.channel.send(
+        'ERROR: Format is "' +
+          config.prefix +
+          'schedule [number]".  Default is 5.'
+      );
       gamesToPrint = 0;
     }
   } else {
     gamesToPrint = 5;
   }
   //console.log("Games: " + gamesToPrint);
-  
+
   if (gamesToPrint > 0) {
-    request({url: url, json: true }, function (error, response, body) {
+    request({ url: url, json: true }, function (error, response, body) {
       if (!error && response.statusCode === 200) {
         let string = JSON.stringify(body);
         var obj = JSON.parse(string);
@@ -49,7 +56,9 @@ module.exports.run = async (client, message, args) => {
         if (gamesToPrint == 1) {
           embed.setTitle("Next upcoming Flyers game");
         } else {
-          embed.setTitle("Next " + Math.ceil(gamesToPrint) + " upcoming Flyers games");
+          embed.setTitle(
+            "Next " + Math.ceil(gamesToPrint) + " upcoming Flyers games"
+          );
         }
 
         if (obj.dates.length >= gamesToPrint) {
@@ -70,14 +79,21 @@ module.exports.run = async (client, message, args) => {
               gameHour = 24 + gameHour;
             }
 
-            var gameAmPm = gameHour >= 12 ? 'PM' : 'AM';
+            var gameAmPm = gameHour >= 12 ? "PM" : "AM";
 
             gameHour = gameHour % 12;
             gameHour = gameHour ? gameHour : 12; // the hour '0' should be '12'
-            gameMinute = gameMinute < 10 ? '0'+gameMinute : gameMinute;
-            var gameTime = gameHour + ':' + gameMinute + ' ' + gameAmPm;
+            gameMinute = gameMinute < 10 ? "0" + gameMinute : gameMinute;
+            var gameTime = gameHour + ":" + gameMinute + " " + gameAmPm;
 
-            var gameDate = gameMonth + "/" + gameDay + "/" + d.getFullYear() + "   " + gameTime;
+            var gameDate =
+              gameMonth +
+              "/" +
+              gameDay +
+              "/" +
+              d.getFullYear() +
+              "   " +
+              gameTime;
 
             var awayTeam = game.teams.away.team.name;
             var homeTeam = game.teams.home.team.name;
@@ -102,34 +118,39 @@ module.exports.run = async (client, message, args) => {
               gameHour = 24 + gameHour;
             }
 
-            var gameAmPm = gameHour >= 12 ? 'PM' : 'AM';
+            var gameAmPm = gameHour >= 12 ? "PM" : "AM";
 
             gameHour = gameHour % 12;
             gameHour = gameHour ? gameHour : 12; // the hour '0' should be '12'
-            gameMinute = gameMinute < 10 ? '0'+gameMinute : gameMinute;
-            var gameTime = gameHour + ':' + gameMinute + ' ' + gameAmPm;
+            gameMinute = gameMinute < 10 ? "0" + gameMinute : gameMinute;
+            var gameTime = gameHour + ":" + gameMinute + " " + gameAmPm;
 
-            var gameDate = gameMonth + "/" + gameDay + "/" + d.getFullYear() + "   " + gameTime;
+            var gameDate =
+              gameMonth +
+              "/" +
+              gameDay +
+              "/" +
+              d.getFullYear() +
+              "   " +
+              gameTime;
 
             var awayTeam = game.teams.away.team.name;
             var homeTeam = game.teams.home.team.name;
-
-
 
             embed.addField(gameDate, awayTeam + " @ " + homeTeam);
           }
         }
 
-        embed.setFooter("Type " + config.prefix +"help to view commands");
+        embed.setFooter("Type " + config.prefix + "help to view commands");
         embed.setColor(0xf74902);
-        message.channel.send({embed});
+        message.channel.send({ embed });
       } else {
         console.error("Error with API request");
       }
     });
   }
-}
-  
+};
+
 module.exports.help = {
-  name: "schedule"
-}
+  name: "schedule",
+};

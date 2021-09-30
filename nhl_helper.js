@@ -1,19 +1,38 @@
-const Discord = require("discord.js");
-const client = new Discord.Client();
-const config = require("./config.json");
+const { Client, Intents, MessageEmbed, Collection } = require("discord.js");
 const fs = require("fs");
+const request = require("request");
 const { exec } = require("child_process");
+const { JsonStorage, config } = require("json-storage-fs");
 
-const liveData = require("./libs/live_updates.js");
+const _config = require("./config.json");
+
+config({ catalog: "./data/" });
 
 var prefix = null;
-if (config.testMode) {
+if (_config.testMode) {
   prefix = "!";
 } else {
-  prefix = config.prefix;
+  prefix = _config.prefix;
 }
 
-client.commands = new Discord.Collection();
+const client = new Client({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+});
+client.commands = new Collection();
+
+// For production
+const memberRoleId = "655526764436652042";
+const visitorRoleId = "799653932191580200";
+const vistorEmoji = "<:nhl:799669949899210793>";
+const vistorEmojiId = "799669949899210793";
+const rolesChannelId = "799764588484100167";
+
+// For testing
+// const memberRoleId = "892991002921562172";
+// const visitorRoleId = "892991062979805186";
+// const vistorEmoji = "<:nhl:892991229426532372>";
+// const vistorEmojiId = "892991229426532372";
+// const rolesChannelId = "345701810616532993";
 
 // Set up handlers for process events
 process.on("unhandledRejection", function (err, p) {
@@ -48,8 +67,20 @@ fs.readdir("./cmds/", (err, files) => {
   });
 });
 
-client.on("ready", () => {
+client.on("ready", async () => {
   console.log("Bot is ready!");
+  if (!JsonStorage.get("visitorMessageID")) {
+    sendVisitorReactionMessage();
+  } else {
+    let channel = client.channels.cache.get(rolesChannelId);
+    try {
+      message = await channel.messages.fetch(
+        JsonStorage.get("visitorMessageID")
+      );
+    } catch (e) {
+      sendVisitorReactionMessage();
+    }
+  }
 });
 
 client.on("message", (message) => {
@@ -102,11 +133,50 @@ client.on("message", (message) => {
   }
 });
 
-if (config.testMode) {
-  client.login(config.testToken);
+client.on("messageReactionAdd", (reaction, user) => {
+  if (user.bot) return;
+  // console.log("Reaction added");
+  var vistorMessageId = JsonStorage.get("visitorMessageID");
+  if (reaction.message.id != vistorMessageId) return;
+  if (reaction.emoji.id != vistorEmojiId) return;
+
+  var member = reaction.message.guild.members.cache.get(user.id);
+
+  if (member.roles.cache.some((role) => role.id == memberRoleId)) {
+    member.roles.remove(memberRoleId);
+  }
+  if (!member.roles.cache.some((role) => role.id == visitorRoleId)) {
+    member.roles.add(visitorRoleId);
+  }
+});
+
+client.on("messageReactionRemove", (reaction, user) => {
+  if (user.bot) return;
+  // console.log("Reaction removed");
+  var vistorMessageId = JsonStorage.get("visitorMessageID");
+  if (reaction.message.id != vistorMessageId) return;
+  if (reaction.emoji.id != vistorEmojiId) return;
+
+  var member = reaction.message.guild.members.cache.get(user.id);
+
+  if (member.roles.cache.some((role) => role.id == visitorRoleId)) {
+    member.roles.remove(visitorRoleId);
+  }
+  if (!member.roles.cache.some((role) => role.id == memberRoleId)) {
+    member.roles.add(memberRoleId);
+  }
+});
+
+if (_config.testMode) {
+  client.login(_config.testToken);
 } else {
-  client.login(config.token);
+  client.login(_config.token);
 }
+
+var currentGame = 0;
+var nextPlay = 0;
+const notificationChannel = "236400898300051457";
+const periodRole = "799754763755323392";
 
 // Check for live game data every second
 setInterval(checkGameData, 1000);
@@ -179,7 +249,7 @@ function getDate() {
 }
 
 function sendGoalMessage(play) {
-  var embed = new Discord.RichEmbed();
+  var embed = new Discord.MessageEmbed();
   logEvent("Goal");
 }
 
@@ -235,4 +305,16 @@ function createNamesMessage(stdout) {
     }
   });
   return result + "```";
+}
+
+async function sendVisitorReactionMessage() {
+  let embed = {
+    title: "Visitor Role Selection",
+    description: `${vistorEmoji} Get the Visitor Role (Everyone else will get the member role)`,
+  };
+  var message = await client.channels.cache
+    .get(rolesChannelId)
+    .send({ embed: embed });
+  JsonStorage.set("visitorMessageID", message.id);
+  message.react(vistorEmoji);
 }

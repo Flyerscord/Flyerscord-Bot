@@ -3,3 +3,7 @@ services:
   bot:
     build: .
     restart: always
+    volumes:
+      - botDB:/usr/src/app/data:rw
+volumes:
+  botDB:

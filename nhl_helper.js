@@ -3,7 +3,8 @@ const client = new Discord.Client();
 const config = require("./config.json");
 const fs = require("fs");
 const { exec } = require("child_process");
-const request = require("request");
+
+const liveData = require("./libs/live_updates.js");
 
 var prefix = null;
 if (config.testMode) {
@@ -107,10 +108,6 @@ if (config.testMode) {
   client.login(config.token);
 }
 
-var currentGame = 0;
-var nextPlay = 0;
-var notificationChannel = "236400898300051457";
-var periodRole = "799754763755323392";
 // Check for live game data every second
 setInterval(checkGameData, 1000);
 

@@ -1,4 +1,4 @@
-const { Client, Intents, MessageEmbed, Collection } = require("discord.js");
+const { Client, Intents, Collection } = require("discord.js");
 const fs = require("fs");
 const request = require("request");
 const { exec } = require("child_process");
@@ -15,9 +15,10 @@ if (_config.testMode) {
   prefix = _config.prefix;
 }
 
-const client = new Client({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
-});
+// const client = new Client({
+//   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+// });
+const client = new Client();
 client.commands = new Collection();
 
 // For production

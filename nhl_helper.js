@@ -268,7 +268,9 @@ function sendPeriodStartMessage(play) {
     msg = "The shootout is starting!";
   }
   logEvent(msg);
-  client.channels.get(notificationChannel).send(`<@&${periodRole}> ${msg}`);
+  client.channels.cache
+    .get(notificationChannel)
+    .send(`<@&${periodRole}> ${msg}`);
 }
 
 function sendPeriodEndMessage(play) {

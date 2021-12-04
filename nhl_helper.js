@@ -198,14 +198,14 @@ function checkGameData() {
             let eventType = play.result.eventTypeId;
             if (eventType == "PERIOD_START") {
               sendPeriodStartMessage(play);
+            } else if (eventType == "GOAL") {
+              sendGoalMessage(play);
             }
             // else if (eventType == "PERIOD_END") {
             //   sendPeriodEndMessage(play);
             // } else if (eventType == "GAME_END") {
             //   sendGameEndMessage(play);
-            // } else if (eventType == "GOAL") {
-            //   sendGoalMessage(play);
-            // }
+            //
           });
           nextPlay = allPlays.length;
         }
@@ -250,7 +250,7 @@ function getDate() {
 }
 
 function sendGoalMessage(play) {
-  var embed = new Discord.MessageEmbed();
+  // var embed = new Discord.MessageEmbed();
   logEvent("Goal");
 }
 

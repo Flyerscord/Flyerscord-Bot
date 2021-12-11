@@ -178,6 +178,8 @@ var currentGame = 0;
 var nextPlay = 0;
 const notificationChannel = "236400898300051457";
 const periodRole = "799754763755323392";
+var timeOfLastCheck = "";
+timeOfLastCheck();
 
 // Check for live game data every second
 setInterval(checkGameData, 1000);
@@ -185,11 +187,12 @@ setInterval(checkGameData, 1000);
 function checkGameData() {
   getCurrentGame();
   if (currentGame != 0) {
-    var url = `https://statsapi.web.nhl.com/api/v1/game/${currentGame}/feed/live`;
+    var url = `https://statsapi.web.nhl.com/api/v1/game/${currentGame}/feed/live/diffPatch?startTimecode=${timeOfLastCheck}`;
     request({ url: url, json: true }, function (error, response, body) {
       if (!error && response.statusCode === 200) {
         let string = JSON.stringify(body);
         var obj = JSON.parse(string);
+        timeOfLastCheck();
         if (obj.liveData.plays) {
           var allPlays = obj.liveData.plays.allPlays;
           var cutPlays = allPlays.slice(nextPlay);
@@ -320,4 +323,11 @@ async function sendVisitorReactionMessage() {
     .send({ embed: embed });
   JsonStorage.set("visitorMessageID", message.id);
   message.react(vistorEmoji);
+}
+
+function createStartTimecode() {
+  var utcTime = new Date(new Date().toUTCString());
+  timeOfLastCheck = `${utcTime.getFullYear}${
+    utcTime.getMonth() + 1
+  }${utcTime.getDate()}_${utcTime.getHours()}${utcTime.getMinutes()}`;
 }

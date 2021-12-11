@@ -175,10 +175,12 @@ if (_config.testMode) {
 }
 
 var currentGame = 0;
-var nextPlay = 0;
 const notificationChannel = "236400898300051457";
 const periodRole = "799754763755323392";
 var timeOfLastCheck = "";
+
+var homeTeam = 0;
+var awayTeam = 0;
 timeOfLastCheck();
 
 // Check for live game data every second
@@ -193,11 +195,11 @@ function checkGameData() {
         let string = JSON.stringify(body);
         var obj = JSON.parse(string);
         timeOfLastCheck();
+        homeTeam = obj.gameData.teams.home.
         if (obj.liveData.plays) {
           var allPlays = obj.liveData.plays.allPlays;
-          var cutPlays = allPlays.slice(nextPlay);
           // Loop through all of the events since the last check
-          cutPlays.forEach((play) => {
+          allPlays.forEach((play) => {
             let eventType = play.result.eventTypeId;
             if (eventType == "PERIOD_START") {
               sendPeriodStartMessage(play);
@@ -210,7 +212,6 @@ function checkGameData() {
             //   sendGameEndMessage(play);
             //
           });
-          nextPlay = allPlays.length;
         }
       }
     });
@@ -255,6 +256,23 @@ function getDate() {
 function sendGoalMessage(play) {
   // var embed = new Discord.MessageEmbed();
   logEvent("Goal");
+  var scorer = 0;
+  var assists = [];
+  var type = play.result.secondaryType;
+  var emptyNet = play.result.emptyNet;
+  var period = play.about.ordinalNum;
+  var time = play.about.periodTime;
+
+  play.players.forEach((player) => {
+    if (player.playerType === "Scorer") {
+      scorer = player.id;
+    } else if (player.playerType === "Assist") {
+      assists.push(player.id);
+    }
+  });
+
+  // Delay the message for 20 seconds to avoid spoilers
+  setTimeout(() => {}, 20000);
 }
 
 function sendPeriodStartMessage(play) {

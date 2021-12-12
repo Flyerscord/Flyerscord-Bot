@@ -1,6 +1,33 @@
 {
   "testMode": false,
-  "prefix": ".",
-  "token": "NDQxNDUxNDY1MzE2NDk5NDU3.DuT2jw.ZAyEcaBHl-r7238LckgioVWtP6A",
-  "testToken": "NjcwODI5NzUwNTAzMzQyMTEx.Xi0E4w.wAsykwHS-WqahRjTNqKzcFi8NN0"
+  "production": {
+    "token": "NDQxNDUxNDY1MzE2NDk5NDU3.DuT2jw.ZAyEcaBHl-r7238LckgioVWtP6A",
+    "prefix": ".",
+    "vistorReactRole": {
+      "memberRoleId": "655526764436652042",
+      "visitorRoleId": "799653932191580200",
+      "visitorEmoji": "<:nhl:799669949899210793>",
+      "visitorEmojiId": "799669949899210793",
+      "rolesChannelId": "799764588484100167"
+    },
+    "liveData": {
+      "notificationChannelId": "236400898300051457",
+      "periodNotificationRoleId": "799754763755323392"
+    }
+  },
+  "test": {
+    "token": "NjcwODI5NzUwNTAzMzQyMTEx.Xi0E4w.wAsykwHS-WqahRjTNqKzcFi8NN0",
+    "prefix": "!",
+    "vistorReactRole": {
+      "memberRoleId": "892991002921562172",
+      "visitorRoleId": "892991062979805186",
+      "visitorEmoji": "<:nhl:892991229426532372>",
+      "visitorEmojiId": "892991229426532372",
+      "rolesChannelId": "345701810616532993"
+    },
+    "liveData": {
+      "notificationChannelId": "",
+      "periodNotificationRoleId": ""
+    }
+  }
 }

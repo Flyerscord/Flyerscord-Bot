@@ -4,11 +4,11 @@ const { exec } = require("child_process");
 const { JsonStorage, config } = require("json-storage-fs");
 
 const liveData = require("./lib/live_data/checkData.js");
-const logging = require("./lib/logging/logging.js");
-const globals = require("./lib/globals/globals.js");
+const logging = require("./lib/common/logging.js");
+const globals = require("./lib/common/globals.js");
 
 // Read in the config file
-const _config = require("./config.json");
+const _config = require("./lib/common/config.js");
 
 // Create the database
 config({ catalog: "./data/" });
@@ -22,25 +22,14 @@ globals.client.commands = new Collection();
 /* -------------------------------------------------------------------------- */
 /*                         Bot Test Mode Configuration                        */
 /* -------------------------------------------------------------------------- */
-if (_config.testMode) {
-  // Test Mode Enabled
-  var prefix = "!";
-  var token = _config.testToken;
-  var memberRoleId = "892991002921562172";
-  var visitorRoleId = "892991062979805186";
-  var vistorEmoji = "<:nhl:892991229426532372>";
-  var vistorEmojiId = "892991229426532372";
-  var rolesChannelId = "345701810616532993";
-} else {
-  // Test Mode Disabled
-  var prefix = _config.prefix;
-  var token = _config.token;
-  var memberRoleId = "655526764436652042";
-  var visitorRoleId = "799653932191580200";
-  var vistorEmoji = "<:nhl:799669949899210793>";
-  var vistorEmojiId = "799669949899210793";
-  var rolesChannelId = "799764588484100167";
-}
+
+var prefix = _config.prefix;
+var token = _config.token;
+var memberRoleId = _config.vistorReactRole.memberRoleId;
+var visitorRoleId = _config.vistorReactRole.visitorRoleId;
+var vistorEmoji = _config.vistorReactRole.visitorEmoji;
+var vistorEmojiId = _config.vistorReactRole.visitorEmojiId;
+var rolesChannelId = _config.vistorReactRole.rolesChannelId;
 
 /* -------------------------------------------------------------------------- */
 /*                            Variable Declarations                           */
@@ -53,7 +42,7 @@ const notificationChannel = "236400898300051457";
 const periodRole = "799754763755323392";
 // The time and the date in string format of the last live data check
 var timeOfLastCheck = "";
-// The IF of the home team for the current game
+// The ID of the home team for the current game
 var homeTeam = 0;
 // The ID of the away team for the current game
 var awayTeam = 0;
@@ -219,65 +208,6 @@ timeOfLastCheck();
 // Check for live game data every second
 setInterval(liveData.checkGameData, 1000);
 
-function sendGoalMessage(play) {
-  // var embed = new Discord.MessageEmbed();
-  logEvent("Goal");
-  var scorer = 0;
-  var assists = [];
-  var type = play.result.secondaryType;
-  var emptyNet = play.result.emptyNet;
-  var period = play.about.ordinalNum;
-  var time = play.about.periodTime;
-
-  play.players.forEach((player) => {
-    if (player.playerType === "Scorer") {
-      scorer = player.id;
-    } else if (player.playerType === "Assist") {
-      assists.push(player.id);
-    }
-  });
-
-  // Delay the message for 20 seconds to avoid spoilers
-  setTimeout(() => {}, 20000);
-}
-
-function sendPeriodStartMessage(play) {
-  var msg = null;
-  if (
-    play.about.ordinalNum == "1st" ||
-    play.about.ordinalNum == "2nd" ||
-    play.about.ordinalNum == "3rd"
-  ) {
-    msg = `The ${play.about.ordinalNum} period is starting!`;
-  } else if (play.about.ordinalNum == "OT") {
-    msg = "Overtime is starting!";
-  } else if (play.about.ordinalNum == "SO") {
-    msg = "The shootout is starting!";
-  }
-  logEvent(msg);
-  globals.client.channels.cache
-    .get(notificationChannel)
-    .send(`<@&${periodRole}> ${msg}`);
-}
-
-function sendPeriodEndMessage(play) {
-  logEvent("Period End");
-}
-
-function sendGameEndMessage(play) {
-  logEvent("Game End");
-}
-
-function logEvent(event) {
-  let ts = Date.now();
-  let date = new Date(ts);
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let seconds = date.getSeconds();
-  var time = `${hours}:${minutes}:${seconds}`;
-  console.log(`${time} - ${event}`);
-}
-
 function createNamesMessage(stdout) {
   const spacing = 25;
   var result = "```\n";
@@ -307,11 +237,4 @@ async function sendVisitorReactionMessage() {
     .send({ embed: embed });
   JsonStorage.set("visitorMessageID", message.id);
   message.react(vistorEmoji);
-}
-
-function createStartTimecode() {
-  var utcTime = new Date(new Date().toUTCString());
-  timeOfLastCheck = `${utcTime.getFullYear}${
-    utcTime.getMonth() + 1
-  }${utcTime.getDate()}_${utcTime.getHours()}${utcTime.getMinutes()}`;
 }

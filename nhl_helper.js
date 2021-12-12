@@ -1,8 +1,11 @@
-const { Client, Intents, Collection } = require("discord.js");
+const { Client, Collection } = require("discord.js");
 const fs = require("fs");
-const request = require("request");
 const { exec } = require("child_process");
 const { JsonStorage, config } = require("json-storage-fs");
+
+const liveData = require("./lib/live_data/checkData.js");
+const logging = require("./lib/logging/logging.js");
+const globals = require("./lib/globals/globals.js");
 
 // Read in the config file
 const _config = require("./config.json");
@@ -11,10 +14,10 @@ const _config = require("./config.json");
 config({ catalog: "./data/" });
 
 // Create the Discord Client
-const client = new Client();
+globals.client = new Client();
 
 // Create a collection in the client object for the commands to be loaded into
-client.commands = new Collection();
+globals.client.commands = new Collection();
 
 /* -------------------------------------------------------------------------- */
 /*                         Bot Test Mode Configuration                        */
@@ -73,7 +76,7 @@ process.on("warning", (warning) => {
 });
 
 // Discord Bot Error
-client.on("error", console.error);
+globals.client.on("error", console.error);
 
 /* -------------------------------------------------------------------------- */
 /*                           Reading in Bot Commands                          */
@@ -92,19 +95,19 @@ fs.readdir("./cmds/", (err, files) => {
   jsFiles.forEach((f, i) => {
     let props = require(`./cmds/${f}`);
     console.log(`${i + 1}: ${f} loaded!`);
-    client.commands.set(props.help.name, props);
+    globals.client.commands.set(props.help.name, props);
   });
 });
 
 /* -------------------------------------------------------------------------- */
 /*                           Bot Client Event: Ready                          */
 /* -------------------------------------------------------------------------- */
-client.on("ready", async () => {
+globals.client.on("ready", async () => {
   console.log("Bot is ready!");
   if (!JsonStorage.get("visitorMessageID")) {
     sendVisitorReactionMessage();
   } else {
-    let channel = client.channels.cache.get(rolesChannelId);
+    let channel = globals.client.channels.cache.get(rolesChannelId);
     try {
       message = await channel.messages.fetch(
         JsonStorage.get("visitorMessageID")
@@ -118,7 +121,7 @@ client.on("ready", async () => {
 /* -------------------------------------------------------------------------- */
 /*                          Bot Client Event: Message                         */
 /* -------------------------------------------------------------------------- */
-client.on("message", (message) => {
+globals.client.on("message", (message) => {
   if (
     message.content.includes("you just advanced") &&
     // MEE6 user ID
@@ -160,9 +163,9 @@ client.on("message", (message) => {
   let command = messageArray[0];
   let args = messageArray.slice(1);
 
-  let cmd = client.commands.get(command.slice(prefix.length));
+  let cmd = globals.client.commands.get(command.slice(prefix.length));
   try {
-    if (cmd) cmd.run(client, message, args);
+    if (cmd) cmd.run(globals.client, message, args);
   } catch (err) {
     console.error(err);
   }
@@ -171,7 +174,7 @@ client.on("message", (message) => {
 /* -------------------------------------------------------------------------- */
 /*                      Bot Client Event: Reaction Added                      */
 /* -------------------------------------------------------------------------- */
-client.on("messageReactionAdd", (reaction, user) => {
+globals.client.on("messageReactionAdd", (reaction, user) => {
   if (user.bot) return;
   // console.log("Reaction added");
   var vistorMessageId = JsonStorage.get("visitorMessageID");
@@ -191,7 +194,7 @@ client.on("messageReactionAdd", (reaction, user) => {
 /* -------------------------------------------------------------------------- */
 /*                     Bot Client Event: Reaction Removed                     */
 /* -------------------------------------------------------------------------- */
-client.on("messageReactionRemove", (reaction, user) => {
+globals.client.on("messageReactionRemove", (reaction, user) => {
   if (user.bot) return;
   // console.log("Reaction removed");
   var vistorMessageId = JsonStorage.get("visitorMessageID");
@@ -209,78 +212,12 @@ client.on("messageReactionRemove", (reaction, user) => {
 });
 
 // Connect the bot
-client.login(token);
+globals.client.login(token);
 
 timeOfLastCheck();
 
 // Check for live game data every second
-setInterval(checkGameData, 1000);
-
-function checkGameData() {
-  getCurrentGame();
-  if (currentGame != 0) {
-    var url = `https://statsapi.web.nhl.com/api/v1/game/${currentGame}/feed/live/diffPatch?startTimecode=${timeOfLastCheck}`;
-    request({ url: url, json: true }, function (error, response, body) {
-      if (!error && response.statusCode === 200) {
-        let string = JSON.stringify(body);
-        var obj = JSON.parse(string);
-        timeOfLastCheck();
-        if (obj.liveData.plays) {
-          var allPlays = obj.liveData.plays.allPlays;
-          // Loop through all of the events since the last check
-          allPlays.forEach((play) => {
-            let eventType = play.result.eventTypeId;
-            if (eventType == "PERIOD_START") {
-              sendPeriodStartMessage(play);
-            } else if (eventType == "GOAL") {
-              sendGoalMessage(play);
-            }
-            // else if (eventType == "PERIOD_END") {
-            //   sendPeriodEndMessage(play);
-            // } else if (eventType == "GAME_END") {
-            //   sendGameEndMessage(play);
-            //
-          });
-        }
-      }
-    });
-  } else {
-    //console.log("There is no live game!");
-  }
-}
-
-function getCurrentGame() {
-  var date = getDate();
-  var url = `https://statsapi.web.nhl.com/api/v1/schedule?teamId=4&date=${date}`;
-  request({ url: url, json: true }, function (error, response, body) {
-    if (!error && response.statusCode === 200) {
-      let string = JSON.stringify(body);
-      var obj = JSON.parse(string);
-      if (obj.dates.length > 0) {
-        if (obj.dates[0].games.length > 0) {
-          currentGame = obj.dates[0].games[0].gamePk;
-        } else {
-          currentGame = 0;
-        }
-      } else {
-        currentGame = 0;
-      }
-    } else {
-      currentGame = 0;
-    }
-  });
-}
-
-// Gets the current date in the format: YYYY-MM-DD
-function getDate() {
-  let ts = Date.now();
-  let date = new Date(ts);
-  let day = date.getDate();
-  let month = date.getMonth() + 1;
-  let year = date.getFullYear();
-
-  return `${year}-${month}-${day}`;
-}
+setInterval(liveData.checkGameData, 1000);
 
 function sendGoalMessage(play) {
   // var embed = new Discord.MessageEmbed();
@@ -318,7 +255,7 @@ function sendPeriodStartMessage(play) {
     msg = "The shootout is starting!";
   }
   logEvent(msg);
-  client.channels.cache
+  globals.client.channels.cache
     .get(notificationChannel)
     .send(`<@&${periodRole}> ${msg}`);
 }
@@ -365,7 +302,7 @@ async function sendVisitorReactionMessage() {
     title: "Visitor Role Selection",
     description: `${vistorEmoji} Get the Visitor Role (Everyone else will get the member role)`,
   };
-  var message = await client.channels.cache
+  var message = await globals.client.channels.cache
     .get(rolesChannelId)
     .send({ embed: embed });
   JsonStorage.set("visitorMessageID", message.id);

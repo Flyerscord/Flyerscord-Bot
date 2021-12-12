@@ -4,52 +4,80 @@ const request = require("request");
 const { exec } = require("child_process");
 const { JsonStorage, config } = require("json-storage-fs");
 
+// Read in the config file
 const _config = require("./config.json");
 
+// Create the database
 config({ catalog: "./data/" });
 
-var prefix = null;
-if (_config.testMode) {
-  prefix = "!";
-} else {
-  prefix = _config.prefix;
-}
-
-// const client = new Client({
-//   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
-// });
+// Create the Discord Client
 const client = new Client();
+
+// Create a collection in the client object for the commands to be loaded into
 client.commands = new Collection();
 
-// For production
-const memberRoleId = "655526764436652042";
-const visitorRoleId = "799653932191580200";
-const vistorEmoji = "<:nhl:799669949899210793>";
-const vistorEmojiId = "799669949899210793";
-const rolesChannelId = "799764588484100167";
+/* -------------------------------------------------------------------------- */
+/*                         Bot Test Mode Configuration                        */
+/* -------------------------------------------------------------------------- */
+if (_config.testMode) {
+  // Test Mode Enabled
+  var prefix = "!";
+  var token = _config.testToken;
+  var memberRoleId = "892991002921562172";
+  var visitorRoleId = "892991062979805186";
+  var vistorEmoji = "<:nhl:892991229426532372>";
+  var vistorEmojiId = "892991229426532372";
+  var rolesChannelId = "345701810616532993";
+} else {
+  // Test Mode Disabled
+  var prefix = _config.prefix;
+  var token = _config.token;
+  var memberRoleId = "655526764436652042";
+  var visitorRoleId = "799653932191580200";
+  var vistorEmoji = "<:nhl:799669949899210793>";
+  var vistorEmojiId = "799669949899210793";
+  var rolesChannelId = "799764588484100167";
+}
 
-// For testing
-// const memberRoleId = "892991002921562172";
-// const visitorRoleId = "892991062979805186";
-// const vistorEmoji = "<:nhl:892991229426532372>";
-// const vistorEmojiId = "892991229426532372";
-// const rolesChannelId = "345701810616532993";
+/* -------------------------------------------------------------------------- */
+/*                            Variable Declarations                           */
+/* -------------------------------------------------------------------------- */
+// The ID of the current NHL game (used for live data)
+var currentGame = 0;
+// The ID of the channel that the live data updates are sent to
+const notificationChannel = "236400898300051457";
+// The ID of the period notifications role
+const periodRole = "799754763755323392";
+// The time and the date in string format of the last live data check
+var timeOfLastCheck = "";
+// The IF of the home team for the current game
+var homeTeam = 0;
+// The ID of the away team for the current game
+var awayTeam = 0;
 
-// Set up handlers for process events
+/* -------------------------------------------------------------------------- */
+/*                               Error Handling                               */
+/* -------------------------------------------------------------------------- */
+// Process Unhandled Exception
 process.on("unhandledRejection", function (err, p) {
   console.error("Unhandled Rejection");
   console.error(err);
   console.error(p);
 });
 
+// Process Warning
 process.on("warning", (warning) => {
-  console.warn(warning.name); // Print the warning name
-  console.warn(warning.message); // Print the warning message
-  console.warn(warning.stack); // Print the stack trace
+  console.warn(warning.name);
+  console.warn(warning.message);
+  console.warn(warning.stack);
 });
 
+// Discord Bot Error
 client.on("error", console.error);
 
+/* -------------------------------------------------------------------------- */
+/*                           Reading in Bot Commands                          */
+/* -------------------------------------------------------------------------- */
 fs.readdir("./cmds/", (err, files) => {
   if (err) console.error(err);
   let jsFiles = files.filter((f) => f.split(".").pop() === "js");
@@ -68,6 +96,9 @@ fs.readdir("./cmds/", (err, files) => {
   });
 });
 
+/* -------------------------------------------------------------------------- */
+/*                           Bot Client Event: Ready                          */
+/* -------------------------------------------------------------------------- */
 client.on("ready", async () => {
   console.log("Bot is ready!");
   if (!JsonStorage.get("visitorMessageID")) {
@@ -84,6 +115,9 @@ client.on("ready", async () => {
   }
 });
 
+/* -------------------------------------------------------------------------- */
+/*                          Bot Client Event: Message                         */
+/* -------------------------------------------------------------------------- */
 client.on("message", (message) => {
   if (
     message.content.includes("you just advanced") &&
@@ -134,6 +168,9 @@ client.on("message", (message) => {
   }
 });
 
+/* -------------------------------------------------------------------------- */
+/*                      Bot Client Event: Reaction Added                      */
+/* -------------------------------------------------------------------------- */
 client.on("messageReactionAdd", (reaction, user) => {
   if (user.bot) return;
   // console.log("Reaction added");
@@ -151,6 +188,9 @@ client.on("messageReactionAdd", (reaction, user) => {
   }
 });
 
+/* -------------------------------------------------------------------------- */
+/*                     Bot Client Event: Reaction Removed                     */
+/* -------------------------------------------------------------------------- */
 client.on("messageReactionRemove", (reaction, user) => {
   if (user.bot) return;
   // console.log("Reaction removed");
@@ -168,19 +208,9 @@ client.on("messageReactionRemove", (reaction, user) => {
   }
 });
 
-if (_config.testMode) {
-  client.login(_config.testToken);
-} else {
-  client.login(_config.token);
-}
+// Connect the bot
+client.login(token);
 
-var currentGame = 0;
-const notificationChannel = "236400898300051457";
-const periodRole = "799754763755323392";
-var timeOfLastCheck = "";
-
-var homeTeam = 0;
-var awayTeam = 0;
 timeOfLastCheck();
 
 // Check for live game data every second
@@ -195,7 +225,6 @@ function checkGameData() {
         let string = JSON.stringify(body);
         var obj = JSON.parse(string);
         timeOfLastCheck();
-        homeTeam = obj.gameData.teams.home.
         if (obj.liveData.plays) {
           var allPlays = obj.liveData.plays.allPlays;
           // Loop through all of the events since the last check

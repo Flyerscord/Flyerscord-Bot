@@ -1,13 +1,17 @@
+/* -------------------------------------------------------------------------- */
+/*                              External Libaries                             */
+/* -------------------------------------------------------------------------- */
 const { Client, Collection } = require("discord.js");
 const fs = require("fs");
 const { exec } = require("child_process");
 const { JsonStorage, config } = require("json-storage-fs");
 
+/* -------------------------------------------------------------------------- */
+/*                             Internal Libraries                             */
+/* -------------------------------------------------------------------------- */
 const liveData = require("./lib/live_data/checkData.js");
 const logging = require("./lib/common/logging.js");
 const globals = require("./lib/common/globals.js");
-
-// Read in the config file
 const _config = require("./lib/common/config.js");
 
 // Create the database
@@ -50,6 +54,7 @@ var awayTeam = 0;
 /* -------------------------------------------------------------------------- */
 /*                               Error Handling                               */
 /* -------------------------------------------------------------------------- */
+// TODO: Convert to use the functions in lib/common/logging.js
 // Process Unhandled Exception
 process.on("unhandledRejection", function (err, p) {
   console.error("Unhandled Rejection");

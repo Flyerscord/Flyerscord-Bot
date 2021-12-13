@@ -4,7 +4,6 @@
 const { Client, Collection } = require("discord.js");
 const fs = require("fs");
 const { exec } = require("child_process");
-const { JsonStorage, config } = require("json-storage-fs");
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Libraries                             */
@@ -13,9 +12,8 @@ const liveData = require("./lib/live_data/checkData.js");
 const logging = require("./lib/common/logging.js");
 const globals = require("./lib/common/globals.js");
 const _config = require("./lib/common/config.js");
-
-// Create the database
-config({ catalog: "./data/" });
+const levelUp = require("./lib/level_up_players/levelUp.js");
+const visitorReact = require("./lib/visitor_react_role/visitorReact.js");
 
 // Create the Discord Client
 globals.client = new Client();
@@ -99,7 +97,7 @@ fs.readdir("./cmds/", (err, files) => {
 globals.client.on("ready", async () => {
   console.log("Bot is ready!");
   if (!JsonStorage.get("visitorMessageID")) {
-    sendVisitorReactionMessage();
+    visitorReact.sendVisitorReactionMessage();
   } else {
     let channel = globals.client.channels.cache.get(rolesChannelId);
     try {
@@ -107,7 +105,7 @@ globals.client.on("ready", async () => {
         JsonStorage.get("visitorMessageID")
       );
     } catch (e) {
-      sendVisitorReactionMessage();
+      visitorReact.sendVisitorReactionMessage();
     }
   }
 });
@@ -136,7 +134,7 @@ globals.client.on("message", (message) => {
           return;
         }
         if (stdout.length != 0) {
-          let names = createNamesMessage(stdout);
+          let names = levelUp.createNamesMessage(stdout);
           message.channel.send(
             `Flyers players that have had the number **${pNum}**:\n${names}`
           );
@@ -208,38 +206,5 @@ globals.client.on("messageReactionRemove", (reaction, user) => {
 // Connect the bot
 globals.client.login(token);
 
-timeOfLastCheck();
-
 // Check for live game data every second
 setInterval(liveData.checkGameData, 1000);
-
-function createNamesMessage(stdout) {
-  const spacing = 25;
-  var result = "```\n";
-
-  var names = stdout.split("\n");
-  names.forEach((name, i) => {
-    if (i != names.length - 1) {
-      if (i % 2 == 0) {
-        // Needs the spacing
-        result = `${result}${name.padEnd(spacing)}`;
-      } else {
-        // In the second column
-        result = `${result}${name}\n`;
-      }
-    }
-  });
-  return result + "```";
-}
-
-async function sendVisitorReactionMessage() {
-  let embed = {
-    title: "Visitor Role Selection",
-    description: `${vistorEmoji} Get the Visitor Role (Everyone else will get the member role)`,
-  };
-  var message = await globals.client.channels.cache
-    .get(rolesChannelId)
-    .send({ embed: embed });
-  JsonStorage.set("visitorMessageID", message.id);
-  message.react(vistorEmoji);
-}

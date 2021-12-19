@@ -70,16 +70,18 @@ fs.readdir("./cmds/", (err, files) => {
 
 client.on("ready", async () => {
   console.log("Bot is ready!");
-  if (!JsonStorage.get("visitorMessageID")) {
-    sendVisitorReactionMessage();
-  } else {
-    let channel = client.channels.cache.get(rolesChannelId);
-    try {
-      message = await channel.messages.fetch(
-        JsonStorage.get("visitorMessageID")
-      );
-    } catch (e) {
+  if (!_config.testMode) {
+    if (!JsonStorage.get("visitorMessageID")) {
       sendVisitorReactionMessage();
+    } else {
+      let channel = client.channels.cache.get(rolesChannelId);
+      try {
+        message = await channel.messages.fetch(
+          JsonStorage.get("visitorMessageID")
+        );
+      } catch (e) {
+        sendVisitorReactionMessage();
+      }
     }
   }
 });
@@ -180,7 +182,7 @@ const notificationChannel = "236400898300051457";
 const periodRole = "799754763755323392";
 
 // Check for live game data every second
-setInterval(checkGameData, 1000);
+if (!_config.testMode) setInterval(checkGameData, 1000);
 
 function checkGameData() {
   getCurrentGame();

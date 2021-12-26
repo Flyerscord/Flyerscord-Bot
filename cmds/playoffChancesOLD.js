@@ -1,5 +1,5 @@
 const request = require("request");
-const teamName = require("../helpers/teamNames.js");
+const teamName = require("../lib/teams/teamNames.js");
 
 module.exports.run = async (client, message, args) => {
   let a = ``;
@@ -15,13 +15,11 @@ module.exports.run = async (client, message, args) => {
   } else {
     request(
       {
-        url:
-          "http://www.sportsclubstats.com/d/NHL_ChanceWillMakePlayoffs_Small_D.json",
-        json: true
+        url: "http://www.sportsclubstats.com/d/NHL_ChanceWillMakePlayoffs_Small_D.json",
+        json: true,
       },
       (err, response, data) => {
-        const standings =
-          data.data.filter(d => d.label === team)[0] || null;
+        const standings = data.data.filter((d) => d.label === team)[0] || null;
         message.channel.send(
           `The ${team} have a ${
             standings.data[standings.data.length - 1]
@@ -33,5 +31,5 @@ module.exports.run = async (client, message, args) => {
 };
 
 module.exports.help = {
-  name: "chanceOLD"
+  name: "chanceOLD",
 };

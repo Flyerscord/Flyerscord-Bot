@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const request = require("request");
 const config = require("../config.json");
+const logging = require("../lib/common/logging.js");
 
 module.exports.run = async (client, message, args) => {
   const d = new Date();
@@ -45,7 +46,7 @@ module.exports.run = async (client, message, args) => {
   } else {
     gamesToPrint = 5;
   }
-  //console.log("Games: " + gamesToPrint);
+  // logging.logDebug(`Games: ${gamesToPrint}`, "schedule");
 
   if (gamesToPrint > 0) {
     request({ url: url, json: true }, function (error, response, body) {
@@ -145,7 +146,7 @@ module.exports.run = async (client, message, args) => {
         embed.setColor(0xf74902);
         message.channel.send({ embed });
       } else {
-        console.error("Error with API request");
+        logging.logError("Error with API request", "schedule");
       }
     });
   }

@@ -52,41 +52,40 @@ var awayTeam = 0;
 /* -------------------------------------------------------------------------- */
 /*                               Error Handling                               */
 /* -------------------------------------------------------------------------- */
-// TODO: Convert to use the functions in lib/common/logging.js
 // Process Unhandled Exception
 process.on("unhandledRejection", function (err, p) {
-  console.error("Unhandled Rejection");
-  console.error(err);
-  console.error(p);
+  logging.logError(err, "Unhandled Exception");
+  logging.logError(p, "Unhandled Exception");
 });
 
 // Process Warning
 process.on("warning", (warning) => {
-  console.warn(warning.name);
-  console.warn(warning.message);
-  console.warn(warning.stack);
+  logging.logWarning(warning.message, warning.name);
+  logging.logWarning(warning.stack, warning.name);
 });
 
 // Discord Bot Error
-globals.client.on("error", console.error);
+globals.client.on("error", (error) => {
+  logging.logError(err, "Discord");
+});
 
 /* -------------------------------------------------------------------------- */
 /*                           Reading in Bot Commands                          */
 /* -------------------------------------------------------------------------- */
 fs.readdir("./cmds/", (err, files) => {
-  if (err) console.error(err);
+  if (err) logging.logError(err, "File Read");
   let jsFiles = files.filter((f) => f.split(".").pop() === "js");
 
   if (jsFiles.length <= 0) {
-    console.log("No commands to load!");
+    logging.logEvent("No commands to load!", "System");
     return;
   }
 
-  console.log(`Loading ${jsFiles.length} commands!`);
+  logging.logEvent(`Loading ${jsFiles.length} commands!`, "System");
 
   jsFiles.forEach((f, i) => {
     let props = require(`./cmds/${f}`);
-    console.log(`${i + 1}: ${f} loaded!`);
+    logging.logEvent(`${i + 1}: ${f} loaded!`, "System");
     globals.client.commands.set(props.help.name, props);
   });
 });
@@ -95,7 +94,7 @@ fs.readdir("./cmds/", (err, files) => {
 /*                           Bot Client Event: Ready                          */
 /* -------------------------------------------------------------------------- */
 globals.client.on("ready", async () => {
-  console.log("Bot is ready!");
+  logging.logEvent("Bot is ready!", "System");
   if (!JsonStorage.get("visitorMessageID")) {
     visitorReact.sendVisitorReactionMessage();
   } else {
@@ -126,11 +125,11 @@ globals.client.on("message", (message) => {
       `curl -s 'http://www.flyershistory.com/cgi-bin/rosternum.cgi?${pNum}' | hxnormalize -l 1024 -x | hxselect -c -s '\n' 'tbody tr td a font'`,
       (error, stdout, stderr) => {
         if (error) {
-          console.log(`error: ${error.message}`);
+          logging.logError(error.message, "Roster Curl");
           return;
         }
         if (stderr) {
-          console.log(`stderr: ${stderr}`);
+          logging.logError(stderr, "Roster Curl stderr");
           return;
         }
         if (stdout.length != 0) {
@@ -159,7 +158,7 @@ globals.client.on("message", (message) => {
   try {
     if (cmd) cmd.run(globals.client, message, args);
   } catch (err) {
-    console.error(err);
+    logging.logError(err, "Commands");
   }
 });
 
@@ -168,7 +167,7 @@ globals.client.on("message", (message) => {
 /* -------------------------------------------------------------------------- */
 globals.client.on("messageReactionAdd", (reaction, user) => {
   if (user.bot) return;
-  // console.log("Reaction added");
+  // logging.logDebug("Reaction added");
   var vistorMessageId = JsonStorage.get("visitorMessageID");
   if (reaction.message.id != vistorMessageId) return;
   if (reaction.emoji.id != vistorEmojiId) return;
@@ -188,7 +187,7 @@ globals.client.on("messageReactionAdd", (reaction, user) => {
 /* -------------------------------------------------------------------------- */
 globals.client.on("messageReactionRemove", (reaction, user) => {
   if (user.bot) return;
-  // console.log("Reaction removed");
+  // logging.logDebug("Reaction removed");
   var vistorMessageId = JsonStorage.get("visitorMessageID");
   if (reaction.message.id != vistorMessageId) return;
   if (reaction.emoji.id != vistorEmojiId) return;

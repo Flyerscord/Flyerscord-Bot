@@ -9,11 +9,11 @@ module.exports.run = async (client, message, args) => {
       `curl -s 'http://www.flyershistory.com/cgi-bin/rosternum.cgi?${pNum}' | hxnormalize -l 1024 -x | hxselect -c -s '\n' 'tbody tr td a font'`,
       (error, stdout, stderr) => {
         if (error) {
-          console.log(`error: ${error.message}`);
+          logging.logError(`error: ${error.message}`, "playerNum");
           return;
         }
         if (stderr) {
-          console.log(`stderr: ${stderr}`);
+          logging.logError(`error: ${stderr}`, "playerNum");
           return;
         }
         if (stdout.length != 0) {

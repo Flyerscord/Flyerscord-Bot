@@ -4,6 +4,7 @@
 const { Client, Collection } = require("discord.js");
 const fs = require("fs");
 const { exec } = require("child_process");
+const { JsonStorage, config } = require("json-storage-fs");
 
 /* -------------------------------------------------------------------------- */
 /*                             Internal Libraries                             */
@@ -21,6 +22,9 @@ globals.client = new Client();
 // Create a collection in the client object for the commands to be loaded into
 globals.client.commands = new Collection();
 
+// Create the database
+config({ catalog: "./data/" });
+
 /* -------------------------------------------------------------------------- */
 /*                         Bot Test Mode Configuration                        */
 /* -------------------------------------------------------------------------- */
@@ -29,7 +33,6 @@ var prefix = _config.prefix;
 var token = _config.token;
 var memberRoleId = _config.vistorReactRole.memberRoleId;
 var visitorRoleId = _config.vistorReactRole.visitorRoleId;
-var vistorEmoji = _config.vistorReactRole.visitorEmoji;
 var vistorEmojiId = _config.vistorReactRole.visitorEmojiId;
 var rolesChannelId = _config.vistorReactRole.rolesChannelId;
 

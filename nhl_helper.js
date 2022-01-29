@@ -58,6 +58,7 @@ var awayTeam = 0;
 // Process Unhandled Exception
 process.on("unhandledRejection", function (err, p) {
   logging.logError(err, "Unhandled Exception");
+  logging.logError(p, "Unhandled Exception");
 });
 
 // Process Warning

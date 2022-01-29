@@ -56,9 +56,9 @@ var awayTeam = 0;
 /*                               Error Handling                               */
 /* -------------------------------------------------------------------------- */
 // Process Unhandled Exception
-process.on("unhandledRejection", function (err, p) {
+process.on("unhandledRejection", async function (err, p) {
   logging.logError(err, "Unhandled Exception");
-  logging.logError(p, "Unhandled Exception");
+  logging.logError(await p, "Unhandled Exception");
 });
 
 // Process Warning
@@ -69,7 +69,7 @@ process.on("warning", (warning) => {
 
 // Discord Bot Error
 globals.client.on("error", (error) => {
-  logging.logError(err, "Discord");
+  logging.logError(error, "Discord");
 });
 
 /* -------------------------------------------------------------------------- */

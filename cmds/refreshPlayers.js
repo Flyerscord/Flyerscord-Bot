@@ -26,10 +26,15 @@ module.exports.run = async (client, message, args) => {
         }
       }
       var json = JSON.stringify(jsonObj);
-      fs.writeFile("team_info/player_ids.json", json, "utf8", function (err) {
-        if (err) throw err;
-        message.channel.send("Players updated!");
-      });
+      fs.writeFile(
+        "../team_info/player_ids.json",
+        json,
+        "utf8",
+        function (err) {
+          if (err) throw err;
+          message.channel.send("Players updated!");
+        }
+      );
     }
   });
   logging.logEvent("Done running player refresh!", "refreshPlayers");

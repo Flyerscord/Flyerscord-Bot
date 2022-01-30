@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const request = require("request");
 const config = require("../config.json");
+const logging = require("../lib/common/logging.js");
 
 var prefix = config.prefix;
 
@@ -458,7 +459,7 @@ module.exports.run = async (client, message, args) => {
   }
   // Error
   else {
-    console.log("Type of standing was not defined!");
+    logging.logError("Type kof standing was not defined", "standings");
     return;
   }
 };

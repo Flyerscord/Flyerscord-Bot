@@ -2,8 +2,8 @@ const http = require("http");
 const fs = require("fs");
 const csv = require("csv-parser");
 
-const teamNames = require("../helpers/teamNames.js");
-const teamInfo = require("../helpers/teamInfo.js");
+const teamNames = require("../lib/teams/teamNames.js");
+const teamInfo = require("../lib/teams/teamInfo.js");
 const results = [];
 
 var msg = null;
@@ -38,9 +38,9 @@ module.exports.run = async (client, message, args) => {
 
       http.get(
         "http://moneypuck.com/moneypuck/simulations/playoff_graph.csv",
-        response => {
+        (response) => {
           response.pipe(file);
-          file.on("finish", function() {
+          file.on("finish", function () {
             file.close();
             readFile(fileName, teamTag, teamName);
           });
@@ -54,11 +54,11 @@ module.exports.run = async (client, message, args) => {
 
 function readFile(fileName, teamTag, teamName) {
   var teamEmoji = myClient.emojis.find(
-    emoji => emoji.name === teamInfo.getEmoji(teamName)
+    (emoji) => emoji.name === teamInfo.getEmoji(teamName)
   );
   fs.createReadStream(fileName)
     .pipe(csv())
-    .on("data", data => results.push(data))
+    .on("data", (data) => results.push(data))
     .on("end", () => {
       var chance = results[results.length - 1][teamTag] * 100;
       chance = chance.toFixed(2);
@@ -69,5 +69,5 @@ function readFile(fileName, teamTag, teamName) {
 }
 
 module.exports.help = {
-  name: "chance"
+  name: "chance",
 };

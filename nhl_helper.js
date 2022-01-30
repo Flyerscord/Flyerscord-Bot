@@ -1,92 +1,121 @@
-const { Client, Intents, Collection } = require("discord.js");
+/* -------------------------------------------------------------------------- */
+/*                              External Libaries                             */
+/* -------------------------------------------------------------------------- */
+const { Client, Collection } = require("discord.js");
 const fs = require("fs");
-const request = require("request");
 const { exec } = require("child_process");
 const { JsonStorage, config } = require("json-storage-fs");
 
-const _config = require("./config.json");
+/* -------------------------------------------------------------------------- */
+/*                             Internal Libraries                             */
+/* -------------------------------------------------------------------------- */
+const liveData = require("./lib/live_data/checkData.js");
+const logging = require("./lib/common/logging.js");
+const globals = require("./lib/common/globals.js");
+const _config = require("./lib/common/config.js");
+const levelUp = require("./lib/level_up_players/levelUp.js");
+const visitorReact = require("./lib/visitor_react_role/visitorReact.js");
 
+// Create the Discord Client
+globals.client = new Client();
+
+// Create a collection in the client object for the commands to be loaded into
+globals.client.commands = new Collection();
+
+// Create the database
 config({ catalog: "./data/" });
 
-var prefix = null;
-if (_config.testMode) {
-  prefix = "!";
-} else {
-  prefix = _config.prefix;
-}
+/* -------------------------------------------------------------------------- */
+/*                         Bot Test Mode Configuration                        */
+/* -------------------------------------------------------------------------- */
 
-// const client = new Client({
-//   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
-// });
-const client = new Client();
-client.commands = new Collection();
+var prefix = _config.prefix;
+var token = _config.token;
+var memberRoleId = _config.vistorReactRole.memberRoleId;
+var visitorRoleId = _config.vistorReactRole.visitorRoleId;
+var vistorEmojiId = _config.vistorReactRole.visitorEmojiId;
+var rolesChannelId = _config.vistorReactRole.rolesChannelId;
 
-// For production
-const memberRoleId = "655526764436652042";
-const visitorRoleId = "799653932191580200";
-const vistorEmoji = "<:nhl:799669949899210793>";
-const vistorEmojiId = "799669949899210793";
-const rolesChannelId = "799764588484100167";
+/* -------------------------------------------------------------------------- */
+/*                            Variable Declarations                           */
+/* -------------------------------------------------------------------------- */
+// The ID of the current NHL game (used for live data)
+var currentGame = 0;
+// The ID of the channel that the live data updates are sent to
+const notificationChannel = "236400898300051457";
+// The ID of the period notifications role
+const periodRole = "799754763755323392";
+// The time and the date in string format of the last live data check
+var timeOfLastCheck = "";
+// The ID of the home team for the current game
+var homeTeam = 0;
+// The ID of the away team for the current game
+var awayTeam = 0;
 
-// For testing
-// const memberRoleId = "892991002921562172";
-// const visitorRoleId = "892991062979805186";
-// const vistorEmoji = "<:nhl:892991229426532372>";
-// const vistorEmojiId = "892991229426532372";
-// const rolesChannelId = "345701810616532993";
-
-// Set up handlers for process events
+/* -------------------------------------------------------------------------- */
+/*                               Error Handling                               */
+/* -------------------------------------------------------------------------- */
+// Process Unhandled Exception
 process.on("unhandledRejection", function (err, p) {
-  console.error("Unhandled Rejection");
-  console.error(err);
-  console.error(p);
+  logging.logError(err, "Unhandled Exception");
+  logging.logError(p, "Unhandled Exception");
 });
 
+// Process Warning
 process.on("warning", (warning) => {
-  console.warn(warning.name); // Print the warning name
-  console.warn(warning.message); // Print the warning message
-  console.warn(warning.stack); // Print the stack trace
+  logging.logWarning(warning.message, warning.name);
+  logging.logWarning(warning.stack, warning.name);
 });
 
-client.on("error", console.error);
+// Discord Bot Error
+globals.client.on("error", (error) => {
+  logging.logError(err, "Discord");
+});
 
+/* -------------------------------------------------------------------------- */
+/*                           Reading in Bot Commands                          */
+/* -------------------------------------------------------------------------- */
 fs.readdir("./cmds/", (err, files) => {
-  if (err) console.error(err);
+  if (err) logging.logError(err, "File Read");
   let jsFiles = files.filter((f) => f.split(".").pop() === "js");
 
   if (jsFiles.length <= 0) {
-    console.log("No commands to load!");
+    logging.logEvent("No commands to load!", "System");
     return;
   }
 
-  console.log(`Loading ${jsFiles.length} commands!`);
+  logging.logEvent(`Loading ${jsFiles.length} commands!`, "System");
 
   jsFiles.forEach((f, i) => {
     let props = require(`./cmds/${f}`);
-    console.log(`${i + 1}: ${f} loaded!`);
-    client.commands.set(props.help.name, props);
+    logging.logEvent(`${i + 1}: ${f} loaded!`, "System");
+    globals.client.commands.set(props.help.name, props);
   });
 });
 
-client.on("ready", async () => {
-  console.log("Bot is ready!");
-  if (!_config.testMode) {
-    if (!JsonStorage.get("visitorMessageID")) {
-      sendVisitorReactionMessage();
-    } else {
-      let channel = client.channels.cache.get(rolesChannelId);
-      try {
-        message = await channel.messages.fetch(
-          JsonStorage.get("visitorMessageID")
-        );
-      } catch (e) {
-        sendVisitorReactionMessage();
-      }
+/* -------------------------------------------------------------------------- */
+/*                           Bot Client Event: Ready                          */
+/* -------------------------------------------------------------------------- */
+globals.client.on("ready", async () => {
+  logging.logEvent("Bot is ready!", "System");
+  if (!JsonStorage.get("visitorMessageID")) {
+    visitorReact.sendVisitorReactionMessage();
+  } else {
+    let channel = globals.client.channels.cache.get(rolesChannelId);
+    try {
+      message = await channel.messages.fetch(
+        JsonStorage.get("visitorMessageID")
+      );
+    } catch (e) {
+      visitorReact.sendVisitorReactionMessage();
     }
   }
 });
 
-client.on("message", (message) => {
+/* -------------------------------------------------------------------------- */
+/*                          Bot Client Event: Message                         */
+/* -------------------------------------------------------------------------- */
+globals.client.on("message", (message) => {
   if (
     message.content.includes("you just advanced") &&
     // MEE6 user ID
@@ -99,15 +128,15 @@ client.on("message", (message) => {
       `curl -s 'http://www.flyershistory.com/cgi-bin/rosternum.cgi?${pNum}' | hxnormalize -l 1024 -x | hxselect -c -s '\n' 'tbody tr td a font'`,
       (error, stdout, stderr) => {
         if (error) {
-          console.log(`error: ${error.message}`);
+          logging.logError(error.message, "Roster Curl");
           return;
         }
         if (stderr) {
-          console.log(`stderr: ${stderr}`);
+          logging.logError(stderr, "Roster Curl stderr");
           return;
         }
         if (stdout.length != 0) {
-          let names = createNamesMessage(stdout);
+          let names = levelUp.createNamesMessage(stdout);
           message.channel.send(
             `Flyers players that have had the number **${pNum}**:\n${names}`
           );
@@ -128,17 +157,20 @@ client.on("message", (message) => {
   let command = messageArray[0];
   let args = messageArray.slice(1);
 
-  let cmd = client.commands.get(command.slice(prefix.length));
+  let cmd = globals.client.commands.get(command.slice(prefix.length));
   try {
-    if (cmd) cmd.run(client, message, args);
+    if (cmd) cmd.run(globals.client, message, args);
   } catch (err) {
-    console.error(err);
+    logging.logError(err, "Commands");
   }
 });
 
-client.on("messageReactionAdd", (reaction, user) => {
+/* -------------------------------------------------------------------------- */
+/*                      Bot Client Event: Reaction Added                      */
+/* -------------------------------------------------------------------------- */
+globals.client.on("messageReactionAdd", (reaction, user) => {
   if (user.bot) return;
-  // console.log("Reaction added");
+  // logging.logDebug("Reaction added");
   var vistorMessageId = JsonStorage.get("visitorMessageID");
   if (reaction.message.id != vistorMessageId) return;
   if (reaction.emoji.id != vistorEmojiId) return;
@@ -153,9 +185,12 @@ client.on("messageReactionAdd", (reaction, user) => {
   }
 });
 
-client.on("messageReactionRemove", (reaction, user) => {
+/* -------------------------------------------------------------------------- */
+/*                     Bot Client Event: Reaction Removed                     */
+/* -------------------------------------------------------------------------- */
+globals.client.on("messageReactionRemove", (reaction, user) => {
   if (user.bot) return;
-  // console.log("Reaction removed");
+  // logging.logDebug("Reaction removed");
   var vistorMessageId = JsonStorage.get("visitorMessageID");
   if (reaction.message.id != vistorMessageId) return;
   if (reaction.emoji.id != vistorEmojiId) return;
@@ -170,156 +205,8 @@ client.on("messageReactionRemove", (reaction, user) => {
   }
 });
 
-if (_config.testMode) {
-  client.login(_config.testToken);
-} else {
-  client.login(_config.token);
-}
-
-var currentGame = 0;
-var nextPlay = 0;
-const notificationChannel = "236400898300051457";
-const periodRole = "799754763755323392";
+// Connect the bot
+globals.client.login(token);
 
 // Check for live game data every second
-if (!_config.testMode) setInterval(checkGameData, 1000);
-
-function checkGameData() {
-  getCurrentGame();
-  if (currentGame != 0) {
-    var url = `https://statsapi.web.nhl.com/api/v1/game/${currentGame}/feed/live`;
-    request({ url: url, json: true }, function (error, response, body) {
-      if (!error && response.statusCode === 200) {
-        let string = JSON.stringify(body);
-        var obj = JSON.parse(string);
-        if (obj.liveData.plays) {
-          var allPlays = obj.liveData.plays.allPlays;
-          var cutPlays = allPlays.slice(nextPlay);
-          // Loop through all of the events since the last check
-          cutPlays.forEach((play) => {
-            let eventType = play.result.eventTypeId;
-            if (eventType == "PERIOD_START") {
-              sendPeriodStartMessage(play);
-            } else if (eventType == "GOAL") {
-              sendGoalMessage(play);
-            }
-            // else if (eventType == "PERIOD_END") {
-            //   sendPeriodEndMessage(play);
-            // } else if (eventType == "GAME_END") {
-            //   sendGameEndMessage(play);
-            //
-          });
-          nextPlay = allPlays.length;
-        }
-      }
-    });
-  } else {
-    //console.log("There is no live game!");
-  }
-}
-
-function getCurrentGame() {
-  var date = getDate();
-  var url = `https://statsapi.web.nhl.com/api/v1/schedule?teamId=4&date=${date}`;
-  request({ url: url, json: true }, function (error, response, body) {
-    if (!error && response.statusCode === 200) {
-      let string = JSON.stringify(body);
-      var obj = JSON.parse(string);
-      if (obj.dates.length > 0) {
-        if (obj.dates[0].games.length > 0) {
-          currentGame = obj.dates[0].games[0].gamePk;
-        } else {
-          currentGame = 0;
-        }
-      } else {
-        currentGame = 0;
-      }
-    } else {
-      currentGame = 0;
-    }
-  });
-}
-
-// Gets the current date in the format: YYYY-MM-DD
-function getDate() {
-  let ts = Date.now();
-  let date = new Date(ts);
-  let day = date.getDate();
-  let month = date.getMonth() + 1;
-  let year = date.getFullYear();
-
-  return `${year}-${month}-${day}`;
-}
-
-function sendGoalMessage(play) {
-  // var embed = new Discord.MessageEmbed();
-  logEvent("Goal");
-}
-
-function sendPeriodStartMessage(play) {
-  var msg = null;
-  if (
-    play.about.ordinalNum == "1st" ||
-    play.about.ordinalNum == "2nd" ||
-    play.about.ordinalNum == "3rd"
-  ) {
-    msg = `The ${play.about.ordinalNum} period is starting!`;
-  } else if (play.about.ordinalNum == "OT") {
-    msg = "Overtime is starting!";
-  } else if (play.about.ordinalNum == "SO") {
-    msg = "The shootout is starting!";
-  }
-  logEvent(msg);
-  client.channels.cache
-    .get(notificationChannel)
-    .send(`<@&${periodRole}> ${msg}`);
-}
-
-function sendPeriodEndMessage(play) {
-  logEvent("Period End");
-}
-
-function sendGameEndMessage(play) {
-  logEvent("Game End");
-}
-
-function logEvent(event) {
-  let ts = Date.now();
-  let date = new Date(ts);
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let seconds = date.getSeconds();
-  var time = `${hours}:${minutes}:${seconds}`;
-  console.log(`${time} - ${event}`);
-}
-
-function createNamesMessage(stdout) {
-  const spacing = 25;
-  var result = "```\n";
-
-  var names = stdout.split("\n");
-  names.forEach((name, i) => {
-    if (i != names.length - 1) {
-      if (i % 2 == 0) {
-        // Needs the spacing
-        result = `${result}${name.padEnd(spacing)}`;
-      } else {
-        // In the second column
-        result = `${result}${name}\n`;
-      }
-    }
-  });
-  return result + "```";
-}
-
-async function sendVisitorReactionMessage() {
-  let embed = {
-    title: "Visitor Role Selection",
-    description: `${vistorEmoji} Get the Visitor Role (Everyone else will get the member role)`,
-  };
-  var message = await client.channels.cache
-    .get(rolesChannelId)
-    .send({ embed: embed });
-  JsonStorage.set("visitorMessageID", message.id);
-  message.react(vistorEmoji);
-}
+setInterval(liveData.checkGameData, 1000);

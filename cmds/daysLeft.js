@@ -1,10 +1,11 @@
 const moment = require("moment");
+const logging = require("../lib/common/logging.js");
 
 module.exports.run = async (client, message, args) => {
   var startDate = moment();
   var endDate = moment("2021-10-15 19:00:00", "YYYY-M-DD HH:mm:ss");
   var secondsDiff = endDate.diff(startDate, "seconds");
-  //   console.log(secondsDiff);
+  // logging.logDebug(secondsDiff, "daysLeft");
 
   if (secondsDiff <= 0) {
     message.channel.send("The **2021-22 Flyers Season** has started!");
@@ -29,11 +30,6 @@ module.exports.run = async (client, message, args) => {
 
     minutes = Math.floor(remainder / secondsInMinute);
     seconds = remainder - minutes * secondsInMinute;
-
-    // console.log(days);
-    // console.log(hours);
-    // console.log(minutes);
-    // console.log(seconds);
 
     if (days > 0) {
       message.channel.send(

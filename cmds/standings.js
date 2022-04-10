@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const request = require("request");
-const config = require("../config.json");
+const config = require("../lib/common/config.js");
 const logging = require("../lib/common/logging.js");
 
 var prefix = config.prefix;
@@ -137,13 +137,11 @@ module.exports.run = async (client, message, args) => {
           fields: [
             {
               name: prefix + "standings div [division name]",
-              value:
-                "Prints the standings for the specified division. Defaults to the Metro.",
+              value: "Prints the standings for the specified division. Defaults to the Metro.",
             },
             {
               name: prefix + "standings conf [conference name]",
-              value:
-                "Prints the standings for the specified conference. Defaults to the East.",
+              value: "Prints the standings for the specified conference. Defaults to the East.",
             },
             {
               name: prefix + "standings league",
@@ -151,8 +149,7 @@ module.exports.run = async (client, message, args) => {
             },
             {
               name: prefix + "standings wild [conference name]",
-              value:
-                "Prints a the divsion leader and the wild cards for the specified conference.  Defaults to the East.",
+              value: "Prints a the divsion leader and the wild cards for the specified conference.  Defaults to the East.",
             },
           ],
         },

@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const request = require("request");
-const config = require("../config.json");
+const config = require("../lib/common/config.js");
 const logging = require("../lib/common/logging.js");
 
 module.exports.run = async (client, message, args) => {

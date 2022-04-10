@@ -1,13 +1,11 @@
 const request = require("request");
 const playerIds = require("../team_info/player_ids.json");
-const config = require("../config.json");
+const config = require("../lib/common/config.js");
 const logging = require("../lib/common/logging.js");
 
 module.exports.run = async (client, message, args) => {
   if (args.length == 0) {
-    message.channel.send(
-      "You need to give a player's first and last name! It is caps sensitive!"
-    );
+    message.channel.send("You need to give a player's first and last name! It is caps sensitive!");
   } else {
     //args[0] = args[0].toLowerCase();
   }
@@ -21,12 +19,8 @@ module.exports.run = async (client, message, args) => {
     }
   }
   // logging.logEvent(fullName, "careerStats");
-  var url =
-    "https://statsapi.web.nhl.com/api/v1/people/" +
-    playerIds[fullName] +
-    "/stats?stats=careerRegularSeason";
-  var playerUrl =
-    "https://statsapi.web.nhl.com/api/v1/people/" + playerIds[fullName];
+  var url = "https://statsapi.web.nhl.com/api/v1/people/" + playerIds[fullName] + "/stats?stats=careerRegularSeason";
+  var playerUrl = "https://statsapi.web.nhl.com/api/v1/people/" + playerIds[fullName];
 
   var playerType;
 

@@ -1,0 +1,76 @@
+{
+  "players": [
+    {
+      "player": {
+        "id": 8477934,
+        "fullName": "Leon Draisaitl",
+        "link": "/api/v1/people/8477934"
+      },
+      "playerType": "Scorer",
+      "seasonTotal": 54
+    },
+    {
+      "player": {
+        "id": 8478402,
+        "fullName": "Connor McDavid",
+        "link": "/api/v1/people/8478402"
+      },
+      "playerType": "Assist",
+      "seasonTotal": 68
+    },
+    {
+      "player": {
+        "id": 8476454,
+        "fullName": "Ryan Nugent-Hopkins",
+        "link": "/api/v1/people/8476454"
+      },
+      "playerType": "Assist",
+      "seasonTotal": 36
+    },
+    {
+      "player": {
+        "id": 8477424,
+        "fullName": "Juuse Saros",
+        "link": "/api/v1/people/8477424"
+      },
+      "playerType": "Goalie"
+    }
+  ],
+  "result": {
+    "event": "Goal",
+    "eventCode": "NSH752",
+    "eventTypeId": "GOAL",
+    "description": "Leon Draisaitl (54) Snap Shot, assists: Connor McDavid (68), Ryan Nugent-Hopkins (36)",
+    "secondaryType": "Snap Shot",
+    "strength": {
+      "code": "PPG",
+      "name": "Power Play"
+    },
+    "gameWinningGoal": false,
+    "emptyNet": false
+  },
+  "about": {
+    "eventIdx": 300,
+    "eventId": 752,
+    "period": 3,
+    "periodType": "REGULAR",
+    "ordinalNum": "3rd",
+    "periodTime": "11:09",
+    "periodTimeRemaining": "08:51",
+    "dateTime": "2022-04-15T02:24:39Z",
+    "goals": {
+      "away": 4,
+      "home": 0
+    }
+  },
+  "coordinates": {
+    "x": -64.0,
+    "y": 12.0
+  },
+  "team": {
+    "id": 22,
+    "name": "Edmonton Oilers",
+    "link": "/api/v1/teams/22",
+    "triCode": "EDM"
+  }
+}

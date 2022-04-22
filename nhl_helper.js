@@ -103,9 +103,7 @@ globals.client.on("ready", async () => {
   } else {
     let channel = globals.client.channels.cache.get(rolesChannelId);
     try {
-      message = await channel.messages.fetch(
-        JsonStorage.get("visitorMessageID")
-      );
+      message = await channel.messages.fetch(JsonStorage.get("visitorMessageID"));
     } catch (e) {
       visitorReact.sendVisitorReactionMessage();
     }
@@ -137,13 +135,9 @@ globals.client.on("message", (message) => {
         }
         if (stdout.length != 0) {
           let names = levelUp.createNamesMessage(stdout);
-          message.channel.send(
-            `Flyers players that have had the number **${pNum}**:\n${names}`
-          );
+          message.channel.send(`Flyers players that have had the number **${pNum}**:\n${names}`);
         } else {
-          message.channel.send(
-            `No Flyers player has ever had the number **${pNum}**!`
-          );
+          message.channel.send(`No Flyers player has ever had the number **${pNum}**!`);
         }
       }
     );

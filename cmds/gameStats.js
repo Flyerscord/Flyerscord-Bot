@@ -16,12 +16,8 @@ module.exports.run = async (client, message, args) => {
       var homeStats = obj.teams.home.teamStats.teamSkaterStats;
       var awayStats = obj.teams.away.teamStats.teamSkaterStats;
 
-      var homeEmoji = client.emojis.find(
-        (emoji) => emoji.name === teamInfo.getEmoji(homeTeamName)
-      );
-      var awayEmoji = client.emojis.find(
-        (emoji) => emoji.name === teamInfo.getEmoji(awayTeamName)
-      );
+      var homeEmoji = client.emojis.cache?.find((emoji) => emoji.name === teamInfo.getEmoji(homeTeamName));
+      var awayEmoji = client.emojis.cache?.find((emoji) => emoji.name === teamInfo.getEmoji(awayTeamName));
 
       // Check who won
       if (homeStats.goals > awayStats.goals) {

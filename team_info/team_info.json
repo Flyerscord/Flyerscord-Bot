@@ -6,7 +6,7 @@
     "division": "Metropolitan",
     "conference": "Eastern",
     "emoji": "devils",
-    "logo": "https://nhl.bamcontent.com/images/photos/281726626/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281726626/256x256/cut.png",
     "teamURL": "http://www.newjerseydevils.com",
     "timezone": "US/Eastern"
   },
@@ -17,7 +17,7 @@
     "division": "Metropolitan",
     "conference": "Eastern",
     "emoji": "islanders",
-    "logo": "https://nhl.bamcontent.com/images/photos/281726632/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281726632/256x256/cut.png",
     "teamURL": "http://www.newyorkislanders.com",
     "timezone": "US/Eastern"
   },
@@ -28,7 +28,7 @@
     "division": "Metropolitan",
     "conference": "Eastern",
     "emoji": "rangers",
-    "logo": "https://nhl.bamcontent.com/images/photos/281718864/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281718864/256x256/cut.png",
     "teamURL": "http://www.newyorkrangers.com",
     "timezone": "US/Eastern"
   },
@@ -39,7 +39,7 @@
     "division": "Metropolitan",
     "conference": "Eastern",
     "emoji": "flyers",
-    "logo": "https://nhl.bamcontent.com/images/photos/281726640/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281726640/256x256/cut.png",
     "teamURL": "http://philadelphiaflyers.com",
     "timezone": "US/Eastern"
   },
@@ -50,7 +50,7 @@
     "division": "Metropolitan",
     "conference": "Eastern",
     "emoji": "penguins",
-    "logo": "https://nhl.bamcontent.com/images/photos/281726648/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281726648/256x256/cut.png",
     "teamURL": "http://www.pittsburghpenguins.com",
     "timezone": "US/Eastern"
   },
@@ -61,7 +61,7 @@
     "division": "Atlantic",
     "conference": "Eastern",
     "emoji": "bruins",
-    "logo": "https://nhl.bamcontent.com/images/photos/281719378/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281719378/256x256/cut.png",
     "teamURL": "http://www.bostonbruins.com",
     "timezone": "US/Eastern"
   },
@@ -72,7 +72,7 @@
     "division": "Atlantic",
     "conference": "Eastern",
     "emoji": "sabres",
-    "logo": "https://nhl.bamcontent.com/images/photos/281723274/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281723274/256x256/cut.png",
     "teamURL": "http://www.sabres.com",
     "timezone": "US/Eastern"
   },
@@ -83,7 +83,7 @@
     "division": "Atlantic",
     "conference": "Eastern",
     "emoji": "canadiens",
-    "logo": "https://nhl.bamcontent.com/images/photos/281723300/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281723300/256x256/cut.png",
     "teamURL": "http://www.montrealcanadiens.com",
     "timezone": "US/Eastern"
   },
@@ -94,7 +94,7 @@
     "division": "Atlantic",
     "conference": "Eastern",
     "emoji": "senators",
-    "logo": "https://nhl.bamcontent.com/images/photos/281723314/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281723314/256x256/cut.png",
     "teamURL": "http://www.ottawasenators.com",
     "timezone": "US/Eastern"
   },
@@ -105,7 +105,7 @@
     "division": "Atlantic",
     "conference": "Eastern",
     "emoji": "leafs",
-    "logo": "https://nhl.bamcontent.com/images/photos/281723324/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281723324/256x256/cut.png",
     "teamURL": "http://www.mapleleafs.com",
     "timezone": "US/Eastern"
   },
@@ -116,7 +116,7 @@
     "division": "Metropolitan",
     "conference": "Eastern",
     "emoji": "hurricanes",
-    "logo": "https://nhl.bamcontent.com/images/photos/281726500/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281726500/256x256/cut.png",
     "teamURL": "http://www.carolinahurricanes.com",
     "timezone": "US/Eastern"
   },
@@ -127,7 +127,7 @@
     "division": "Atlantic",
     "conference": "Eastern",
     "emoji": "panthers",
-    "logo": "https://nhl.bamcontent.com/images/photos/281723310/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281723310/256x256/cut.png",
     "teamURL": "http://floridapanthers.com",
     "timezone": "US/Eastern"
   },
@@ -138,7 +138,7 @@
     "division": "Atlantic",
     "conference": "Eastern",
     "emoji": "lightning",
-    "logo": "https://nhl.bamcontent.com/images/photos/281723320/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281723320/256x256/cut.png",
     "teamURL": "http://www.tampabaylightning.com",
     "timezone": "US/Eastern"
   },
@@ -149,7 +149,7 @@
     "division": "Metropolitan",
     "conference": "Eastern",
     "emoji": "capitals",
-    "logo": "https://nhl.bamcontent.com/images/photos/281726654/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281726654/256x256/cut.png",
     "teamURL": "http://www.washingtoncapitals.com",
     "timezone": "US/Eastern"
   },
@@ -160,7 +160,7 @@
     "division": "Central",
     "conference": "Western",
     "emoji": "blackhawks",
-    "logo": "https://nhl.bamcontent.com/images/photos/281726514/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281726514/256x256/cut.png",
     "teamURL": "http://www.chicagoblackhawks.com",
     "timezone": "US/Central"
   },
@@ -171,7 +171,7 @@
     "division": "Atlantic",
     "conference": "Eastern",
     "emoji": "redwings",
-    "logo": "https://nhl.bamcontent.com/images/photos/281723286/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281723286/256x256/cut.png",
     "teamURL": "http://www.detroitredwings.com",
     "timezone": "US/Eastern"
   },
@@ -182,7 +182,7 @@
     "division": "Central",
     "conference": "Western",
     "emoji": "predators",
-    "logo": "https://nhl.bamcontent.com/images/photos/281721070/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281721070/256x256/cut.png",
     "teamURL": "http://www.nashvillepredators.com",
     "timezone": "US/Central"
   },
@@ -193,7 +193,7 @@
     "division": "Central",
     "conference": "Western",
     "emoji": "blues",
-    "logo": "https://nhl.bamcontent.com/images/photos/281752302/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281752302/256x256/cut.png",
     "teamURL": "http://www.stlouisblues.com",
     "timezone": "US/Central"
   },
@@ -204,7 +204,7 @@
     "division": "Pacific",
     "conference": "Western",
     "emoji": "flames",
-    "logo": "https://nhl.bamcontent.com/images/photos/281720898/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281720898/256x256/cut.png",
     "teamURL": "http://www.calgaryflames.com",
     "timezone": "US/Mountain"
   },
@@ -215,7 +215,7 @@
     "division": "Central",
     "conference": "Western",
     "emoji": "avalanche",
-    "logo": "https://nhl.bamcontent.com/images/photos/281721016/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281721016/256x256/cut.png",
     "teamURL": "http://www.coloradoavalanche.com",
     "timezone": "US/Mountain"
   },
@@ -226,7 +226,7 @@
     "division": "Pacific",
     "conference": "Western",
     "emoji": "oilers",
-    "logo": "https://nhl.bamcontent.com/images/photos/281721030/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281721030/256x256/cut.png",
     "teamURL": "http://www.edmontonoilers.com",
     "timezone": "US/Mountain"
   },
@@ -237,7 +237,7 @@
     "division": "Pacific",
     "conference": "Western",
     "emoji": "canucks",
-    "logo": "https://nhl.bamcontent.com/images/photos/281721212/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281721212/256x256/cut.png",
     "teamURL": "http://www.canucks.com",
     "timezone": "US/Pacific"
   },
@@ -248,7 +248,7 @@
     "division": "Pacific",
     "conference": "Western",
     "emoji": "ducks",
-    "logo": "https://nhl.bamcontent.com/images/photos/281720124/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281720124/256x256/cut.png",
     "teamURL": "http://www.anaheimducks.com",
     "timezone": "US/Pacific"
   },
@@ -259,7 +259,7 @@
     "division": "Central",
     "conference": "Western",
     "emoji": "stars",
-    "logo": "https://nhl.bamcontent.com/images/photos/281726660/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281726660/256x256/cut.png",
     "teamURL": "http://www.dallasstars.com",
     "timezone": "US/Central"
   },
@@ -270,7 +270,7 @@
     "division": "Pacific",
     "conference": "Western",
     "emoji": "kings",
-    "logo": "https://nhl.bamcontent.com/images/photos/281721042/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281721042/256x256/cut.png",
     "teamURL": "http://www.lakings.com",
     "timezone": "US/Mountain"
   },
@@ -281,7 +281,7 @@
     "division": "Pacific",
     "conference": "Western",
     "emoji": "sharks",
-    "logo": "https://nhl.bamcontent.com/images/photos/281721090/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281721090/256x256/cut.png",
     "teamURL": "http://www.sjsharks.com",
     "timezone": "US/Pacific"
   },
@@ -292,7 +292,7 @@
     "division": "Metropolitan",
     "conference": "Eastern",
     "emoji": "bluejackets",
-    "logo": "https://nhl.bamcontent.com/images/photos/281726518/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281726518/256x256/cut.png",
     "teamURL": "http://www.bluejackets.com",
     "timezone": "US/Eastern"
   },
@@ -303,7 +303,7 @@
     "division": "Central",
     "conference": "Western",
     "emoji": "wild",
-    "logo": "https://nhl.bamcontent.com/images/photos/281721058/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281721058/256x256/cut.png",
     "teamURL": "http://www.wild.com",
     "timezone": "US/Central"
   },
@@ -314,7 +314,7 @@
     "division": "Central",
     "conference": "Western",
     "emoji": "jets",
-    "logo": "https://nhl.bamcontent.com/images/photos/281723512/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281723512/256x256/cut.png",
     "teamURL": "http://www.winnipegjets.com",
     "timezone": "US/Central"
   },
@@ -325,7 +325,7 @@
     "division": "Pacific",
     "conference": "Western",
     "emoji": "coyotes",
-    "logo": "https://nhl.bamcontent.com/images/photos/281720888/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/281720888/256x256/cut.png",
     "teamURL": "http://www.arizonacoyotes.com",
     "timezone": "US/Arizona"
   },
@@ -336,8 +336,19 @@
     "division": "Pacific",
     "conference": "Western",
     "emoji": "knights",
-    "logo": "https://nhl.bamcontent.com/images/photos/284409696/256x256/cut.png",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/284409696/256x256/cut.png",
     "teamURL": "http://www.vegasgoldenknights.com",
+    "timezone": "US/Pacific"
+  },
+  "Seattle Kraken": {
+    "id": 55,
+    "awayColor": "#5DBCD2",
+    "homeColor": "#0C1A28",
+    "division": "Pacific",
+    "conference": "Western",
+    "emoji": "kraken",
+    "logo": "https://cms.nhl.bamgrid.com/images/photos/317591200/256x256/cut.png",
+    "teamURL": "https://www.nhl.com/kraken",
     "timezone": "US/Pacific"
   },
   "Team Atlantic": {

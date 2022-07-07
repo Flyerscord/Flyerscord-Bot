@@ -73,6 +73,6 @@ function parseAndSendMessage(message, input, isFile) {
   var dd = now.getDate();
   var yy = now.getFullYear().toString().slice(-2);
 
-  var header = `**Mee6 Commands as of ${mm}/${dd}/${yy} (${lines} commands)**`;
+  var header = `**Mee6 Commands as of ${mm}/${dd}/${yy} (${lines - 1} commands)**`;
   message.channel.send(`${header}\n${all}`);
 }

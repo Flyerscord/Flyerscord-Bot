@@ -3,10 +3,10 @@ const logging = require("../lib/common/logging.js");
 
 module.exports.run = async (client, message, args) => {
   var startDate = moment();
-  var endDate = moment("2022-7-7 19:00:00", "YYYY-M-DD HH:mm:ss");
+  var endDate = moment("2022-7-8 11:00:00", "YYYY-M-DD HH:mm:ss");
   var secondsDiff = endDate.diff(startDate, "seconds");
 
-  const type = "2022 NHL Draft";
+  const type = "2022 NHL Draft Rounds 2-7";
   // logging.logDebug(secondsDiff, "daysLeft");
 
   if (secondsDiff <= 0) {

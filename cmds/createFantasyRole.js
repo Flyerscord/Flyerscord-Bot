@@ -1,7 +1,7 @@
 const logging = require("../lib/common/logging.js");
 
 module.exports.run = async (client, message, args) => {
-  var reactMsgId = "884850958985748500";
+  var reactMsgId = "1018991230375428106";
   var annouceId = "799094245809455164";
 
   const up = "👍";
@@ -23,17 +23,11 @@ module.exports.run = async (client, message, args) => {
 
     upUsers.each(async (user) => {
       if (downUsers.find((u) => u.id === user.id)) {
-        logging.logEvent(
-          `${user.username} reacted to both`,
-          "createFantasyRole"
-        );
+        logging.logEvent(`${user.username} reacted to both`, "createFantasyRole");
       } else {
         var member = await message.guild.members.fetch(user.id);
         member.roles.add(fantasyRole);
-        logging.logEvent(
-          `${user.username} added to fantasy role`,
-          "createFantasyRole"
-        );
+        logging.logEvent(`${user.username} added to fantasy role`, "createFantasyRole");
       }
     });
   });

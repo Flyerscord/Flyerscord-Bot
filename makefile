@@ -1,15 +1,12 @@
 docker:
-	bash -c "sed -i 's/\"testMode\": true,/\"testMode\": false,/' config.json" \
-	docker-compose -f docker-compose.yml -p nhl-helper-discord down && \
-	docker-compose -f docker-compose.yml -p nhl-helper-discord up --build -d
+	bash -c "sed -i 's/\"productionMode\": false,/\"productionMode\": true,/' src/config/config.json" && \
+	docker-compose -f docker-compose.yml -p discord-bot up --build -d
 
-test-docker:
-	bash -c "sed -i 's/\"testMode\": false,/\"testMode\": true,/' config.json" \
-	docker-compose -f docker-compose.yml -p test-nhl-helper-discord down && \
-	docker-compose -f docker-compose.yml -p test-nhl-helper-discord up --build -d
+docker-dev:
+	bash -c "sed -i 's/\"productionMode\": true,/\"productionMode\": false,/' src/config/config.json" && \
+	docker-compose -f dev-docker-compose.yml -p dev-discord-bot up --build -d
 
-enable-test:
-	bash -c "sed -i 's/\"testMode\": false,/\"testMode\": true,/' config.json"
-
-disable-test:
-	bash -c "sed -i 's/\"testMode\": true,/\"testMode\": false,/' config.json"
+docker-dev2:
+	bash -c "sed -i 's/\"productionMode\": true,/\"productionMode\": false,/' src/config/config.json" && \
+	docker-compose -f dev-docker-compose.yml -p dev-discord-bot down && \
+	docker-compose -f dev-docker-compose.yml -p dev-discord-bot up --build -d

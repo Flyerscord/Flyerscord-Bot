@@ -1,3 +1,4 @@
 {
-    "ignore":["config.json"]
+  "restartable": "rs",
+  "watch": ["dist/bot.js"]
 }

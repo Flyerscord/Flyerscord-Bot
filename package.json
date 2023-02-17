@@ -1,25 +1,41 @@
 {
-  "name": "nhl_helper",
+  "name": "flyerscord_helper",
   "version": "1.0.0",
-  "description": "NHL help bot",
-  "main": "node nhl_helper.js",
+  "description": "Flyers Discord Helper Bot",
+  "main": "bot.js",
   "scripts": {
-    "start": "node nhl_helper.js",
-    "nodemon": "nodemon nhl_helper.js"
+    "build": "tsc",
+    "runprod": "node /usr/src/app/src/bot.js",
+    "rundev": "node /usr/src/app/src/bot.js",
+    "rundevw": "nodemon /usr/src/app/src/bot.js",
+    "lint": "npx eslint . --fix"
   },
-  "engines": {
-    "node": "8.4.0"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/strenkml/NHL-Helper-Bot.git"
   },
-  "author": "flyerzrule",
+  "author": "Matt Strenk",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/strenkml/NHL-Helper-Bot/issues"
+  },
+  "homepage": "https://github.com/strenkml/NHL-Helper-Bot#readme",
   "dependencies": {
-    "csv-parser": "^2.3.2",
-    "discord.js": "^12.5.3",
-    "express": "^4.17.1",
-    "json-storage-fs": "^2.0.2",
-    "moment": "^2.24.0",
-    "node-fetch": "^2.6.6",
-    "nodemon": "^2.0.7",
-    "request": "^2.88.2"
+    "@discordjs/rest": "^1.3.0",
+    "child_process": "^1.0.2",
+    "discord-api-types": "^0.37.20",
+    "discord.js": "^14.6.0",
+    "enmap": "^5.9.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "@typescript-eslint/eslint-plugin": "^5.43.0",
+    "@typescript-eslint/parser": "^5.43.0",
+    "eslint": "^8.27.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.7.1",
+    "typescript": "^4.9.3"
   }
 }

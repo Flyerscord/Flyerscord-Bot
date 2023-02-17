@@ -1,0 +1,32 @@
+{
+  "productionMode": false,
+  "production": {
+    "token": "",
+    "vistorReactRole": {
+      "memberRoleId": "",
+      "visitorRoleId": "",
+      "visitorEmoji": "",
+      "visitorEmojiId": "",
+      "rolesChannelId": ""
+    },
+    "liveData": {
+      "notificationChannelId": "",
+      "periodNotificationRoleId": ""
+    }
+  },
+  "nonProduction": {
+    "token": "",
+    "guildId": "",
+    "vistorReactRole": {
+      "memberRoleId": "",
+      "visitorRoleId": "",
+      "visitorEmoji": "",
+      "visitorEmojiId": "",
+      "rolesChannelId": ""
+    },
+    "liveData": {
+      "notificationChannelId": "",
+      "periodNotificationRoleId": ""
+    }
+  }
+}

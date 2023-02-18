@@ -13,7 +13,7 @@ export default class RoleAllAssignCommand extends AdminSlashCommand {
       )
       .addBooleanOption((option) =>
         option
-          .setName("onlyNoRole")
+          .setName("onlynorole")
           .setDescription("Whether or not to give the role to only members that dont have a role")
       );
   }

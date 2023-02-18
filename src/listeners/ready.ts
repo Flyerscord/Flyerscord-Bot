@@ -1,26 +1,28 @@
-import { Client, TextChannel } from "discord.js";
+import { Client, RESTPostAPIChatInputApplicationCommandsJSONBody, Routes, TextChannel } from "discord.js";
 import { REST } from "@discordjs/rest";
-import { RESTPostAPIChatInputApplicationCommandsJSONBody, Routes } from "discord-api-types/v9";
 import fs from "fs";
 
 import Config from "../config/Config";
 import Logger from "../util/Logger";
-import SlashCommand from "../models/SlashCommand";
+import { SlashCommand } from "../models/SlashCommand";
 import VistorRoleDB from "../providers/VistorRole.Database";
 import discord from "../util/discord/discord";
+import TextCommand from "../models/TextCommand";
 
 export default (client: Client): void => {
   client.on("ready", async () => {
     Logger.info("Bot Online!", "clientReady");
     await registerSlashCommands(client);
-    setupVistorMessage(client);
+    await readTextCommands(client);
+    // setupVistorMessage(client);
+    Logger.info("Bot Initialization Complete!", "clientReady");
   });
 };
 
 async function registerSlashCommands(client: Client): Promise<void> {
   const slashCommands: Array<RESTPostAPIChatInputApplicationCommandsJSONBody> = [];
 
-  const commandFiles = fs.readdirSync(`${__dirname}/../commands`).filter((file) => file.endsWith(".js"));
+  const commandFiles = fs.readdirSync(`${__dirname}/../commands/slash`).filter((file) => file.endsWith(".js"));
 
   for (const file of commandFiles) {
     Logger.info(`Loading slash command: ${file}`, "registerSlashCommands");
@@ -67,6 +69,19 @@ async function registerSlashCommands(client: Client): Promise<void> {
       }
     }
   }
+}
+
+async function readTextCommands(client: Client): Promise<void> {
+  const commandFiles = fs.readdirSync(`${__dirname}/../commands/text`).filter((file) => file.endsWith(".js"));
+
+  for (const file of commandFiles) {
+    Logger.info(`Loading text command: ${file}`, "readTextCommands");
+    const Command = await import(`../commands/text/${file}`);
+    const command: TextCommand = new Command.default();
+    client.textCommands.set(command.command, command);
+  }
+
+  Logger.info(`Successfully loaded ${client.textCommands.length} text commands!`, "readTextCommands");
 }
 
 async function setupVistorMessage(client: Client): Promise<void> {

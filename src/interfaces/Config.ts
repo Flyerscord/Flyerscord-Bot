@@ -6,6 +6,7 @@ interface IDevConfig extends ICommonConfig {
 
 interface ICommonConfig {
   token: string;
+  prefix: string;
   vistorReactRole: IVistorReactConfig;
   liveData: ILiveDataConfig;
 }

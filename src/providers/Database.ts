@@ -6,7 +6,7 @@ export default abstract class Database {
   protected db: Enmap;
   protected name: string;
 
-  constructor(protected options: EnmapOptions) {
+  constructor(protected options: EnmapOptions<any, any>) {
     this.db = new Enmap(options);
     this.name = options.name || "Database";
   }

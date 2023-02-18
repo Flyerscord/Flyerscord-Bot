@@ -1,14 +1,13 @@
-import { CommandInteraction, PermissionsBitField } from "discord.js";
+import { CommandInteraction } from "discord.js";
 
-import SlashCommand from "../models/SlashCommand";
+import { AdminSlashCommand } from "../../models/SlashCommand";
 
-export default class RoleAllAssignCommand extends SlashCommand {
+export default class RoleAllAssignCommand extends AdminSlashCommand {
   constructor() {
     super("roleassign", "Give the specified role to all members of the server");
 
     this.data
       .setDMPermission(false)
-      .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
       .addRoleOption((option) =>
         option.setName("role").setDescription("The role to assign to everyone").setRequired(true)
       );

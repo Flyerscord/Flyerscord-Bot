@@ -1,6 +1,6 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder, PermissionsBitField } from "discord.js";
 
-export default abstract class SlashCommand {
+export abstract class SlashCommand {
   readonly data: SlashCommandBuilder;
 
   name: string;
@@ -21,4 +21,12 @@ export default abstract class SlashCommand {
   }
 
   abstract execute(interaction: ChatInputCommandInteraction): Promise<void>;
+}
+
+export abstract class AdminSlashCommand extends SlashCommand {
+  constructor(name: string, description: string) {
+    super(name, description);
+
+    this.data.setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
+  }
 }

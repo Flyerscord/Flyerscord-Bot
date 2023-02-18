@@ -2,6 +2,7 @@
   "productionMode": false,
   "production": {
     "token": "",
+    "prefix": "",
     "vistorReactRole": {
       "memberRoleId": "",
       "visitorRoleId": "",
@@ -16,6 +17,7 @@
   },
   "nonProduction": {
     "token": "",
+    "prefix": "",
     "guildId": "",
     "vistorReactRole": {
       "memberRoleId": "",

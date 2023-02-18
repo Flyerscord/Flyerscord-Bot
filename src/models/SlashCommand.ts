@@ -18,7 +18,7 @@ export abstract class SlashCommand {
     let val = undefined;
     switch (type) {
       case PARAM_TYPES.STRING:
-        val = interaction.options.getString(paramName) || "";
+        val = interaction.options.getString(paramName);
         break;
       case PARAM_TYPES.ROLE:
         val = interaction.options.getRole(paramName);

@@ -1,4 +1,4 @@
-import { CommandInteraction, SlashCommandBuilder, Interaction } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 
 export default abstract class SlashCommand {
   readonly data: SlashCommandBuilder;
@@ -14,11 +14,11 @@ export default abstract class SlashCommand {
     this.data = new SlashCommandBuilder().setName(this.name).setDescription(this.description);
   }
 
-  protected getParameterValue(parameterName: string, interaction: CommandInteraction): string {
+  protected getParameterValue(parameterName: string, interaction: ChatInputCommandInteraction): string {
     const val = interaction.options.get(parameterName)?.value;
 
     return val == undefined ? "" : val.toString();
   }
 
-  abstract execute(interaction: CommandInteraction): Promise<void>;
+  abstract execute(interaction: ChatInputCommandInteraction): Promise<void>;
 }

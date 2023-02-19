@@ -2,6 +2,8 @@ import { ChatInputCommandInteraction } from "discord.js";
 
 import { PARAM_TYPES, SlashCommand } from "../../models/SlashCommand";
 import NHLApi from "../../util/nhlApi";
+import discord from "../../util/discord/discord";
+import Logger from "../../util/Logger";
 
 export default class StandingsCommand extends SlashCommand {
   constructor() {
@@ -54,15 +56,39 @@ export default class StandingsCommand extends SlashCommand {
       const division = parseInt(this.getParamValue(interaction, PARAM_TYPES.STRING, "division") || "0"); // Defaults to Metropolitan
       const res = await NHLApi.get("standings/byDivision");
       if (res.statusCode == 200) {
-        const divisionName = res.data.records[division].division.name; //TODO: Move to embeds file
+        const embed = discord.embeds.getDivisionalStandingsEmbed(res.data, division);
+        interaction.reply({ embeds: [embed] });
+        return;
       }
     } else if (interaction.options.getSubcommand() == "conference") {
       const conference = parseInt(this.getParamValue(interaction, PARAM_TYPES.STRING, "conference") || "0"); // Defaults to Eastern
+      const res = await NHLApi.get("standings/byConference");
+      if (res.statusCode == 200) {
+        const embed = discord.embeds.getConferenceStandingsEmbed(res.data, conference);
+        interaction.reply({ embeds: [embed] });
+        return;
+      }
     } else if (interaction.options.getSubcommand() == "wildcard") {
       const conference = parseInt(this.getParamValue(interaction, PARAM_TYPES.STRING, "conference") || "0"); // Defaults to Eastern
+      const res = await NHLApi.get("standings/wildCardWithLeaders");
+      if (res.statusCode == 200) {
+        const div1Embed = discord.embeds.getWildcardStandingsDivLeaderEmbed(res.data, conference, 0);
+        const div2Embed = discord.embeds.getWildcardStandingsDivLeaderEmbed(res.data, conference, 1);
+        const wildCardEmbed = discord.embeds.getWildcardStandingsEmbed(res.data, conference);
+        interaction.reply({ embeds: [div1Embed, div2Embed, wildCardEmbed] });
+        return;
+      }
     } else if (interaction.options.getSubcommand() == "league") {
-    } else {
-      interaction.reply({ content: "Error!", ephemeral: true });
+      const res = await NHLApi.get("standings/byLeague");
+      if (res.statusCode == 200) {
+        const p1Embed = discord.embeds.getLeagueStandingsEmbed(res.data, 1);
+        const p2Embed = discord.embeds.getLeagueStandingsEmbed(res.data, 2);
+        interaction.reply({ embeds: [p1Embed, p2Embed] });
+        return;
+      }
     }
+
+    Logger.error("There was an error running the command!", "StandingsCommand");
+    interaction.reply({ content: "Error running command!", ephemeral: true });
   }
 }

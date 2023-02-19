@@ -41,8 +41,6 @@ export default class PrintMee6CmdsCommand extends TextCommand {
       } else {
         return;
       }
-    } else {
-      message.channel.send("Permission denied");
     }
   }
 }

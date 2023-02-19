@@ -1,4 +1,4 @@
-import { Message, PermissionsBitField } from "discord.js";
+import { Message } from "discord.js";
 import ITextCommandOptions from "../interfaces/TextCommandOptions";
 
 export default abstract class TextCommand {

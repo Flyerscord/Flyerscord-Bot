@@ -13,7 +13,7 @@ export default abstract class Database {
 
   // Add methods below that will be shared across all databases
   wipe(): void {
-    Logger.info(`Wiping database`, this.options.name);
+    Logger.info(`Wiping database`, this.name);
     this.db.clear();
   }
 }

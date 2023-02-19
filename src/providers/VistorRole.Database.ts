@@ -1,6 +1,5 @@
 import Database from "./Database";
 
-// Create a singleton class that extends the Database class
 export default class VistorRoleDB extends Database {
   private static instance: VistorRoleDB;
 

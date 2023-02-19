@@ -4,7 +4,6 @@ export abstract class SlashCommand {
   readonly data: SlashCommandBuilder;
 
   name: string;
-
   description: string;
 
   constructor(name: string, description: string) {

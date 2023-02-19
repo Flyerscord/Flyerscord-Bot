@@ -12,3 +12,9 @@ export function getVistorRoleReactEmbed(): EmbedBuilder {
 
   return embed;
 }
+
+export function getDivisionalStandingsEmbed(data: any, division: number): EmbedBuilder {
+  const embed = new EmbedBuilder();
+
+  return embed;
+}

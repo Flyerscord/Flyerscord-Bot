@@ -1,5 +1,6 @@
 import axios from "axios";
 import IHttpResponse from "../interfaces/HttpResponse";
+import Logger from "./Logger";
 
 export default class NHLApi {
   private static readonly baseurl = "https://statsapi.web.nhl.com/api/v1";
@@ -13,6 +14,10 @@ export default class NHLApi {
       statusCode: res.status,
       headers: res.headers,
     };
+
+    if (res.status != 200) {
+      Logger.error(`Status code: ${res.status} from endpoint: ${endpoint}`, "NHLAPI:get");
+    }
 
     return httpRes;
   }

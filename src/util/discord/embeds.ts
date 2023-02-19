@@ -159,3 +159,57 @@ export function getLeagueStandingsEmbed(data: any, part: number): EmbedBuilder {
 
   return embed;
 }
+
+export function getScheduleEmbed(data: any, gamesToPrint: number): EmbedBuilder {
+  const embed = new EmbedBuilder();
+
+  gamesToPrint = Math.ceil(gamesToPrint);
+
+  if (gamesToPrint == 1) {
+    embed.setTitle("Next Upcoming Flyers Game");
+  } else {
+    embed.setTitle(`Next ${gamesToPrint} Upcoming Flyers Games`);
+  }
+
+  embed.setColor(0xf74902);
+
+  let numGames: number;
+  if (data.dates.length >= gamesToPrint) {
+    numGames = gamesToPrint;
+  } else {
+    numGames = data.dates.length;
+  }
+
+  for (let i = 0; i < numGames; i++) {
+    const game = data.dates[i].games[0];
+    const date = game.gameDate;
+
+    const d = new Date(date);
+
+    const gameMonth = d.getMonth() + 1;
+    let gameHour = d.getHours();
+    const gameMinute = d.getMinutes();
+    let gameDay = d.getDate();
+
+    if (gameHour < 0) {
+      gameDay--;
+      gameHour = 24 + gameHour;
+    }
+
+    const gameAmPm = gameHour >= 12 ? "PM" : "AM";
+
+    gameHour = gameHour % 12;
+    gameHour = gameHour ? gameHour : 12; // the hour '0' should be '12'
+    const gameMinutePadded = gameMinute < 10 ? "0" + gameMinute : gameMinute;
+    const gameTime = `${gameHour}:${gameMinutePadded} ${gameAmPm}`;
+
+    const gameDate = `${gameMonth}/${gameDay}/${d.getFullYear()}   ${gameTime}`;
+
+    const awayTeam = game.teams.away.team.name;
+    const homeTeam = game.teams.home.team.name;
+
+    embed.addFields({ name: gameDate, value: `${awayTeam} @ ${homeTeam}` });
+  }
+
+  return embed;
+}

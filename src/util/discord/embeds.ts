@@ -1,5 +1,7 @@
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, NonThreadGuildBasedChannel } from "discord.js";
 import Config from "../../config/Config";
+import { ChannelUpdateType } from "../../interfaces/EventLogger";
+import Time from "../Time";
 
 export function getVistorRoleReactEmbed(): EmbedBuilder {
   const embed = new EmbedBuilder();
@@ -211,5 +213,23 @@ export function getScheduleEmbed(data: any, gamesToPrint: number): EmbedBuilder 
     embed.addFields({ name: gameDate, value: `${awayTeam} @ ${homeTeam}` });
   }
 
+  return embed;
+}
+
+export function getChannelUpdateEmbed(
+  changeType: ChannelUpdateType,
+  channel: NonThreadGuildBasedChannel
+): EmbedBuilder {
+  const embed = new EmbedBuilder();
+
+  if (changeType == ChannelUpdateType.CREATE) {
+    embed.setTitle("New Channel created!");
+    embed.setColor("Green");
+    embed.setTimestamp(Time.getCurrentTime());
+    channel.guild.fetchAuditLogs();
+  } else if (changeType == ChannelUpdateType.DELETE) {
+  } else {
+    // Channel update
+  }
   return embed;
 }

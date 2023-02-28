@@ -12,12 +12,28 @@ import TextCommand from "../models/TextCommand";
 export default (client: Client): void => {
   client.on("ready", async () => {
     Logger.info("Bot Online!", "clientReady");
+    await registerListenerEvents(client);
     await registerSlashCommands(client);
     await readTextCommands(client);
     // setupVistorMessage(client);
     Logger.info("Bot Initialization Complete!", "clientReady");
   });
 };
+
+// TODO: Test
+async function registerListenerEvents(client: Client): Promise<void> {
+  const ignoredListeners: Array<string> = ["ready.js", "errorHandling.js"];
+  const eventFiles = fs
+    .readdirSync(`${__dirname}/listeners`)
+    .filter((file) => file.endsWith(".js") && !ignoredListeners.includes(file));
+
+  for (const listener of eventFiles) {
+    Logger.info(`Loading listener: ${listener}`, "registerListenerEvents");
+    const listenerEventImport = await import(`./listeners/${listener}`);
+    const listenerEvent = listenerEventImport.default();
+    listenerEvent(client);
+  }
+}
 
 async function registerSlashCommands(client: Client): Promise<void> {
   const slashCommands: Array<RESTPostAPIChatInputApplicationCommandsJSONBody> = [];

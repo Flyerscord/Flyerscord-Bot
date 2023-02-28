@@ -8,6 +8,7 @@ import interactionCreate from "./listeners/interactionCreate";
 import errorHanding from "./listeners/errorHanding";
 
 import Logger from "./util/Logger";
+import fs from "fs";
 
 // Check if the config file exists
 if (!Config.fileExists()) {
@@ -26,11 +27,10 @@ const client = new Client({
 client.slashCommands = new Collection();
 client.textCommands = new Collection();
 
-// Register our event handlers
+// Register our important event handlers
+// Others will be dynamically loaded in the ready listener
 errorHanding(client);
 ready(client);
-messageCreate(client);
-interactionCreate(client);
 
 // Use our token to connect to the connect
 client.login(Config.getConfig().token);

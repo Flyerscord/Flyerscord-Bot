@@ -8,6 +8,7 @@ import { SlashCommand } from "../models/SlashCommand";
 import VistorRoleDB from "../providers/VistorRole.Database";
 import discord from "../util/discord/discord";
 import TextCommand from "../models/TextCommand";
+import Files from "../util/Files";
 
 export default (client: Client): void => {
   client.on("ready", async () => {
@@ -22,14 +23,12 @@ export default (client: Client): void => {
 
 // TODO: Test
 async function registerListenerEvents(client: Client): Promise<void> {
-  const ignoredListeners: Array<string> = ["ready.js", "errorHandling.js"];
-  const eventFiles = fs
-    .readdirSync(`${__dirname}/listeners`)
-    .filter((file) => file.endsWith(".js") && !ignoredListeners.includes(file));
+  const eventFiles = Files.getAllJsFilesRecursive(`${__dirname}/../listeners`, ["ready.js", "errorHandling.js"]);
 
   for (const listener of eventFiles) {
-    Logger.info(`Loading listener: ${listener}`, "registerListenerEvents");
-    const listenerEventImport = await import(`./listeners/${listener}`);
+    Logger.info(`Loading listener: ${listener.fileName}`, "registerListenerEvents");
+    Logger.debug(`Listener file: ${listener.toString()}`, "registerListenerEvents");
+    const listenerEventImport = await import(listener.path);
     const listenerEvent = listenerEventImport.default();
     listenerEvent(client);
   }
@@ -38,11 +37,12 @@ async function registerListenerEvents(client: Client): Promise<void> {
 async function registerSlashCommands(client: Client): Promise<void> {
   const slashCommands: Array<RESTPostAPIChatInputApplicationCommandsJSONBody> = [];
 
-  const commandFiles = fs.readdirSync(`${__dirname}/../commands/slash`).filter((file) => file.endsWith(".js"));
+  const commandFiles = Files.getAllJsFilesRecursive(`${__dirname}/../commands/slash`);
 
   for (const file of commandFiles) {
-    Logger.info(`Loading slash command: ${file}`, "registerSlashCommands");
-    const Command = await import(`../commands/slash/${file}`);
+    Logger.info(`Loading slash command: ${file.fileName}`, "registerSlashCommands");
+    Logger.debug(`Slash command file: ${file.toString()}`, "registerSlashCommands");
+    const Command = await import(file.path);
     const command: SlashCommand = new Command.default();
     slashCommands.push(command.data.toJSON());
     client.slashCommands.set(command.name, command);
@@ -88,11 +88,12 @@ async function registerSlashCommands(client: Client): Promise<void> {
 }
 
 async function readTextCommands(client: Client): Promise<void> {
-  const commandFiles = fs.readdirSync(`${__dirname}/../commands/text`).filter((file) => file.endsWith(".js"));
+  const commandFiles = Files.getAllJsFilesRecursive(`${__dirname}/../commands/text`);
 
   for (const file of commandFiles) {
     Logger.info(`Loading text command: ${file}`, "readTextCommands");
-    const Command = await import(`../commands/text/${file}`);
+    Logger.debug(`Text command file: ${file.toString()}`, "readTextCommands");
+    const Command = await import(file.path);
     const command: TextCommand = new Command.default();
     client.textCommands.set(command.command, command);
   }

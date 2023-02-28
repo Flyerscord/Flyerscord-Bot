@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, Role } from "discord.js";
 
-import { AdminSlashCommand, PARAM_TYPES } from "../../models/SlashCommand";
+import { AdminSlashCommand, PARAM_TYPES } from "../../../models/SlashCommand";
 
 export default class RoleAllAssignCommand extends AdminSlashCommand {
   constructor() {

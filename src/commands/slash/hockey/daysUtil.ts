@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import moment from "moment";
 
-import { SlashCommand } from "../../models/SlashCommand";
+import { SlashCommand } from "../../../models/SlashCommand";
 
 export default class DaysUntilCommand extends SlashCommand {
   constructor() {

@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction } from "discord.js";
 
-import { PARAM_TYPES, SlashCommand } from "../../models/SlashCommand";
-import NHLApi from "../../util/nhlApi";
-import discord from "../../util/discord/discord";
+import { PARAM_TYPES, SlashCommand } from "../../../models/SlashCommand";
+import NHLApi from "../../../util/nhlApi";
+import discord from "../../../util/discord/discord";
 
 export default class ScheduleCommand extends SlashCommand {
   constructor() {

@@ -13,7 +13,7 @@ export default class DaysUntilCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    if (interaction.options.getSubcommand() == "tradedeadline") {
+    if (this.isSubCommand(interaction, "tradedeadline")) {
       interaction.reply({ content: this.getTimeUntil("NHL Trade Deadline", "2023-3-03 15:00:00") });
     } else {
       interaction.reply({ content: "Invalid command!", ephemeral: true });

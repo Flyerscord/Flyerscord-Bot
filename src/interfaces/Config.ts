@@ -6,7 +6,7 @@ interface IDevConfig extends ICommonConfig {
 
 interface ICommonConfig {
   token: string;
-  prefix: string;
+  prefixes: IPrefixes;
   vistorReactRole: IVistorReactConfig;
   liveData: ILiveDataConfig;
 }
@@ -22,4 +22,9 @@ interface IVistorReactConfig {
 interface ILiveDataConfig {
   notificationChannelId: string;
   periodNotificationRoleId: string;
+}
+
+interface IPrefixes {
+  normal: string;
+  custom: string;
 }

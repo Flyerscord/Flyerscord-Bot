@@ -4,6 +4,7 @@ import { exec } from "child_process";
 import Logger from "../util/Logger";
 import Config from "../config/Config";
 import TextCommand from "../models/TextCommand";
+import CustomCommandsDB from "../providers/CustomCommands.Database";
 
 export default (client: Client): void => {
   client.on("messageCreate", async (message: Message) => {
@@ -11,6 +12,8 @@ export default (client: Client): void => {
     checkLevelUpMessage(message);
 
     handleTextCommands(message);
+
+    handleCustomCommands(message);
   });
 };
 
@@ -45,7 +48,7 @@ function checkLevelUpMessage(message: Message): void {
 }
 
 function handleTextCommands(message: Message): void {
-  const prefix = Config.getConfig().prefix;
+  const prefix = Config.getConfig().prefixes.normal;
 
   // Ignores all bots
   if (message.author.bot) return;
@@ -62,10 +65,31 @@ function handleTextCommands(message: Message): void {
   try {
     if (textCmd) {
       textCmd.execute(message, args);
-      Logger.info(`Command ${command} called!`, "messageCreate");
+      Logger.info(`Command ${command} called!`, "handleTextCommands");
     }
   } catch (err) {
-    Logger.error(`Message content: ${message.content}  Error: ${err}`, "messageCreate");
+    Logger.error(`Message content: ${message.content}  Error: ${err}`, "handleTextCommands");
+  }
+}
+
+function handleCustomCommands(message: Message): void {
+  const prefix = Config.getConfig().prefixes.custom;
+
+  // Ignores all bots
+  if (message.author.bot) return;
+  // Ignores all messages not in a text channel
+  if (!message.channel.isTextBased()) return;
+  // Ignores messages that dont start with the prefix
+  if (!message.content.startsWith(prefix)) return;
+
+  const messageArray = message.content.split(" ");
+  const command = messageArray[0];
+
+  const db = CustomCommandsDB.getInstance();
+  const customCommand = db.getCommand(command.slice(prefix.length));
+
+  if (customCommand) {
+    message.channel.send(customCommand.text);
   }
 }
 

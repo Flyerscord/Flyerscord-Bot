@@ -2,7 +2,10 @@
   "productionMode": false,
   "production": {
     "token": "",
-    "prefix": "",
+    "prefixes": {
+      "normal": ".",
+      "custom": "!"
+    },
     "vistorReactRole": {
       "memberRoleId": "",
       "visitorRoleId": "",
@@ -17,7 +20,10 @@
   },
   "nonProduction": {
     "token": "",
-    "prefix": "",
+    "prefixes": {
+      "normal": ".",
+      "custom": "!"
+    },
     "guildId": "",
     "vistorReactRole": {
       "memberRoleId": "",

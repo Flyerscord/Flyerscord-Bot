@@ -1,6 +1,5 @@
 import { Client, RESTPostAPIChatInputApplicationCommandsJSONBody, Routes, TextChannel } from "discord.js";
 import { REST } from "@discordjs/rest";
-import fs from "fs";
 
 import Config from "../config/Config";
 import Logger from "../util/Logger";

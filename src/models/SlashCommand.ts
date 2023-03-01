@@ -10,7 +10,7 @@ export abstract class SlashCommand {
     this.name = name.toLowerCase();
     this.description = description;
 
-    this.data = new SlashCommandBuilder().setName(this.name).setDescription(this.description);
+    this.data = new SlashCommandBuilder().setName(this.name).setDescription(this.description).setDMPermission(false);
   }
 
   protected getParamValue(interaction: ChatInputCommandInteraction, type: PARAM_TYPES, paramName: string): any | null {
@@ -42,6 +42,14 @@ export abstract class SlashCommand {
         break;
     }
     return val;
+  }
+
+  protected isSubCommand(interaction: ChatInputCommandInteraction, subCommandName: string): boolean {
+    return interaction.options.getSubcommand() == subCommandName;
+  }
+
+  protected isSubCommandGroup(interaction: ChatInputCommandInteraction, subCommandGroupName: string): boolean {
+    return interaction.options.getSubcommandGroup() == subCommandGroupName;
   }
 
   abstract execute(interaction: ChatInputCommandInteraction): Promise<void>;

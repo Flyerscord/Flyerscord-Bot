@@ -1,4 +1,4 @@
-import ICustomCommand from "../interfaces/CustomCommand";
+import ICustomCommand, { ICustomCommandHistory } from "../interfaces/CustomCommand";
 import Time from "../util/Time";
 import Database from "./Database";
 
@@ -31,6 +31,7 @@ export default class CustomCommandsDB extends Database {
         text: text,
         createdBy: userId,
         createdOn: Time.getCurrentTime(),
+        history: [],
       };
       this.db.set(name, customCommand);
       return true;
@@ -38,9 +39,19 @@ export default class CustomCommandsDB extends Database {
     return false;
   }
 
-  updateCommand(name: string, text: string): boolean {
+  removeCommand(name: string): boolean {
+    if (!this.hasCommand(name)) {
+      return false;
+    }
+    this.db.delete(name);
+    return true;
+  }
+
+  updateCommand(name: string, text: string, userId: string): boolean {
     if (this.hasCommand(name)) {
-      this.db.update(name, { text: text });
+      const oldCommand = this.getCommand(name)!;
+      const newCommand = this.updateObject(oldCommand, text, userId);
+      this.db.set(name, newCommand);
       return true;
     }
     return false;
@@ -48,5 +59,20 @@ export default class CustomCommandsDB extends Database {
 
   getAllCommands(): Array<ICustomCommand> {
     return this.getAllValues();
+  }
+
+  private updateObject(oldCommand: ICustomCommand, newText: string, editUser: string): ICustomCommand {
+    const newCommand = oldCommand;
+
+    const historyEntry: ICustomCommandHistory = {
+      oldText: oldCommand.text,
+      newText: newText,
+      editedBy: editUser,
+      editedOn: Time.getCurrentTime(),
+    };
+
+    newCommand.text = newText;
+    newCommand.history.push(historyEntry);
+    return newCommand;
   }
 }

@@ -16,7 +16,7 @@ export default abstract class Database {
     this.db.clear();
   }
 
-  getAllValues(): Array<any> {
+  protected getAllValues(): Array<any> {
     const arr = Array.from(this.db);
     return arr.map((val) => val[1]);
   }

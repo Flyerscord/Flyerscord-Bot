@@ -7,7 +7,6 @@ export default class RoleAllAssignCommand extends AdminSlashCommand {
     super("roleassign", "Give the specified role to all members of the server");
 
     this.data
-      .setDMPermission(false)
       .addRoleOption((option) =>
         option.setName("role").setDescription("The role to assign to everyone").setRequired(true)
       )

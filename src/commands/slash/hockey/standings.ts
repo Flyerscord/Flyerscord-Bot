@@ -52,7 +52,7 @@ export default class StandingsCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    if (interaction.options.getSubcommand() == "division") {
+    if (this.isSubCommand(interaction, "division")) {
       const division = parseInt(this.getParamValue(interaction, PARAM_TYPES.STRING, "division") || "0"); // Defaults to Metropolitan
       const res = await NHLApi.get("standings/byDivision");
       if (res.statusCode == 200) {
@@ -60,7 +60,7 @@ export default class StandingsCommand extends SlashCommand {
         interaction.reply({ embeds: [embed] });
         return;
       }
-    } else if (interaction.options.getSubcommand() == "conference") {
+    } else if (this.isSubCommand(interaction, "conference")) {
       const conference = parseInt(this.getParamValue(interaction, PARAM_TYPES.STRING, "conference") || "0"); // Defaults to Eastern
       const res = await NHLApi.get("standings/byConference");
       if (res.statusCode == 200) {
@@ -68,7 +68,7 @@ export default class StandingsCommand extends SlashCommand {
         interaction.reply({ embeds: [embed] });
         return;
       }
-    } else if (interaction.options.getSubcommand() == "wildcard") {
+    } else if (this.isSubCommand(interaction, "wildcard")) {
       const conference = parseInt(this.getParamValue(interaction, PARAM_TYPES.STRING, "conference") || "0"); // Defaults to Eastern
       const res = await NHLApi.get("standings/wildCardWithLeaders");
       if (res.statusCode == 200) {
@@ -78,7 +78,7 @@ export default class StandingsCommand extends SlashCommand {
         interaction.reply({ embeds: [div1Embed, div2Embed, wildCardEmbed] });
         return;
       }
-    } else if (interaction.options.getSubcommand() == "league") {
+    } else if (this.isSubCommand(interaction, "league")) {
       const res = await NHLApi.get("standings/byLeague");
       if (res.statusCode == 200) {
         const p1Embed = discord.embeds.getLeagueStandingsEmbed(res.data, 1);

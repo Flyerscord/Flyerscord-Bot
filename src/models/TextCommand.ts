@@ -45,7 +45,3 @@ export default abstract class TextCommand {
     return false;
   }
 }
-
-// export class CustomTextCommand extends TextCommand {
-//   constructor() {}
-// }

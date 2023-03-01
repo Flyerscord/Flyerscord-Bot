@@ -3,12 +3,10 @@ import { Client, Collection, GatewayIntentBits } from "discord.js";
 import Config from "./config/Config";
 
 import ready from "./listeners/ready";
-import messageCreate from "./listeners/messageCreate";
-import interactionCreate from "./listeners/interactionCreate";
 import errorHanding from "./listeners/errorHanding";
 
 import Logger from "./util/Logger";
-import fs from "fs";
+import Levels from "./util/Levels";
 
 // Check if the config file exists
 if (!Config.fileExists()) {
@@ -31,6 +29,9 @@ client.textCommands = new Collection();
 // Others will be dynamically loaded in the ready listener
 errorHanding(client);
 ready(client);
+
+// Calculate exp needed for levels, if needed
+Levels.calculateExpNeededForLevels();
 
 // Use our token to connect to the connect
 client.login(Config.getConfig().token);

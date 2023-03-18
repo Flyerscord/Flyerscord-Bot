@@ -98,15 +98,15 @@ fs.readdir("./cmds/", (err, files) => {
 /* -------------------------------------------------------------------------- */
 globals.client.on("ready", async () => {
   logging.logEvent("Bot is ready!", "System");
-  if (!JsonStorage.get("visitorMessageID")) {
-    visitorReact.sendVisitorReactionMessage();
-  } else {
-    let channel = globals.client.channels.cache.get(rolesChannelId);
-    try {
-      message = await channel.messages.fetch(JsonStorage.get("visitorMessageID"));
-    } catch (e) {
-      visitorReact.sendVisitorReactionMessage();
-    }
+//   if (!JsonStorage.get("visitorMessageID")) {
+//     visitorReact.sendVisitorReactionMessage();
+//   } else {
+//     let channel = globals.client.channels.cache.get(rolesChannelId);
+//     try {
+//       message = await channel.messages.fetch(JsonStorage.get("visitorMessageID"));
+//     } catch (e) {
+//       visitorReact.sendVisitorReactionMessage();
+//     }
   }
 });
 

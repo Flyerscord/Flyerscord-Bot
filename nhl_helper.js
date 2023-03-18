@@ -107,7 +107,7 @@ globals.client.on("ready", async () => {
 //     } catch (e) {
 //       visitorReact.sendVisitorReactionMessage();
 //     }
-  }
+//   }
 });
 
 /* -------------------------------------------------------------------------- */

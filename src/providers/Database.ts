@@ -1,6 +1,6 @@
 import Enmap, { EnmapOptions } from "enmap";
 
-import Logger from "../util/Logger";
+import Logger from "Stumper";
 
 export default abstract class Database {
   protected db: Enmap;

@@ -1,6 +1,6 @@
 import { Interaction, Client } from "discord.js";
 
-import Logger from "../util/Logger";
+import Logger from "Stumper";
 
 export default (client: Client): void => {
   client.on("interactionCreate", async (interaction: Interaction) => {

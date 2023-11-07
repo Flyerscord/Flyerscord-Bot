@@ -1,6 +1,6 @@
 import axios from "axios";
 import IHttpResponse from "../interfaces/HttpResponse";
-import Logger from "./Logger";
+import Logger from "Stumper";
 
 export default class NHLApi {
   private static readonly baseurl = "https://statsapi.web.nhl.com/api/v1";

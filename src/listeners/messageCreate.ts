@@ -1,16 +1,13 @@
 import { Client, Message } from "discord.js";
 import { exec } from "child_process";
 
-import Logger from "../util/Logger";
+import Logger from "Stumper";
 import Config from "../config/Config";
 import TextCommand from "../models/TextCommand";
 import CustomCommandsDB from "../providers/CustomCommands.Database";
-import UserLevelsDB from "../providers/UserLevels.Database";
 
 export default (client: Client): void => {
   client.on("messageCreate", async (message: Message) => {
-    addExpForUser(message);
-
     // Check if message is a Mee6 level up message
     checkLevelUpMessage(message);
 
@@ -19,16 +16,6 @@ export default (client: Client): void => {
     handleCustomCommands(message);
   });
 };
-
-function addExpForUser(message: Message): void {
-  // Ignores all bots
-  if (message.author.bot) return;
-  // Ignores all messages not in a text channel
-  if (!message.channel.isTextBased()) return;
-
-  const db = UserLevelsDB.getInstance();
-  db.addMessage(message.author.id);
-}
 
 function checkLevelUpMessage(message: Message): void {
   if (message.content.includes("you just advanced") && message.author.id == "796849687436066826") {

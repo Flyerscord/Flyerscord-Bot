@@ -3,7 +3,7 @@ import { ChatInputCommandInteraction } from "discord.js";
 import { PARAM_TYPES, SlashCommand } from "../../../models/SlashCommand";
 import NHLApi from "../../../util/nhlApi";
 import discord from "../../../util/discord/discord";
-import Logger from "../../../util/Logger";
+import Logger from "Stumper";
 
 export default class StandingsCommand extends SlashCommand {
   constructor() {

@@ -5,8 +5,7 @@ import Config from "./config/Config";
 import ready from "./listeners/ready";
 import errorHanding from "./listeners/errorHanding";
 
-import Logger from "./util/Logger";
-import Levels from "./util/Levels";
+import Logger from "Stumper";
 
 // Check if the config file exists
 if (!Config.fileExists()) {
@@ -29,9 +28,6 @@ client.textCommands = new Collection();
 // Others will be dynamically loaded in the ready listener
 errorHanding(client);
 ready(client);
-
-// Calculate exp needed for levels, if needed
-Levels.calculateExpNeededForLevels();
 
 // Use our token to connect to the connect
 client.login(Config.getConfig().token);

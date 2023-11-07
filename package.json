@@ -26,7 +26,8 @@
     "child_process": "^1.0.2",
     "discord.js": "^14.7.1",
     "enmap": "^5.9.5",
-    "moment": "^2.29.4"
+    "moment": "^2.29.4",
+    "stumper": "^1.0.2"
   },
   "devDependencies": {
     "@types/node": "^18.14.0",

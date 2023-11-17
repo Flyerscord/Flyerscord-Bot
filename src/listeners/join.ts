@@ -1,7 +1,7 @@
 import { Client, GuildMember } from "discord.js";
 
 import Config from "../config/Config";
-import Logger from "Stumper";
+import Logger from "stumper";
 
 export default (client: Client): void => {
   client.on("guildMemberAdd", async (member: GuildMember) => {

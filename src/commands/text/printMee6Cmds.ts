@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 
 import TextCommand from "../../models/TextCommand";
-import Logger from "Stumper";
+import Logger from "stumper";
 
 export default class PrintMee6CmdsCommand extends TextCommand {
   constructor() {

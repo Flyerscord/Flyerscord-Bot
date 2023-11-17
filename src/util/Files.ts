@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import Logger from "Stumper";
+import Logger from "stumper";
 import File from "../models/File";
 
 export default abstract class Files {

@@ -1,7 +1,7 @@
 import { Client, Message } from "discord.js";
 import { exec } from "child_process";
 
-import Logger from "Stumper";
+import Logger from "stumper";
 import Config from "../config/Config";
 import TextCommand from "../models/TextCommand";
 import CustomCommandsDB from "../providers/CustomCommands.Database";
@@ -17,6 +17,7 @@ export default (client: Client): void => {
   });
 };
 
+// TODO: Change to use the new level up format from the new bot
 function checkLevelUpMessage(message: Message): void {
   if (message.content.includes("you just advanced") && message.author.id == "796849687436066826") {
     const levelRegex = /level ([0-9]+)/;

@@ -1,6 +1,6 @@
 import { TextChannel, EmbedBuilder, Client, Message } from "discord.js";
 
-import Logger from "Stumper";
+import Logger from "stumper";
 
 export async function sendStringReplytoMessage(
   messageObj: Message,

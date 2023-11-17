@@ -5,7 +5,7 @@ import Config from "./config/Config";
 import ready from "./listeners/ready";
 import errorHanding from "./listeners/errorHanding";
 
-import Logger from "Stumper";
+import Logger from "stumper";
 
 // Check if the config file exists
 if (!Config.fileExists()) {

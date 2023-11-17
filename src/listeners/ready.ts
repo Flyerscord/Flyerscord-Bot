@@ -2,7 +2,7 @@ import { Client, RESTPostAPIChatInputApplicationCommandsJSONBody, Routes, TextCh
 import { REST } from "@discordjs/rest";
 
 import Config from "../config/Config";
-import Logger from "Stumper";
+import Logger from "stumper";
 import { SlashCommand } from "../models/SlashCommand";
 import VistorRoleDB from "../providers/VistorRole.Database";
 import discord from "../util/discord/discord";

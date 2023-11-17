@@ -2,6 +2,7 @@ import { EmbedBuilder, NonThreadGuildBasedChannel } from "discord.js";
 import Config from "../../config/Config";
 import { ChannelUpdateType } from "../../interfaces/EventLogger";
 import Time from "../Time";
+import ICustomCommand from "../../interfaces/CustomCommand";
 
 export function getVistorRoleReactEmbed(): EmbedBuilder {
   const embed = new EmbedBuilder();
@@ -231,5 +232,28 @@ export function getChannelUpdateEmbed(
   } else {
     // Channel update
   }
+  return embed;
+}
+
+export function getCustomCommandEmbed(command: ICustomCommand) {
+  const embed = new EmbedBuilder();
+
+  embed.setTitle(`Name: ${command.name}`);
+  embed.setAuthor({ name: command.createdBy });
+  embed.setTimestamp(command.createdOn);
+  embed.setColor("Yellow");
+  embed.addFields({ name: "Text", value: command.text });
+
+  const history = command.history;
+
+  for (let i = history.length - 1; i >= 0; i--) {
+    const historyItem = history[i];
+
+    embed.addFields({
+      name: `Edit ${i + 1}`,
+      value: `Old: ${historyItem.oldText}  New: ${historyItem.newText}  Author: ${historyItem.editedBy}  Date: ${historyItem.editedOn}`,
+    });
+  }
+
   return embed;
 }

@@ -5,17 +5,29 @@ import Logger from "stumper";
 import Config from "../config/Config";
 import TextCommand from "../models/TextCommand";
 import CustomCommandsDB from "../providers/CustomCommands.Database";
+import { addMessage } from "../util/levels/leveling";
 
 export default (client: Client): void => {
   client.on("messageCreate", async (message: Message) => {
     // Check if message is a Mee6 level up message
     checkLevelUpMessage(message);
 
+    handleUserLeveling(message);
+
     handleTextCommands(message);
 
     handleCustomCommands(message);
   });
 };
+
+function handleUserLeveling(message: Message): void {
+  // Ignores all bots
+  if (message.author.bot) return;
+  // Ignores all messages not in a text channel
+  if (!message.channel.isTextBased()) return;
+
+  addMessage(message);
+}
 
 // TODO: Change to use the new level up format from the new bot
 function checkLevelUpMessage(message: Message): void {

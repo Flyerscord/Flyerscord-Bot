@@ -4,6 +4,7 @@ import Config from "./config/Config";
 
 import ready from "./listeners/ready";
 import errorHanding from "./listeners/errorHanding";
+import { calculateLevels } from "./util/levels/requiredExp";
 
 import Logger from "stumper";
 
@@ -28,6 +29,9 @@ client.textCommands = new Collection();
 // Others will be dynamically loaded in the ready listener
 errorHanding(client);
 ready(client);
+
+// Generate the levels table if needed
+calculateLevels(1000);
 
 // Use our token to connect to the connect
 client.login(Config.getConfig().token);

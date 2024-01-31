@@ -6,21 +6,18 @@ module.exports.run = async (client, message, args) => {
     message.channel.id == 345701810616532993
   ) {
     message.delete();
-    var url = "https://statsapi.web.nhl.com/api/v1/teams/4?expand=team.roster";
+    var url = "https://api-web.nhle.com/v1/roster/PHI/current";
 
     request({ url: url, json: true }, function (error, response, body) {
       if (!error && response.statusCode === 200) {
         let string = JSON.stringify(body);
         var obj = JSON.parse(string);
-        var roster = obj.teams[0].roster.roster;
-        roster.forEach((player) => {
-          let playerFullName = player.person.fullName;
-          let playerNameArray = playerFullName.split(" ");
-          let playerLastName = playerNameArray[playerNameArray.length - 1];
 
-          let playerId = player.person.id;
+        const allPlayers = [...obj.forwards, ...obj.defensemen, ...obj.goalies];
+        allPlayers.forEach((player) => {
+          const playerLastName = player.lastName.default;
 
-          let photoUrl = `https://cms.nhl.bamgrid.com/images/headshots/current/168x168/${playerId}.png`;
+          let photoUrl = player.headshot;
           message.guild.emojis
             .create(photoUrl, playerLastName)
             .then((emoji) =>

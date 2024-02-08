@@ -5,7 +5,7 @@ export {};
 
 declare module "discord.js" {
   export interface Client {
-      slashCommands: Collection<string, SlashCommand>;
-      textCommands: Collection<string, TextCommand>;
+    slashCommands: Collection<string, SlashCommand>;
+    textCommands: Collection<string, TextCommand>;
   }
 }

@@ -9,7 +9,7 @@ export default class Config {
   }
 
   static getConfig(): IConfig {
-    if (this.isProductionMode()) {
+    if (config.productionMode) {
       return config.production;
     }
     return config.nonProduction;

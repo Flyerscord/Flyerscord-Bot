@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:18
 
 # Set the timezone so that the logs are in the correct timezone
 ENV TZ=America/New_York
@@ -6,9 +6,9 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /usr/src/app
 
+COPY tsconfig.json .
 COPY package*.json .
-COPY nodemon.json .
 
 RUN npm install
 
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["npm", "run", "start:dev"]

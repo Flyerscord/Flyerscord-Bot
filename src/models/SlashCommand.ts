@@ -1,20 +1,43 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder, PermissionsBitField } from "discord.js";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  ChatInputCommandInteraction,
+  PermissionsBitField,
+  SlashCommandBuilder,
+} from "discord.js";
 
-export abstract class SlashCommand {
+export default abstract class SlashCommand {
+  // Contains the behavior of the command
   readonly data: SlashCommandBuilder;
 
+  // The command
+  // Ex: "test" would make the command /test
   name: string;
+
+  // A desciption of the command
   description: string;
 
   constructor(name: string, description: string) {
+    // Must be lowercase
     this.name = name.toLowerCase();
     this.description = description;
 
-    this.data = new SlashCommandBuilder().setName(this.name).setDescription(this.description).setDMPermission(false);
+    // If additional configuration is needed, it can be added in the constructor of the command
+    // See the example slash command (src/commands/slash/example.ts)
+    this.data = new SlashCommandBuilder()
+      .setName(this.name)
+      .setDescription(this.description)
+      .setDMPermission(false);
   }
 
-  protected getParamValue(interaction: ChatInputCommandInteraction, type: PARAM_TYPES, paramName: string): any | null {
-    let val = undefined;
+  // Called when the command is triggered
+  abstract execute(interaction: ChatInputCommandInteraction): Promise<void>;
+
+  protected getParamValue(
+    interaction: ChatInputCommandInteraction,
+    type: PARAM_TYPES,
+    paramName: string,
+  ): any | null {
+    let val: any = undefined;
     switch (type) {
       case PARAM_TYPES.STRING:
         val = interaction.options.getString(paramName);
@@ -44,22 +67,28 @@ export abstract class SlashCommand {
     return val;
   }
 
-  protected isSubCommand(interaction: ChatInputCommandInteraction, subCommandName: string): boolean {
+  protected isSubCommand(
+    interaction: ChatInputCommandInteraction,
+    subCommandName: string,
+  ): boolean {
     return interaction.options.getSubcommand() == subCommandName;
   }
 
-  protected isSubCommandGroup(interaction: ChatInputCommandInteraction, subCommandGroupName: string): boolean {
+  protected isSubCommandGroup(
+    interaction: ChatInputCommandInteraction,
+    subCommandGroupName: string,
+  ): boolean {
     return interaction.options.getSubcommandGroup() == subCommandGroupName;
   }
-
-  abstract execute(interaction: ChatInputCommandInteraction): Promise<void>;
 }
 
 export abstract class AdminSlashCommand extends SlashCommand {
   constructor(name: string, description: string) {
     super(name, description);
 
-    this.data.setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
+    this.data.setDefaultMemberPermissions(
+      PermissionsBitField.Flags.Administrator,
+    );
   }
 }
 

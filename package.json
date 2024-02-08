@@ -1,47 +1,46 @@
 {
-  "name": "flyerscord_helper",
-  "version": "1.0.0",
-  "description": "Flyers Discord Helper Bot",
-  "main": "bot.js",
+  "name": "flyerscord-helper",
+  "version": "2.0.0",
+  "description": "Flyer's Discord Helper Bot",
+  "main": "dist/bot.js",
   "scripts": {
-    "build": "tsc",
-    "runprod": "node /usr/src/app/src/bot.js",
-    "rundev": "node /usr/src/app/src/bot.js",
-    "rundevw": "nodemon /usr/src/app/src/bot.js",
-    "lint": "npx eslint . --fix"
+    "build": "npx tsc",
+    "start:prod": "node /usr/src/app/src/bot.js",
+    "start:dev": "(npx tsc -w &) && npx nodemon",
+    "lint": "npx eslint --ext .js,.ts .",
+    "lintfix": "npx eslint . --fix",
+    "format": "npx prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+    "update": "npx npm-check -u"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/strenkml/NHL-Helper-Bot.git"
+    "url": "git+https://github.com/strenkml/discord-typescript-template.git"
   },
   "author": "Matt Strenk",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/strenkml/NHL-Helper-Bot/issues"
+    "url": "https://github.com/strenkml/discord-typescript-template/issues"
   },
-  "homepage": "https://github.com/strenkml/NHL-Helper-Bot#readme",
+  "homepage": "https://github.com/strenkml/discord-typescript-template#readme",
   "dependencies": {
-    "@discordjs/rest": "^1.5.0",
-    "axios": "^1.3.3",
+    "axios": "^1.6.7",
     "child_process": "^1.0.2",
-    "discord.js": "^14.7.1",
-    "enmap": "^5.9.5",
+    "discord.js": "^14.14.1",
+    "enmap": "^5.9.8",
     "mee6-levels-api": "^1.3.1",
-    "moment": "^2.29.4",
+    "moment": "^2.30.1",
     "stumper": "^1.0.2"
   },
   "devDependencies": {
-    "@types/node": "^18.14.0",
-    "@typescript-eslint/eslint-plugin": "^5.52.0",
-    "@typescript-eslint/parser": "^5.52.0",
-    "eslint": "^8.34.0",
-    "eslint-config-prettier": "^8.6.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "nodemon": "^2.0.20",
-    "prettier": "^2.8.4",
-    "typescript": "^4.9.5"
-  },
-  "overrides": {
-    "discord-api-types": "0.37.20"
+    "@types/node": "^20.11.16",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "nodemon": "^3.0.3",
+    "npm-check": "^6.0.1",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3"
   }
 }

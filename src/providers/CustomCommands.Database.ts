@@ -1,12 +1,14 @@
-import ICustomCommand, { ICustomCommandHistory } from "../interfaces/CustomCommand";
-import Time from "../util/Time";
 import Database from "./Database";
+import ICustomCommand, {
+  ICustomCommandHistory,
+} from "../interfaces/CustomCommand";
+import Time from "../util/Time";
 
 export default class CustomCommandsDB extends Database {
   private static instance: CustomCommandsDB;
 
   private constructor() {
-    super({ name: "custom-commands" });
+    super({ name: "CustomCommands" });
   }
 
   static getInstance(): CustomCommandsDB {
@@ -61,7 +63,11 @@ export default class CustomCommandsDB extends Database {
     return this.getAllValues();
   }
 
-  private updateObject(oldCommand: ICustomCommand, newText: string, editUser: string): ICustomCommand {
+  private updateObject(
+    oldCommand: ICustomCommand,
+    newText: string,
+    editUser: string,
+  ): ICustomCommand {
     const newCommand = oldCommand;
 
     const historyEntry: ICustomCommandHistory = {

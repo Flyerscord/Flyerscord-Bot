@@ -1,5 +1,5 @@
 # Build typescript into javascript
-FROM node:16 AS BUILDER
+FROM node:18 AS BUILDER
 
 WORKDIR /usr/src/build
 
@@ -9,9 +9,9 @@ RUN npm ci
 
 COPY . .
 
-RUN npx tsc
+RUN npm run build
 
-FROM node:16
+FROM node:18
 
 # Set the timezone so that the logs are in the correct timezone
 ENV TZ=America/New_York
@@ -25,5 +25,5 @@ RUN npm install --production
 
 COPY --from=BUILDER /usr/src/build/dist src/
 
-CMD ["npm", "run", "runprod"]
+CMD ["npm", "run", "start:prod"]
 # CMD ["tail", "-f", "/dev/null"]

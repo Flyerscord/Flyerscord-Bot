@@ -1,47 +1,17 @@
 import { Message } from "discord.js";
-import ITextCommandOptions from "../interfaces/TextCommandOptions";
 
 export default abstract class TextCommand {
+  // A friendly name for the command (useful if the command is abbreviated)
   name: string;
-  command: string;
-  description: string;
-  options?: ITextCommandOptions;
 
-  constructor(name: string, command: string, description: string, options?: ITextCommandOptions) {
+  // The string not including the prefix that triggers the command
+  command: string;
+
+  constructor(name: string, command: string) {
     this.name = name;
     this.command = command;
-    this.description = description;
-    this.options = options;
   }
 
+  // The method to be called when the command is triggered
   abstract execute(message: Message, args: Array<string>): Promise<void>;
-
-  protected checkPermissions(message: Message): boolean {
-    if (this.options) {
-      if (this.options.allowedPermissions) {
-        for (let i = 0; i < this.options.allowedPermissions.length; i++) {
-          const permission = this.options.allowedPermissions[i];
-          if (message.member?.permissions.has(permission)) {
-            return true;
-          }
-        }
-      }
-
-      if (this.options.allowedUsers) {
-        if (message.member?.user.id && this.options.allowedUsers.includes(message.member?.user.id)) {
-          return true;
-        }
-      }
-
-      if (this.options.allowedRoles) {
-        for (let i = 0; i < this.options.allowedRoles.length; i++) {
-          const role = this.options.allowedRoles[i];
-          if (message.member?.roles.cache.has(role)) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
-  }
 }

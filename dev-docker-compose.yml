@@ -5,6 +5,4 @@ services:
       context: .
       dockerfile: dev-Dockerfile
     volumes:
-      # host:container
-      - "/mnt/c/Users/flyer/Documents/dockers/nhl-helper/db:/usr/src/app/data"
-      - "/mnt/c/Users/flyer/Documents/GitHub/NHL-Helper-Bot/dist:/usr/src/app/src"
+      - "./src:/usr/src/app/src"

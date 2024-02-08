@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Enmap, { EnmapOptions } from "enmap";
-
 import Logger from "stumper";
 
 export default abstract class Database {
@@ -12,7 +12,7 @@ export default abstract class Database {
   }
 
   wipe(): void {
-    Logger.info(`Wiping database: ${this.name}`, "Database");
+    Logger.info("Wiping database", this.name);
     this.db.clear();
   }
 
@@ -29,15 +29,10 @@ export default abstract class Database {
     return Array.from(this.db.keys());
   }
 
-  protected getAllKeysAndValues(): Array<IItem> {
+  protected getAllKeysAndValues(): Array<{ key: string | number; value: any }> {
     const arr = Array.from(this.db);
     return arr.map((val) => {
       return { key: val[0], value: val[1] };
     });
   }
-}
-
-export interface IItem {
-  key: string | number;
-  value: any;
 }

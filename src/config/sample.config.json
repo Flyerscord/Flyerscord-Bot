@@ -1,40 +1,12 @@
 {
-  "productionMode": false,
+  "productionMode": true,
   "production": {
     "token": "",
-    "prefixes": {
-      "normal": ".",
-      "custom": "!"
-    },
-    "vistorReactRole": {
-      "memberRoleId": "",
-      "visitorRoleId": "",
-      "visitorEmoji": "",
-      "visitorEmojiId": "",
-      "rolesChannelId": ""
-    },
-    "liveData": {
-      "notificationChannelId": "",
-      "periodNotificationRoleId": ""
-    }
+    "prefix": "!"
   },
   "nonProduction": {
     "token": "",
-    "prefixes": {
-      "normal": ".",
-      "custom": "!"
-    },
-    "guildId": "",
-    "vistorReactRole": {
-      "memberRoleId": "",
-      "visitorRoleId": "",
-      "visitorEmoji": "",
-      "visitorEmojiId": "",
-      "rolesChannelId": ""
-    },
-    "liveData": {
-      "notificationChannelId": "",
-      "periodNotificationRoleId": ""
-    }
+    "prefix": ".",
+    "guildId": ""
   }
 }

@@ -6,33 +6,45 @@ import ready from "./listeners/ready";
 import messageCreate from "./listeners/messageCreate";
 import interactionCreate from "./listeners/interactionCreate";
 import errorHanding from "./listeners/errorHanding";
+import join from "./listeners/join";
 
-import Logger, { LOG_LEVEL } from "stumper";
+/* -------------------------------------------------------------------------- */
+/*                                Setup Logger                                */
+/* -------------------------------------------------------------------------- */
+import Stumper, { LOG_LEVEL } from "stumper";
+Stumper.setConfig({ logLevel: LOG_LEVEL.ALL });
 
-Logger.setConfig({ logLevel: LOG_LEVEL.ALL });
-
-// Check if the config file exists
+/* -------------------------------------------------------------------------- */
+/*                              Check Config file                             */
+/* -------------------------------------------------------------------------- */
 if (!Config.fileExists()) {
-  Logger.error(
-    "Config file not found! Rename src/config/sample.config.json to config.json and enter the required information!",
-    "main",
-  );
+  Stumper.error("Config file not found! Rename src/config/sample.config.json to config.json and enter the required information!", "main");
   process.exit(1);
 }
 
-// Create Discord.js client and set our intents
+/* -------------------------------------------------------------------------- */
+/*                            Create Discord Client                           */
+/* -------------------------------------------------------------------------- */
 const client = new Client({
   intents: 33281,
 });
 
+/* -------------------------------------------------------------------------- */
+/*                       Setup Collections for commands                       */
+/* -------------------------------------------------------------------------- */
 client.slashCommands = new Collection();
 client.textCommands = new Collection();
 
-// Register our event handlers
+/* -------------------------------------------------------------------------- */
+/*                         Register our event handlers                        */
+/* -------------------------------------------------------------------------- */
 errorHanding(client);
 ready(client);
 messageCreate(client);
 interactionCreate(client);
+join(client);
 
-// Use our token to connect to the connect
+/* -------------------------------------------------------------------------- */
+/*                                Log into bot                                */
+/* -------------------------------------------------------------------------- */
 client.login(Config.getConfig().token);

@@ -2,7 +2,7 @@ import { Client, Message } from "discord.js";
 
 import Config from "../config/Config";
 import TextCommand from "../models/TextCommand";
-import Logger from "stumper";
+import Stumper from "stumper";
 
 export default (client: Client): void => {
   client.on("messageCreate", async (message: Message) => {
@@ -19,19 +19,14 @@ export default (client: Client): void => {
     const command = messageArray[0];
     const args = messageArray.slice(1);
 
-    const textCmd: TextCommand = message.client.textCommands.get(
-      command.slice(prefix.length),
-    );
+    const textCmd: TextCommand = message.client.textCommands.get(command.slice(prefix.length));
     try {
       if (textCmd) {
         textCmd.execute(message, args);
-        Logger.info(`Command ${command} called!`, "messageCreate");
+        Stumper.info(`Command ${command} called!`, "messageCreate");
       }
     } catch (err) {
-      Logger.error(
-        `Message content: ${message.content}  Error: ${err}`,
-        "messageCreate",
-      );
+      Stumper.error(`Message content: ${message.content}  Error: ${err}`, "messageCreate");
     }
   });
 };

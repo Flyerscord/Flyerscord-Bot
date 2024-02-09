@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Enmap, { EnmapOptions } from "enmap";
-import Logger from "stumper";
+import Stumper from "stumper";
 
 export default abstract class Database {
   protected db: Enmap;
@@ -12,7 +12,7 @@ export default abstract class Database {
   }
 
   wipe(): void {
-    Logger.info("Wiping database", this.name);
+    Stumper.info("Wiping database", this.name);
     this.db.clear();
   }
 

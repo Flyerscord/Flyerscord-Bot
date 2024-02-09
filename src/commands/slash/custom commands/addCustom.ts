@@ -1,7 +1,8 @@
 import { ChatInputCommandInteraction } from "discord.js";
 
-import { AdminSlashCommand } from "../../../models/SlashCommand";
+import { AdminSlashCommand, PARAM_TYPES } from "../../../models/SlashCommand";
 import Config from "../../../config/Config";
+import CustomCommandsDB from "../../../providers/CustomCommands.Database";
 
 export default class AddCustomCommand extends AdminSlashCommand {
   constructor() {
@@ -25,6 +26,33 @@ export default class AddCustomCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    interaction.reply({ content: "PONG!", ephemeral: true });
+    const db = CustomCommandsDB.getInstance();
+
+    let name: string = this.getParamValue(
+      interaction,
+      PARAM_TYPES.STRING,
+      "name",
+    );
+    const response: string = this.getParamValue(
+      interaction,
+      PARAM_TYPES.STRING,
+      "response",
+    );
+
+    name = name.toLowerCase();
+
+    if (db.hasCommand(name)) {
+      interaction.reply({
+        content: `Command ${Config.getConfig().prefixes.custom}${name} already exists!`,
+        ephemeral: true,
+      });
+      return;
+    }
+
+    db.addCommand(name, response, interaction.user.id);
+    interaction.reply({
+      content: `Command ${Config.getConfig().prefixes.custom}${name} added!`,
+      ephemeral: true,
+    });
   }
 }

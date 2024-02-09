@@ -1,6 +1,6 @@
 import { Interaction, Client } from "discord.js";
 
-import Logger from "stumper";
+import Stumper from "stumper";
 
 export default (client: Client): void => {
   client.on("interactionCreate", async (interaction: Interaction) => {
@@ -9,13 +9,10 @@ export default (client: Client): void => {
     const command = client.slashCommands.get(interaction.commandName);
     if (!command) return;
     try {
-      Logger.info(
-        `Running command: ${interaction.commandName}`,
-        "interactionCreate",
-      );
+      Stumper.info(`Running command: ${interaction.commandName}`, "interactionCreate");
       await command.execute(interaction);
     } catch (error) {
-      if (error) Logger.error(error);
+      if (error) Stumper.error(error);
       await interaction.reply({
         content: "There was an error while executing this command!",
         ephemeral: true,

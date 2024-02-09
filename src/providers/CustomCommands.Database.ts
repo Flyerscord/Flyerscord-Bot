@@ -1,8 +1,7 @@
 import Database from "./Database";
-import ICustomCommand, {
-  ICustomCommandHistory,
-} from "../interfaces/CustomCommand";
+import ICustomCommand, { ICustomCommandHistory } from "../interfaces/CustomCommand";
 import Time from "../util/Time";
+import Stumper from "stumper";
 
 export default class CustomCommandsDB extends Database {
   private static instance: CustomCommandsDB;
@@ -36,16 +35,18 @@ export default class CustomCommandsDB extends Database {
         history: [],
       };
       this.db.set(name, customCommand);
+      Stumper.info(`Custom Command created! Command: ${name}  By user: ${userId}`, "CustomCommandsDB:addCommand");
       return true;
     }
     return false;
   }
 
-  removeCommand(name: string): boolean {
+  removeCommand(name: string, userId: string): boolean {
     if (!this.hasCommand(name)) {
       return false;
     }
     this.db.delete(name);
+    Stumper.info(`Custom Command created! Command: ${name}  By user: ${userId}`, "CustomCommandsDB:deleteCommand");
     return true;
   }
 
@@ -63,11 +64,7 @@ export default class CustomCommandsDB extends Database {
     return this.getAllValues();
   }
 
-  private updateObject(
-    oldCommand: ICustomCommand,
-    newText: string,
-    editUser: string,
-  ): ICustomCommand {
+  private updateObject(oldCommand: ICustomCommand, newText: string, editUser: string): ICustomCommand {
     const newCommand = oldCommand;
 
     const historyEntry: ICustomCommandHistory = {

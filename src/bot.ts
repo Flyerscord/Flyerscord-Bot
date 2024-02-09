@@ -1,6 +1,7 @@
-import { Client, Collection } from "discord.js";
+import { Client, Collection, GatewayIntentBits } from "discord.js";
 
 import Config from "./config/Config";
+import { calculateLevels } from "./util/levels/requiredExp";
 
 import ready from "./listeners/ready";
 import messageCreate from "./listeners/messageCreate";
@@ -9,7 +10,7 @@ import errorHanding from "./listeners/errorHanding";
 import join from "./listeners/join";
 
 /* -------------------------------------------------------------------------- */
-/*                                Setup Logger                                */
+/*                                Setup Stumper                                */
 /* -------------------------------------------------------------------------- */
 import Stumper, { LOG_LEVEL } from "stumper";
 Stumper.setConfig({ logLevel: LOG_LEVEL.ALL });
@@ -26,7 +27,7 @@ if (!Config.fileExists()) {
 /*                            Create Discord Client                           */
 /* -------------------------------------------------------------------------- */
 const client = new Client({
-  intents: 33281,
+  intents: [GatewayIntentBits.MessageContent, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 });
 
 /* -------------------------------------------------------------------------- */
@@ -43,6 +44,11 @@ ready(client);
 messageCreate(client);
 interactionCreate(client);
 join(client);
+
+/* -------------------------------------------------------------------------- */
+/*                                Setup Levels                                */
+/* -------------------------------------------------------------------------- */
+calculateLevels(1000);
 
 /* -------------------------------------------------------------------------- */
 /*                                Log into bot                                */

@@ -1,9 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  ChatInputCommandInteraction,
-  PermissionsBitField,
-  SlashCommandBuilder,
-} from "discord.js";
+import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 
 export default abstract class SlashCommand {
   // Contains the behavior of the command
@@ -23,20 +19,13 @@ export default abstract class SlashCommand {
 
     // If additional configuration is needed, it can be added in the constructor of the command
     // See the example slash command (src/commands/slash/example.ts)
-    this.data = new SlashCommandBuilder()
-      .setName(this.name)
-      .setDescription(this.description)
-      .setDMPermission(false);
+    this.data = new SlashCommandBuilder().setName(this.name).setDescription(this.description).setDMPermission(false);
   }
 
   // Called when the command is triggered
   abstract execute(interaction: ChatInputCommandInteraction): Promise<void>;
 
-  protected getParamValue(
-    interaction: ChatInputCommandInteraction,
-    type: PARAM_TYPES,
-    paramName: string,
-  ): any | null {
+  protected getParamValue(interaction: ChatInputCommandInteraction, type: PARAM_TYPES, paramName: string): any | null {
     let val: any = undefined;
     switch (type) {
       case PARAM_TYPES.STRING:
@@ -67,18 +56,16 @@ export default abstract class SlashCommand {
     return val;
   }
 
-  protected isSubCommand(
-    interaction: ChatInputCommandInteraction,
-    subCommandName: string,
-  ): boolean {
+  protected isSubCommand(interaction: ChatInputCommandInteraction, subCommandName: string): boolean {
     return interaction.options.getSubcommand() == subCommandName;
   }
 
-  protected isSubCommandGroup(
-    interaction: ChatInputCommandInteraction,
-    subCommandGroupName: string,
-  ): boolean {
+  protected isSubCommandGroup(interaction: ChatInputCommandInteraction, subCommandGroupName: string): boolean {
     return interaction.options.getSubcommandGroup() == subCommandGroupName;
+  }
+
+  public toString(): string {
+    return JSON.stringify(this);
   }
 }
 
@@ -86,9 +73,7 @@ export abstract class AdminSlashCommand extends SlashCommand {
   constructor(name: string, description: string) {
     super(name, description);
 
-    this.data.setDefaultMemberPermissions(
-      PermissionsBitField.Flags.Administrator,
-    );
+    this.data.setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
   }
 }
 

@@ -149,10 +149,10 @@ globals.client.on("message", (message) => {
 
   if (message.content.toLowerCase().includes("carter") || message.content.toLowerCase().includes("hart") ) {
     // Message contains carter or hart
-    message.reply("That guy sucks!")
+    message.reply("Fuck that guy!")
     return;
   }
-  
+
   if (!message.content.startsWith(prefix)) return; // ignores all messages that dont start with the prefix
 
 

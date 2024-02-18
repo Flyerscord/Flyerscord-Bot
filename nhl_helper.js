@@ -147,6 +147,12 @@ globals.client.on("message", (message) => {
   if (message.channel.type != "text") return; // ignores all dm's
   if (!message.content.startsWith(prefix)) return; // ignores all messages that dont start with the prefix
 
+  if (message.content.toLowerCase().includes("carter") || message.content.toLowerCase().includes("hart") ) {
+    // Message contains carter or hart
+    message.reply("That guy sucks!")
+    return;
+  }
+
   let messageArray = message.content.split(" ");
   let command = messageArray[0];
   let args = messageArray.slice(1);

@@ -147,11 +147,15 @@ globals.client.on("message", (message) => {
   if (message.author.bot) return; // ignores all bots
   if (message.channel.type != "text") return; // ignores all dm's
 
+
+  // Check for Carter Hart
+
+
   if (message.content.toLowerCase().includes("carter") || message.content.toLowerCase().includes("hart") ) {
     // Message contains carter or hart
     if (!message.content.toLowerCase().includes("jeff")) {
-      message.channel.send("Fuck Carter Hart!")
-      return;
+      // message.channel.send("Fuck Carter Hart!")
+      // return;
     }
   }
 

@@ -98,16 +98,16 @@ fs.readdir("./cmds/", (err, files) => {
 /* -------------------------------------------------------------------------- */
 globals.client.on("ready", async () => {
   logging.logEvent("Bot is ready!", "System");
-//   if (!JsonStorage.get("visitorMessageID")) {
-//     visitorReact.sendVisitorReactionMessage();
-//   } else {
-//     let channel = globals.client.channels.cache.get(rolesChannelId);
-//     try {
-//       message = await channel.messages.fetch(JsonStorage.get("visitorMessageID"));
-//     } catch (e) {
-//       visitorReact.sendVisitorReactionMessage();
-//     }
-//   }
+  //   if (!JsonStorage.get("visitorMessageID")) {
+  //     visitorReact.sendVisitorReactionMessage();
+  //   } else {
+  //     let channel = globals.client.channels.cache.get(rolesChannelId);
+  //     try {
+  //       message = await channel.messages.fetch(JsonStorage.get("visitorMessageID"));
+  //     } catch (e) {
+  //       visitorReact.sendVisitorReactionMessage();
+  //     }
+  //   }
 });
 
 /* -------------------------------------------------------------------------- */
@@ -143,7 +143,6 @@ globals.client.on("message", (message) => {
     );
   }
 
-  
   if (message.author.bot) return; // ignores all bots
   if (message.channel.type != "text") return; // ignores all dm's
 
@@ -152,13 +151,22 @@ globals.client.on("message", (message) => {
   const matches = message.content.toLowerCase().match(regex);
   if (matches) {
     if (!message.content.toLowerCase().includes("jeff")) {
-      message.channel.send("Fuck Carter Hart!")
+      message.channel.send("Fuck Carter Hart!");
+      return;
+    }
+  }
+
+  const hysterUserId = "811967964819619911";
+  if (message.author.id == hyperUserId) {
+    const currTime = new Date();
+    const currentHour = currTime.getHours();
+    if (currentHour >= 0 && currentHour < 8) {
+      message.channel.send(`@${hysterUserId} Go to bed!`);
       return;
     }
   }
 
   if (!message.content.startsWith(prefix)) return; // ignores all messages that dont start with the prefix
-
 
   let messageArray = message.content.split(" ");
   let command = messageArray[0];

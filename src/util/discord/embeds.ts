@@ -1,6 +1,7 @@
-import { EmbedBuilder } from "discord.js";
+import { APIEmbedField, EmbedBuilder, GuildMember } from "discord.js";
 import Config from "../../config/Config";
 import ICustomCommand from "../../interfaces/CustomCommand";
+import { IAuditLoggerType } from "../../interfaces/DiscordAuditLogger";
 
 export function getVistorRoleReactEmbed(): EmbedBuilder {
   const embed = new EmbedBuilder();
@@ -8,9 +9,7 @@ export function getVistorRoleReactEmbed(): EmbedBuilder {
   const visitorEmoji = Config.getConfig().vistorReactRole.visitorEmoji;
 
   embed.setTitle("Visitor Role Selection");
-  embed.setDescription(
-    `${visitorEmoji} Get the Visitor Role (Everyone else will get the member role)`,
-  );
+  embed.setDescription(`${visitorEmoji} Get the Visitor Role (Everyone else will get the member role)`);
   embed.setColor("NotQuiteBlack");
 
   return embed;
@@ -239,7 +238,7 @@ export function getScheduleEmbed(
   return embed;
 }
 
-export function getCustomCommandEmbed(command: ICustomCommand) {
+export function getCustomCommandEmbed(command: ICustomCommand): EmbedBuilder {
   const embed = new EmbedBuilder();
 
   embed.setTitle(`Name: ${command.name}`);
@@ -258,6 +257,18 @@ export function getCustomCommandEmbed(command: ICustomCommand) {
       value: `Old: ${historyItem.oldText}  New: ${historyItem.newText}  Author: ${historyItem.editedBy}  Date: ${historyItem.editedOn}`,
     });
   }
+
+  return embed;
+}
+
+export function getAuditLogEmbed(member: GuildMember, type: IAuditLoggerType, fields: Array<APIEmbedField>): EmbedBuilder {
+  const embed = new EmbedBuilder();
+
+  embed.setTitle(type.name);
+  embed.setAuthor({ name: member.displayName || member.user.username });
+  embed.setColor(type.color);
+  embed.setTimestamp(Date.now());
+  embed.addFields(fields);
 
   return embed;
 }

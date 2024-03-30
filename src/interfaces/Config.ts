@@ -1,3 +1,5 @@
+import { LOG_LEVEL } from "stumper";
+
 export type IConfig = IDevConfig;
 
 interface IDevConfig extends ICommonConfig {
@@ -9,6 +11,9 @@ interface ICommonConfig {
   prefixes: IPrefixes;
   vistorReactRole: IVistorReactConfig;
   liveData: ILiveDataConfig;
+  auditLogChannelId: string;
+  imgurClientId: string;
+  logLevel: LOG_LEVEL;
 }
 
 interface IVistorReactConfig {

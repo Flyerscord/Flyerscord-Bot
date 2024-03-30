@@ -23,12 +23,30 @@ if (!Config.fileExists()) {
   process.exit(1);
 }
 
+// After confirming we have a config file set the log level to the correct level
+Stumper.setConfig({ logLevel: Config.getConfig().logLevel });
+
 /* -------------------------------------------------------------------------- */
 /*                            Create Discord Client                           */
 /* -------------------------------------------------------------------------- */
 const client = new Client({
   intents: [GatewayIntentBits.MessageContent, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 });
+
+/* -------------------------------------------------------------------------- */
+/*                                 Setup Imgur                                */
+/* -------------------------------------------------------------------------- */
+import Imgur from "./util/Imgur";
+const imgur = Imgur.getInstance();
+imgur.setClientId(Config.getConfig().imgurClientId);
+
+/* -------------------------------------------------------------------------- */
+/*                             Setup Audit Logger                             */
+/* -------------------------------------------------------------------------- */
+import DiscordAuditLogger from "./util/DiscordAuditLogger";
+const auditLogger = DiscordAuditLogger.getInstance();
+auditLogger.setChannelId(Config.getConfig().auditLogChannelId);
+auditLogger.setClient(client);
 
 /* -------------------------------------------------------------------------- */
 /*                       Setup Collections for commands                       */

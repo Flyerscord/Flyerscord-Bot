@@ -56,6 +56,8 @@ auditLogger.setClient(client);
 /* -------------------------------------------------------------------------- */
 client.slashCommands = new Collection();
 client.textCommands = new Collection();
+client.modals = new Collection();
+client.contextMenus = new Collection();
 
 /* -------------------------------------------------------------------------- */
 /*                         Register our event handlers                        */

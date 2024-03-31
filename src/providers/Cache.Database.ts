@@ -9,12 +9,14 @@ export default class CacheDB extends Database {
   private readonly CURRENT_PLAYER_EMOJIS_KEY = "currentPlayerEmojis";
   private readonly DAYS_UNTIL_DATES_KEY = "daysUntilDates";
   private readonly VISITOR_ROLE_MESSAGE_ID_KEY = "visitorRoleMessageId";
+  private readonly COMMAND_LIST_MESSAGE_ID_KEY = "commandListMessageId";
 
   private constructor() {
     super({ name: "Cache" });
     this.db.ensure(this.CURRENT_PLAYER_EMOJIS_KEY, []);
     this.db.ensure(this.DAYS_UNTIL_DATES_KEY, []);
     this.db.ensure(this.VISITOR_ROLE_MESSAGE_ID_KEY, "");
+    this.db.ensure(this.COMMAND_LIST_MESSAGE_ID_KEY, "");
   }
 
   static getInstance(): CacheDB {
@@ -55,5 +57,17 @@ export default class CacheDB extends Database {
 
   setVisitorRoleMessageId(newMessageId: string): void {
     this.db.set(this.VISITOR_ROLE_MESSAGE_ID_KEY, newMessageId);
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                           Command List Message ID                          */
+  /* -------------------------------------------------------------------------- */
+
+  getCommandListMessageId(): string {
+    return this.db.get(this.COMMAND_LIST_MESSAGE_ID_KEY);
+  }
+
+  setCommandListMessageId(newMessageId: string): void {
+    this.db.set(this.COMMAND_LIST_MESSAGE_ID_KEY, newMessageId);
   }
 }

@@ -20,24 +20,30 @@ export default class ImportMee6Command extends AdminSlashCommand {
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     const confirmation: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "confirm");
 
-    if (confirmation == "CONFIRM") {
-      Stumper.warning("Importing levels from Mee6 all previous levels will be wiped!", "ImportMee6Command");
+    // Check if the user is flyerzrule
+    if (interaction.user.id == "140656762960347136") {
+      if (confirmation == "CONFIRM") {
+        Stumper.warning("Importing levels from Mee6 all previous levels will be wiped!", "ImportMee6Command");
 
-      const db = LevelsDB.getInstance();
-      db.wipe();
+        const db = LevelsDB.getInstance();
+        db.wipe();
 
-      if (interaction.guildId) {
-        const users: Array<User> = await Mee6LevelsApi.getLeaderboard(interaction.guildId);
+        if (interaction.guildId) {
+          const users: Array<User> = await Mee6LevelsApi.getLeaderboard(interaction.guildId);
 
-        for (let i = 0; i < users.length; i++) {
-          const user = users[i];
-          const userLevel = db.addNewUser(user.id);
-          userLevel.currentLevel = user.level;
-          userLevel.messageCount = user.messageCount;
-          userLevel.totalExp = user.xp.totalXp;
-          db.updateUser(user.id, userLevel);
+          for (let i = 0; i < users.length; i++) {
+            const user = users[i];
+            const userLevel = db.addNewUser(user.id);
+            userLevel.currentLevel = user.level;
+            userLevel.messageCount = user.messageCount;
+            userLevel.totalExp = user.xp.totalXp;
+            db.updateUser(user.id, userLevel);
+          }
         }
       }
+    } else {
+      Stumper.warning(`User ${interaction.user.username} attempted to import mee6 levels!`, "ImportMee6Command");
+      interaction.reply({ ephemeral: true, content: "Only flyerzrule can run this command!" });
     }
   }
 }

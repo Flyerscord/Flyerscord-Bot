@@ -1,4 +1,4 @@
-import Exception from "./Exception";
+import Exception from "../models/Exception";
 
 export class DiscordAuditSetupRequiredException extends Exception {
   constructor() {

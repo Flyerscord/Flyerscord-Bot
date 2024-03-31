@@ -14,6 +14,7 @@ interface ICommonConfig {
   auditLogChannelId: string;
   imgurClientId: string;
   logLevel: LOG_LEVEL;
+  customCommandListChannelId: string;
 }
 
 interface IVistorReactConfig {

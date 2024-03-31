@@ -1,12 +1,21 @@
-import { TextChannel, EmbedBuilder, Client, Message } from "discord.js";
+import { TextChannel, EmbedBuilder, Message } from "discord.js";
 
 import Stumper from "stumper";
+import discord from "./discord";
+import ICustomCommand from "../../interfaces/CustomCommand";
+import Time from "../Time";
+import Config from "../../config/Config";
 
-export async function sendStringReplytoMessage(
-  messageObj: Message,
-  message: string,
-  mentionUser = false,
-): Promise<Message> {
+export function getMessage(channelId: string, messageId: string): Message | undefined {
+  const client = discord.client.client;
+  const channel = discord.channels.getChannel(client, channelId);
+  if (channel) {
+    return (channel as TextChannel).messages.cache.get(messageId);
+  }
+  return undefined;
+}
+
+export async function sendStringReplytoMessage(messageObj: Message, message: string, mentionUser = false): Promise<Message> {
   if (mentionUser) {
     Stumper.info(`Sending string reply with mention to message: ${messageObj.id}`, "sendStringReplytoMessage");
     return await messageObj.reply(message);
@@ -26,11 +35,8 @@ export async function sendEmbedReplytoMessage(messageObj: Message, embed: EmbedB
   }
 }
 
-export async function sendMessageToChannel(
-  client: Client,
-  channelId: string,
-  message: string,
-): Promise<Message | undefined> {
+export async function sendMessageToChannel(channelId: string, message: string): Promise<Message | undefined> {
+  const client = discord.client.client;
   const channel = client.channels.cache.get(channelId) as TextChannel;
   if (channel) {
     Stumper.info(`Sending message to channel: ${channelId}`, "sendMessageToChannel");
@@ -39,11 +45,8 @@ export async function sendMessageToChannel(
   return undefined;
 }
 
-export async function sendEmbedToChannel(
-  client: Client,
-  channelId: string,
-  embed: EmbedBuilder,
-): Promise<Message | undefined> {
+export async function sendEmbedToChannel(channelId: string, embed: EmbedBuilder): Promise<Message | undefined> {
+  const client = discord.client.client;
   const channel = client.channels.cache.get(channelId) as TextChannel;
   if (channel) {
     Stumper.info(`Sending embed to channel: ${channelId}`, "sendEmbedToChannel");
@@ -52,11 +55,8 @@ export async function sendEmbedToChannel(
   return undefined;
 }
 
-export async function sendMesssageDMToUser(
-  client: Client,
-  userId: string,
-  message: string,
-): Promise<Message | undefined> {
+export async function sendMesssageDMToUser(userId: string, message: string): Promise<Message | undefined> {
+  const client = discord.client.client;
   const user = client.users.cache.get(userId);
   if (user) {
     Stumper.info(`Sending message to User DM: ${userId}`, "sendMesssageDMToUser");
@@ -65,15 +65,40 @@ export async function sendMesssageDMToUser(
   return undefined;
 }
 
-export async function sendEmbedDMToUser(
-  client: Client,
-  userId: string,
-  embed: EmbedBuilder,
-): Promise<Message | undefined> {
+export async function sendEmbedDMToUser(userId: string, embed: EmbedBuilder): Promise<Message | undefined> {
+  const client = discord.client.client;
   const user = client.users.cache.get(userId);
   if (user) {
     Stumper.info(`Sending embed to User DM: ${userId}`, "sendEmbedDMToUser");
     return await user.send({ embeds: [embed] });
   }
   return undefined;
+}
+
+export async function updateMessageWithText(channelId: string, messageId: string, newText: string): Promise<Message | undefined> {
+  const message = getMessage(channelId, messageId);
+  if (message) {
+    return message.edit(newText);
+  }
+  return undefined;
+}
+
+export async function updateMessageWithEmbed(channelId: string, messageId: string, newEmbed: EmbedBuilder): Promise<Message | undefined> {
+  const message = getMessage(channelId, messageId);
+  if (message) {
+    return message.edit({ embeds: [newEmbed] });
+  }
+  return undefined;
+}
+
+export function createCommandListMessage(commands: Array<ICustomCommand>): string {
+  const date = Time.getCurrentDate();
+  let output = `**Commands as of ${date} (${commands.length} commands)\n`;
+  const prefix = Config.getConfig().prefixes.custom;
+
+  for (let i = 0; i < commands.length; i++) {
+    const command = commands[i];
+    output += `${prefix}${command.name}\n`;
+  }
+  return output;
 }

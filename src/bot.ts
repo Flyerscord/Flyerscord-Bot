@@ -33,6 +33,8 @@ const client = new Client({
   intents: [GatewayIntentBits.MessageContent, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 });
 
+discord.client.client = client;
+
 /* -------------------------------------------------------------------------- */
 /*                                 Setup Imgur                                */
 /* -------------------------------------------------------------------------- */
@@ -44,6 +46,7 @@ imgur.setClientId(Config.getConfig().imgurClientId);
 /*                             Setup Audit Logger                             */
 /* -------------------------------------------------------------------------- */
 import DiscordAuditLogger from "./util/DiscordAuditLogger";
+import discord from "./util/discord/discord";
 const auditLogger = DiscordAuditLogger.getInstance();
 auditLogger.setChannelId(Config.getConfig().auditLogChannelId);
 auditLogger.setClient(client);

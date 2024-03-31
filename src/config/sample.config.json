@@ -19,7 +19,8 @@
       "periodNotificationRoleId": ""
     },
     "auditLogChannelId": "",
-    "imgurClientId": ""
+    "imgurClientId": "",
+    "customCommandListChannelId": ""
   },
   "nonProduction": {
     "token": "",
@@ -41,6 +42,7 @@
       "periodNotificationRoleId": ""
     },
     "auditLogChannelId": "",
-    "imgurClientId": ""
+    "imgurClientId": "",
+    "customCommandListChannelId": ""
   }
 }

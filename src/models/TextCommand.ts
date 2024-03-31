@@ -59,3 +59,16 @@ export default abstract class TextCommand {
     return JSON.stringify(this);
   }
 }
+
+export abstract class CustomTextCommand extends TextCommand {
+  private content: string;
+
+  constructor(command: string, content: string) {
+    super(command, command);
+    this.content = content;
+  }
+
+  async execute(message: Message): Promise<void> {
+    message.channel.send(this.content);
+  }
+}

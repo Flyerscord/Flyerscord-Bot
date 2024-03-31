@@ -2,6 +2,9 @@ import Database from "./Database";
 import ICustomCommand, { ICustomCommandHistory } from "../interfaces/CustomCommand";
 import Time from "../util/Time";
 import Stumper from "stumper";
+import discord from "../util/discord/discord";
+import CacheDB from "./Cache.Database";
+import { updateCommandList } from "../util/utils";
 
 export default class CustomCommandsDB extends Database {
   private static instance: CustomCommandsDB;
@@ -36,6 +39,8 @@ export default class CustomCommandsDB extends Database {
       };
       this.db.set(name, customCommand);
       Stumper.info(`Custom Command created! Command: ${name}  By user: ${userId}`, "CustomCommandsDB:addCommand");
+
+      updateCommandList();
       return true;
     }
     return false;
@@ -47,6 +52,8 @@ export default class CustomCommandsDB extends Database {
     }
     this.db.delete(name);
     Stumper.info(`Custom Command created! Command: ${name}  By user: ${userId}`, "CustomCommandsDB:deleteCommand");
+
+    updateCommandList();
     return true;
   }
 

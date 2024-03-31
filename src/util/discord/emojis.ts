@@ -1,7 +1,6 @@
 import { Guild } from "discord.js";
 import Stumper from "stumper";
-
-import Sleep from "../Sleep";
+import { sleepMs } from "../utils";
 
 export async function addEmoji(guild: Guild, emoji: IEmoji): Promise<void> {
   if (guild) {
@@ -18,7 +17,7 @@ export async function addMultipleEmojis(guild: Guild, emojis: Array<IEmoji>): Pr
     for (let i = 0; i < emojis.length; i++) {
       const emoji = emojis[i];
       await addEmoji(guild, emoji);
-      await Sleep.ms(500);
+      await sleepMs(500);
     }
   }
 }
@@ -43,7 +42,7 @@ export async function deleteMultipleEmojis(guild: Guild, emojiNames: Array<strin
       const reason = reasons[i];
       const result = await deleteEmoji(guild, emojiName, reason);
       returnVal = returnVal && result;
-      await Sleep.ms(500);
+      await sleepMs(500);
     }
   }
   return returnVal;

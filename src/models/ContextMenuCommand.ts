@@ -1,3 +1,4 @@
+import { MessageContextMenuCommandInteraction } from "discord.js";
 import { ApplicationCommandType, ContextMenuCommandBuilder, UserContextMenuCommandInteraction, PermissionsBitField } from "discord.js";
 
 export abstract class ContextMenuCommand {
@@ -39,7 +40,7 @@ export abstract class MessageContextMenuCommand extends ContextMenuCommand {
     this.data.setType(ApplicationCommandType.Message);
   }
 
-  abstract execute(interaction: MessageContextMenuCommand): Promise<void>;
+  abstract execute(interaction: MessageContextMenuCommandInteraction): Promise<void>;
 }
 
 export abstract class AdminMessageContextMenuCommand extends MessageContextMenuCommand {

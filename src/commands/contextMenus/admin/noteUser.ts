@@ -7,8 +7,8 @@ export default class NoteUserContextCommand extends AdminUserContextMenuCommand 
     super("addusernote");
   }
 
-  execute(interaction: UserContextMenuCommandInteraction): Promise<void> {
-    const user = interaction.targetUser;
+  async execute(interaction: UserContextMenuCommandInteraction): Promise<void> {
+    // const user = interaction.targetUser;
 
     const modal = new NoteUserModal().getModal();
 

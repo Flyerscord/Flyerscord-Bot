@@ -44,6 +44,6 @@ export default class DiscordAuditLogger {
     if (this.channelId == "" || !this.client) {
       throw new DiscordAuditSetupRequiredException();
     }
-    discord.messages.sendEmbedToChannel(this.client, this.channelId, embed);
+    discord.messages.sendEmbedToChannel(this.channelId, embed);
   }
 }

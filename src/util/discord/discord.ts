@@ -4,6 +4,7 @@ import * as reactions from "./reactions";
 import * as emojis from "./emojis";
 import * as channels from "./channels";
 import * as client from "./client";
+import * as roles from "./roles";
 
 export default {
   messages: messages,
@@ -12,4 +13,5 @@ export default {
   emojis: emojis,
   channels: channels,
   client: client,
+  roles: roles,
 };

@@ -15,6 +15,7 @@ interface ICommonConfig {
   imgurClientId: string;
   logLevel: LOG_LEVEL;
   customCommandListChannelId: string;
+  mutedRoleId: string;
 }
 
 interface IVistorReactConfig {

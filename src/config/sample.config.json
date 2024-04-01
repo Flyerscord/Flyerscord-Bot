@@ -20,7 +20,8 @@
     },
     "auditLogChannelId": "",
     "imgurClientId": "",
-    "customCommandListChannelId": ""
+    "customCommandListChannelId": "",
+    "mutedRoleId": ""
   },
   "nonProduction": {
     "token": "",
@@ -43,6 +44,7 @@
     },
     "auditLogChannelId": "",
     "imgurClientId": "",
-    "customCommandListChannelId": ""
+    "customCommandListChannelId": "",
+    "mutedRoleId": ""
   }
 }

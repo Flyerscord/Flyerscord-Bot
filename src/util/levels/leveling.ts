@@ -2,6 +2,7 @@ import LevelsDB from "../../providers/Levels.Database";
 import LevelExpDB from "../../providers/LevelExp.Database";
 import Time from "../Time";
 import { Message } from "discord.js";
+import discord from "../discord/discord";
 
 // Get a whole number between 15 and 25 (inclusive)
 export function getExpAmount(): number {
@@ -33,3 +34,5 @@ export function checkForLevelUp(currentLevel: number, exp: number): boolean {
   const expToNextLevel = db.getExpUntilNextLevel(currentLevel, exp);
   return expToNextLevel >= 0;
 }
+
+export function sendLevelUpMessage(currentLevel: number): void {}

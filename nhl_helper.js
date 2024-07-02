@@ -147,14 +147,14 @@ globals.client.on("message", (message) => {
   if (message.channel.type != "text") return; // ignores all dm's
 
   // Check for Carter Hart
-  const regex = new RegExp("\\b(carter|hart)\\b", "g");
-  const matches = message.content.toLowerCase().match(regex);
-  if (matches) {
-    if (!message.content.toLowerCase().includes("jeff")) {
-      message.channel.send("Fuck Carter Hart!");
-      return;
-    }
-  }
+  // const regex = new RegExp("\\b(carter|hart)\\b", "g");
+  // const matches = message.content.toLowerCase().match(regex);
+  // if (matches) {
+  //   if (!message.content.toLowerCase().includes("jeff")) {
+  //     message.channel.send("Fuck Carter Hart!");
+  //     return;
+  //   }
+  // }
 
   const hysterUserId = "811967964819619911";
   if (message.author.id == hyperUserId) {

@@ -1,9 +1,15 @@
 # TODO LIST
 
-- Create audit logging for all user actions with the bot
 - Create automation for player emojis
-  - Make sure to exclude Hart
-- Setup role reactions
-- Setup user warning, notes, mutes
-- Create logic for the custom commands to be automatically output to a channel
-  - The list will need to automatically update when commands are added and removed
+- Create logic for visitor role reaction
+- Create user warning, notes, mutes
+  - Have a context menu as an option for creating the action on the user
+- Create commands for viewing user info
+- Create logic for creating, edititing, and deleting custom commands
+  - Use modals for creating the command
+  - The images should be uploaded to Imgur
+- Create command for testing commands
+- Add mee6 leveling
+  - Allow the levels to be migrated from mee6
+- Add logic for automating the gameday posts
+- Add NHL commands back with the new api

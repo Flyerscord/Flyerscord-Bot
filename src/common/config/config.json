@@ -1,0 +1,20 @@
+{
+    "productionMode": true,
+    "production": {
+      "token": "",
+      "logLevel": 3,
+      "prefixes": {
+        "normal": ".",
+        "custom": "!"
+      }
+    },
+    "nonProduction": {
+      "token": "",
+      "logLevel": 3,
+      "prefixes": {
+        "normal": ".",
+        "custom": "!"
+      },
+      "guildId": ""
+    }
+  }

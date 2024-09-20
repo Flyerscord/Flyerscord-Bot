@@ -7,7 +7,7 @@
     "build": "npx tsc",
     "start:prod": "node /usr/src/app/src/bot.js",
     "start:dev": "(npx tsc -w &) && npx nodemon",
-    "lint": "npx eslint --ext .js,.ts .",
+    "lint": "npx eslint .",
     "lintfix": "npx eslint . --fix",
     "format": "npx prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "update": "npx npm-check -u"
@@ -34,10 +34,10 @@
     "stumper": "^1.0.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.10.0",
+    "@types/eslint__js": "^8.42.3",
     "@types/lodash": "^4.17.7",
     "@types/node": "^22.5.5",
-    "@typescript-eslint/eslint-plugin": "^8.6.0",
-    "@typescript-eslint/parser": "^8.6.0",
     "eslint": "^9.10.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
@@ -45,6 +45,7 @@
     "npm-check": "^6.0.1",
     "prettier": "^3.3.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.6.0"
   }
 }

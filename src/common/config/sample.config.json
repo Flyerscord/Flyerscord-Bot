@@ -6,7 +6,8 @@
     "prefixes": {
       "normal": ".",
       "custom": "!"
-    }
+    },
+    "customCommandListChannelId": ""
   },
   "nonProduction": {
     "token": "",
@@ -15,6 +16,7 @@
       "normal": ".",
       "custom": "!"
     },
+    "customCommandListChannelId": "",
     "guildId": ""
   }
 }

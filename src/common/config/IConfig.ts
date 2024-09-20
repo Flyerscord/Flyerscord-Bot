@@ -10,6 +10,7 @@ interface ICommonConfig {
   token: string;
   logLevel: LOG_LEVEL;
   prefixes: IPrefixes;
+  customCommandListChannelId: string;
 }
 
 interface IPrefixes {

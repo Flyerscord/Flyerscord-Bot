@@ -3,6 +3,7 @@ import Time from "../../../common/utils/Time";
 
 import Database from "../../../common/providers/Database";
 import ICustomCommand, { ICustomCommandHistory } from "../interfaces/ICustomCommand";
+import { updateCommandList } from "../utils/util";
 
 export default class CustomCommandsDB extends Database {
   private static instance: CustomCommandsDB;

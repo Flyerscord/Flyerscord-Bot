@@ -1,5 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import CustomCommandsDB from "../../providers/CustomCommands.Database";
+import Config from "../../../../common/config/Config";
 
 export default class AddCustomCommand extends AdminSlashCommand {
   constructor() {

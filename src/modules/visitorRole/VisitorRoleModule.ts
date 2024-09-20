@@ -1,10 +1,9 @@
 import Module from "../../common/models/Module";
 
 export default class VistorRoleModule extends Module {
-    constructor() {
-        super("VistorRole");
-    }
+  constructor() {
+    super("VistorRole");
+  }
 
-    protected override setup(): void {
-    }
+  protected override setup(): void {}
 }

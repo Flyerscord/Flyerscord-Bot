@@ -9,7 +9,8 @@
   - Use modals for creating the command
   - The images should be uploaded to Imgur
   - Create command for testing commands
-x Add mee6 leveling
-  x Allow the levels to be migrated from mee6
+    x Add mee6 leveling
+    x Allow the levels to be migrated from mee6
 - Add logic for automating the gameday posts
 - Add NHL commands back with the new api
+- Add daysUtil command

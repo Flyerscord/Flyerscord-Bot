@@ -1,10 +1,9 @@
 import Module from "../../common/models/Module";
 
 export default class CustomCommandsModule extends Module {
-    constructor() {
-        super("CustomCommands");
-    }
+  constructor() {
+    super("CustomCommands");
+  }
 
-    protected override setup(): void {
-    }
+  protected override setup(): void {}
 }

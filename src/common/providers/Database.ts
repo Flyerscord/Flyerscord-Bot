@@ -2,36 +2,36 @@ import Enmap, { EnmapOptions } from "enmap";
 import Stumper from "stumper";
 
 export default abstract class Database {
-    protected db: Enmap;
-    protected name: string;
+  protected db: Enmap;
+  protected name: string;
 
-    constructor(protected options: EnmapOptions<any, any>) {
-        this.db = new Enmap(options);
-        this.name = options.name || "Database";
-    }
+  constructor(protected options: EnmapOptions<any, any>) {
+    this.db = new Enmap(options);
+    this.name = options.name || "Database";
+  }
 
-    wipe(): void {
-        Stumper.info("Wiping database", this.name);
-        this.db.clear();
-    }
+  wipe(): void {
+    Stumper.info("Wiping database", this.name);
+    this.db.clear();
+  }
 
-    getNumOfKeys(): number {
-        return this.db.count;
-    }
+  getNumOfKeys(): number {
+    return this.db.count;
+  }
 
-    protected getAllValues(): Array<any> {
-        const arr = Array.from(this.db);
-        return arr.map((val) => val[1]);
-    }
+  protected getAllValues(): Array<any> {
+    const arr = Array.from(this.db);
+    return arr.map((val) => val[1]);
+  }
 
-    protected getAllKeys(): Array<string | number> {
-        return Array.from(this.db.keys());
-    }
+  protected getAllKeys(): Array<string | number> {
+    return Array.from(this.db.keys());
+  }
 
-    protected getAllKeysAndValues(): Array<{ key: string | number; value: any }> {
-        const arr = Array.from(this.db);
-        return arr.map((val) => {
-            return { key: val[0], value: val[1] };
-        });
-    }
+  protected getAllKeysAndValues(): Array<{ key: string | number; value: any }> {
+    const arr = Array.from(this.db);
+    return arr.map((val) => {
+      return { key: val[0], value: val[1] };
+    });
+  }
 }

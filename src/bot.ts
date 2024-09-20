@@ -17,8 +17,8 @@ processErrorHandling();
 import Config from "./common/config/Config";
 
 if (!Config.fileExists()) {
-    Stumper.error("Config file not found", "main");
-    process.exit(1);
+  Stumper.error("Config file not found", "main");
+  process.exit(1);
 }
 
 Stumper.setConfig({ logLevel: Config.getConfig().logLevel });
@@ -29,7 +29,7 @@ Stumper.setConfig({ logLevel: Config.getConfig().logLevel });
 import { Client, Collection, GatewayIntentBits } from "discord.js";
 
 const client = new Client({
-    intents: [GatewayIntentBits.MessageContent, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+  intents: [GatewayIntentBits.MessageContent, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 });
 
 /* -------------------------------------------------------------------------- */

@@ -32,9 +32,17 @@ export default abstract class Module {
         const location = `${__dirname}/commands/${commandsPath}`;
         const files = fs.readdirSync(location);
 
+        Stumper.info(`Reading in commands from ${location}`, "readInCommands");
+
         files.forEach((file) => {
             const Command = require(`${location}/${file}`);
             const command: T = new Command().default();
+
+            if (command instanceof SlashCommand || command instanceof TextCommand || command instanceof ContextMenuCommand) {
+                Stumper.debug(`Read in command: ${command.name}`, "readInCommands");
+            } else if (command instanceof ModalMenu) {
+                Stumper.debug(`Read in modal: ${command.id}`, "readInCommands");
+            }
 
             commands.push(command);
         });

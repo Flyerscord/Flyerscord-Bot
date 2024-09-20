@@ -5,6 +5,13 @@ import Stumper, { LOG_LEVEL } from "stumper";
 Stumper.setConfig({ logLevel: LOG_LEVEL.ALL });
 
 /* -------------------------------------------------------------------------- */
+/*                        Setup Process Error Handling                        */
+/* -------------------------------------------------------------------------- */
+import processErrorHandling from "./common/listeners/processErrorHandling";
+
+processErrorHandling();
+
+/* -------------------------------------------------------------------------- */
 /*                                Check Config                                */
 /* -------------------------------------------------------------------------- */
 import Config from "./common/config/Config";
@@ -24,6 +31,13 @@ import { Client, Collection, GatewayIntentBits } from "discord.js";
 const client = new Client({
     intents: [GatewayIntentBits.MessageContent, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 });
+
+/* -------------------------------------------------------------------------- */
+/*                        Setup Discord Error Handling                        */
+/* -------------------------------------------------------------------------- */
+import discordErrorHandling from "./common/listeners/discordErrorHandling";
+
+discordErrorHandling(client);
 
 /* -------------------------------------------------------------------------- */
 /*                       Setup Collections for commands                       */
@@ -56,7 +70,7 @@ import LevelsModule from "./modules/levels/LevelsModule";
 new LevelsModule().enable();
 
 /* -------------------------------------------------------------------------- */
-/*                         Register our event handlers                        */
+/*                      Register Our Other Event Handlers                     */
 /* -------------------------------------------------------------------------- */
 import onReady from "./common/listeners/onReady";
 

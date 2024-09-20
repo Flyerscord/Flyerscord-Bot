@@ -1,8 +1,8 @@
 import Module from "../../common/models/Module";
 
-export default class ModerationModule extends Module {
+export default class UserManagementModule extends Module {
     constructor() {
-        super("Moderation");
+        super("UserManagement");
     }
 
     protected override setup(): void {

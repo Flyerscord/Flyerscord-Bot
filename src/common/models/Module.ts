@@ -11,9 +11,9 @@ import TextCommandManager from "../managers/TextCommandManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
 
 export default abstract class Module {
-  protected name: String;
+  protected name: string;
 
-  constructor(name: String) {
+  constructor(name: string) {
     this.name = name;
   }
 
@@ -26,7 +26,7 @@ export default abstract class Module {
     throw new ModuleSetupMissingException();
   }
 
-  protected readInCommands<T>(commandsPath: String): void {
+  protected readInCommands<T>(commandsPath: string): void {
     const commands: Array<T> = [];
 
     const location = `${__dirname}/commands/${commandsPath}`;
@@ -35,6 +35,7 @@ export default abstract class Module {
     Stumper.info(`Reading in commands from ${location}`, "readInCommands");
 
     files.forEach((file) => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const Command = require(`${location}/${file}`);
       const command: T = new Command().default();
 

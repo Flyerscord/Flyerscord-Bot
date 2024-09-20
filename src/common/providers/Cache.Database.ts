@@ -1,5 +1,3 @@
-import _ from "lodash";
-
 import Database from "./Database";
 
 export default class CacheDB extends Database {

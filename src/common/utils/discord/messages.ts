@@ -2,11 +2,10 @@ import { TextChannel, EmbedBuilder, Message } from "discord.js";
 
 import Stumper from "stumper";
 import discord from "./discord";
-import Time from "../Time";
-import Config from "../../config/Config";
+import ClientManager from "../../managers/ClientManager";
 
 export function getMessage(channelId: string, messageId: string): Message | undefined {
-  const client = discord.client.client;
+  const client = ClientManager.getInstance().client;
   const channel = discord.channels.getChannel(client, channelId);
   if (channel) {
     return (channel as TextChannel).messages.cache.get(messageId);
@@ -35,7 +34,7 @@ export async function sendEmbedReplytoMessage(messageObj: Message, embed: EmbedB
 }
 
 export async function sendMessageToChannel(channelId: string, message: string): Promise<Message | undefined> {
-  const client = discord.client.client;
+  const client = ClientManager.getInstance().client;
   const channel = client.channels.cache.get(channelId) as TextChannel;
   if (channel) {
     Stumper.info(`Sending message to channel: ${channelId}`, "sendMessageToChannel");
@@ -45,7 +44,7 @@ export async function sendMessageToChannel(channelId: string, message: string): 
 }
 
 export async function sendEmbedToChannel(channelId: string, embed: EmbedBuilder): Promise<Message | undefined> {
-  const client = discord.client.client;
+  const client = ClientManager.getInstance().client;
   const channel = client.channels.cache.get(channelId) as TextChannel;
   if (channel) {
     Stumper.info(`Sending embed to channel: ${channelId}`, "sendEmbedToChannel");
@@ -55,7 +54,7 @@ export async function sendEmbedToChannel(channelId: string, embed: EmbedBuilder)
 }
 
 export async function sendMesssageDMToUser(userId: string, message: string): Promise<Message | undefined> {
-  const client = discord.client.client;
+  const client = ClientManager.getInstance().client;
   const user = client.users.cache.get(userId);
   if (user) {
     Stumper.info(`Sending message to User DM: ${userId}`, "sendMesssageDMToUser");
@@ -65,7 +64,7 @@ export async function sendMesssageDMToUser(userId: string, message: string): Pro
 }
 
 export async function sendEmbedDMToUser(userId: string, embed: EmbedBuilder): Promise<Message | undefined> {
-  const client = discord.client.client;
+  const client = ClientManager.getInstance().client;
   const user = client.users.cache.get(userId);
   if (user) {
     Stumper.info(`Sending embed to User DM: ${userId}`, "sendEmbedDMToUser");

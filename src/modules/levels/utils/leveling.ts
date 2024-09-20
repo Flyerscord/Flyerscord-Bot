@@ -1,11 +1,12 @@
-import { Message } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import LevelsDB from "../providers/Levels.Database";
 import Time from "../../../common/utils/Time";
 import LevelExpDB from "../providers/LevelExp.Database";
+import { getRandomNumber } from "../../../common/utils/misc";
 
 // Get a whole number between 15 and 25 (inclusive)
-export function getExpAmount(): number {
-    return Math.floor(Math.random() * 11) + 15;
+function getExpAmount(): number {
+    return getRandomNumber(15, 25);
 }
 
 export function addMessage(message: Message): void {
@@ -21,18 +22,23 @@ export function addMessage(message: Message): void {
         userLevel.timeOfLastMessage = Time.getCurrentTime().getTime();
         userLevel.totalExp += getExpAmount();
         if (checkForLevelUp(userLevel.currentLevel, userLevel.totalExp)) {
-            // TODO: Trigger a message to send when the user levels up
             userLevel.currentLevel++;
+            sendLevelUpMessage(message, userId, userLevel.currentLevel);
         }
         db.updateUser(userId, userLevel);
     }
 }
 
-export function checkForLevelUp(currentLevel: number, exp: number): boolean {
+function checkForLevelUp(currentLevel: number, exp: number): boolean {
     const db = LevelExpDB.getInstance();
     const expToNextLevel = db.getExpUntilNextLevel(currentLevel, exp);
     return expToNextLevel >= 0;
 }
 
-// TODO: Implement this
-export function sendLevelUpMessage(currentLevel: number): void { }
+function sendLevelUpMessage(message: Message, userId: string, currentLevel: number): void {
+    const rankupMessage = `GG <@${userId}>, you just advanced to **Level ${currentLevel}** <:flyersflag:398273111071391744>`;
+
+    if (message.channel.isSendable()) {
+        message.channel.send(rankupMessage);
+    }
+}

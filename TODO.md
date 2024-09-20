@@ -8,8 +8,8 @@
 - Create logic for creating, edititing, and deleting custom commands
   - Use modals for creating the command
   - The images should be uploaded to Imgur
-- Create command for testing commands
-- Add mee6 leveling
-  - Allow the levels to be migrated from mee6
+  - Create command for testing commands
+x Add mee6 leveling
+  x Allow the levels to be migrated from mee6
 - Add logic for automating the gameday posts
 - Add NHL commands back with the new api

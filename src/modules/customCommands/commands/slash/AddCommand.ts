@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from "discord.js";
+import { Attachment, ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
 import Config from "../../../../common/config/Config";
@@ -29,23 +29,32 @@ export default class AddCommand extends AdminSlashCommand {
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     const db = CustomCommandsDB.getInstance();
 
-    let name: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "name");
-    const response: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "response");
+    let name: string = "";
+    let text: string = "";
 
-    name = name.toLowerCase();
+    if (this.isSubCommand(interaction, "image")) {
+      name = (this.getParamValue(interaction, PARAM_TYPES.STRING, "name") as string).toLowerCase();
+      text = (this.getParamValue(interaction, PARAM_TYPES.ATTACHMENT, "image") as Attachment).url;
 
-    if (db.hasCommand(name)) {
-      interaction.reply({
-        content: `Command ${Config.getConfig().prefixes.custom}${name} already exists!`,
-        ephemeral: true,
-      });
-      return;
+    } else if (this.isSubCommand(interaction, "text")) {
+      name = (this.getParamValue(interaction, PARAM_TYPES.STRING, "name") as string).toLowerCase();
+      text = this.getParamValue(interaction, PARAM_TYPES.ATTACHMENT, "text");
     }
 
-    db.addCommand(name, response, interaction.user.id);
-    interaction.reply({
-      content: `Command ${Config.getConfig().prefixes.custom}${name} added!`,
-      ephemeral: true,
-    });
+    if (name != "" && text != "") {
+      if (db.hasCommand(name)) {
+        interaction.reply({
+          content: `Command ${Config.getConfig().prefixes.custom}${name} already exists!`,
+          ephemeral: true,
+        });
+        return;
+      }
+
+      db.addCommand(name, text, interaction.user.id);
+      interaction.reply({
+        content: `Command ${Config.getConfig().prefixes.custom}${name} added!`,
+        ephemeral: true,
+      });
+    }
   }
 }

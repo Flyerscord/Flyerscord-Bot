@@ -4,6 +4,7 @@ import Time from "../../../common/utils/Time";
 import Database from "../../../common/providers/Database";
 import ICustomCommand, { ICustomCommandHistory } from "../interfaces/ICustomCommand";
 import { updateCommandList } from "../utils/util";
+import Imgur from "../utils/Imgur";
 
 export default class CustomCommandsDB extends Database {
   private static instance: CustomCommandsDB;
@@ -27,8 +28,16 @@ export default class CustomCommandsDB extends Database {
     return this.db.get(name);
   }
 
-  addCommand(name: string, text: string, userId: string): boolean {
+  async addCommand(name: string, text: string, userId: string): Promise<boolean> {
     if (!this.hasCommand(name)) {
+      if (this.isImageLink(text)) {
+        const imgur = Imgur.getInstance();
+        const imgurLink = await imgur.uploadImage(text, name);
+        if (imgurLink) {
+          text = imgurLink;
+        }
+      }
+
       const customCommand: ICustomCommand = {
         name: name,
         text: text,
@@ -83,5 +92,22 @@ export default class CustomCommandsDB extends Database {
     newCommand.text = newText;
     newCommand.history.push(historyEntry);
     return newCommand;
+  }
+
+  private isImageLink(text: string): boolean {
+    const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp'];
+    const urlPattern = /(https?:\/\/[^\s]+)/g;
+
+    const urls = text.match(urlPattern);
+
+    if (urls) {
+      for (const url of urls) {
+        if (imageExtensions.some(ext => url.toLowerCase().endsWith(ext))) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 }

@@ -11,6 +11,7 @@ interface ICommonConfig {
   logLevel: LOG_LEVEL;
   prefixes: IPrefixes;
   customCommandListChannelId: string;
+  imgurClientId: string;
 }
 
 interface IPrefixes {

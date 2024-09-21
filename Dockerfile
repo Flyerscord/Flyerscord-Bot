@@ -1,4 +1,3 @@
-# Build typescript into javascript
 FROM node:18 AS BUILDER
 
 WORKDIR /usr/src/build

@@ -15,3 +15,7 @@ export async function removeRoleToUser(member: GuildMember, roleId: string): Pro
 export function userHasRole(member: GuildMember, roleId: string): boolean {
   return member.roles.cache.some((role: Role) => role.id == roleId);
 }
+
+export function userHasAnyRole(member: GuildMember): boolean {
+  return member.roles.cache.size > 0;
+}

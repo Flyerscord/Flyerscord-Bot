@@ -69,11 +69,13 @@ import LevelsModule from "./modules/levels/LevelsModule";
 import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule";
 import UserManagementModule from "./modules/userManagement/UserManagementModule";
 import AdminModule from "./modules/admin/AdminModule";
+import MiscModule from "./modules/misc/MiscModule";
 
 new LevelsModule().enable();
 new CustomCommandsModule().enable();
 new UserManagementModule().enable();
 new AdminModule().enable();
+new MiscModule().enable();
 
 /* -------------------------------------------------------------------------- */
 /*                      Register Our Other Event Handlers                     */

@@ -83,6 +83,11 @@ onMessageCreate(client);
 onInteractionCreate(client);
 
 /* -------------------------------------------------------------------------- */
+/*                                Log into bot                                */
+/* -------------------------------------------------------------------------- */
+client.login(Config.getConfig().token);
+
+/* -------------------------------------------------------------------------- */
 /*                           Setup HTTP Health Check                          */
 /* -------------------------------------------------------------------------- */
 import express from "express";
@@ -104,8 +109,3 @@ app.get('/health', (req, res) => {
 app.listen(port, () => {
   Stumper.info(`Health check server is running on port ${port}`, "healthCheck");
 });
-
-/* -------------------------------------------------------------------------- */
-/*                                Log into bot                                */
-/* -------------------------------------------------------------------------- */
-client.login(Config.getConfig().token);

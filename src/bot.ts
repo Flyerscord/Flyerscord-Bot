@@ -83,6 +83,29 @@ onMessageCreate(client);
 onInteractionCreate(client);
 
 /* -------------------------------------------------------------------------- */
+/*                           Setup HTTP Health Check                          */
+/* -------------------------------------------------------------------------- */
+import express from "express";
+import { getBotHealth } from "./common/utils/healthCheck";
+import IBotHealth from "./common/interfaces/IBotHealth";
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.get('/health', (req, res) => {
+  const health: IBotHealth = getBotHealth();
+  if (health.status === 'healthy') {
+    res.status(200).json(health);
+  } else {
+    res.status(503).json(health);
+  }
+});
+
+app.listen(port, () => {
+  Stumper.info(`Health check server is running on port ${port}`, "healthCheck");
+});
+
+/* -------------------------------------------------------------------------- */
 /*                                Log into bot                                */
 /* -------------------------------------------------------------------------- */
 client.login(Config.getConfig().token);

@@ -9,12 +9,8 @@ interface IDevConfig extends ICommonConfig {
 interface ICommonConfig {
   token: string;
   logLevel: LOG_LEVEL;
-  prefixes: IPrefixes;
+  masterGuildId: string;
+  prefix: string;
   customCommandListChannelId: string;
   imgurClientId: string;
-}
-
-interface IPrefixes {
-  normal: string;
-  custom: string;
 }

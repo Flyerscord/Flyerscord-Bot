@@ -11,7 +11,7 @@ export default (client: Client): void => {
 };
 
 function checkForNormalTextCommand(message: Message): boolean {
-  const prefix = Config.getConfig().prefixes.normal;
+  const prefix = Config.getConfig().prefix;
   if (message.author.bot) return false;
   if (!message.channel.isTextBased()) return false;
   if (!message.content.startsWith(prefix)) return false;

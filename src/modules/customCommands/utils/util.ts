@@ -29,7 +29,7 @@ export async function updateCommandList(): Promise<void> {
 function createCommandListMessage(commands: Array<ICustomCommand>): string {
   const date = Time.getCurrentDate();
   let output = `**Commands as of ${date} (${commands.length} commands)\n`;
-  const prefix = Config.getConfig().prefixes.custom;
+  const prefix = Config.getConfig().prefix;
 
   for (let i = 0; i < commands.length; i++) {
     const command = commands[i];

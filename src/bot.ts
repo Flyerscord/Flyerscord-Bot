@@ -67,9 +67,11 @@ ModalMenuManager.getInstance();
 /* -------------------------------------------------------------------------- */
 import LevelsModule from "./modules/levels/LevelsModule";
 import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule";
+import UserManagementModule from "./modules/userManagement/UserManagementModule";
 
 new LevelsModule().enable();
 new CustomCommandsModule().enable();
+new UserManagementModule().enable();
 
 /* -------------------------------------------------------------------------- */
 /*                      Register Our Other Event Handlers                     */

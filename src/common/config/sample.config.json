@@ -7,6 +7,12 @@
       "normal": ".",
       "custom": "!"
     },
+    "vistorReactRole": {
+      "memberRoleId": "",
+      "visitorRoleId": "",
+      "visitorEmojiId": "",
+      "rolesChannelId": ""
+    },
     "customCommandListChannelId": "",
     "imgurClientId": ""
   },
@@ -16,6 +22,12 @@
     "prefixes": {
       "normal": ".",
       "custom": "!"
+    },
+    "vistorReactRole": {
+      "memberRoleId": "",
+      "visitorRoleId": "",
+      "visitorEmojiId": "",
+      "rolesChannelId": ""
     },
     "customCommandListChannelId": "",
     "imgurClientId": "",

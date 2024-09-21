@@ -26,10 +26,15 @@ Stumper.setConfig({ logLevel: Config.getConfig().logLevel });
 /* -------------------------------------------------------------------------- */
 /*                            Create Discord Client                           */
 /* -------------------------------------------------------------------------- */
-import { Client, Collection, GatewayIntentBits } from "discord.js";
+import { Client, Collection, GatewayIntentBits, Partials } from "discord.js";
 
 const client = new Client({
-  intents: [GatewayIntentBits.MessageContent, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+  intents: [GatewayIntentBits.MessageContent, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
+  partials: [
+    Partials.Message,
+    Partials.Reaction,
+    Partials.User,
+  ],
 });
 
 /* -------------------------------------------------------------------------- */
@@ -70,12 +75,14 @@ import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule"
 import UserManagementModule from "./modules/userManagement/UserManagementModule";
 import AdminModule from "./modules/admin/AdminModule";
 import MiscModule from "./modules/misc/MiscModule";
+import VisitorRoleModule from "./modules/visitorRole/VisitorRoleModule";
 
 new LevelsModule().enable();
 new CustomCommandsModule().enable();
 new UserManagementModule().enable();
 new AdminModule().enable();
 new MiscModule().enable();
+new VisitorRoleModule().enable();
 
 /* -------------------------------------------------------------------------- */
 /*                      Register Our Other Event Handlers                     */

@@ -13,4 +13,12 @@ interface ICommonConfig {
   prefix: string;
   customCommandListChannelId: string;
   imgurClientId: string;
+  vistorReactRole: IVistorReactConfig;
+}
+
+interface IVistorReactConfig {
+  memberRoleId: string;
+  visitorRoleId: string;
+  visitorEmojiId: string;
+  rolesChannelId: string;
 }

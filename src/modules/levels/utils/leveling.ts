@@ -1,8 +1,11 @@
-import { Message, EmbedBuilder } from "discord.js";
+import { Message } from "discord.js";
 import LevelsDB from "../providers/Levels.Database";
 import Time from "../../../common/utils/Time";
 import LevelExpDB from "../providers/LevelExp.Database";
 import { getRandomNumber } from "../../../common/utils/misc";
+import axios from "axios";
+import { JSDOM } from "jsdom";
+import Stumper from "stumper";
 
 // Get a whole number between 15 and 25 (inclusive)
 function getExpAmount(): number {
@@ -37,8 +40,68 @@ function checkForLevelUp(currentLevel: number, exp: number): boolean {
 
 function sendLevelUpMessage(message: Message, userId: string, currentLevel: number): void {
   const rankupMessage = `GG <@${userId}>, you just advanced to **Level ${currentLevel}** <:flyersflag:398273111071391744>`;
+  const pNumMessage = getPlayerNumMessage(currentLevel);
+
+  const messages = [rankupMessage, pNumMessage];
 
   if (message.channel.isSendable()) {
-    message.channel.send(rankupMessage);
+    message.channel.send(messages.join("\n\n"));
   }
+}
+
+async function getPlayerNumMessage(pNum: number): Promise<string> {
+  const output = await makeRequest(pNum);
+  if (output) {
+    if (output.length != 0) {
+      const names = createSpacedNames(output);
+      return `Flyers players that have had the number **${pNum}**:\n${names}`;
+    } else {
+      return `No Flyers player has ever had the number **${pNum}**!`;
+    }
+  }
+  return "";
+}
+
+async function makeRequest(pNum: number): Promise<string | undefined> {
+  try {
+    const response = await axios.get(`http://www.flyershistory.com/cgi-bin/rosternum.cgi?${pNum}`);
+
+    const dom = new JSDOM(response.data);
+    const document = dom.window.document;
+
+    const elements = document.querySelectorAll("tbody tr td a font");
+    const results: string[] = [];
+
+    elements.forEach((element) => {
+      results.push(element.textContent || "");
+    });
+
+    return results.join("\n");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {
+    Stumper.error("Error fetching data", "getPlayersWithNumber");
+  }
+  return undefined;
+}
+
+function createSpacedNames(input: string): string {
+  const spacing = 25;
+  let result = "```\n";
+
+  const names = input.split("\n");
+  names.forEach((name, i) => {
+    if (name == "Carter Hart") {
+      name = name + " Fuck this Guy";
+    }
+    if (i != names.length - 1) {
+      if (i % 2 == 0) {
+        // Needs the spacing
+        result = `${result}${name.padEnd(spacing)}`;
+      } else {
+        // In the second columns
+        result = `${result}${name}\n`;
+      }
+    }
+  });
+  return result + "```";
 }

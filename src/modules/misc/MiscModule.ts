@@ -1,9 +1,9 @@
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 
-export default class CommonModule extends Module {
+export default class MiscModule extends Module {
   constructor() {
-    super("Common");
+    super("Misc");
   }
 
   protected override setup(): void {

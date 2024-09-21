@@ -66,15 +66,21 @@ ModalMenuManager.getInstance();
 /*                              Register Modules                              */
 /* -------------------------------------------------------------------------- */
 import LevelsModule from "./modules/levels/LevelsModule";
+import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule";
 
 new LevelsModule().enable();
+new CustomCommandsModule().enable();
 
 /* -------------------------------------------------------------------------- */
 /*                      Register Our Other Event Handlers                     */
 /* -------------------------------------------------------------------------- */
 import onReady from "./common/listeners/onReady";
+import onMessageCreate from "./common/listeners/onMessageCreate";
+import onInteractionCreate from "./common/listeners/onInteractionCreate";
 
 onReady(client);
+onMessageCreate(client);
+onInteractionCreate(client);
 
 /* -------------------------------------------------------------------------- */
 /*                                Log into bot                                */

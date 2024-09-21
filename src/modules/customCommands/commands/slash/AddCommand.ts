@@ -3,7 +3,7 @@ import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashC
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
 import Config from "../../../../common/config/Config";
 
-export default class AddCustomCommand extends AdminSlashCommand {
+export default class AddCommand extends AdminSlashCommand {
   constructor() {
     super("addcustom", "Add a custom command");
 

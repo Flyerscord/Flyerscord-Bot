@@ -15,13 +15,13 @@ export default (): void => {
 };
 
 function checkForCustomTextCommand(message: Message): boolean {
-    const prefix = Config.getConfig().prefixes.normal;
+    const prefix = Config.getConfig().prefix;
     if (message.author.bot) return false;
     if (!message.channel.isTextBased()) return false;
     if (!message.content.startsWith(prefix)) return false;
 
     const messageArray = message.content.split(" ");
-    const command = messageArray[0];
+    const command = messageArray[0].replace(prefix, "").toLowerCase();
 
     const db = CustomCommandsDB.getInstance();
     const customCommand = db.getCommand(command);

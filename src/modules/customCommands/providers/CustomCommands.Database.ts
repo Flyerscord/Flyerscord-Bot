@@ -25,7 +25,7 @@ export default class CustomCommandsDB extends Database {
     if (!this.hasCommand(name)) {
       return undefined;
     }
-    return this.db.get(name);
+    return this.db.get(name.toLowerCase());
   }
 
   async addCommand(name: string, text: string, userId: string): Promise<boolean> {
@@ -39,7 +39,7 @@ export default class CustomCommandsDB extends Database {
       }
 
       const customCommand: ICustomCommand = {
-        name: name,
+        name: name.toLowerCase(),
         text: text,
         createdBy: userId,
         createdOn: Time.getCurrentTime(),

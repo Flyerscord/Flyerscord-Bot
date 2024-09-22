@@ -3,10 +3,8 @@
   "production": {
     "token": "",
     "logLevel": 3,
-    "prefixes": {
-      "normal": ".",
-      "custom": "!"
-    },
+    "prefix": ".",
+    "masterGuildId": "",
     "vistorReactRole": {
       "memberRoleId": "",
       "visitorRoleId": "",
@@ -19,10 +17,8 @@
   "nonProduction": {
     "token": "",
     "logLevel": 3,
-    "prefixes": {
-      "normal": ".",
-      "custom": "!"
-    },
+    "prefix": ".",
+    "masterGuildId": "",
     "vistorReactRole": {
       "memberRoleId": "",
       "visitorRoleId": "",

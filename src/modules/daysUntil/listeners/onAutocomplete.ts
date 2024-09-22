@@ -37,7 +37,7 @@ async function toggleCommand(interaction: AutocompleteInteraction): Promise<bool
         const key = getKeyByName(eventName);
         if (key) {
           const event: IDaysUntilEvent = events[key];
-          const enabled = db.getEnabled(event.dbKey);
+          const enabled = db.getEvent(event.dbKey).enabled;
 
           sendAutocompleteOptions(interaction, [`${enabled ? "Disable" : "Enable"}`]);
           return true;

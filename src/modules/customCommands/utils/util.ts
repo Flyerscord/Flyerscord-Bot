@@ -7,9 +7,9 @@ import Time from "../../../common/utils/Time";
 
 export async function updateCommandList(): Promise<void> {
   const customCommandsDB = CustomCommandsDB.getInstance();
-  const GlobalDB = GlobalDB.getInstance();
+  const db = GlobalDB.getInstance();
 
-  const commandListMessageId = GlobalDB.getCommandListMessageId();
+  const commandListMessageId = db.getCommandListMessageId();
   const commandListChannelId = Config.getConfig().customCommandListChannelId;
 
   const commands = customCommandsDB.getAllCommands();
@@ -19,7 +19,7 @@ export async function updateCommandList(): Promise<void> {
     // The command list message does not exist and need to be made
     const message = await discord.messages.sendMessageToChannel(commandListChannelId, commandListMessage);
     if (message) {
-      GlobalDB.setCommandListMessageId(message.id);
+      db.setCommandListMessageId(message.id);
     }
   } else {
     discord.messages.updateMessageWithText(commandListChannelId, commandListMessageId, commandListMessage);

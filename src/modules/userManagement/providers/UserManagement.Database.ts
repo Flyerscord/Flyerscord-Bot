@@ -38,7 +38,7 @@ export default class UserManagementDB extends Database {
     }
 
     private addUser(userId: string): void {
-        const userInfo: IUserInfo = { userId: userId, mutes: [], notes: [], warnings: [] };
+        const userInfo: IUserInfo = { userId: userId, notes: [], warnings: [] };
         this.db.set(userId, userInfo);
     }
 }

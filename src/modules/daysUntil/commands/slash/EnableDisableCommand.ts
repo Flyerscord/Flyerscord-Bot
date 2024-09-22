@@ -25,7 +25,7 @@ export default class EnableDisableCommand extends AdminSlashCommand {
     const key = getKeyByName(eventName);
     if (key) {
       const event = events[key];
-      db.setEnabled(event.dbKey, enable);
+      db.setEventEnabled(event.dbKey, enable);
 
       interaction.reply({
         content: `Event ${event.name} ${enable ? "enabled" : "disabled"}!`,

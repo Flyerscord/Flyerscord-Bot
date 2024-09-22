@@ -1,12 +1,35 @@
-// eslint.config.mjs
-import globals from "globals";
-import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
+import eslintPluginPrettier from "eslint-plugin-prettier";
+import eslintConfigPrettier from "eslint-config-prettier";
+import typescriptEslintPlugin from "@typescript-eslint/eslint-plugin";
+import typescriptEslintParser from "@typescript-eslint/parser";
 
 export default [
-  { files: ["**/*.{js,mjs,cjs,ts}"] },
-  { files: ["**/*.js"], languageOptions: { sourceType: "commonjs" } },
-  { languageOptions: { globals: globals.browser } },
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    languageOptions: {
+      parser: typescriptEslintParser,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+      },
+    },
+    plugins: {
+      prettier: eslintPluginPrettier,
+      "@typescript-eslint": typescriptEslintPlugin,
+    },
+    rules: {
+      // TypeScript rules
+      "@typescript-eslint/no-unused-vars": ["error"],
+      "@typescript-eslint/explicit-module-boundary-types": "warn",
+      "@typescript-eslint/no-explicit-any": "warn",
+
+      // Prettier integration
+      "prettier/prettier": "error",
+    },
+    linterOptions: {
+      reportUnusedDisableDirectives: true,
+    },
+  },
+  // Applying Prettier config as a direct inclusion in the array
+  eslintConfigPrettier,
 ];

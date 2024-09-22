@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, User } from "discord.js";
 import SlashCommand, { PARAM_TYPES } from "../../../../common/models/SlashCommand";
 import LevelsDB from "../../providers/Levels.Database";
+import { createImage } from "../../utils/imageGeneration";
 
 export default class RankCommand extends SlashCommand {
   constructor() {
@@ -15,11 +16,22 @@ export default class RankCommand extends SlashCommand {
     let userId = interaction.user.id;
     if (user) {
       userId = user.id;
+
+      const db = LevelsDB.getInstance();
+      const userLevel = db.getUser(userId);
+
+      if (userLevel) {
+        // TODO: Print embed with info about the users level
+        const imageBuffer = await createImage(
+          userLevel.messageCount,
+          userLevel.totalExp,
+          userLevel.currentLevel,
+          userLevel.currentLevel,
+          user.username,
+        );
+
+        interaction.reply({ files: [imageBuffer] });
+      }
     }
-
-    const db = LevelsDB.getInstance();
-    const userLevel = db.getUser(userId);
-
-    // TODO: Print embed with info about the users level
   }
 }

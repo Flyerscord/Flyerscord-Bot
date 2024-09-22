@@ -17,7 +17,6 @@ export default class LeaderboardCommand extends SlashCommand {
     }
 
     const db = LevelsDB.getInstance();
-    const userLevel = db.getUser(userId);
 
     // TODO: Print embed with info about the users level
   }

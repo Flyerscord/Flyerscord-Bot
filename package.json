@@ -24,6 +24,7 @@
   "homepage": "https://github.com/strenkml/discord-typescript-template#readme",
   "dependencies": {
     "axios": "^1.7.7",
+    "canvas": "^2.11.2",
     "child_process": "^1.0.2",
     "discord.js": "^14.16.2",
     "enmap": "^6.0.2",

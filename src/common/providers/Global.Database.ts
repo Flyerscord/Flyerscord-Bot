@@ -1,7 +1,7 @@
 import Database from "./Database";
 
-export default class CacheDB extends Database {
-  private static instance: CacheDB;
+export default class GlobalDB extends Database {
+  private static instance: GlobalDB;
 
   private readonly COMMAND_LIST_MESSAGE_ID_KEY = "commandListMessageId";
   private readonly USER_LOG_CHANNEL_ID_KEY = "userLogChannelId";
@@ -14,7 +14,7 @@ export default class CacheDB extends Database {
     this.db.ensure(this.VISITOR_ROLE_MESSAGE_ID_KEY, "");
   }
 
-  static getInstance(): CacheDB {
+  static getInstance(): GlobalDB {
     return this.instance || (this.instance = new this());
   }
 

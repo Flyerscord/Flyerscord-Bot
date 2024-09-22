@@ -2,13 +2,13 @@ import { MessageReaction, PartialMessageReaction, PartialUser, User } from "disc
 import Stumper from "stumper";
 import ClientManager from "../../../common/managers/ClientManager";
 import Config from "../../../common/config/Config";
-import CacheDB from "../../../common/providers/Cache.Database";
+import GlobalDB from "../../../common/providers/Global.Database";
 import discord from "../../../common/utils/discord/discord";
 
 export default (): void => {
     const client = ClientManager.getInstance().client;
     client.on("messageReactionAdd", async (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) => {
-        const db = CacheDB.getInstance();
+        const db = GlobalDB.getInstance();
 
         const vistorMessageId = db.getVisitorRoleMessageId();
         if (vistorMessageId == "") {

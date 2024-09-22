@@ -1,11 +1,11 @@
 import { EmbedBuilder } from "discord.js";
 import Config from "../../../common/config/Config";
-import CacheDB from "../../../common/providers/Cache.Database";
+import GlobalDB from "../../../common/providers/Global.Database";
 import discord from "../../../common/utils/discord/discord";
 import Stumper from "stumper";
 
 export async function createVisitorRoleMessageIfNeeded(): Promise<void> {
-    const db = CacheDB.getInstance();
+    const db = GlobalDB.getInstance();
     const visitorMessageId = db.getVisitorRoleMessageId();
 
     if (visitorMessageId == "") {

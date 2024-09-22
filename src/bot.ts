@@ -30,11 +30,7 @@ import { Client, Collection, GatewayIntentBits, Partials } from "discord.js";
 
 const client = new Client({
   intents: [GatewayIntentBits.MessageContent, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
-  partials: [
-    Partials.Message,
-    Partials.Reaction,
-    Partials.User,
-  ],
+  partials: [Partials.Message, Partials.Reaction, Partials.User],
 });
 
 /* -------------------------------------------------------------------------- */
@@ -76,6 +72,7 @@ import UserManagementModule from "./modules/userManagement/UserManagementModule"
 import AdminModule from "./modules/admin/AdminModule";
 import MiscModule from "./modules/misc/MiscModule";
 import VisitorRoleModule from "./modules/visitorRole/VisitorRoleModule";
+import DaysUntilModule from "./modules/daysUntil/DaysUntilModule";
 
 new LevelsModule().enable();
 new CustomCommandsModule().enable();
@@ -83,6 +80,7 @@ new UserManagementModule().enable();
 new AdminModule().enable();
 new MiscModule().enable();
 new VisitorRoleModule().enable();
+new DaysUntilModule().enable();
 
 /* -------------------------------------------------------------------------- */
 /*                      Register Our Other Event Handlers                     */
@@ -110,9 +108,9 @@ import IBotHealth from "./common/interfaces/IBotHealth";
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.get('/health', (req, res) => {
+app.get("/health", (req, res) => {
   const health: IBotHealth = getBotHealth();
-  if (health.status === 'healthy') {
+  if (health.status === "healthy") {
     res.status(200).json(health);
   } else {
     res.status(503).json(health);

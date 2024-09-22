@@ -95,14 +95,14 @@ export default class CustomCommandsDB extends Database {
   }
 
   private isImageLink(text: string): boolean {
-    const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp'];
+    const imageExtensions = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
     const urlPattern = /(https?:\/\/[^\s]+)/g;
 
     const urls = text.match(urlPattern);
 
     if (urls) {
       for (const url of urls) {
-        if (imageExtensions.some(ext => url.toLowerCase().endsWith(ext))) {
+        if (imageExtensions.some((ext) => url.toLowerCase().endsWith(ext))) {
           return true;
         }
       }

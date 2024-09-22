@@ -7,6 +7,7 @@ export async function addEmoji(guild: Guild, emoji: IEmoji): Promise<void> {
   if (guild) {
     try {
       await guild.emojis.create({ attachment: emoji.url, name: emoji.name });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       Stumper.error(`Failed to create ${emoji.name} emoji using the url: ${emoji.url}`, "addEmoji");
     }

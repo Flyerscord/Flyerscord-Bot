@@ -35,7 +35,6 @@ export default class AddCommand extends AdminSlashCommand {
     if (this.isSubCommand(interaction, "image")) {
       name = (this.getParamValue(interaction, PARAM_TYPES.STRING, "name") as string).toLowerCase();
       text = (this.getParamValue(interaction, PARAM_TYPES.ATTACHMENT, "image") as Attachment).url;
-
     } else if (this.isSubCommand(interaction, "text")) {
       name = (this.getParamValue(interaction, PARAM_TYPES.STRING, "name") as string).toLowerCase();
       text = this.getParamValue(interaction, PARAM_TYPES.ATTACHMENT, "text");

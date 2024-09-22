@@ -1,6 +1,6 @@
 export default interface IBotHealth {
-    status: string;
-    message: string;
-    uptime?: number;
-    botUptime?: number;
+  status: string;
+  message: string;
+  uptime?: number;
+  botUptime?: number;
 }

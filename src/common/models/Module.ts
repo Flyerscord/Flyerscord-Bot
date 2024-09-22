@@ -35,7 +35,6 @@ export default abstract class Module {
     Stumper.info(`Reading in commands from ${location}`, "readInCommands");
 
     files.forEach((file) => {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const Command = require(`${location}/${file}`);
       const command: T = new Command().default();
 

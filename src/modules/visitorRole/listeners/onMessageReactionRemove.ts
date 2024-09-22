@@ -6,33 +6,33 @@ import GlobalDB from "../../../common/providers/Global.Database";
 import discord from "../../../common/utils/discord/discord";
 
 export default (): void => {
-    const client = ClientManager.getInstance().client;
-    client.on("messageReactionRemove", async (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) => {
-        const db = GlobalDB.getInstance();
+  const client = ClientManager.getInstance().client;
+  client.on("messageReactionRemove", async (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) => {
+    const db = GlobalDB.getInstance();
 
-        const vistorMessageId = db.getVisitorRoleMessageId();
-        if (vistorMessageId == "") {
-            return;
-        }
+    const vistorMessageId = db.getVisitorRoleMessageId();
+    if (vistorMessageId == "") {
+      return;
+    }
 
-        if (db.getVisitorRoleMessageId() != reaction.message.id) {
-            return;
-        }
+    if (db.getVisitorRoleMessageId() != reaction.message.id) {
+      return;
+    }
 
-        const member = discord.members.getMember(user.id);
+    const member = discord.members.getMember(user.id);
 
-        if (!member) {
-            return;
-        }
+    if (!member) {
+      return;
+    }
 
-        const visitorRoleId = Config.getConfig().vistorReactRole.visitorRoleId;
-        const memberRoleId = Config.getConfig().vistorReactRole.memberRoleId;
-        const visitorEmojiId = Config.getConfig().vistorReactRole.visitorEmojiId;
+    const visitorRoleId = Config.getConfig().vistorReactRole.visitorRoleId;
+    const memberRoleId = Config.getConfig().vistorReactRole.memberRoleId;
+    const visitorEmojiId = Config.getConfig().vistorReactRole.visitorEmojiId;
 
-        if (reaction.emoji.id == visitorEmojiId) {
-            discord.roles.removeRoleToUser(member, visitorRoleId);
-            discord.roles.addRoleToUser(member, memberRoleId);
-            Stumper.debug(`Reaction removed from message ${reaction.message.id} by user ${user.id}`, "onMessageReactionRemove");
-        }
-    });
+    if (reaction.emoji.id == visitorEmojiId) {
+      discord.roles.removeRoleToUser(member, visitorRoleId);
+      discord.roles.addRoleToUser(member, memberRoleId);
+      Stumper.debug(`Reaction removed from message ${reaction.message.id} by user ${user.id}`, "onMessageReactionRemove");
+    }
+  });
 };

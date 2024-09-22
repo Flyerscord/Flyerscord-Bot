@@ -1,4 +1,4 @@
 export interface IUserEvent {
-    reason: string;
-    date: number;
+  reason: string;
+  date: number;
 }

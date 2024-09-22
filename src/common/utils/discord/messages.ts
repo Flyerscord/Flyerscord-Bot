@@ -23,7 +23,7 @@ export async function sendStringReplytoMessage(messageObj: Message, message: str
   }
 }
 
-export async function sendEmbedReplytoMessage(messageObj: Message, embed: EmbedBuilder, mentionUser = false) {
+export async function sendEmbedReplytoMessage(messageObj: Message, embed: EmbedBuilder, mentionUser = false): Promise<void> {
   if (mentionUser) {
     Stumper.info(`Sending embed reply with mention to message: ${messageObj.id}`, "sendEmbedReplytoMessage");
     messageObj.reply({ embeds: [embed] });

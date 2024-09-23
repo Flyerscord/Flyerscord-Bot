@@ -50,4 +50,14 @@ export default class LevelsDB extends Database {
   public resetUser(userId: string): void {
     this.db.delete(userId);
   }
+
+  public getAllUsers(): Array<IUserLevel> {
+    return this.getAllValues();
+  }
+
+  public getAllUsersSortedByExp(): Array<IUserLevel> {
+    const users = this.getAllUsers();
+    users.sort((a, b) => b.totalExp - a.totalExp);
+    return users;
+  }
 }

@@ -14,3 +14,4 @@
 - Add logic for automating the gameday posts
 - Add NHL commands back with the new api
 - Add daysUtil command
+- Add server join and leave messages

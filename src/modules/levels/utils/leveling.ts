@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { bold, Message, userMention } from "discord.js";
 import LevelsDB from "../providers/Levels.Database";
 import Time from "../../../common/utils/Time";
 import LevelExpDB from "../providers/LevelExp.Database";
@@ -39,7 +39,7 @@ function checkForLevelUp(currentLevel: number, exp: number): boolean {
 }
 
 function sendLevelUpMessage(message: Message, userId: string, currentLevel: number): void {
-  const rankupMessage = `GG <@${userId}>, you just advanced to **Level ${currentLevel}** <:flyersflag:398273111071391744>`;
+  const rankupMessage = `GG ${userMention(userId)}, you just advanced to ${bold(`Level ${currentLevel}`)} <:flyersflag:398273111071391744>`;
   const pNumMessage = getPlayerNumMessage(currentLevel);
 
   const messages = [rankupMessage, pNumMessage];
@@ -54,9 +54,9 @@ async function getPlayerNumMessage(pNum: number): Promise<string> {
   if (output) {
     if (output.length != 0) {
       const names = createSpacedNames(output);
-      return `Flyers players that have had the number **${pNum}**:\n${names}`;
+      return `Flyers players that have had the number ${bold(pNum.toString())}:\n${names}`;
     } else {
-      return `No Flyers player has ever had the number **${pNum}**!`;
+      return `No Flyers player has ever had the number ${bold(pNum.toString())}!`;
     }
   }
   return "";

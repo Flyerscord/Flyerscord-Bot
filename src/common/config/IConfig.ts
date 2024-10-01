@@ -14,6 +14,7 @@ interface ICommonConfig {
   customCommandListChannelId: string;
   imgurClientId: string;
   vistorReactRole: IVistorReactConfig;
+  gameDayChannelId: string;
 }
 
 interface IVistorReactConfig {

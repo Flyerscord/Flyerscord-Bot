@@ -1,9 +1,8 @@
-import { ChatInputCommandInteraction, EmbedBuilder, User } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, time, TimestampStyles, User } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
 import UserManagementDB from "../../providers/UserManagement.Database";
 import { IUserInfo } from "../../interfaces/IUserInfo";
 import discord from "../../../../common/utils/discord/discord";
-import { createRelativeTimestamp } from "../../utils/utils";
 import Time from "../../../../common/utils/Time";
 
 export default class ViewCommand extends AdminSlashCommand {
@@ -68,10 +67,10 @@ function createEmbed(userInfo: IUserInfo, view: string): EmbedBuilder | undefine
       embed.addFields({ name: "User ID", value: `${userInfo.userId}` });
 
       if (member.joinedAt) {
-        embed.addFields({ name: "Joined Server", value: createRelativeTimestamp(member.joinedAt) });
+        embed.addFields({ name: "Joined Server", value: time(member.joinedAt, TimestampStyles.RelativeTime) });
       }
 
-      embed.addFields({ name: "Account Created", value: createRelativeTimestamp(user.createdAt) });
+      embed.addFields({ name: "Account Created", value: time(user.createdAt, TimestampStyles.RelativeTime) });
 
       embed.addFields({ name: "Number of warnings", value: `${userInfo.warnings.length}` });
       embed.addFields({ name: "Number of notes", value: `${userInfo.notes.length}` });

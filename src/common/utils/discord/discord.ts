@@ -6,6 +6,7 @@ import * as roles from "./roles";
 import * as users from "./users";
 import * as guilds from "./guilds";
 import * as members from "./members";
+import * as forums from "./forums";
 
 export default {
   messages: messages,
@@ -16,4 +17,5 @@ export default {
   users: users,
   guilds: guilds,
   members: members,
+  forums: forums,
 };

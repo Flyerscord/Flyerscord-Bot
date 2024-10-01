@@ -12,7 +12,8 @@
       "rolesChannelId": ""
     },
     "customCommandListChannelId": "",
-    "imgurClientId": ""
+    "imgurClientId": "",
+    "gameDayChannelId": ""
   },
   "nonProduction": {
     "token": "",
@@ -27,6 +28,7 @@
     },
     "customCommandListChannelId": "",
     "imgurClientId": "",
+    "gameDayChannelId": "",
     "guildId": ""
   }
 }

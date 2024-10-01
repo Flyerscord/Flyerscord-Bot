@@ -31,6 +31,22 @@ export default abstract class Time {
     return `${month}/${day}/${year} ${hour}:${minute}:${second}.${millisecond}`;
   }
 
+  static getFormattedDateTimeWithoutSeconds(time: Date): string {
+    const month = time.getMonth() + 1;
+    const day = time.getDate();
+    const year = time.getFullYear();
+
+    const hour = time.getHours();
+    const minute = this.prefixZero(time.getMinutes());
+
+    let hour12 = hour % 12;
+    hour12 = hour12 ? hour12 : 12; // the hour '0' should be '12'
+
+    const amPm = hour >= 12 ? "PM" : "AM";
+
+    return `${month}/${day}/${year} ${hour12}:${minute} ${amPm}`;
+  }
+
   static prefixZero(number: number): number | string {
     if (number < 10) {
       return `0${number}`;
@@ -104,5 +120,9 @@ export default abstract class Time {
     } else {
       return undefined;
     }
+  }
+
+  static isSameDay(date1: Date, date2: Date): boolean {
+    return date1.getDate() == date2.getDate() && date1.getMonth() == date2.getMonth() && date1.getFullYear() == date2.getFullYear();
   }
 }

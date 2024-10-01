@@ -5,5 +5,9 @@ export default class GameDayPostsModule extends Module {
     super("GameDayPosts");
   }
 
-  protected override setup(): void {}
+  protected override setup(): void {
+    this.registerSchedules();
+  }
+
+  private registerSchedules(): void {}
 }

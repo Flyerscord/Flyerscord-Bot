@@ -21,7 +21,6 @@ export default class RankCommand extends SlashCommand {
       const userLevel = db.getUser(userId);
 
       if (userLevel) {
-        // TODO: Print embed with info about the users level
         const imageBuffer = await createImage(
           userLevel.messageCount,
           userLevel.totalExp,

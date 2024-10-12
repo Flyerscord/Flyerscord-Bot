@@ -1,6 +1,5 @@
 import Module from "../../common/models/Module";
-import schedule from "node-schedule";
-import { checkForGameDay, closeAndLockOldPosts } from "./utils/GameChecker";
+import CreateGameDayPostTask from "./tasks/CreateGameDayPostTask";
 
 export default class GameDayPostsModule extends Module {
   constructor() {
@@ -13,9 +12,6 @@ export default class GameDayPostsModule extends Module {
 
   private registerSchedules(): void {
     // Run every day at midnight
-    schedule.scheduleJob("0 0 0 * * *", async () => {
-      await checkForGameDay();
-      await closeAndLockOldPosts();
-    });
+    new CreateGameDayPostTask().createScheduledJob();
   }
 }

@@ -1,30 +1,37 @@
-import { Guild } from "discord.js";
 import Stumper from "stumper";
 
 import { sleepMs } from "../sleep";
+import { getGuild } from "./guilds";
+import { GuildEmoji } from "discord.js";
 
-export async function addEmoji(guild: Guild, emoji: IEmoji): Promise<void> {
+export async function addEmoji(emoji: IEmoji): Promise<GuildEmoji | undefined> {
+  const guild = getGuild();
   if (guild) {
     try {
-      await guild.emojis.create({ attachment: emoji.url, name: emoji.name });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      return await guild.emojis.create({ attachment: emoji.url, name: emoji.name });
     } catch (error) {
       Stumper.error(`Failed to create ${emoji.name} emoji using the url: ${emoji.url}`, "addEmoji");
+      Stumper.error(error), "addEmoji";
     }
   }
+  return undefined;
 }
 
-export async function addMultipleEmojis(guild: Guild, emojis: Array<IEmoji>): Promise<void> {
+export async function addMultipleEmojis(emojis: Array<IEmoji>): Promise<Array<GuildEmoji | undefined>> {
+  const guild = getGuild();
+  const emojisCreated: Array<GuildEmoji | undefined> = [];
   if (guild) {
     for (let i = 0; i < emojis.length; i++) {
       const emoji = emojis[i];
-      await addEmoji(guild, emoji);
+      emojisCreated.push(await addEmoji(emoji));
       await sleepMs(500);
     }
   }
+  return emojisCreated;
 }
 
-export async function deleteEmoji(guild: Guild, emojiName: string, reason: string): Promise<boolean> {
+export async function deleteEmoji(emojiName: string, reason: string): Promise<boolean> {
+  const guild = getGuild();
   if (guild) {
     try {
       await guild.emojis.delete(emojiName, reason);
@@ -36,13 +43,14 @@ export async function deleteEmoji(guild: Guild, emojiName: string, reason: strin
   return false;
 }
 
-export async function deleteMultipleEmojis(guild: Guild, emojiNames: Array<string>, reasons: Array<string>): Promise<boolean> {
+export async function deleteMultipleEmojis(emojiNames: Array<string>, reasons: Array<string>): Promise<boolean> {
   let returnVal = true;
+  const guild = getGuild();
   if (guild) {
     for (let i = 0; i < emojiNames.length; i++) {
       const emojiName = emojiNames[i];
       const reason = reasons[i];
-      const result = await deleteEmoji(guild, emojiName, reason);
+      const result = await deleteEmoji(emojiName, reason);
       returnVal = returnVal && result;
       await sleepMs(500);
     }

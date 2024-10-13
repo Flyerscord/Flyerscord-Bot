@@ -1,5 +1,5 @@
 import nhlApi from "nhl-api-wrapper-ts";
-import { TEAM_TRI_CODE } from "nhl-api-wrapper-ts/dist/interfaces/Common";
+import { GAME_TYPE, TEAM_TRI_CODE } from "nhl-api-wrapper-ts/dist/interfaces/Common";
 import Time from "../../../common/utils/Time";
 import Logger from "stumper";
 
@@ -26,9 +26,20 @@ export async function checkForGameDay(): Promise<void> {
         if (homeTeam && awayTeam) {
           const tags = discord.forums.getAvailableTags(Config.getConfig().gameDayChannelId).filter((tag) => tag.id == "1286197120105320510");
 
+          let titlePrefix = "";
+          const gameNumber = await getGameNumber(game.id);
+          if (game.gameType == GAME_TYPE.PRESEASON) {
+            titlePrefix = `Preseason ${gameNumber}`;
+          } else if (game.gameType == GAME_TYPE.REGULAR_SEASON) {
+            titlePrefix = `Game ${gameNumber}`;
+          } else if (game.gameType == GAME_TYPE.POSTSEASON) {
+            // TODO: Implement logic for playoff rounds
+            titlePrefix = `Postseason ${gameNumber}`;
+          }
+
           const post = await discord.forums.createPost(
             Config.getConfig().gameDayChannelId,
-            `${awayTeam.fullName} @ ${homeTeam.fullName}`,
+            `${titlePrefix} - ${awayTeam.fullName} @ ${homeTeam.fullName}`,
             `${time(new Date(game.startTimeUTC), TimestampStyles.RelativeTime)}`,
             tags,
           );
@@ -60,4 +71,33 @@ export async function closeAndLockOldPosts(): Promise<void> {
       }
     }
   });
+}
+
+async function getGameNumber(gameId: number): Promise<number | undefined> {
+  const gameResp = await nhlApi.games.getGameInfo({ gameId: gameId });
+  let gameType: GAME_TYPE | undefined = undefined;
+
+  if (gameResp.status == 200) {
+    const game = gameResp.data;
+    gameType = game.seasonStates.gameType;
+
+    const seasonGamesResp = await nhlApi.teams.schedule.getCurrentTeamSchedule({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
+
+    let gameNumber = 0;
+    if (seasonGamesResp.status == 200) {
+      const seasonGames = seasonGamesResp.data.games;
+
+      seasonGames.forEach((seasonGame) => {
+        if (seasonGame.gameType == gameType) {
+          gameNumber++;
+        }
+
+        if (seasonGame.id == gameId) {
+          return gameNumber;
+        }
+      });
+    }
+  }
+
+  return undefined;
 }

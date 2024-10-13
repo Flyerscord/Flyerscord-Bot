@@ -18,7 +18,15 @@
       "tagIds": {
         "preseason": "",
         "regularSeason": "",
-        "postseason": ""
+        "postseason": "",
+        "seasons": [
+          {
+            "name": "",
+            "startingYear": 0,
+            "endingYear": 0,
+            "tagId": ""
+          }
+        ]
       }
     }
   },
@@ -40,7 +48,15 @@
       "tagIds": {
         "preseason": "",
         "regularSeason": "",
-        "postseason": ""
+        "postseason": "",
+        "seasons": [
+          {
+            "name": "",
+            "startingYear": 0,
+            "endingYear": 0,
+            "tagId": ""
+          }
+        ]
       }
     },
     "guildId": ""

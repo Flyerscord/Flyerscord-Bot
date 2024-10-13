@@ -33,4 +33,12 @@ interface IGameDayPostsTagIdsConfig {
   preseason: string;
   regularSeason: string;
   postseason: string;
+  seasons: IGameDayPostsTagIdsSeasonsConfig[];
+}
+
+interface IGameDayPostsTagIdsSeasonsConfig {
+  name: string;
+  startingYear: number;
+  endingYear: number;
+  tagId: string;
 }

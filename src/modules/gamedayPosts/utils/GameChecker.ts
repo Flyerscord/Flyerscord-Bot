@@ -7,6 +7,7 @@ import discord from "../../../common/utils/discord/discord";
 import { GuildForumTag, time, TimestampStyles } from "discord.js";
 import Config from "../../../common/config/Config";
 import GameDayPostsDB from "../providers/GameDayPosts.Database";
+import { IClubScheduleOutput_games } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubSchedule";
 
 export async function checkForGameDay(): Promise<void> {
   const res = await nhlApi.teams.schedule.getCurrentTeamSchedule({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
@@ -33,6 +34,11 @@ export async function checkForGameDay(): Promise<void> {
             tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.regularSeason);
           } else if (game.gameType == GAME_TYPE.POSTSEASON) {
             tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.postseason);
+          }
+
+          const seasonTag = getCurrentSeasonTagId(game);
+          if (seasonTag) {
+            tags.push(seasonTag);
           }
 
           let titlePrefix = "";
@@ -108,5 +114,18 @@ async function getGameNumber(gameId: number): Promise<number | undefined> {
     }
   }
 
+  return undefined;
+}
+
+function getCurrentSeasonTagId(game: IClubScheduleOutput_games): GuildForumTag | undefined {
+  const availableTags = discord.forums.getAvailableTags(Config.getConfig().gameDayPosts.channelId);
+
+  const seasonTags = Config.getConfig().gameDayPosts.tagIds.seasons;
+
+  seasonTags.forEach((seasonTag) => {
+    if (game.season.toString() == `${seasonTag.startingYear}${seasonTag.endingYear}`) {
+      return availableTags.find((tag) => tag.id == seasonTag.tagId);
+    }
+  });
   return undefined;
 }

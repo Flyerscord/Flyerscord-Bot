@@ -14,7 +14,7 @@ interface ICommonConfig {
   customCommandListChannelId: string;
   imgurClientId: string;
   vistorReactRole: IVistorReactConfig;
-  gameDayChannelId: string;
+  gameDayPosts: IGameDayPostsConfig;
 }
 
 interface IVistorReactConfig {
@@ -22,4 +22,15 @@ interface IVistorReactConfig {
   visitorRoleId: string;
   visitorEmojiId: string;
   rolesChannelId: string;
+}
+
+interface IGameDayPostsConfig {
+  channelId: string;
+  tagIds: IGameDayPostsTagIdsConfig;
+}
+
+interface IGameDayPostsTagIdsConfig {
+  preseason: string;
+  regularSeason: string;
+  postseason: string;
 }

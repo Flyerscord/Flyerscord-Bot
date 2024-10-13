@@ -4,7 +4,7 @@ import Time from "../../../common/utils/Time";
 import Logger from "stumper";
 
 import discord from "../../../common/utils/discord/discord";
-import { time, TimestampStyles } from "discord.js";
+import { GuildForumTag, time, TimestampStyles } from "discord.js";
 import Config from "../../../common/config/Config";
 import GameDayPostsDB from "../providers/GameDayPosts.Database";
 
@@ -24,7 +24,16 @@ export async function checkForGameDay(): Promise<void> {
         const awayTeam = teams.find((team) => team.id == game.awayTeam.id);
 
         if (homeTeam && awayTeam) {
-          const tags = discord.forums.getAvailableTags(Config.getConfig().gameDayChannelId).filter((tag) => tag.id == "1286197120105320510");
+          const availableTags = discord.forums.getAvailableTags(Config.getConfig().gameDayPosts.channelId);
+
+          let tags: GuildForumTag[] = [];
+          if (game.gameType == GAME_TYPE.PRESEASON) {
+            tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.preseason);
+          } else if (game.gameType == GAME_TYPE.REGULAR_SEASON) {
+            tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.regularSeason);
+          } else if (game.gameType == GAME_TYPE.POSTSEASON) {
+            tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.postseason);
+          }
 
           let titlePrefix = "";
           const gameNumber = await getGameNumber(game.id);
@@ -38,7 +47,7 @@ export async function checkForGameDay(): Promise<void> {
           }
 
           const post = await discord.forums.createPost(
-            Config.getConfig().gameDayChannelId,
+            Config.getConfig().gameDayPosts.channelId,
             `${titlePrefix} - ${awayTeam.fullName} @ ${homeTeam.fullName}`,
             `${time(new Date(game.startTimeUTC), TimestampStyles.RelativeTime)}`,
             tags,
@@ -66,8 +75,8 @@ export async function closeAndLockOldPosts(): Promise<void> {
       const gameInfo = gameInfoResp.data;
 
       if (Time.isSameDay(new Date(), new Date(gameInfo.gameDate))) {
-        discord.forums.setClosedPost(Config.getConfig().gameDayChannelId, post.channelId, true);
-        discord.forums.setLockPost(Config.getConfig().gameDayChannelId, post.channelId, true);
+        discord.forums.setClosedPost(Config.getConfig().gameDayPosts.channelId, post.channelId, true);
+        discord.forums.setLockPost(Config.getConfig().gameDayPosts.channelId, post.channelId, true);
       }
     }
   });

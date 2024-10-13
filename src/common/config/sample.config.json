@@ -13,7 +13,14 @@
     },
     "customCommandListChannelId": "",
     "imgurClientId": "",
-    "gameDayChannelId": ""
+    "gameDayPosts": {
+      "channelId": "",
+      "tagIds": {
+        "preseason": "",
+        "regularSeason": "",
+        "postseason": ""
+      }
+    }
   },
   "nonProduction": {
     "token": "",
@@ -28,7 +35,14 @@
     },
     "customCommandListChannelId": "",
     "imgurClientId": "",
-    "gameDayChannelId": "",
+    "gameDayPosts": {
+      "channelId": "",
+      "tagIds": {
+        "preseason": "",
+        "regularSeason": "",
+        "postseason": ""
+      }
+    },
     "guildId": ""
   }
 }

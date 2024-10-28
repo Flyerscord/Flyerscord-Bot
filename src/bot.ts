@@ -66,21 +66,27 @@ ModalMenuManager.getInstance();
 /* -------------------------------------------------------------------------- */
 /*                              Register Modules                              */
 /* -------------------------------------------------------------------------- */
-import LevelsModule from "./modules/levels/LevelsModule";
-import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule";
-import UserManagementModule from "./modules/userManagement/UserManagementModule";
 import AdminModule from "./modules/admin/AdminModule";
-import MiscModule from "./modules/misc/MiscModule";
-import VisitorRoleModule from "./modules/visitorRole/VisitorRoleModule";
+import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule";
 import DaysUntilModule from "./modules/daysUntil/DaysUntilModule";
+import GameDayPostsModule from "./modules/gamedayPosts/GameDayPostsModule";
+import LevelsModule from "./modules/levels/LevelsModule";
+import MiscModule from "./modules/misc/MiscModule";
+import NHLModule from "./modules/nhl/NHLModule";
+import PlayerEmojisModule from "./modules/playerEmojis/PlayerEmojisModule";
+import UserManagementModule from "./modules/userManagement/UserManagementModule";
+import VisitorRoleModule from "./modules/visitorRole/VisitorRoleModule";
 
-new LevelsModule().enable();
-new CustomCommandsModule().enable();
-new UserManagementModule().enable();
 new AdminModule().enable();
-new MiscModule().enable();
-new VisitorRoleModule().enable();
+new CustomCommandsModule().enable();
 new DaysUntilModule().enable();
+new GameDayPostsModule().enable();
+new LevelsModule().enable();
+new MiscModule().enable();
+new NHLModule().enable();
+new PlayerEmojisModule().enable();
+new UserManagementModule().enable();
+new VisitorRoleModule().enable();
 
 /* -------------------------------------------------------------------------- */
 /*                      Register Our Other Event Handlers                     */

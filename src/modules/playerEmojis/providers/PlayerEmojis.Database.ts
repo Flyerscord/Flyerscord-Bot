@@ -11,7 +11,7 @@ export default class PlayerEmojisDB extends Database {
     return this.instance || (this.instance = new this());
   }
 
-  public addPlayer(playerName: string, emojiId: string): boolean {
+  public addPlayer(playerName: number, emojiId: string): boolean {
     if (!this.hasPlayer(playerName)) {
       this.db.set(playerName, emojiId);
       return true;
@@ -19,7 +19,7 @@ export default class PlayerEmojisDB extends Database {
     return false;
   }
 
-  public hasPlayer(playerName: string): boolean {
+  public hasPlayer(playerName: number): boolean {
     return this.db.has(playerName);
   }
 
@@ -29,5 +29,9 @@ export default class PlayerEmojisDB extends Database {
 
   public getAllPlayers(): Array<string> {
     return this.getAllValues();
+  }
+
+  public getAllPlayersIds(): Array<number> {
+    return this.getAllKeys() as Array<number>;
   }
 }

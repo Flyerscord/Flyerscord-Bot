@@ -3,6 +3,8 @@ import nhlApi from "nhl-api-wrapper-ts";
 import PlayerEmojisDB from "../providers/PlayerEmojis.Database";
 import { TEAM_TRI_CODE } from "nhl-api-wrapper-ts/dist/interfaces/Common";
 import discord from "../../../common/utils/discord/discord";
+import { ITeamRosterNowOutput } from "nhl-api-wrapper-ts/dist/interfaces/roster/TeamRosterNow";
+import Logger from "stumper";
 
 export default class EmojiCheckTask extends Task {
   constructor() {
@@ -17,13 +19,37 @@ export default class EmojiCheckTask extends Task {
     if (rosterRes.status == 200) {
       const roster = rosterRes.data;
 
+      if (!this.checkForNewPlayers(roster)) {
+        Logger.info("No new players found", "EmojiCheckTask");
+        return;
+      }
+
+      this.removeOldEmojis();
+
       roster.forwards.forEach(async (player) => {
         const playerName = player.lastName.default.toLowerCase() + player.firstName.default.charAt(0).toUpperCase();
 
-        // TODO: Remove background from headshot
         const emoji = await discord.emojis.addEmoji({ name: playerName, url: player.headshot });
         if (emoji) {
-          db.addPlayer(playerName, emoji.id);
+          db.addPlayer(player.id, emoji.id);
+        }
+      });
+
+      roster.defensemen.forEach(async (player) => {
+        const playerName = player.lastName.default.toLowerCase() + player.firstName.default.charAt(0).toUpperCase();
+
+        const emoji = await discord.emojis.addEmoji({ name: playerName, url: player.headshot });
+        if (emoji) {
+          db.addPlayer(player.id, emoji.id);
+        }
+      });
+
+      roster.goalies.forEach(async (player) => {
+        const playerName = player.lastName.default.toLowerCase() + player.firstName.default.charAt(0).toUpperCase();
+
+        const emoji = await discord.emojis.addEmoji({ name: playerName, url: player.headshot });
+        if (emoji) {
+          db.addPlayer(player.id, emoji.id);
         }
       });
     }
@@ -38,5 +64,37 @@ export default class EmojiCheckTask extends Task {
       discord.emojis.deleteEmoji(emojiId, "Deleting old player emoji");
     });
     db.clearPlayers();
+  }
+
+  private checkForNewPlayers(roster: ITeamRosterNowOutput): boolean {
+    const db = PlayerEmojisDB.getInstance();
+
+    // Check if the roster has the same number of players as the db
+    const rosterPlayerCount = roster.forwards.length + roster.defensemen.length + roster.goalies.length;
+    if (rosterPlayerCount != db.getAllPlayers().length) {
+      return true;
+    }
+
+    const forwardPlayerIds = roster.forwards.map((player) => player.id);
+    const defensePlayerIds = roster.defensemen.map((player) => player.id);
+    const goaliePlayerIds = roster.goalies.map((player) => player.id);
+    const rosterPlayerIds = forwardPlayerIds.concat(defensePlayerIds).concat(goaliePlayerIds);
+    const dbPlayerIds = db.getAllPlayersIds();
+
+    // Check if any of the players in the roster are not in the db
+    rosterPlayerIds.forEach((playerId) => {
+      if (!dbPlayerIds.includes(playerId)) {
+        return true;
+      }
+    });
+
+    // Check if any of the players in the db are not in the roster
+    dbPlayerIds.forEach((playerId) => {
+      if (!rosterPlayerIds.includes(playerId)) {
+        return true;
+      }
+    });
+
+    return false;
   }
 }

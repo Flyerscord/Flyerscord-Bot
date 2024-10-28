@@ -17,7 +17,7 @@ export default class RoleAllAssignCommand extends AdminSlashCommand {
     const role: Role = this.getParamValue(interaction, PARAM_TYPES.ROLE, "role");
     const onlyNoRole: boolean = this.getParamValue(interaction, PARAM_TYPES.BOOLEAN, "onlynonrole") || false;
 
-    const members = discord.members.getMembers();
+    const members = await discord.members.getMembers();
     if (!members) {
       interaction.reply({
         content: "Error retreiving the guild members",

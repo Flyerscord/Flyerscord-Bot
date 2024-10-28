@@ -19,7 +19,7 @@ export default (): void => {
       return;
     }
 
-    const member = discord.members.getMember(user.id);
+    const member = await discord.members.getMember(user.id);
 
     if (!member) {
       return;

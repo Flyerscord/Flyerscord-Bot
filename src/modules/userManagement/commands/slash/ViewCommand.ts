@@ -27,7 +27,7 @@ export default class ViewCommand extends AdminSlashCommand {
     const db = UserManagementDB.getInstance();
     const userInfo: IUserInfo = db.getUser(user.id);
 
-    const embed = createEmbed(userInfo, view);
+    const embed = await createEmbed(userInfo, view);
     if (embed) {
       interaction.reply({ embeds: [embed], ephemeral: true });
     } else {
@@ -36,10 +36,10 @@ export default class ViewCommand extends AdminSlashCommand {
   }
 }
 
-function createEmbed(userInfo: IUserInfo, view: string): EmbedBuilder | undefined {
+async function createEmbed(userInfo: IUserInfo, view: string): Promise<EmbedBuilder | undefined> {
   const embed = new EmbedBuilder();
   const user = discord.users.getUser(userInfo.userId);
-  const member = discord.members.getMember(userInfo.userId);
+  const member = await discord.members.getMember(userInfo.userId);
 
   if (user && member) {
     if (view == "warnings") {

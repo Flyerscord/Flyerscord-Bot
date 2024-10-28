@@ -10,7 +10,8 @@
     "lint": "npx eslint .",
     "lintfix": "npx eslint . --fix",
     "format": "npx prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
-    "update": "npx npm-check -u"
+    "update": "npx npm-check -u",
+    "depcheck": "npx npm-check"
   },
   "repository": {
     "type": "git",

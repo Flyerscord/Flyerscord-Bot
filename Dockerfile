@@ -1,3 +1,4 @@
+# Build the builder image
 FROM node:18 AS BUILDER
 
 WORKDIR /usr/src/build
@@ -10,6 +11,7 @@ COPY . .
 
 RUN npm run build
 
+# Build the production image
 FROM node:18
 
 # Set the timezone so that the logs are in the correct timezone

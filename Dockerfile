@@ -1,5 +1,5 @@
 # Build the builder image
-FROM node:18 AS BUILDER
+FROM node:18 AS builder
 
 WORKDIR /usr/src/build
 
@@ -24,7 +24,7 @@ COPY package*.json .
 
 RUN npm install --production
 
-COPY --from=BUILDER /usr/src/build/dist src/
+COPY --from=builder /usr/src/build/dist src/
 
 CMD ["npm", "run", "start:prod"]
 # CMD ["tail", "-f", "/dev/null"]

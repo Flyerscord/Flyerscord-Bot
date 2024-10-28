@@ -15,6 +15,7 @@ interface ICommonConfig {
   imgurClientId: string;
   vistorReactRole: IVistorReactConfig;
   gameDayPosts: IGameDayPostsConfig;
+  joinLeaveMessageChannelId: string;
 }
 
 interface IVistorReactConfig {

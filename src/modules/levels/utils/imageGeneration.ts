@@ -17,7 +17,7 @@ export async function createImage(totalMessages: number, currentExp: number, nee
   const canvas = createCanvas(width, height);
   const ctx = canvas.getContext("2d");
 
-  const backgroundImage = await loadImage("./background.png");
+  const backgroundImage = await loadImage(`${__dirname}/../assets/background.png`);
 
   // Add background image
   ctx.drawImage(backgroundImage, 0, 0, width, height);

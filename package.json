@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/strenkml/discord-typescript-template.git"
+    "url": "git+https://github.com/strenkml/NHL-Helper-Bot.git"
   },
   "author": "Matt Strenk",
   "license": "GPLV3",
   "bugs": {
-    "url": "https://github.com/strenkml/discord-typescript-template/issues"
+    "url": "https://github.com/strenkml/NHL-Helper-Bot/issues"
   },
-  "homepage": "https://github.com/strenkml/discord-typescript-template#readme",
+  "homepage": "https://github.com/strenkml/NHL-Helper-Bot#readme",
   "dependencies": {
     "axios": "^1.7.7",
     "canvas": "^2.11.2",

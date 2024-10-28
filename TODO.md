@@ -15,3 +15,7 @@
 - Add NHL commands back with the new api
 - Add daysUtil command
 - Add server join and leave messages
+
+# After release
+
+- Add live game info back

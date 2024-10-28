@@ -202,7 +202,7 @@ export default class StandingsCommand extends SlashCommand {
     const wildcardStandings = this.getWildcardStandings(standings);
     if (wildcardStandings.length > 0) {
       const embed = new EmbedBuilder();
-      embed.setTitle("Wildcard Standings");
+      embed.setTitle(`${conference} Wildcard Standings`);
       embed.setColor("NotQuiteBlack");
       embed.setTimestamp(Date.now());
 

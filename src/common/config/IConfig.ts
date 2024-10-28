@@ -12,7 +12,7 @@ interface ICommonConfig {
   masterGuildId: string;
   prefix: string;
   customCommandListChannelId: string;
-  imgurClientId: string;
+  imgur: IImgurConfig;
   vistorReactRole: IVistorReactConfig;
   gameDayPosts: IGameDayPostsConfig;
   joinLeaveMessageChannelId: string;
@@ -42,4 +42,9 @@ interface IGameDayPostsTagIdsSeasonsConfig {
   startingYear: number;
   endingYear: number;
   tagId: string;
+}
+
+interface IImgurConfig {
+  clientId: string;
+  clientSecret: string;
 }

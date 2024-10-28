@@ -7,9 +7,11 @@ export default class Imgur {
 
   private client: ImgurClient | undefined;
   private clientId: string;
+  private clientSecret: string;
 
   private constructor() {
-    this.clientId = Config.getConfig().imgurClientId;
+    this.clientId = Config.getConfig().imgur.clientId;
+    this.clientSecret = Config.getConfig().imgur.clientSecret;
   }
 
   static getInstance(): Imgur {
@@ -36,7 +38,7 @@ export default class Imgur {
       if (this.clientId == "") {
         throw new ImgurSetupRequiredException();
       }
-      this.client = new ImgurClient({ clientId: this.clientId });
+      this.client = new ImgurClient({ clientId: this.clientId, clientSecret: this.clientSecret });
     }
   }
 }

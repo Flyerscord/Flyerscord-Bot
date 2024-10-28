@@ -13,7 +13,10 @@
     },
     "joinLeaveMessageChannelId": "",
     "customCommandListChannelId": "",
-    "imgurClientId": "",
+    "imgur": {
+      "clientId": "",
+      "clientSecret": ""
+    },
     "gameDayPosts": {
       "channelId": "",
       "tagIds": {
@@ -44,7 +47,10 @@
     },
     "joinLeaveMessageChannelId": "",
     "customCommandListChannelId": "",
-    "imgurClientId": "",
+    "imgur": {
+      "clientId": "",
+      "clientSecret": ""
+    },
     "gameDayPosts": {
       "channelId": "",
       "tagIds": {

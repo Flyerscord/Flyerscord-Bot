@@ -2,7 +2,7 @@ import { AttachmentBuilder, bold } from "discord.js";
 import ClientManager from "../../../common/managers/ClientManager";
 import discord from "../../../common/utils/discord/discord";
 import Config from "../../../common/config/Config";
-import Logger from "stumper";
+import Stumper from "stumper";
 
 export default (): void => {
   ClientManager.getInstance().client.on("guildMemberRemove", async (member) => {
@@ -14,6 +14,6 @@ export default (): void => {
       message,
       new AttachmentBuilder("https://imgur.com/dDrkXV6"),
     );
-    Logger.info(`User ${username} has left the server!`, "onGuildMemberRemove");
+    Stumper.info(`User ${username} has left the server!`, "onGuildMemberRemove");
   });
 };

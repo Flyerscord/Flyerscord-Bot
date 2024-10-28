@@ -1,7 +1,7 @@
 import nhlApi from "nhl-api-wrapper-ts";
 import { GAME_TYPE, TEAM_TRI_CODE } from "nhl-api-wrapper-ts/dist/interfaces/Common";
 import Time from "../../../common/utils/Time";
-import Logger from "stumper";
+import Stumper from "stumper";
 
 import discord from "../../../common/utils/discord/discord";
 import { GuildForumTag, time, TimestampStyles } from "discord.js";
@@ -60,7 +60,7 @@ export async function checkForGameDay(): Promise<void> {
           );
 
           if (post) {
-            Logger.info(`Created post for game: ${game.id}`, "checkForGameDay");
+            Stumper.info(`Created post for game: ${game.id}`, "checkForGameDay");
             const db = GameDayPostsDB.getInstance();
             db.addPost(game.id, post.id);
           }

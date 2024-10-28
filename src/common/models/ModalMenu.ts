@@ -18,4 +18,8 @@ export default abstract class ModalMenu {
   public getModal(): ModalBuilder {
     return this.data;
   }
+
+  protected getTextInputValue(interaction: ModalSubmitInteraction, customId: string): string {
+    return interaction.fields.getTextInputValue(customId);
+  }
 }

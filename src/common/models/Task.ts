@@ -1,5 +1,5 @@
 import schedule, { Job } from "node-schedule";
-import Logger from "stumper";
+import Stumper from "stumper";
 
 export default abstract class Task {
   protected name: string;
@@ -23,13 +23,13 @@ export default abstract class Task {
   }
 
   public createScheduledJob(): void {
-    Logger.debug(`Creating scheduled job: ${this.name}`, "createScheduledJob");
+    Stumper.debug(`Creating scheduled job: ${this.name}`, "createScheduledJob");
     this.job = schedule.scheduleJob(this.interval, this.execute);
   }
 
   public stopScheduledJob(): void {
     if (this.job) {
-      Logger.debug(`Stopping scheduled job: ${this.name}`, "stopScheduledJob");
+      Stumper.debug(`Stopping scheduled job: ${this.name}`, "stopScheduledJob");
       this.job.cancel();
     }
   }

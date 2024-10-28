@@ -3,7 +3,7 @@ import Config from "../../../common/config/Config";
 import ClientManager from "../../../common/managers/ClientManager";
 import discord from "../../../common/utils/discord/discord";
 import { createImage } from "../utils/imageGeneration";
-import Logger from "stumper";
+import Stumper from "stumper";
 
 export default (): void => {
   ClientManager.getInstance().client.on("guildMemberAdd", async (member) => {
@@ -13,6 +13,6 @@ export default (): void => {
     const joinPhoto = await createImage(username, member.displayAvatarURL(), await discord.members.getMemberJoinPosition(member));
 
     await discord.messages.sendMessageAndImageBufferToChannel(Config.getConfig().joinLeaveMessageChannelId, message, joinPhoto);
-    Logger.info(`User ${username} has joined the server!`, "onGuildMemberAdd");
+    Stumper.info(`User ${username} has joined the server!`, "onGuildMemberAdd");
   });
 };

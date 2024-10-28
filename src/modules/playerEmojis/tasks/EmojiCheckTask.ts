@@ -4,7 +4,7 @@ import PlayerEmojisDB from "../providers/PlayerEmojis.Database";
 import { TEAM_TRI_CODE } from "nhl-api-wrapper-ts/dist/interfaces/Common";
 import discord from "../../../common/utils/discord/discord";
 import { ITeamRosterNowOutput } from "nhl-api-wrapper-ts/dist/interfaces/roster/TeamRosterNow";
-import Logger from "stumper";
+import Stumper from "stumper";
 
 export default class EmojiCheckTask extends Task {
   constructor() {
@@ -20,7 +20,7 @@ export default class EmojiCheckTask extends Task {
       const roster = rosterRes.data;
 
       if (!this.checkForNewPlayers(roster)) {
-        Logger.info("No new players found", "EmojiCheckTask");
+        Stumper.info("No new players found", "EmojiCheckTask");
         return;
       }
 

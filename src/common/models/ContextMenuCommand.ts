@@ -24,7 +24,7 @@ export abstract class UserContextMenuCommand extends ContextMenuCommand {
   constructor(name: string) {
     super(name);
 
-    this.data.setType(ApplicationCommandType.User);
+    this.data.setType(ApplicationCommandType.User.valueOf());
   }
 
   abstract execute(interaction: UserContextMenuCommandInteraction): Promise<void>;
@@ -42,7 +42,7 @@ export abstract class MessageContextMenuCommand extends ContextMenuCommand {
   constructor(name: string) {
     super(name);
 
-    this.data.setType(ApplicationCommandType.Message);
+    this.data.setType(ApplicationCommandType.Message.valueOf());
   }
 
   abstract execute(interaction: MessageContextMenuCommandInteraction): Promise<void>;

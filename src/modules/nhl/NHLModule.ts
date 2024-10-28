@@ -1,9 +1,9 @@
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 
-export default class NHLAPIModule extends Module {
+export default class NHLModule extends Module {
   constructor() {
-    super("NHLAPI");
+    super("NHL");
   }
 
   protected override setup(): void {

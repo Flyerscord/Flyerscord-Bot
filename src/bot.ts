@@ -93,13 +93,13 @@ new VisitorRoleModule().enable();
 /* -------------------------------------------------------------------------- */
 /*                      Register Our Other Event Handlers                     */
 /* -------------------------------------------------------------------------- */
-import onReady from "./common/listeners/onReady";
 import onMessageCreate from "./common/listeners/onMessageCreate";
 import onInteractionCreate from "./common/listeners/onInteractionCreate";
+import onReady from "./common/listeners/onReady";
 
-onReady(client);
 onMessageCreate(client);
 onInteractionCreate(client);
+onReady(client);
 
 /* -------------------------------------------------------------------------- */
 /*                                Log into bot                                */

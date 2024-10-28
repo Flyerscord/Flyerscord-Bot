@@ -58,6 +58,14 @@ export async function deleteMultipleEmojis(emojiNames: Array<string>, reasons: A
   return returnVal;
 }
 
+export function getEmojiByName(name: string): GuildEmoji | undefined {
+  const guild = getGuild();
+  if (guild) {
+    return guild.emojis.cache.find((emoji) => emoji.name == name);
+  }
+  return undefined;
+}
+
 interface IEmoji {
   url: string;
   name: string;

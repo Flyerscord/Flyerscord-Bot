@@ -9,7 +9,7 @@ export default class LevelsModule extends Module {
   }
 
   protected override setup(): void {
-    this.readInCommands<SlashCommand>("slash");
+    this.readInCommands<SlashCommand>(__dirname, "slash");
 
     this.registerListeners();
 

@@ -10,8 +10,8 @@ export default class CustomCommandsModule extends Module {
   }
 
   protected override setup(): void {
-    this.readInCommands<SlashCommand>("slash");
-    this.readInCommands<TextCommand>("text");
+    this.readInCommands<SlashCommand>(__dirname, "slash");
+    this.readInCommands<TextCommand>(__dirname, "text");
 
     this.registerListeners();
 

@@ -26,16 +26,16 @@ export default abstract class Module {
     throw new ModuleSetupMissingException();
   }
 
-  protected async readInCommands<T>(commandsPath: string): Promise<void> {
+  protected async readInCommands<T>(dir: string, commandsPath: string): Promise<void> {
     const commands: Array<T> = [];
 
-    const location = `${__dirname}/commands/${commandsPath}`;
+    const location = `${dir}/commands/${commandsPath}`;
     const files = fs.readdirSync(location);
 
     Stumper.info(`Reading in commands from ${location}`, "readInCommands");
 
     for (const file of files) {
-      const Command = await import(`${location}/${file}`);
+      const Command = require(`${location}/${file}`);
       const command: T = new Command().default();
 
       if (command instanceof SlashCommand || command instanceof TextCommand || command instanceof ContextMenuCommand) {

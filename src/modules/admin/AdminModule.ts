@@ -7,6 +7,6 @@ export default class AdminModule extends Module {
   }
 
   protected override setup(): void {
-    this.readInCommands<SlashCommand>("slash");
+    this.readInCommands<SlashCommand>(__dirname, "slash");
   }
 }

@@ -1,8 +1,8 @@
 import Module from "../../common/models/Module";
 import onGuildMemberAdd from "./listeners/onGuildMemberAdd";
-import { createVisitorRoleMessageIfNeeded } from "./utils/utils";
 import onMessageReactionAdd from "./listeners/onMessageReactionAdd";
 import onMessageReactionRemove from "./listeners/onMessageReactionRemove";
+import onReady from "./listeners/onReady";
 
 export default class VistorRoleModule extends Module {
   constructor() {
@@ -11,13 +11,12 @@ export default class VistorRoleModule extends Module {
 
   protected override async setup(): Promise<void> {
     this.registerListeners();
-
-    await createVisitorRoleMessageIfNeeded();
   }
 
   private registerListeners(): void {
     onGuildMemberAdd();
     onMessageReactionAdd();
     onMessageReactionRemove();
+    onReady();
   }
 }

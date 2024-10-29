@@ -21,7 +21,7 @@ export default (client: Client): void => {
 };
 
 function registerSlashCommands(client: Client, slashCommands: Array<RESTPostAPIChatInputApplicationCommandsJSONBody>): void {
-  const rest = new REST({ version: "10" }).setToken(Config.getConfig().token);
+  const rest = new REST().setToken(Config.getConfig().token);
 
   if (client.user) {
     // If the bot is in production mode register the commands globally (changes will take longer to appear)

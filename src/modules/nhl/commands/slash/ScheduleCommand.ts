@@ -5,6 +5,9 @@ import SlashCommand, { PARAM_TYPES } from "../../../../common/models/SlashComman
 import { TEAM_TRI_CODE } from "nhl-api-wrapper-ts/dist/interfaces/Common";
 import { IClubScheduleNowOutput } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubScheduleNow";
 import Time from "../../../../common/utils/Time";
+import { NHL_EMOJI_GUILD_ID } from "../../../../common/utils/discord/emojis";
+import discord from "../../../../common/utils/discord/discord";
+import Stumper from "stumper";
 
 export default class ScheduleCommand extends SlashCommand {
   constructor() {
@@ -24,7 +27,7 @@ export default class ScheduleCommand extends SlashCommand {
       const schedule = response.data;
 
       const embed = await this.createEmbed(numberOfGames, schedule);
-      interaction.reply({ embeds: [embed], ephemeral: true });
+      interaction.reply({ embeds: [embed] });
     } else {
       interaction.reply({
         content: "Error fetching the schedule!",
@@ -54,14 +57,30 @@ export default class ScheduleCommand extends SlashCommand {
       const gameDate = Time.getFormattedDateTimeWithoutSeconds(date);
 
       const teams = await nhlApi.teams.getTeams({ lang: "en" });
-      const awayTeam = teams.data.data.find((team) => team.id == game.awayTeam.id);
-      const homeTeam = teams.data.data.find((team) => team.id == game.homeTeam.id);
+      const franchises = await nhlApi.teams.getFranchiseInfo({ lang: "en" });
 
-      if (awayTeam && homeTeam) {
-        embed.addFields({
-          name: gameDate,
-          value: `${awayTeam.fullName} @ ${homeTeam.fullName}`,
-        });
+      if (teams.status == 200 && franchises.status == 200) {
+        const awayTeam = teams.data.data.find((team) => team.id == game.awayTeam.id);
+        const homeTeam = teams.data.data.find((team) => team.id == game.homeTeam.id);
+        const awayFranchise = franchises.data.data.find((franchise) => franchise.id == awayTeam?.franchiseId);
+        const homeFranchise = franchises.data.data.find((franchise) => franchise.id == homeTeam?.franchiseId);
+
+        if (awayTeam && homeTeam && awayFranchise && homeFranchise) {
+          const awayTeamEmoji = await discord.emojis.getClientEmojiByNameAndGuildID(
+            awayFranchise.teamCommonName.toLowerCase().replaceAll(" ", ""),
+            NHL_EMOJI_GUILD_ID,
+          );
+          const homeTeamEmoji = await discord.emojis.getClientEmojiByNameAndGuildID(
+            homeFranchise.teamCommonName.toLowerCase().replaceAll(" ", ""),
+            NHL_EMOJI_GUILD_ID,
+          );
+          embed.addFields({
+            name: gameDate,
+            value: `${awayTeamEmoji} ${awayTeam.fullName} @ ${homeTeam.fullName} ${homeTeamEmoji}`,
+          });
+        }
+      } else {
+        Stumper.error(`Error fetching teams or franchises`, "ScheduleCommand");
       }
     }
 

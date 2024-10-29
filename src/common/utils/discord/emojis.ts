@@ -3,6 +3,9 @@ import Stumper from "stumper";
 import { sleepMs } from "../sleep";
 import { getGuild } from "./guilds";
 import { GuildEmoji } from "discord.js";
+import ClientManager from "../../managers/ClientManager";
+
+export const NHL_EMOJI_GUILD_ID = "670839648683163656";
 
 export async function addEmoji(emoji: IEmoji): Promise<GuildEmoji | undefined> {
   const guild = getGuild();
@@ -58,12 +61,35 @@ export async function deleteMultipleEmojis(emojiNames: Array<string>, reasons: A
   return returnVal;
 }
 
-export function getEmojiByName(name: string): GuildEmoji | undefined {
+export async function getGuildEmojiByName(name: string): Promise<GuildEmoji | undefined> {
   const guild = getGuild();
   if (guild) {
-    return guild.emojis.cache.find((emoji) => emoji.name == name);
+    const emojis = await guild.emojis.fetch();
+    return emojis.find((emoji) => emoji.name == name);
   }
   return undefined;
+}
+
+export async function getClientEmojiByName(name: string): Promise<GuildEmoji | undefined> {
+  const client = ClientManager.getInstance().client;
+  const emoji = client.emojis.cache.find((emoji) => emoji.name == name);
+  if (emoji) {
+    return emoji;
+  } else {
+    Stumper.debug(`Emoji ${name} not found in cache`, "getClientEmojiByName");
+    return undefined;
+  }
+}
+
+export async function getClientEmojiByNameAndGuildID(name: string, guildId: string): Promise<GuildEmoji | undefined> {
+  const client = ClientManager.getInstance().client;
+  const emoji = client.emojis.cache.find((emoji) => emoji.name == name && emoji.guild.id == guildId);
+  if (emoji) {
+    return emoji;
+  } else {
+    Stumper.debug(`Emoji ${name} not found in cache`, "getClientEmojiByIdAndGuildID");
+    return undefined;
+  }
 }
 
 interface IEmoji {

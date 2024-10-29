@@ -26,7 +26,7 @@ async function onSlashCommand(client: Client, interaction: ChatInputCommandInter
   const command = client.slashCommands.get(interaction.commandName);
   if (!command) return;
   try {
-    Stumper.info(`Running command: ${interaction.commandName}`, "onSlashCommand");
+    Stumper.info(`Running command: ${interaction.commandName} User: ${interaction.user.id}`, "onSlashCommand");
     await command.execute(interaction);
   } catch (error) {
     if (error) Stumper.error(error);

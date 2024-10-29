@@ -29,6 +29,8 @@ function checkForCustomTextCommand(message: Message): boolean {
     Stumper.info(`Executing custom command ${customCommand.name}.`, "checkForCustomTextCommand");
     discord.messages.sendMessageToChannel(message.channel.id, customCommand.text);
     return true;
+  } else if (message.client.textCommands.hasAny(command)) {
+    // Command is a hardcoded text command
   } else {
     Stumper.warning(`Custom Command ${command} not found!`, "checkForCustomTextCommand");
   }

@@ -35,4 +35,9 @@ export default abstract class Database {
       return { key: val[0], value: val[1] };
     });
   }
+
+  public close(): void {
+    Stumper.warning(`Closing database: ${this.name}`, "Database:close");
+    this.db.close();
+  }
 }

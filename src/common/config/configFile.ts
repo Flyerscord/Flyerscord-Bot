@@ -1,4 +1,4 @@
-{
+export default {
   "productionMode": true,
   "production": {
     "token": "",

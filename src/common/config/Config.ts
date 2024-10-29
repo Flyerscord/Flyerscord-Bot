@@ -3,13 +3,13 @@ import fs from "fs";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-import * as config from "./config.json" with {"type": "json"};
+import config from "./configFile.js";
 import { IConfig } from "./IConfig.js";
 
 export default class Config {
   static fileExists(): boolean {
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    return fs.existsSync(`${__dirname}/config.json`);
+    return fs.existsSync(`${__dirname}/configFile.js`);
   }
 
   static getConfig(): IConfig {

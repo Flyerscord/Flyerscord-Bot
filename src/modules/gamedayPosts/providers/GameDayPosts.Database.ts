@@ -14,11 +14,11 @@ export default class GameDayPostsDB extends Database {
 
   public addPost(gameId: number, postId: string): void {
     const post: IGameDayPost = { channelId: postId, gameId: gameId };
-    this.db.set(gameId, post);
+    this.db.set(gameId.toString(), post);
   }
 
   public hasPostByGameId(gameId: number): boolean {
-    return this.db.has(gameId);
+    return this.db.has(gameId.toString());
   }
 
   public hasPostByPostId(postId: string): boolean {
@@ -27,7 +27,7 @@ export default class GameDayPostsDB extends Database {
 
   public getPostByGameId(gameId: number): IGameDayPost | undefined {
     if (this.hasPostByGameId(gameId)) {
-      return this.db.get(gameId);
+      return this.db.get(gameId.toString());
     }
     return undefined;
   }

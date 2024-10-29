@@ -12,7 +12,7 @@ export default class LevelExpDB extends Database {
   }
 
   addLevel(level: number, expRequired: number): void {
-    this.db.set(level, expRequired);
+    this.db.set(level.toString(), expRequired);
   }
 
   getLevelFromExp(exp: number): number {
@@ -26,7 +26,7 @@ export default class LevelExpDB extends Database {
 
   getLevelExp(level: number): number {
     if (this.hasLevel(level)) {
-      return this.db.get(level);
+      return this.db.get(level.toString());
     }
     return 0;
   }
@@ -37,6 +37,6 @@ export default class LevelExpDB extends Database {
   }
 
   private hasLevel(level: number): boolean {
-    return this.db.has(level);
+    return this.db.has(level.toString());
   }
 }

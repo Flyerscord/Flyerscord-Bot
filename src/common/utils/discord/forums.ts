@@ -22,7 +22,7 @@ export async function createPost(
 export async function getAvailableTags(forumChannelId: string): Promise<GuildForumTag[]> {
   const forumChannel = await getForumChannel(forumChannelId);
   if (forumChannel) {
-    forumChannel.availableTags;
+    return forumChannel.availableTags;
   }
   return [];
 }

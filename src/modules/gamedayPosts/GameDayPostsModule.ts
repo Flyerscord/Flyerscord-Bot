@@ -1,4 +1,5 @@
 import Module from "../../common/models/Module";
+import SlashCommand from "../../common/models/SlashCommand";
 import CreateGameDayPostTask from "./tasks/CreateGameDayPostTask";
 
 export default class GameDayPostsModule extends Module {
@@ -7,6 +8,8 @@ export default class GameDayPostsModule extends Module {
   }
 
   protected override async setup(): Promise<void> {
+    this.readInCommands<SlashCommand>(__dirname, "slash");
+
     this.registerSchedules();
   }
 

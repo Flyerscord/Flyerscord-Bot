@@ -14,3 +14,4 @@
   - 2 hardcoded custom commands
   - update the custom commands list
   - TODO STILL NEED TO TEST THE AUTO COMMAND INPUT
+- Game day posts

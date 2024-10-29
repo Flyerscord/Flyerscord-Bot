@@ -11,11 +11,16 @@ import { IClubScheduleOutput_games } from "nhl-api-wrapper-ts/dist/interfaces/cl
 
 export async function checkForGameDay(): Promise<void> {
   const res = await nhlApi.teams.schedule.getCurrentTeamSchedule({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
+  const db = GameDayPostsDB.getInstance();
 
   if (res.status == 200) {
     const game = res.data.games.find((game) => Time.isSameDay(new Date(), new Date(game.gameDate)));
 
     if (game) {
+      // Don't create a post if one already exists
+      if (db.hasPostByGameId(game.id)) {
+        return;
+      }
       const teamsRes = await nhlApi.teams.getTeams({ lang: "en" });
 
       if (teamsRes.status == 200) {
@@ -60,8 +65,8 @@ export async function checkForGameDay(): Promise<void> {
           );
 
           if (post) {
+            post.setArchived(false);
             Stumper.info(`Created post for game: ${game.id}`, "checkForGameDay");
-            const db = GameDayPostsDB.getInstance();
             db.addPost(game.id, post.id);
           }
         }
@@ -80,9 +85,9 @@ export async function closeAndLockOldPosts(): Promise<void> {
     if (gameInfoResp.status == 200) {
       const gameInfo = gameInfoResp.data;
 
-      if (Time.isSameDay(new Date(), new Date(gameInfo.gameDate))) {
-        discord.forums.setClosedPost(Config.getConfig().gameDayPosts.channelId, post.channelId, true);
+      if (!Time.isSameDay(new Date(), new Date(gameInfo.gameDate))) {
         discord.forums.setLockPost(Config.getConfig().gameDayPosts.channelId, post.channelId, true);
+        discord.forums.setClosedPost(Config.getConfig().gameDayPosts.channelId, post.channelId, true);
       }
     }
   }
@@ -102,7 +107,7 @@ async function getGameNumber(gameId: number): Promise<number | undefined> {
     if (seasonGamesResp.status == 200) {
       const seasonGames = seasonGamesResp.data.games;
 
-      seasonGames.forEach((seasonGame) => {
+      for (const seasonGame of seasonGames) {
         if (seasonGame.gameType == gameType) {
           gameNumber++;
         }
@@ -110,7 +115,7 @@ async function getGameNumber(gameId: number): Promise<number | undefined> {
         if (seasonGame.id == gameId) {
           return gameNumber;
         }
-      });
+      }
     }
   }
 
@@ -122,10 +127,10 @@ async function getCurrentSeasonTagId(game: IClubScheduleOutput_games): Promise<G
 
   const seasonTags = Config.getConfig().gameDayPosts.tagIds.seasons;
 
-  seasonTags.forEach((seasonTag) => {
+  for (const seasonTag of seasonTags) {
     if (game.season.toString() == `${seasonTag.startingYear}${seasonTag.endingYear}`) {
       return availableTags.find((tag) => tag.id == seasonTag.tagId);
     }
-  });
+  }
   return undefined;
 }

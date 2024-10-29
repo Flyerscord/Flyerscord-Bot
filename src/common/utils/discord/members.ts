@@ -1,5 +1,5 @@
 import { Collection, GuildMember } from "discord.js";
-import { getGuild } from "./guilds.js";
+import { getGuild } from "./guilds";
 
 export async function getMember(userId: string): Promise<GuildMember | undefined> {
   return await getGuild()?.members.fetch(userId);

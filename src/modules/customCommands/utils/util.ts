@@ -1,9 +1,9 @@
-import CustomCommandsDB from "../providers/CustomCommands.Database.js";
-import GlobalDB from "../../../common/providers/Global.Database.js";
-import Config from "../../../common/config/Config.js";
-import discord from "../../../common/utils/discord/discord.js";
-import ICustomCommand from "../interfaces/ICustomCommand.js";
-import Time from "../../../common/utils/Time.js";
+import CustomCommandsDB from "../providers/CustomCommands.Database";
+import GlobalDB from "../../../common/providers/Global.Database";
+import Config from "../../../common/config/Config";
+import discord from "../../../common/utils/discord/discord";
+import ICustomCommand from "../interfaces/ICustomCommand";
+import Time from "../../../common/utils/Time";
 
 export async function updateCommandList(): Promise<void> {
   const customCommandsDB = CustomCommandsDB.getInstance();

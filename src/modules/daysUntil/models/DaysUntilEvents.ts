@@ -1,5 +1,5 @@
-import IDaysUntilEvent from "../interfaces/IDaysUntilEvent.js";
-import IEvents from "../interfaces/IEvents.js";
+import IDaysUntilEvent from "../interfaces/IDaysUntilEvent";
+import IEvents from "../interfaces/IEvents";
 
 const tradeDeadline: IDaysUntilEvent = {
   name: "NHL Trade Deadline",

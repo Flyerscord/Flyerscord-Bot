@@ -1,4 +1,4 @@
-import Database from "./Database.js";
+import Database from "./Database";
 
 export default class GlobalDB extends Database {
   private static instance: GlobalDB;

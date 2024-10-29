@@ -1,8 +1,8 @@
-import Module from "../../common/models/Module.js";
-import SlashCommand from "../../common/models/SlashCommand.js";
-import TextCommand from "../../common/models/TextCommand.js";
-import onMessageCreate from "./listeners/onMessageCreate.js";
-import Imgur from "./utils/Imgur.js";
+import Module from "../../common/models/Module";
+import SlashCommand from "../../common/models/SlashCommand";
+import TextCommand from "../../common/models/TextCommand";
+import onMessageCreate from "./listeners/onMessageCreate";
+import Imgur from "./utils/Imgur";
 
 export default class CustomCommandsModule extends Module {
   constructor() {

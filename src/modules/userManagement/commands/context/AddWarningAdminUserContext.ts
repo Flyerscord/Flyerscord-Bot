@@ -1,6 +1,6 @@
 import { UserContextMenuCommandInteraction } from "discord.js";
-import { AdminUserContextMenuCommand } from "../../../../common/models/ContextMenuCommand.js";
-import WarningReasonModal from "../modal/WarningReasonModal.js";
+import { AdminUserContextMenuCommand } from "../../../../common/models/ContextMenuCommand";
+import WarningReasonModal from "../modal/WarningReasonModal";
 
 export default class AddNoteAdminUserContext extends AdminUserContextMenuCommand {
   constructor() {

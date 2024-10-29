@@ -1,7 +1,7 @@
 import { EmbedBuilder } from "discord.js";
-import Config from "../../../common/config/Config.js";
-import GlobalDB from "../../../common/providers/Global.Database.js";
-import discord from "../../../common/utils/discord/discord.js";
+import Config from "../../../common/config/Config";
+import GlobalDB from "../../../common/providers/Global.Database";
+import discord from "../../../common/utils/discord/discord";
 import Stumper from "stumper";
 
 export async function createVisitorRoleMessageIfNeeded(): Promise<void> {

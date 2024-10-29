@@ -1,5 +1,5 @@
 import Stumper from "stumper";
-import LevelExpDB from "../providers/LevelExp.Database.js";
+import LevelExpDB from "../providers/LevelExp.Database";
 
 export function calculateLevels(levelsToCalc: number): void {
   const db = LevelExpDB.getInstance();

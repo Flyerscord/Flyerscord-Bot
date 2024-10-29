@@ -3,7 +3,6 @@
   "version": "2.0.0",
   "description": "Flyers' Discord Helper Bot",
   "main": "dist/bot.js",
-  "type": "module",
   "scripts": {
     "build": "npx tsc",
     "start:prod": "node /usr/src/app/src/bot.js",
@@ -29,7 +28,7 @@
     "axios": "^1.7.7",
     "canvas": "^2.11.2",
     "discord.js": "^14.16.3",
-    "enmap": "^6.0.3",
+    "enmap": "^5.9.10",
     "express": "^4.21.1",
     "imgur": "^2.4.2",
     "jsdom": "^25.0.1",

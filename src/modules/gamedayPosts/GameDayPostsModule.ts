@@ -1,5 +1,5 @@
-import Module from "../../common/models/Module.js";
-import CreateGameDayPostTask from "./tasks/CreateGameDayPostTask.js";
+import Module from "../../common/models/Module";
+import CreateGameDayPostTask from "./tasks/CreateGameDayPostTask";
 
 export default class GameDayPostsModule extends Module {
   constructor() {

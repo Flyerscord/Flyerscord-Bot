@@ -1,5 +1,5 @@
-import GlobalDB from "../../../common/providers/Global.Database.js";
-import discord from "../../../common/utils/discord/discord.js";
+import GlobalDB from "../../../common/providers/Global.Database";
+import discord from "../../../common/utils/discord/discord";
 
 export function sendLogMessage(message: string): void {
   const db = GlobalDB.getInstance();

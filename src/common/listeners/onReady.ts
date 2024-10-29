@@ -1,11 +1,11 @@
 import { Client, REST, Routes, RESTPostAPIChatInputApplicationCommandsJSONBody } from "discord.js";
 
 import Stumper from "stumper";
-import Config from "../config/Config.js";
-import SlashCommandManager from "../managers/SlashCommandManager.js";
-import TextCommandManager from "../managers/TextCommandManager.js";
-import ModalMenuManager from "../managers/ModalMenuManager.js";
-import ContextMenuCommandManager from "../managers/ContextMenuManager.js";
+import Config from "../config/Config";
+import SlashCommandManager from "../managers/SlashCommandManager";
+import TextCommandManager from "../managers/TextCommandManager";
+import ModalMenuManager from "../managers/ModalMenuManager";
+import ContextMenuCommandManager from "../managers/ContextMenuManager";
 
 export default (client: Client): void => {
   client.on("ready", async () => {

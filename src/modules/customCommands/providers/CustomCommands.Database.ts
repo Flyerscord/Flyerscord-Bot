@@ -1,10 +1,10 @@
 import Stumper from "stumper";
-import Time from "../../../common/utils/Time.js";
+import Time from "../../../common/utils/Time";
 
-import Database from "../../../common/providers/Database.js";
-import ICustomCommand, { ICustomCommandHistory } from "../interfaces/ICustomCommand.js";
-import { updateCommandList } from "../utils/util.js";
-import Imgur from "../utils/Imgur.js";
+import Database from "../../../common/providers/Database";
+import ICustomCommand, { ICustomCommandHistory } from "../interfaces/ICustomCommand";
+import { updateCommandList } from "../utils/util";
+import Imgur from "../utils/Imgur";
 
 export default class CustomCommandsDB extends Database {
   private static instance: CustomCommandsDB;

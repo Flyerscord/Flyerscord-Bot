@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
-import TextCommand from "../../../../common/models/TextCommand.js";
-import { getRandomNumber } from "../../../../common/utils/misc.js";
-import discord from "../../../../common/utils/discord/discord.js";
+import TextCommand from "../../../../common/models/TextCommand";
+import { getRandomNumber } from "../../../../common/utils/misc";
+import discord from "../../../../common/utils/discord/discord";
 
 export default class ChanceTextCommand extends TextCommand {
   constructor() {

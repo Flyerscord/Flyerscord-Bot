@@ -1,7 +1,7 @@
 import Stumper from "stumper";
 
-import { sleepMs } from "../sleep.js";
-import { getGuild } from "./guilds.js";
+import { sleepMs } from "../sleep";
+import { getGuild } from "./guilds";
 import { GuildEmoji } from "discord.js";
 
 export async function addEmoji(emoji: IEmoji): Promise<GuildEmoji | undefined> {

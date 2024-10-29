@@ -1,5 +1,5 @@
-import Module from "../../common/models/Module.js";
-import SlashCommand from "../../common/models/SlashCommand.js";
+import Module from "../../common/models/Module";
+import SlashCommand from "../../common/models/SlashCommand";
 
 export default class UserManagementModule extends Module {
   constructor() {

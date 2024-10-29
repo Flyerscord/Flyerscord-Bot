@@ -1,8 +1,8 @@
 import { ModalSubmitInteraction, TextInputStyle, User } from "discord.js";
-import ModalMenu from "../../../../common/models/ModalMenu.js";
+import ModalMenu from "../../../../common/models/ModalMenu";
 import { ActionRowBuilder, TextInputBuilder } from "@discordjs/builders";
-import UserManagementDB from "../../providers/UserManagement.Database.js";
-import { sendLogMessage } from "../../utils/ChannelLogging.js";
+import UserManagementDB from "../../providers/UserManagement.Database";
+import { sendLogMessage } from "../../utils/ChannelLogging";
 import Stumper from "stumper";
 
 export default class NoteModal extends ModalMenu {

@@ -1,8 +1,8 @@
-import Module from "../../common/models/Module.js";
-import onGuildMemberAdd from "./listeners/onGuildMemberAdd.js";
-import { createVisitorRoleMessageIfNeeded } from "./utils/utils.js";
-import onMessageReactionAdd from "./listeners/onMessageReactionAdd.js";
-import onMessageReactionRemove from "./listeners/onMessageReactionRemove.js";
+import Module from "../../common/models/Module";
+import onGuildMemberAdd from "./listeners/onGuildMemberAdd";
+import { createVisitorRoleMessageIfNeeded } from "./utils/utils";
+import onMessageReactionAdd from "./listeners/onMessageReactionAdd";
+import onMessageReactionRemove from "./listeners/onMessageReactionRemove";
 
 export default class VistorRoleModule extends Module {
   constructor() {

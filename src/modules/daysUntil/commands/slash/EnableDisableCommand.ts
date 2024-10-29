@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand.js";
-import DaysUntilDB from "../../providers/DaysUtil.Database.js";
-import events, { getKeyByName } from "../../models/DaysUntilEvents.js";
+import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import DaysUntilDB from "../../providers/DaysUtil.Database";
+import events, { getKeyByName } from "../../models/DaysUntilEvents";
 
 export default class EnableDisableCommand extends AdminSlashCommand {
   constructor() {

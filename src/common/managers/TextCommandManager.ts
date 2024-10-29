@@ -1,5 +1,5 @@
 import { Collection } from "discord.js";
-import TextCommand from "../models/TextCommand.js";
+import TextCommand from "../models/TextCommand";
 import Stumper from "stumper";
 
 export default class TextCommandManager {

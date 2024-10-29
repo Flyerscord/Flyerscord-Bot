@@ -1,7 +1,7 @@
-import Module from "../../common/models/Module.js";
-import SlashCommand from "../../common/models/SlashCommand.js";
-import onMessageCreate from "./listeners/onMessageCreate.js";
-import { calculateLevels } from "./utils/requiredExp.js";
+import Module from "../../common/models/Module";
+import SlashCommand from "../../common/models/SlashCommand";
+import onMessageCreate from "./listeners/onMessageCreate";
+import { calculateLevels } from "./utils/requiredExp";
 
 export default class LevelsModule extends Module {
   constructor() {

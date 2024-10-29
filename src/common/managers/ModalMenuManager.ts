@@ -1,5 +1,5 @@
 import { Collection } from "discord.js";
-import ModalMenu from "../models/ModalMenu.js";
+import ModalMenu from "../models/ModalMenu";
 import Stumper from "stumper";
 
 export default class ModalMenuManager {

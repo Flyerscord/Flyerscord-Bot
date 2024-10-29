@@ -1,9 +1,9 @@
 import { MessageReaction, PartialMessageReaction, PartialUser, User } from "discord.js";
 import Stumper from "stumper";
-import ClientManager from "../../../common/managers/ClientManager.js";
-import Config from "../../../common/config/Config.js";
-import GlobalDB from "../../../common/providers/Global.Database.js";
-import discord from "../../../common/utils/discord/discord.js";
+import ClientManager from "../../../common/managers/ClientManager";
+import Config from "../../../common/config/Config";
+import GlobalDB from "../../../common/providers/Global.Database";
+import discord from "../../../common/utils/discord/discord";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;

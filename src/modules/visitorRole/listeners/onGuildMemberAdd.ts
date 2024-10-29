@@ -1,7 +1,7 @@
 import { GuildMember } from "discord.js";
 import Stumper from "stumper";
-import Config from "../../../common/config/Config.js";
-import ClientManager from "../../../common/managers/ClientManager.js";
+import Config from "../../../common/config/Config";
+import ClientManager from "../../../common/managers/ClientManager";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;

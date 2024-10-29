@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, GuildMember } from "discord.js";
 import Stumper from "stumper";
-import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand.js";
-import { sendLogMessage } from "../../utils/ChannelLogging.js";
+import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import { sendLogMessage } from "../../utils/ChannelLogging";
 
 export default class BanSlashCommand extends AdminSlashCommand {
   constructor() {

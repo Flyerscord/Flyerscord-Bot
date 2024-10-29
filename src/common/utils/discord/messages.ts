@@ -1,8 +1,8 @@
 import { TextChannel, EmbedBuilder, Message } from "discord.js";
 
 import Stumper from "stumper";
-import discord from "./discord.js";
-import ClientManager from "../../managers/ClientManager.js";
+import discord from "./discord";
+import ClientManager from "../../managers/ClientManager";
 import { AttachmentBuilder } from "discord.js";
 
 export function getMessage(channelId: string, messageId: string): Message | undefined {

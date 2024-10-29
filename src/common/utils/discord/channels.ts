@@ -1,5 +1,5 @@
 import { Channel, ForumChannel, ForumThreadChannel, TextChannel } from "discord.js";
-import ClientManager from "../../managers/ClientManager.js";
+import ClientManager from "../../managers/ClientManager";
 
 export function getChannel(channelId: string): Channel | undefined {
   const client = ClientManager.getInstance().client;

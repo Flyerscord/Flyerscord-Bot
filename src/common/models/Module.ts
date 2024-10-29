@@ -1,16 +1,14 @@
-import ModuleSetupMissingException from "../exceptions/ModuleSetupMissingException.js";
+import ModuleSetupMissingException from "../exceptions/ModuleSetupMissingException";
 import Stumper from "stumper";
-import SlashCommand from "./SlashCommand.js";
-import ModalMenu from "./ModalMenu.js";
-import TextCommand from "./TextCommand.js";
-import ContextMenuCommand from "./ContextMenuCommand.js";
+import SlashCommand from "./SlashCommand";
+import ModalMenu from "./ModalMenu";
+import TextCommand from "./TextCommand";
+import ContextMenuCommand from "./ContextMenuCommand";
 import fs from "fs";
-import SlashCommandManager from "../managers/SlashCommandManager.js";
-import ModalMenuManager from "../managers/ModalMenuManager.js";
-import TextCommandManager from "../managers/TextCommandManager.js";
-import ContextMenuCommandManager from "../managers/ContextMenuManager.js";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
+import SlashCommandManager from "../managers/SlashCommandManager";
+import ModalMenuManager from "../managers/ModalMenuManager";
+import TextCommandManager from "../managers/TextCommandManager";
+import ContextMenuCommandManager from "../managers/ContextMenuManager";
 
 export default abstract class Module {
   protected name: string;
@@ -31,7 +29,6 @@ export default abstract class Module {
   protected async readInCommands<T>(commandsPath: string): Promise<void> {
     const commands: Array<T> = [];
 
-    const __dirname = dirname(fileURLToPath(import.meta.url));
     const location = `${__dirname}/commands/${commandsPath}`;
     const files = fs.readdirSync(location);
 

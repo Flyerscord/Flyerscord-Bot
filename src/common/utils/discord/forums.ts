@@ -1,5 +1,5 @@
 import { ForumThreadChannel, GuildForumTag } from "discord.js";
-import { getForumChannel, getForumPostChannel } from "./channels.js";
+import { getForumChannel, getForumPostChannel } from "./channels";
 
 export async function createPost(
   forumChannelId: string,

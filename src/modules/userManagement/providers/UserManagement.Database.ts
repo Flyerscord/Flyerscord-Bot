@@ -1,7 +1,7 @@
 import Stumper from "stumper";
-import Database from "../../../common/providers/Database.js";
-import { IUserEvent } from "../interfaces/IUserEvent.js";
-import { IUserInfo } from "../interfaces/IUserInfo.js";
+import Database from "../../../common/providers/Database";
+import { IUserEvent } from "../interfaces/IUserEvent";
+import { IUserInfo } from "../interfaces/IUserInfo";
 
 export default class UserManagementDB extends Database {
   private static instance: UserManagementDB;

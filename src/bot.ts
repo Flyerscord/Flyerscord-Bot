@@ -7,14 +7,14 @@ Stumper.setConfig({ logLevel: LOG_LEVEL.ALL });
 /* -------------------------------------------------------------------------- */
 /*                        Setup Process Error Handling                        */
 /* -------------------------------------------------------------------------- */
-import processErrorHandling from "./common/listeners/processErrorHandling.js";
+import processErrorHandling from "./common/listeners/processErrorHandling";
 
 processErrorHandling();
 
 /* -------------------------------------------------------------------------- */
 /*                                Check Config                                */
 /* -------------------------------------------------------------------------- */
-import Config from "./common/config/Config.js";
+import Config from "./common/config/Config";
 
 if (!Config.fileExists()) {
   Stumper.error("Config file not found", "main");
@@ -36,7 +36,7 @@ const client = new Client({
 /* -------------------------------------------------------------------------- */
 /*                        Setup Discord Error Handling                        */
 /* -------------------------------------------------------------------------- */
-import discordErrorHandling from "./common/listeners/discordErrorHandling.js";
+import discordErrorHandling from "./common/listeners/discordErrorHandling";
 
 discordErrorHandling(client);
 
@@ -51,11 +51,11 @@ client.contextMenus = new Collection();
 /* -------------------------------------------------------------------------- */
 /*                               Setup Managers                               */
 /* -------------------------------------------------------------------------- */
-import ClientManager from "./common/managers/ClientManager.js";
-import SlashCommandManager from "./common/managers/SlashCommandManager.js";
-import TextCommandManager from "./common/managers/TextCommandManager.js";
-import ContextMenuCommandManager from "./common/managers/ContextMenuManager.js";
-import ModalMenuManager from "./common/managers/ModalMenuManager.js";
+import ClientManager from "./common/managers/ClientManager";
+import SlashCommandManager from "./common/managers/SlashCommandManager";
+import TextCommandManager from "./common/managers/TextCommandManager";
+import ContextMenuCommandManager from "./common/managers/ContextMenuManager";
+import ModalMenuManager from "./common/managers/ModalMenuManager";
 
 ClientManager.getInstance(client);
 TextCommandManager.getInstance();
@@ -66,17 +66,17 @@ ModalMenuManager.getInstance();
 /* -------------------------------------------------------------------------- */
 /*                              Register Modules                              */
 /* -------------------------------------------------------------------------- */
-import AdminModule from "./modules/admin/AdminModule.js";
-import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule.js";
-import DaysUntilModule from "./modules/daysUntil/DaysUntilModule.js";
-import GameDayPostsModule from "./modules/gamedayPosts/GameDayPostsModule.js";
-import JoinLeaveModule from "./modules/joinLeave/JoinLeaveModule.js";
-import LevelsModule from "./modules/levels/LevelsModule.js";
-import MiscModule from "./modules/misc/MiscModule.js";
-import NHLModule from "./modules/nhl/NHLModule.js";
-import PlayerEmojisModule from "./modules/playerEmojis/PlayerEmojisModule.js";
-import UserManagementModule from "./modules/userManagement/UserManagementModule.js";
-import VisitorRoleModule from "./modules/visitorRole/VisitorRoleModule.js";
+import AdminModule from "./modules/admin/AdminModule";
+import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule";
+import DaysUntilModule from "./modules/daysUntil/DaysUntilModule";
+import GameDayPostsModule from "./modules/gamedayPosts/GameDayPostsModule";
+import JoinLeaveModule from "./modules/joinLeave/JoinLeaveModule";
+import LevelsModule from "./modules/levels/LevelsModule";
+import MiscModule from "./modules/misc/MiscModule";
+import NHLModule from "./modules/nhl/NHLModule";
+import PlayerEmojisModule from "./modules/playerEmojis/PlayerEmojisModule";
+import UserManagementModule from "./modules/userManagement/UserManagementModule";
+import VisitorRoleModule from "./modules/visitorRole/VisitorRoleModule";
 
 new AdminModule().enable();
 new CustomCommandsModule().enable();
@@ -93,9 +93,9 @@ new VisitorRoleModule().enable();
 /* -------------------------------------------------------------------------- */
 /*                      Register Our Other Event Handlers                     */
 /* -------------------------------------------------------------------------- */
-import onMessageCreate from "./common/listeners/onMessageCreate.js";
-import onInteractionCreate from "./common/listeners/onInteractionCreate.js";
-import onReady from "./common/listeners/onReady.js";
+import onMessageCreate from "./common/listeners/onMessageCreate";
+import onInteractionCreate from "./common/listeners/onInteractionCreate";
+import onReady from "./common/listeners/onReady";
 
 onMessageCreate(client);
 onInteractionCreate(client);
@@ -110,8 +110,8 @@ client.login(Config.getConfig().token);
 /*                           Setup HTTP Health Check                          */
 /* -------------------------------------------------------------------------- */
 import express from "express";
-import { getBotHealth } from "./common/utils/healthCheck.js";
-import IBotHealth from "./common/interfaces/IBotHealth.js";
+import { getBotHealth } from "./common/utils/healthCheck";
+import IBotHealth from "./common/interfaces/IBotHealth";
 
 const app = express();
 const port = process.env.PORT || 3000;

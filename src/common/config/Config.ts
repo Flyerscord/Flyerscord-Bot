@@ -1,14 +1,10 @@
 import fs from "fs";
 
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-import config from "./configFile.js";
-import { IConfig } from "./IConfig.js";
+import config from "./configFile";
+import { IConfig } from "./IConfig";
 
 export default class Config {
   static fileExists(): boolean {
-    const __dirname = dirname(fileURLToPath(import.meta.url));
     return fs.existsSync(`${__dirname}/configFile.js`);
   }
 

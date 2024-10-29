@@ -1,8 +1,8 @@
 import { bold, Message, userMention } from "discord.js";
-import LevelsDB from "../providers/Levels.Database.js";
-import Time from "../../../common/utils/Time.js";
-import LevelExpDB from "../providers/LevelExp.Database.js";
-import { getRandomNumber } from "../../../common/utils/misc.js";
+import LevelsDB from "../providers/Levels.Database";
+import Time from "../../../common/utils/Time";
+import LevelExpDB from "../providers/LevelExp.Database";
+import { getRandomNumber } from "../../../common/utils/misc";
 import axios from "axios";
 import { JSDOM } from "jsdom";
 import Stumper from "stumper";

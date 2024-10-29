@@ -1,6 +1,4 @@
 import { createCanvas, loadImage } from "canvas";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 
 export async function createImage(username: string, profilePictureUrl: string, memberNumber: number): Promise<Buffer> {
   const width = 900;
@@ -29,7 +27,6 @@ export async function createImage(username: string, profilePictureUrl: string, m
   ctx.clip();
 
   // Add background image
-  const __dirname = dirname(fileURLToPath(import.meta.url));
   const backgroundImage = await loadImage(`${__dirname}/../assets/background.png`);
   ctx.drawImage(backgroundImage, 0, 0, width, height);
 

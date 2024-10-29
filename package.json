@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "Flyers' Discord Helper Bot",
   "main": "dist/bot.js",
+  "type": "module",
   "scripts": {
     "build": "npx tsc",
     "start:prod": "node /usr/src/app/src/bot.js",

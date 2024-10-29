@@ -1,4 +1,4 @@
-import Module from "../../common/models/Module";
+import Module from "../../common/models/Module.js";
 
 export default class PlayerEmojisModule extends Module {
   constructor() {

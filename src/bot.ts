@@ -14,7 +14,7 @@ processErrorHandling();
 /* -------------------------------------------------------------------------- */
 /*                                Check Config                                */
 /* -------------------------------------------------------------------------- */
-import Config from "./common/config/Config";
+import Config from "./common/config/Config.js";
 
 if (!Config.fileExists()) {
   Stumper.error("Config file not found", "main");
@@ -36,7 +36,7 @@ const client = new Client({
 /* -------------------------------------------------------------------------- */
 /*                        Setup Discord Error Handling                        */
 /* -------------------------------------------------------------------------- */
-import discordErrorHandling from "./common/listeners/discordErrorHandling";
+import discordErrorHandling from "./common/listeners/discordErrorHandling.js";
 
 discordErrorHandling(client);
 
@@ -51,11 +51,11 @@ client.contextMenus = new Collection();
 /* -------------------------------------------------------------------------- */
 /*                               Setup Managers                               */
 /* -------------------------------------------------------------------------- */
-import ClientManager from "./common/managers/ClientManager";
-import SlashCommandManager from "./common/managers/SlashCommandManager";
-import TextCommandManager from "./common/managers/TextCommandManager";
-import ContextMenuCommandManager from "./common/managers/ContextMenuManager";
-import ModalMenuManager from "./common/managers/ModalMenuManager";
+import ClientManager from "./common/managers/ClientManager.js";
+import SlashCommandManager from "./common/managers/SlashCommandManager.js";
+import TextCommandManager from "./common/managers/TextCommandManager.js";
+import ContextMenuCommandManager from "./common/managers/ContextMenuManager.js";
+import ModalMenuManager from "./common/managers/ModalMenuManager.js";
 
 ClientManager.getInstance(client);
 TextCommandManager.getInstance();
@@ -66,17 +66,17 @@ ModalMenuManager.getInstance();
 /* -------------------------------------------------------------------------- */
 /*                              Register Modules                              */
 /* -------------------------------------------------------------------------- */
-import AdminModule from "./modules/admin/AdminModule";
-import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule";
-import DaysUntilModule from "./modules/daysUntil/DaysUntilModule";
-import GameDayPostsModule from "./modules/gamedayPosts/GameDayPostsModule";
-import JoinLeaveModule from "./modules/joinLeave/JoinLeaveModule";
-import LevelsModule from "./modules/levels/LevelsModule";
-import MiscModule from "./modules/misc/MiscModule";
-import NHLModule from "./modules/nhl/NHLModule";
-import PlayerEmojisModule from "./modules/playerEmojis/PlayerEmojisModule";
-import UserManagementModule from "./modules/userManagement/UserManagementModule";
-import VisitorRoleModule from "./modules/visitorRole/VisitorRoleModule";
+import AdminModule from "./modules/admin/AdminModule.js";
+import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule.js";
+import DaysUntilModule from "./modules/daysUntil/DaysUntilModule.js";
+import GameDayPostsModule from "./modules/gamedayPosts/GameDayPostsModule.js";
+import JoinLeaveModule from "./modules/joinLeave/JoinLeaveModule.js";
+import LevelsModule from "./modules/levels/LevelsModule.js";
+import MiscModule from "./modules/misc/MiscModule.js";
+import NHLModule from "./modules/nhl/NHLModule.js";
+import PlayerEmojisModule from "./modules/playerEmojis/PlayerEmojisModule.js";
+import UserManagementModule from "./modules/userManagement/UserManagementModule.js";
+import VisitorRoleModule from "./modules/visitorRole/VisitorRoleModule.js";
 
 new AdminModule().enable();
 new CustomCommandsModule().enable();
@@ -93,9 +93,9 @@ new VisitorRoleModule().enable();
 /* -------------------------------------------------------------------------- */
 /*                      Register Our Other Event Handlers                     */
 /* -------------------------------------------------------------------------- */
-import onMessageCreate from "./common/listeners/onMessageCreate";
-import onInteractionCreate from "./common/listeners/onInteractionCreate";
-import onReady from "./common/listeners/onReady";
+import onMessageCreate from "./common/listeners/onMessageCreate.js";
+import onInteractionCreate from "./common/listeners/onInteractionCreate.js";
+import onReady from "./common/listeners/onReady.js";
 
 onMessageCreate(client);
 onInteractionCreate(client);
@@ -110,8 +110,8 @@ client.login(Config.getConfig().token);
 /*                           Setup HTTP Health Check                          */
 /* -------------------------------------------------------------------------- */
 import express from "express";
-import { getBotHealth } from "./common/utils/healthCheck";
-import IBotHealth from "./common/interfaces/IBotHealth";
+import { getBotHealth } from "./common/utils/healthCheck.js";
+import IBotHealth from "./common/interfaces/IBotHealth.js";
 
 const app = express();
 const port = process.env.PORT || 3000;

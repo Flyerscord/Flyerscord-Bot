@@ -1,7 +1,7 @@
 import { Client, Message } from "discord.js";
 
-import Config from "../config/Config";
-import TextCommand from "../models/TextCommand";
+import Config from "../config/Config.js";
+import TextCommand from "../models/TextCommand.js";
 import Stumper from "stumper";
 
 export default (client: Client): void => {

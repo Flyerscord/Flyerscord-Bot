@@ -1,5 +1,5 @@
-import Task from "../../../common/models/Task";
-import { checkForGameDay, closeAndLockOldPosts } from "../utils/GameChecker";
+import Task from "../../../common/models/Task.js";
+import { checkForGameDay, closeAndLockOldPosts } from "../utils/GameChecker.js";
 
 export default class CreateGameDayPostTask extends Task {
   constructor() {

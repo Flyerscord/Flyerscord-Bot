@@ -1,4 +1,4 @@
-import { IUserEvent } from "./IUserEvent";
+import { IUserEvent } from "./IUserEvent.js";
 
 export interface IUserInfo {
   userId: string;

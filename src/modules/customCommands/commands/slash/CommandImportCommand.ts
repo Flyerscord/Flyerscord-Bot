@@ -1,6 +1,6 @@
 import { Channel, ChatInputCommandInteraction, User } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
-import CommandImporter from "../../utils/CommandImporter";
+import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand.js";
+import CommandImporter from "../../utils/CommandImporter.js";
 
 export default class CommandImportCommand extends AdminSlashCommand {
   constructor() {

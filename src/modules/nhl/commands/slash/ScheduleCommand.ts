@@ -1,10 +1,10 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import nhlApi from "nhl-api-wrapper-ts";
 
-import SlashCommand, { PARAM_TYPES } from "../../../../common/models/SlashCommand";
-import { TEAM_TRI_CODE } from "nhl-api-wrapper-ts/dist/interfaces/Common";
-import { IClubScheduleNowOutput } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubScheduleNow";
-import Time from "../../../../common/utils/Time";
+import SlashCommand, { PARAM_TYPES } from "../../../../common/models/SlashCommand.js";
+import { TEAM_TRI_CODE } from "nhl-api-wrapper-ts/dist/interfaces/Common.js";
+import { IClubScheduleNowOutput } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubScheduleNow.js";
+import Time from "../../../../common/utils/Time.js";
 
 export default class ScheduleCommand extends SlashCommand {
   constructor() {

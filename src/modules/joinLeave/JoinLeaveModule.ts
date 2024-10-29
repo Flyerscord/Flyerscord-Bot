@@ -1,6 +1,6 @@
-import Module from "../../common/models/Module";
-import onGuildMemberAdd from "./listeners/onGuildMemberAdd";
-import onGuildMemberRemove from "./listeners/onGuildMemberRemove";
+import Module from "../../common/models/Module.js";
+import onGuildMemberAdd from "./listeners/onGuildMemberAdd.js";
+import onGuildMemberRemove from "./listeners/onGuildMemberRemove.js";
 
 export default class JoinLeaveModule extends Module {
   constructor() {

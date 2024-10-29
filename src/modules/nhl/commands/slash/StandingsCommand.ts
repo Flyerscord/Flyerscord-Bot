@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import nhlApi from "nhl-api-wrapper-ts";
 
-import SlashCommand, { PARAM_TYPES } from "../../../../common/models/SlashCommand";
-import { IStandingsByDateOutput_standings } from "nhl-api-wrapper-ts/dist/interfaces/standings/StandingsByDate";
-import discord from "../../../../common/utils/discord/discord";
+import SlashCommand, { PARAM_TYPES } from "../../../../common/models/SlashCommand.js";
+import { IStandingsByDateOutput_standings } from "nhl-api-wrapper-ts/dist/interfaces/standings/StandingsByDate.js";
+import discord from "../../../../common/utils/discord/discord.js";
 
 export default class StandingsCommand extends SlashCommand {
   constructor() {

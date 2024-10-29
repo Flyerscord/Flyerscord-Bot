@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, User } from "discord.js";
 import Stumper from "stumper";
-import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand.js";
 import LevelsDB from "../../providers/Levels.Database";
 
 export default class ResetUserCommand extends AdminSlashCommand {

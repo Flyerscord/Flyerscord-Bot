@@ -1,12 +1,12 @@
-import * as messages from "./messages";
-import * as reactions from "./reactions";
-import * as emojis from "./emojis";
-import * as channels from "./channels";
-import * as roles from "./roles";
-import * as users from "./users";
-import * as guilds from "./guilds";
-import * as members from "./members";
-import * as forums from "./forums";
+import * as messages from "./messages.js";
+import * as reactions from "./reactions.js";
+import * as emojis from "./emojis.js";
+import * as channels from "./channels.js";
+import * as roles from "./roles.js";
+import * as users from "./users.js";
+import * as guilds from "./guilds.js";
+import * as members from "./members.js";
+import * as forums from "./forums.js";
 
 export default {
   messages: messages,

@@ -1,5 +1,5 @@
-import IBotHealth from "../interfaces/IBotHealth";
-import ClientManager from "../managers/ClientManager";
+import IBotHealth from "../interfaces/IBotHealth.js";
+import ClientManager from "../managers/ClientManager.js";
 
 export function getBotHealth(): IBotHealth {
   const client = ClientManager.getInstance().client;

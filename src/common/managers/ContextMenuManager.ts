@@ -1,5 +1,5 @@
 import { Collection } from "discord.js";
-import ContextMenuCommand from "../models/ContextMenuCommand";
+import ContextMenuCommand from "../models/ContextMenuCommand.js";
 import Stumper from "stumper";
 
 export default class ContextMenuCommandManager {

@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand.js";
 import DaysUntilDB from "../../providers/DaysUtil.Database";
-import events from "../../models/DaysUntilEvents";
-import Time from "../../../../common/utils/Time";
+import events from "../../models/DaysUntilEvents.js";
+import Time from "../../../../common/utils/Time.js";
 
 export default class ChangeCommand extends AdminSlashCommand {
   constructor() {

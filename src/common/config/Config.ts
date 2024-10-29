@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 import * as config from "./config.json";
-import { IConfig } from "./IConfig";
+import { IConfig } from "./IConfig.js";
 
 export default class Config {
   static fileExists(): boolean {

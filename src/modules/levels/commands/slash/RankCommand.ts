@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, User } from "discord.js";
-import SlashCommand, { PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import SlashCommand, { PARAM_TYPES } from "../../../../common/models/SlashCommand.js";
 import LevelsDB from "../../providers/Levels.Database";
-import { createImage } from "../../utils/imageGeneration";
+import { createImage } from "../../utils/imageGeneration.js";
 
 export default class RankCommand extends SlashCommand {
   constructor() {

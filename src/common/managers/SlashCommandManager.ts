@@ -1,5 +1,5 @@
 import { Collection } from "discord.js";
-import SlashCommand from "../models/SlashCommand";
+import SlashCommand from "../models/SlashCommand.js";
 import Stumper from "stumper";
 
 export default class SlashCommandManager {

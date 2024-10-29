@@ -1,4 +1,4 @@
-import Database from "../../../common/providers/Database";
+import Database from "../../../common/providers/Database.js";
 
 export default class LevelExpDB extends Database {
   private static instance: LevelExpDB;

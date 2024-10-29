@@ -1,14 +1,14 @@
-import ModuleSetupMissingException from "../exceptions/ModuleSetupMissingException";
+import ModuleSetupMissingException from "../exceptions/ModuleSetupMissingException.js";
 import Stumper from "stumper";
-import SlashCommand from "./SlashCommand";
-import ModalMenu from "./ModalMenu";
-import TextCommand from "./TextCommand";
-import ContextMenuCommand from "./ContextMenuCommand";
+import SlashCommand from "./SlashCommand.js";
+import ModalMenu from "./ModalMenu.js";
+import TextCommand from "./TextCommand.js";
+import ContextMenuCommand from "./ContextMenuCommand.js";
 import fs from "fs";
-import SlashCommandManager from "../managers/SlashCommandManager";
-import ModalMenuManager from "../managers/ModalMenuManager";
-import TextCommandManager from "../managers/TextCommandManager";
-import ContextMenuCommandManager from "../managers/ContextMenuManager";
+import SlashCommandManager from "../managers/SlashCommandManager.js";
+import ModalMenuManager from "../managers/ModalMenuManager.js";
+import TextCommandManager from "../managers/TextCommandManager.js";
+import ContextMenuCommandManager from "../managers/ContextMenuManager.js";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 

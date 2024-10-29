@@ -1,5 +1,5 @@
-import Database from "../../../common/providers/Database";
-import { IUserLevel } from "../interfaces/IUserLevel";
+import Database from "../../../common/providers/Database.js";
+import { IUserLevel } from "../interfaces/IUserLevel.js";
 
 export default class LevelsDB extends Database {
   private static instance: LevelsDB;

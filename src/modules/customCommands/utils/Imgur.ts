@@ -1,6 +1,6 @@
 import { ImgurClient } from "imgur";
-import { ImgurSetupRequiredException } from "../exceptions/ImgurSetupRequiredException";
-import Config from "../../../common/config/Config";
+import { ImgurSetupRequiredException } from "../exceptions/ImgurSetupRequiredException.js";
+import Config from "../../../common/config/Config.js";
 
 export default class Imgur {
   private static instance: Imgur;

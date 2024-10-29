@@ -26,32 +26,32 @@ export default class EmojiCheckTask extends Task {
 
       this.removeOldEmojis();
 
-      roster.forwards.forEach(async (player) => {
+      for (const player of roster.forwards) {
         const playerName = player.lastName.default.toLowerCase() + player.firstName.default.charAt(0).toUpperCase();
 
         const emoji = await discord.emojis.addEmoji({ name: playerName, url: player.headshot });
         if (emoji) {
           db.addPlayer(player.id, emoji.id);
         }
-      });
+      }
 
-      roster.defensemen.forEach(async (player) => {
+      for (const player of roster.defensemen) {
         const playerName = player.lastName.default.toLowerCase() + player.firstName.default.charAt(0).toUpperCase();
 
         const emoji = await discord.emojis.addEmoji({ name: playerName, url: player.headshot });
         if (emoji) {
           db.addPlayer(player.id, emoji.id);
         }
-      });
+      }
 
-      roster.goalies.forEach(async (player) => {
+      for (const player of roster.goalies) {
         const playerName = player.lastName.default.toLowerCase() + player.firstName.default.charAt(0).toUpperCase();
 
         const emoji = await discord.emojis.addEmoji({ name: playerName, url: player.headshot });
         if (emoji) {
           db.addPlayer(player.id, emoji.id);
         }
-      });
+      }
     }
   }
 

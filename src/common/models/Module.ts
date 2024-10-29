@@ -9,6 +9,8 @@ import SlashCommandManager from "../managers/SlashCommandManager";
 import ModalMenuManager from "../managers/ModalMenuManager";
 import TextCommandManager from "../managers/TextCommandManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
 export default abstract class Module {
   protected name: string;
@@ -26,16 +28,17 @@ export default abstract class Module {
     throw new ModuleSetupMissingException();
   }
 
-  protected readInCommands<T>(commandsPath: string): void {
+  protected async readInCommands<T>(commandsPath: string): Promise<void> {
     const commands: Array<T> = [];
 
+    const __dirname = dirname(fileURLToPath(import.meta.url));
     const location = `${__dirname}/commands/${commandsPath}`;
     const files = fs.readdirSync(location);
 
     Stumper.info(`Reading in commands from ${location}`, "readInCommands");
 
-    files.forEach((file) => {
-      const Command = require(`${location}/${file}`);
+    for (const file of files) {
+      const Command = await import(`${location}/${file}`);
       const command: T = new Command().default();
 
       if (command instanceof SlashCommand || command instanceof TextCommand || command instanceof ContextMenuCommand) {
@@ -45,7 +48,7 @@ export default abstract class Module {
       }
 
       commands.push(command);
-    });
+    }
 
     this.addCommandsToManager<T>(commands);
   }

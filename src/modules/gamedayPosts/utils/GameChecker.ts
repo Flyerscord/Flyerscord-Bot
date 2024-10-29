@@ -74,7 +74,7 @@ export async function closeAndLockOldPosts(): Promise<void> {
   const db = GameDayPostsDB.getInstance();
   const gameDayPosts = db.getAllPost();
 
-  gameDayPosts.forEach(async (post) => {
+  for (const post of gameDayPosts) {
     const gameInfoResp = await nhlApi.games.events.getGameLandingPage({ gameId: post.gameId });
 
     if (gameInfoResp.status == 200) {
@@ -85,7 +85,7 @@ export async function closeAndLockOldPosts(): Promise<void> {
         discord.forums.setLockPost(Config.getConfig().gameDayPosts.channelId, post.channelId, true);
       }
     }
-  });
+  }
 }
 
 async function getGameNumber(gameId: number): Promise<number | undefined> {

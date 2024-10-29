@@ -1,4 +1,6 @@
 import { createCanvas, loadImage, CanvasRenderingContext2D } from "canvas";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
 function drawRoundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number): void {
   ctx.beginPath();
@@ -17,6 +19,7 @@ export async function createImage(totalMessages: number, currentExp: number, nee
   const canvas = createCanvas(width, height);
   const ctx = canvas.getContext("2d");
 
+  const __dirname = dirname(fileURLToPath(import.meta.url));
   const backgroundImage = await loadImage(`${__dirname}/../assets/background.png`);
 
   // Add background image

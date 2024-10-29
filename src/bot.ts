@@ -12,6 +12,13 @@ import processErrorHandling from "./common/listeners/processErrorHandling";
 processErrorHandling();
 
 /* -------------------------------------------------------------------------- */
+/*                            Setup SigINT handling                           */
+/* -------------------------------------------------------------------------- */
+import onSigInt from "./common/listeners/onSigInt";
+
+onSigInt();
+
+/* -------------------------------------------------------------------------- */
 /*                                Check Config                                */
 /* -------------------------------------------------------------------------- */
 import Config from "./common/config/Config";
@@ -93,6 +100,7 @@ import onReady from "./common/listeners/onReady";
 startUp();
 
 async function startUp(): Promise<void> {
+  // Enable all modules before starting the bot
   await new AdminModule().enable();
   await new CustomCommandsModule().enable();
   await new DaysUntilModule().enable();

@@ -4,6 +4,7 @@
 import Stumper, { LOG_LEVEL } from "stumper";
 Stumper.setConfig({ logLevel: LOG_LEVEL.ALL });
 
+
 /* -------------------------------------------------------------------------- */
 /*                        Setup Process Error Handling                        */
 /* -------------------------------------------------------------------------- */
@@ -22,6 +23,7 @@ if (!Config.fileExists()) {
 }
 
 Stumper.setConfig({ logLevel: Config.getConfig().logLevel });
+Stumper.info(`Starting Bot in ${Config.isProductionMode() ? "production" : "non-production"} mode!`, "main");
 
 /* -------------------------------------------------------------------------- */
 /*                            Create Discord Client                           */

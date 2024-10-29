@@ -14,7 +14,7 @@
 - Add NHL commands back with the new api (Done)
 - Add daysUtil command (Done)
 - Add server join and leave messages (Done)
-- Change the leveling card to closer match the old one
+- Change the leveling card to closer match the old one (STILL NEEDED)
 
 # After release
 

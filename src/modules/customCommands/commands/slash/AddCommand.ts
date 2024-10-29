@@ -5,7 +5,7 @@ import Config from "../../../../common/config/Config";
 
 export default class AddCommand extends AdminSlashCommand {
   constructor() {
-    super("addcustom", "Add a custom command");
+    super("customadd", "Add a custom command");
 
     this.data
       .addSubcommand((subcmd) =>
@@ -14,6 +14,13 @@ export default class AddCommand extends AdminSlashCommand {
           .setDescription("Command that sends a picture or a gif")
           .addStringOption((option) => option.setName("name").setDescription("The name of the command").setRequired(true))
           .addAttachmentOption((option) => option.setName("image").setDescription("The image or gif to send with the command").setRequired(true)),
+      )
+      .addSubcommand((subCmd) =>
+        subCmd
+          .setName("imagelink")
+          .setDescription("Command that sends a image link (Most Common)")
+          .addStringOption((option) => option.setName("name").setDescription("The name of the command").setRequired(true))
+          .addStringOption((option) => option.setName("link").setDescription("The link to the image").setRequired(true)),
       )
       .addSubcommand((subCmd) =>
         subCmd
@@ -35,13 +42,16 @@ export default class AddCommand extends AdminSlashCommand {
     if (this.isSubCommand(interaction, "image")) {
       name = (this.getParamValue(interaction, PARAM_TYPES.STRING, "name") as string).toLowerCase();
       text = (this.getParamValue(interaction, PARAM_TYPES.ATTACHMENT, "image") as Attachment).url;
+    } else if (this.isSubCommand(interaction, "imagelink")) {
+      name = (this.getParamValue(interaction, PARAM_TYPES.STRING, "name") as string).toLowerCase();
+      text = this.getParamValue(interaction, PARAM_TYPES.STRING, "link") as string;
     } else if (this.isSubCommand(interaction, "text")) {
       name = (this.getParamValue(interaction, PARAM_TYPES.STRING, "name") as string).toLowerCase();
-      text = this.getParamValue(interaction, PARAM_TYPES.ATTACHMENT, "text");
+      text = this.getParamValue(interaction, PARAM_TYPES.STRING, "text");
     }
 
     if (name != "" && text != "") {
-      if (db.hasCommand(name)) {
+      if (db.hasCommand(name) || interaction.client.textCommands.hasAny(name)) {
         interaction.reply({
           content: `Command ${Config.getConfig().prefix}${name} already exists!`,
           ephemeral: true,

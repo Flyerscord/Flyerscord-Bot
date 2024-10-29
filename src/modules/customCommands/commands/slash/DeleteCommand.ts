@@ -5,9 +5,11 @@ import Config from "../../../../common/config/Config";
 
 export default class DeleteCommand extends AdminSlashCommand {
   constructor() {
-    super("removecustom", "Remove a custom command");
+    super("customremove", "Remove a custom command");
 
-    this.data.addStringOption((option) => option.setName("name").setDescription(`The name of the command. Case insensitive`).setRequired(true));
+    this.data.addStringOption((option) =>
+      option.setName("name").setDescription(`The name of the command. Case insensitive`).setRequired(true).setAutocomplete(true),
+    );
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {

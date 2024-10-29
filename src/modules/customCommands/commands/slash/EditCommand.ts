@@ -5,10 +5,12 @@ import Config from "../../../../common/config/Config";
 
 export default class EditCommand extends AdminSlashCommand {
   constructor() {
-    super("updatecustom", "Update a custom command");
+    super("customedit", "Update a custom command");
 
     this.data
-      .addStringOption((option) => option.setName("name").setDescription(`The name of the command. Case insensitive`).setRequired(true))
+      .addStringOption((option) =>
+        option.setName("name").setDescription(`The name of the command. Case insensitive`).setRequired(true).setAutocomplete(true),
+      )
       .addStringOption((option) =>
         option.setName("newresponse").setDescription("The new response that the command will respond with").setRequired(true),
       );

@@ -3,12 +3,15 @@ import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
 import ICustomCommand from "../../interfaces/ICustomCommand";
+import discord from "../../../../common/utils/discord/discord";
 
 export default class InfoCommand extends AdminSlashCommand {
   constructor() {
     super("custominfo", "Returns the info for the specified custom command.");
 
-    this.data.addStringOption((option) => option.setName("name").setDescription(`The name of the command to get the info for.`).setRequired(true));
+    this.data.addStringOption((option) =>
+      option.setName("name").setDescription(`The name of the command to get the info for.`).setRequired(true).setAutocomplete(true),
+    );
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -19,7 +22,7 @@ export default class InfoCommand extends AdminSlashCommand {
     const command = db.getCommand(commandName);
 
     if (command) {
-      const embed = createEmbed(command);
+      const embed = await createEmbed(command);
       interaction.reply({ embeds: [embed], ephemeral: true });
     } else {
       interaction.reply({
@@ -30,23 +33,30 @@ export default class InfoCommand extends AdminSlashCommand {
   }
 }
 
-function createEmbed(command: ICustomCommand): EmbedBuilder {
+async function createEmbed(command: ICustomCommand): Promise<EmbedBuilder> {
   const embed = new EmbedBuilder();
+  const member = await discord.members.getMember(command.createdBy);
+  const username = member ? member.displayName || member.user.username : command.createdBy;
 
   embed.setTitle(`Name: ${command.name}`);
-  embed.setAuthor({ name: command.createdBy });
+  embed.setDescription(`Created by: ${username}`);
   embed.setTimestamp(command.createdOn);
   embed.setColor("Yellow");
   embed.addFields({ name: "Text", value: command.text });
 
-  const history = command.history;
+  let history = command.history;
+  const maxItemsToDisplay = 24;
+  if (history.length > maxItemsToDisplay) {
+    history = history.slice(-maxItemsToDisplay);
+    embed.setFooter({ text: `Command history truncated to latest ${maxItemsToDisplay} entries` });
+  }
 
   for (let i = history.length - 1; i >= 0; i--) {
     const historyItem = history[i];
 
     embed.addFields({
-      name: `Edit ${i + 1}`,
-      value: `Old: ${historyItem.oldText}  New: ${historyItem.newText}  Author: ${historyItem.editedBy}  Date: ${historyItem.editedOn}`,
+      name: `Edit ${historyItem.index + 1}`,
+      value: `**Old**: ${historyItem.oldText}  **New**: ${historyItem.newText}  **Author**: ${username}  **Date**: ${historyItem.editedOn}`,
     });
   }
 

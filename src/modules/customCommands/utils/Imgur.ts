@@ -1,6 +1,7 @@
 import { ImgurClient } from "imgur";
 import { ImgurSetupRequiredException } from "../exceptions/ImgurSetupRequiredException";
 import Config from "../../../common/config/Config";
+import Stumper from "stumper";
 
 export default class Imgur {
   private static instance: Imgur;
@@ -21,6 +22,8 @@ export default class Imgur {
   public async uploadImage(url: string, title: string): Promise<string | undefined> {
     this.setupConnection();
 
+    Stumper.debug(`Uploading image: ${url}`, "Imgur:uploadImage");
+
     const response = await this.client!.upload({
       image: url,
       title: title,
@@ -28,6 +31,7 @@ export default class Imgur {
     });
 
     if (response.success) {
+      Stumper.debug(`Image uploaded successfully: ${response.data.link}`, "Imgur:uploadImage");
       return response.data.link;
     }
     return undefined;

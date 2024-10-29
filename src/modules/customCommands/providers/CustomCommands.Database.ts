@@ -5,6 +5,7 @@ import Database from "../../../common/providers/Database";
 import ICustomCommand, { ICustomCommandHistory } from "../interfaces/ICustomCommand";
 import { updateCommandList } from "../utils/util";
 import Imgur from "../utils/Imgur";
+import axios from "axios";
 
 export default class CustomCommandsDB extends Database {
   private static instance: CustomCommandsDB;
@@ -28,11 +29,16 @@ export default class CustomCommandsDB extends Database {
     return this.db.get(name.toLowerCase());
   }
 
+  getAllCommandNames(): Array<string> {
+    return this.getAllKeys() as Array<string>;
+  }
+
   async addCommand(name: string, text: string, userId: string): Promise<boolean> {
     if (!this.hasCommand(name)) {
       if (this.isImageLink(text)) {
+        text = await this.formatImgurUrl(text);
         const imgur = Imgur.getInstance();
-        const imgurLink = await imgur.uploadImage(text, name);
+        const imgurLink = await imgur.uploadImage(text, `Flyerscord cmd: ${name}`);
         if (imgurLink) {
           text = imgurLink;
         }
@@ -51,6 +57,7 @@ export default class CustomCommandsDB extends Database {
       updateCommandList();
       return true;
     }
+    Stumper.error(`Error adding command: ${name}`, "CustomCommandsDB:addCommand");
     return false;
   }
 
@@ -59,7 +66,7 @@ export default class CustomCommandsDB extends Database {
       return false;
     }
     this.db.delete(name);
-    Stumper.info(`Custom Command created! Command: ${name}  By user: ${userId}`, "CustomCommandsDB:deleteCommand");
+    Stumper.info(`Custom Command removed! Command: ${name}  By user: ${userId}`, "CustomCommandsDB:deleteCommand");
 
     updateCommandList();
     return true;
@@ -87,6 +94,7 @@ export default class CustomCommandsDB extends Database {
       newText: newText,
       editedBy: editUser,
       editedOn: Time.getCurrentTime(),
+      index: oldCommand.history.length,
     };
 
     newCommand.text = newText;
@@ -95,19 +103,43 @@ export default class CustomCommandsDB extends Database {
   }
 
   private isImageLink(text: string): boolean {
-    const imageExtensions = [".png", ".jpg", ".jpeg", ".gif", ".webp"];
-    const urlPattern = /(https?:\/\/[^\s]+)/g;
+    const urlPattern = /^(https?:\/\/[^\s]+)$/g;
 
     const urls = text.match(urlPattern);
 
-    if (urls) {
-      for (const url of urls) {
-        if (imageExtensions.some((ext) => url.toLowerCase().endsWith(ext))) {
-          return true;
+    if (urls && urls.length > 0) {
+      return true;
+    }
+    return false;
+  }
+
+  private async formatImgurUrl(url: string): Promise<string> {
+    const imgurRegex = /^https?:\/\/(www\.)?imgur\.com\/([a-zA-Z0-9]+)$/;
+    const match = url.match(imgurRegex);
+
+    if (!match) {
+      console.log("Invalid Imgur URL format.");
+      return url;
+    }
+
+    const imageId = match[2];
+    const extensions = [".jpg", ".png", ".gif"];
+
+    for (const ext of extensions) {
+      const directUrl = `https://i.imgur.com/${imageId}${ext}`;
+      try {
+        const response = await axios.head(directUrl);
+        if (response.headers["content-type"].startsWith("image/")) {
+          // If a valid image type is found, return the direct URL
+          return directUrl;
         }
+      } catch (error) {
+        // Continue to the next extension if this one fails
+        console.log(`Attempt with ${ext} failed:`, error);
       }
     }
 
-    return false;
+    console.log("Failed to retrieve a valid image URL.");
+    return url;
   }
 }

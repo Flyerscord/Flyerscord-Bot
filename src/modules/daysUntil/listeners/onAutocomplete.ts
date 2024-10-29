@@ -50,5 +50,8 @@ async function toggleCommand(interaction: AutocompleteInteraction): Promise<bool
 }
 
 async function sendAutocompleteOptions(interaction: AutocompleteInteraction, options: Array<string>): Promise<void> {
+  if (options.length > 25) {
+    options = options.slice(0, 24);
+  }
   await interaction.respond(options.map((option) => ({ name: option, value: option })));
 }

@@ -6,7 +6,7 @@ import discord from "../../../../common/utils/discord/discord";
 
 export default class TestAllCommand extends AdminSlashCommand {
   constructor() {
-    super("testcustom", "Runs all of the custom commands to test the links");
+    super("customtest", "Runs all of the custom commands to test the links");
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {

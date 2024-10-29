@@ -11,4 +11,5 @@ export interface ICustomCommandHistory {
   newText: string;
   editedOn: Date;
   editedBy: string; // Discord User ID
+  index: number;
 }

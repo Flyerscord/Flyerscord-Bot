@@ -3,7 +3,7 @@ import fs from "fs";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-import * as config from "./config.json";
+import * as config from "./config.json" with {"type": "json"};
 import { IConfig } from "./IConfig.js";
 
 export default class Config {

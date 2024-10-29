@@ -6,7 +6,7 @@ export default class GameDayPostsModule extends Module {
     super("GameDayPosts");
   }
 
-  protected override setup(): void {
+  protected override async setup(): Promise<void> {
     this.registerSchedules();
   }
 

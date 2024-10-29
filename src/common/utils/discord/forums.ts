@@ -7,7 +7,7 @@ export async function createPost(
   postContent: string,
   tags: GuildForumTag[],
 ): Promise<ForumThreadChannel | undefined> {
-  const forumChannel = getForumChannel(forumChannelId);
+  const forumChannel = await getForumChannel(forumChannelId);
   if (forumChannel) {
     return await forumChannel.threads.create({
       name: postName,
@@ -19,38 +19,38 @@ export async function createPost(
   return undefined;
 }
 
-export function getAvailableTags(forumChannelId: string): Array<GuildForumTag> {
-  const forumChannel = getForumChannel(forumChannelId);
+export async function getAvailableTags(forumChannelId: string): Promise<GuildForumTag[]> {
+  const forumChannel = await getForumChannel(forumChannelId);
   if (forumChannel) {
     forumChannel.availableTags;
   }
   return [];
 }
 
-export function setLockPost(forumChannelId: string, postChannelId: string, locked: boolean): void {
-  const postChannel = getForumPostChannel(forumChannelId, postChannelId);
+export async function setLockPost(forumChannelId: string, postChannelId: string, locked: boolean): Promise<void> {
+  const postChannel = await getForumPostChannel(forumChannelId, postChannelId);
   if (postChannel) {
     postChannel.setLocked(locked);
   }
 }
 
-export function setClosedPost(forumChannelId: string, postChannelId: string, closed: boolean): void {
-  const postChannel = getForumPostChannel(forumChannelId, postChannelId);
+export async function setClosedPost(forumChannelId: string, postChannelId: string, closed: boolean): Promise<void> {
+  const postChannel = await getForumPostChannel(forumChannelId, postChannelId);
   if (postChannel) {
     postChannel.setArchived(closed);
   }
 }
 
-export function isClosed(forumChannelId: string, postChannelId: string): boolean {
-  const postChannel = getForumPostChannel(forumChannelId, postChannelId);
+export async function isClosed(forumChannelId: string, postChannelId: string): Promise<boolean> {
+  const postChannel = await getForumPostChannel(forumChannelId, postChannelId);
   if (postChannel) {
     return postChannel.archived || false;
   }
   return false;
 }
 
-export function isLocked(forumChannelId: string, postChannelId: string): boolean {
-  const postChannel = getForumPostChannel(forumChannelId, postChannelId);
+export async function isLocked(forumChannelId: string, postChannelId: string): Promise<boolean> {
+  const postChannel = await getForumPostChannel(forumChannelId, postChannelId);
   if (postChannel) {
     return postChannel.locked || false;
   }

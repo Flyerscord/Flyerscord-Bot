@@ -17,12 +17,12 @@ export default abstract class Module {
     this.name = name;
   }
 
-  public enable(): void {
-    this.setup();
-    Stumper.info(`Module: ${this.name} enabled`);
+  public async enable(): Promise<void> {
+    await this.setup();
+    Stumper.success(`${this.name} module enabled!`);
   }
 
-  protected setup(): void {
+  protected async setup(): Promise<void> {
     throw new ModuleSetupMissingException();
   }
 
@@ -35,8 +35,12 @@ export default abstract class Module {
     Stumper.info(`Reading in commands from ${location}`, "readInCommands");
 
     for (const file of files) {
-      const Command = require(`${location}/${file}`);
-      const command: T = new Command().default();
+      if (!file.endsWith(".js")) {
+        continue;
+      }
+
+      const Command = await import(`${location}/${file}`);
+      const command: T = new Command.default();
 
       if (command instanceof SlashCommand || command instanceof TextCommand || command instanceof ContextMenuCommand) {
         Stumper.debug(`Read in command: ${command.name}`, "readInCommands");

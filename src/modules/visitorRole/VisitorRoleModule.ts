@@ -9,10 +9,10 @@ export default class VistorRoleModule extends Module {
     super("VistorRole");
   }
 
-  protected override setup(): void {
+  protected override async setup(): Promise<void> {
     this.registerListeners();
 
-    createVisitorRoleMessageIfNeeded();
+    await createVisitorRoleMessageIfNeeded();
   }
 
   private registerListeners(): void {

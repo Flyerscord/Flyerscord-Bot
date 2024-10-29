@@ -12,7 +12,7 @@ export default class BanSlashCommand extends AdminSlashCommand {
       .addStringOption((option) => option.setName("reason").setDescription("The reason for banning.").setRequired(true))
       .addIntegerOption((option) =>
         option
-          .setName("deleteMessagesTime")
+          .setName("deletemessagestime")
           .setDescription("The number of seconds to go back and delete of the banned users messages")
           .setMinValue(0),
       );
@@ -21,7 +21,7 @@ export default class BanSlashCommand extends AdminSlashCommand {
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     const member: GuildMember = this.getParamValue(interaction, PARAM_TYPES.MEMBER, "user");
     const reason: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "reason");
-    const deleteMessagesSeconds: number = this.getParamValue(interaction, PARAM_TYPES.INTEGER, "deleteMessagesTime") || 0;
+    const deleteMessagesSeconds: number = this.getParamValue(interaction, PARAM_TYPES.INTEGER, "deletemessagestime") || 0;
 
     await member.ban({ deleteMessageSeconds: deleteMessagesSeconds, reason: reason });
 

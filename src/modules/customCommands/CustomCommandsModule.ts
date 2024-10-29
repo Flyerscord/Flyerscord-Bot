@@ -9,9 +9,9 @@ export default class CustomCommandsModule extends Module {
     super("CustomCommands");
   }
 
-  protected override setup(): void {
-    this.readInCommands<SlashCommand>(__dirname, "slash");
-    this.readInCommands<TextCommand>(__dirname, "text");
+  protected override async setup(): Promise<void> {
+    await this.readInCommands<SlashCommand>(__dirname, "slash");
+    await this.readInCommands<TextCommand>(__dirname, "text");
 
     this.registerListeners();
 

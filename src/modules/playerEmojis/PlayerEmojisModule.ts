@@ -5,5 +5,7 @@ export default class PlayerEmojisModule extends Module {
     super("PlayerEmojis");
   }
 
-  protected override setup(): void {}
+  protected override async setup(): Promise<void> {
+    // TODO: Implement
+  }
 }

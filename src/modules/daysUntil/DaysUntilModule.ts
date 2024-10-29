@@ -6,7 +6,7 @@ export default class DaysUntilModule extends Module {
     super("DaysUntil");
   }
 
-  protected override setup(): void {
-    this.readInCommands<SlashCommand>(__dirname, "slash");
+  protected override async setup(): Promise<void> {
+    await this.readInCommands<SlashCommand>(__dirname, "slash");
   }
 }

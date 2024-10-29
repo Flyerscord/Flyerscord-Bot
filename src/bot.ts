@@ -2,8 +2,7 @@
 /*                                Setup Stumper                                */
 /* -------------------------------------------------------------------------- */
 import Stumper, { LOG_LEVEL } from "stumper";
-Stumper.setConfig({ logLevel: LOG_LEVEL.ALL });
-
+Stumper.setConfig({ logLevel: LOG_LEVEL.ALL, useColors: false });
 
 /* -------------------------------------------------------------------------- */
 /*                        Setup Process Error Handling                        */
@@ -66,12 +65,13 @@ ContextMenuCommandManager.getInstance();
 ModalMenuManager.getInstance();
 
 /* -------------------------------------------------------------------------- */
-/*                              Register Modules                              */
+/*                               Import Modules                               */
 /* -------------------------------------------------------------------------- */
 import AdminModule from "./modules/admin/AdminModule";
 import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule";
 import DaysUntilModule from "./modules/daysUntil/DaysUntilModule";
 import GameDayPostsModule from "./modules/gamedayPosts/GameDayPostsModule";
+import HealthCheckModule from "./modules/healthcheck/HealthCheckModule";
 import JoinLeaveModule from "./modules/joinLeave/JoinLeaveModule";
 import LevelsModule from "./modules/levels/LevelsModule";
 import MiscModule from "./modules/misc/MiscModule";
@@ -80,53 +80,41 @@ import PlayerEmojisModule from "./modules/playerEmojis/PlayerEmojisModule";
 import UserManagementModule from "./modules/userManagement/UserManagementModule";
 import VisitorRoleModule from "./modules/visitorRole/VisitorRoleModule";
 
-new AdminModule().enable();
-new CustomCommandsModule().enable();
-new DaysUntilModule().enable();
-new GameDayPostsModule().enable();
-new JoinLeaveModule().enable();
-new LevelsModule().enable();
-new MiscModule().enable();
-new NHLModule().enable();
-new PlayerEmojisModule().enable();
-new UserManagementModule().enable();
-new VisitorRoleModule().enable();
-
 /* -------------------------------------------------------------------------- */
-/*                      Register Our Other Event Handlers                     */
+/*                       Import Our Other Event Handlers                      */
 /* -------------------------------------------------------------------------- */
 import onMessageCreate from "./common/listeners/onMessageCreate";
 import onInteractionCreate from "./common/listeners/onInteractionCreate";
 import onReady from "./common/listeners/onReady";
 
-onMessageCreate(client);
-onInteractionCreate(client);
-onReady(client);
-
 /* -------------------------------------------------------------------------- */
-/*                                Log into bot                                */
+/*                                 Run Startup                                */
 /* -------------------------------------------------------------------------- */
-client.login(Config.getConfig().token);
+startUp();
 
-/* -------------------------------------------------------------------------- */
-/*                           Setup HTTP Health Check                          */
-/* -------------------------------------------------------------------------- */
-import express from "express";
-import { getBotHealth } from "./common/utils/healthCheck";
-import IBotHealth from "./common/interfaces/IBotHealth";
+async function startUp(): Promise<void> {
+  await new AdminModule().enable();
+  await new CustomCommandsModule().enable();
+  await new DaysUntilModule().enable();
+  await new GameDayPostsModule().enable();
+  await new HealthCheckModule().enable();
+  await new JoinLeaveModule().enable();
+  await new LevelsModule().enable();
+  await new MiscModule().enable();
+  await new NHLModule().enable();
+  await new PlayerEmojisModule().enable();
+  await new UserManagementModule().enable();
+  await new VisitorRoleModule().enable();
 
-const app = express();
-const port = process.env.PORT || 3000;
+  /* -------------------------------------------------------------------------- */
+  /*                      Register Our Other Event Handlers                     */
+  /* -------------------------------------------------------------------------- */
+  onMessageCreate(client);
+  onInteractionCreate(client);
+  onReady(client);
 
-app.get("/health", (req, res) => {
-  const health: IBotHealth = getBotHealth();
-  if (health.status === "healthy") {
-    res.status(200).json(health);
-  } else {
-    res.status(503).json(health);
-  }
-});
-
-app.listen(port, () => {
-  Stumper.info(`Health check server is running on port ${port}`, "healthCheck");
-});
+  /* -------------------------------------------------------------------------- */
+  /*                                Log into bot                                */
+  /* -------------------------------------------------------------------------- */
+  client.login(Config.getConfig().token);
+}

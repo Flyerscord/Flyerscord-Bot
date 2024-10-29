@@ -25,7 +25,7 @@ export async function checkForGameDay(): Promise<void> {
         const awayTeam = teams.find((team) => team.id == game.awayTeam.id);
 
         if (homeTeam && awayTeam) {
-          const availableTags = discord.forums.getAvailableTags(Config.getConfig().gameDayPosts.channelId);
+          const availableTags = await discord.forums.getAvailableTags(Config.getConfig().gameDayPosts.channelId);
 
           let tags: GuildForumTag[] = [];
           if (game.gameType == GAME_TYPE.PRESEASON) {
@@ -36,7 +36,7 @@ export async function checkForGameDay(): Promise<void> {
             tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.postseason);
           }
 
-          const seasonTag = getCurrentSeasonTagId(game);
+          const seasonTag = await getCurrentSeasonTagId(game);
           if (seasonTag) {
             tags.push(seasonTag);
           }
@@ -117,8 +117,8 @@ async function getGameNumber(gameId: number): Promise<number | undefined> {
   return undefined;
 }
 
-function getCurrentSeasonTagId(game: IClubScheduleOutput_games): GuildForumTag | undefined {
-  const availableTags = discord.forums.getAvailableTags(Config.getConfig().gameDayPosts.channelId);
+async function getCurrentSeasonTagId(game: IClubScheduleOutput_games): Promise<GuildForumTag | undefined> {
+  const availableTags = await discord.forums.getAvailableTags(Config.getConfig().gameDayPosts.channelId);
 
   const seasonTags = Config.getConfig().gameDayPosts.tagIds.seasons;
 

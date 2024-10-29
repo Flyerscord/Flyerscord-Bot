@@ -7,7 +7,7 @@ export default class JoinLeaveModule extends Module {
     super("JoinLeave");
   }
 
-  protected override setup(): void {
+  protected override async setup(): Promise<void> {
     this.registerListeners();
   }
 

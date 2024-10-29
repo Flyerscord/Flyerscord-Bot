@@ -1,6 +1,6 @@
 import Task from "../../../common/models/Task.js";
 import nhlApi from "nhl-api-wrapper-ts";
-import PlayerEmojisDB from "../providers/PlayerEmojis.Database";
+import PlayerEmojisDB from "../providers/PlayerEmojis.Database.js";
 import { TEAM_TRI_CODE } from "nhl-api-wrapper-ts/dist/interfaces/Common.js";
 import discord from "../../../common/utils/discord/discord.js";
 import { ITeamRosterNowOutput } from "nhl-api-wrapper-ts/dist/interfaces/roster/TeamRosterNow.js";

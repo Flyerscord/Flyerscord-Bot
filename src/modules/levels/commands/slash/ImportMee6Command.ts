@@ -3,7 +3,7 @@ import Stumper from "stumper";
 
 import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand.js";
-import LevelsDB from "../../providers/Levels.Database";
+import LevelsDB from "../../providers/Levels.Database.js";
 
 export default class ImportMee6Command extends AdminSlashCommand {
   constructor() {

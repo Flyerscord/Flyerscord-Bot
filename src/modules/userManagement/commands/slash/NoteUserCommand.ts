@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, User } from "discord.js";
 import Stumper from "stumper";
 import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand.js";
-import UserManagementDB from "../../providers/UserManagement.Database";
+import UserManagementDB from "../../providers/UserManagement.Database.js";
 import { sendLogMessage } from "../../utils/ChannelLogging.js";
 
 export default class NoteUserCommand extends AdminSlashCommand {

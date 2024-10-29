@@ -1,5 +1,5 @@
 import discord from "../../../common/utils/discord/discord.js";
-import CustomCommandsDB from "../providers/CustomCommands.Database";
+import CustomCommandsDB from "../providers/CustomCommands.Database.js";
 
 export default class CommandImporter {
   private static instance: CommandImporter;

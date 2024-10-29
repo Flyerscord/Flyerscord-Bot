@@ -9,7 +9,7 @@ import {
 } from "discord.js";
 
 import SlashCommand from "../../../../common/models/SlashCommand.js";
-import LevelsDB from "../../providers/Levels.Database";
+import LevelsDB from "../../providers/Levels.Database.js";
 import { IUserLevel } from "../../interfaces/IUserLevel.js";
 
 export default class LeaderboardCommand extends SlashCommand {

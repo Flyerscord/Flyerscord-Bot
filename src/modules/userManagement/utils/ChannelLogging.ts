@@ -1,4 +1,4 @@
-import GlobalDB from "../../../common/providers/Global.Database";
+import GlobalDB from "../../../common/providers/Global.Database.js";
 import discord from "../../../common/utils/discord/discord.js";
 
 export function sendLogMessage(message: string): void {

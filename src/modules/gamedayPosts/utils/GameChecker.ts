@@ -6,7 +6,7 @@ import Stumper from "stumper";
 import discord from "../../../common/utils/discord/discord.js";
 import { GuildForumTag, time, TimestampStyles } from "discord.js";
 import Config from "../../../common/config/Config.js";
-import GameDayPostsDB from "../providers/GameDayPosts.Database";
+import GameDayPostsDB from "../providers/GameDayPosts.Database.js";
 import { IClubScheduleOutput_games } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubSchedule.js";
 
 export async function checkForGameDay(): Promise<void> {

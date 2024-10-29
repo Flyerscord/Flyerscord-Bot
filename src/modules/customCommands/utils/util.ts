@@ -1,5 +1,5 @@
-import CustomCommandsDB from "../providers/CustomCommands.Database";
-import GlobalDB from "../../../common/providers/Global.Database";
+import CustomCommandsDB from "../providers/CustomCommands.Database.js";
+import GlobalDB from "../../../common/providers/Global.Database.js";
 import Config from "../../../common/config/Config.js";
 import discord from "../../../common/utils/discord/discord.js";
 import ICustomCommand from "../interfaces/ICustomCommand.js";

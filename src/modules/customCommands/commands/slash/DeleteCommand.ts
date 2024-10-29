@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand.js";
-import CustomCommandsDB from "../../providers/CustomCommands.Database";
+import CustomCommandsDB from "../../providers/CustomCommands.Database.js";
 import Config from "../../../../common/config/Config.js";
 
 export default class DeleteCommand extends AdminSlashCommand {

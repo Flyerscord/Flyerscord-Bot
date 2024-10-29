@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import SlashCommand, { PARAM_TYPES } from "../../../../common/models/SlashCommand.js";
 import events from "../../models/DaysUntilEvents.js";
-import DaysUntilDB from "../../providers/DaysUtil.Database";
+import DaysUntilDB from "../../providers/DaysUtil.Database.js";
 import Time from "../../../../common/utils/Time.js";
 
 export default class DaysUntilCommand extends SlashCommand {

@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 
 import Stumper from "stumper";
-import CustomCommandsDB from "../providers/CustomCommands.Database";
+import CustomCommandsDB from "../providers/CustomCommands.Database.js";
 import Config from "../../../common/config/Config.js";
 import ClientManager from "../../../common/managers/ClientManager.js";
 import discord from "../../../common/utils/discord/discord.js";

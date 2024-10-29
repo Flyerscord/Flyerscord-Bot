@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, EmbedBuilder, time, TimestampStyles, User } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand.js";
-import UserManagementDB from "../../providers/UserManagement.Database";
+import UserManagementDB from "../../providers/UserManagement.Database.js";
 import { IUserInfo } from "../../interfaces/IUserInfo.js";
 import discord from "../../../../common/utils/discord/discord.js";
 import Time from "../../../../common/utils/Time.js";

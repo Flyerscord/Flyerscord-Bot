@@ -1,3 +1,4 @@
+import Stumper from "stumper";
 import Database from "../../../common/providers/Database";
 
 export default class LevelExpDB extends Database {
@@ -32,7 +33,9 @@ export default class LevelExpDB extends Database {
   }
 
   getExpUntilNextLevel(currentLevel: number, currentExp: number): number {
+    Stumper.debug(`Getting exp until next level for level ${currentLevel} and current exp ${currentExp}`, "LevelExpDB:getExpUntilNextLevel");
     const nextLevelExp = this.getLevelExp(currentLevel + 1);
+    Stumper.debug(`Next level exp: ${nextLevelExp}`, "LevelExpDB:getExpUntilNextLevel");
     return nextLevelExp - currentExp;
   }
 

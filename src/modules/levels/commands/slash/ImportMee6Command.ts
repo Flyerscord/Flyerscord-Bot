@@ -4,6 +4,7 @@ import Stumper from "stumper";
 import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
 import LevelsDB from "../../providers/Levels.Database";
+import Config from "../../../../common/config/Config";
 
 export default class ImportMee6Command extends AdminSlashCommand {
   constructor() {
@@ -28,8 +29,9 @@ export default class ImportMee6Command extends AdminSlashCommand {
         const db = LevelsDB.getInstance();
         db.wipe();
 
-        if (interaction.guildId) {
-          const users: Array<User> = await Mee6LevelsApi.getLeaderboard(interaction.guildId);
+        const guildId = Config.getConfig().masterGuildId;
+        if (guildId) {
+          const users: Array<User> = await Mee6LevelsApi.getLeaderboard(guildId);
 
           for (let i = 0; i < users.length; i++) {
             const user = users[i];
@@ -39,11 +41,18 @@ export default class ImportMee6Command extends AdminSlashCommand {
             userLevel.totalExp = user.xp.totalXp;
             db.updateUser(user.id, userLevel);
           }
+          interaction.reply({ content: "Successfully imported levels!", ephemeral: true });
+          return;
         }
+      } else {
+        interaction.reply({ content: "Failed to confirm import!", ephemeral: true });
+        return;
       }
     } else {
       Stumper.warning(`User ${interaction.user.username} attempted to import mee6 levels!`, "ImportMee6Command");
       interaction.reply({ ephemeral: true, content: "Only flyerzrule can run this command!" });
+      return;
     }
+    interaction.reply({ content: "Error importing levels!", ephemeral: true });
   }
 }

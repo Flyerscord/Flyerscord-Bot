@@ -11,6 +11,9 @@ import {
 import SlashCommand from "../../../../common/models/SlashCommand";
 import LevelsDB from "../../providers/Levels.Database";
 import { IUserLevel } from "../../interfaces/IUserLevel";
+import discord from "../../../../common/utils/discord/discord";
+import LevelExpDB from "../../providers/LevelExp.Database";
+import { formatExp, getShortenedMessageCount } from "../../utils/leveling";
 
 export default class LeaderboardCommand extends SlashCommand {
   private readonly EMBED_PAGE_SIZE = 25;
@@ -42,7 +45,7 @@ export default class LeaderboardCommand extends SlashCommand {
 
     // Send the initial message with the first page and buttons
     const message = await interaction.reply({
-      embeds: [this.createEmbedPage(users, currentPage)],
+      embeds: [await this.createEmbedPage(users, currentPage)],
       components: [row],
       fetchReply: true,
     });
@@ -77,29 +80,32 @@ export default class LeaderboardCommand extends SlashCommand {
 
       // Update the embed and buttons
       await interaction.update({
-        embeds: [this.createEmbedPage(users, currentPage)],
+        embeds: [await this.createEmbedPage(users, currentPage)],
         components: [row],
       });
     });
   }
 
-  private createEmbedPage(data: Array<IUserLevel>, pageNumber: number): EmbedBuilder {
+  private async createEmbedPage(data: Array<IUserLevel>, pageNumber: number): Promise<EmbedBuilder> {
     const embed = new EmbedBuilder();
+    const levelExpDB = LevelExpDB.getInstance();
 
     embed.setTitle("User Leaderboard");
-    embed.setDescription(`Page ${pageNumber} of ${Math.ceil(data.length / this.EMBED_PAGE_SIZE)}`);
+    embed.setFooter({ text: `Page ${pageNumber} of ${Math.ceil(data.length / this.EMBED_PAGE_SIZE)}` });
     embed.setColor("Random");
     embed.setTimestamp(Date.now());
 
     const startingIndex = (pageNumber - 1) * this.EMBED_PAGE_SIZE;
-    const endingIndex = startingIndex + this.EMBED_PAGE_SIZE;
+    const endingIndex = startingIndex + data.length;
 
     for (let i = startingIndex; i < endingIndex; i++) {
       const user = data[i];
+      const member = await discord.members.getMember(user.userId);
+      const username = member ? member.displayName || member.user.username : user.userId;
 
       embed.addFields({
-        name: `${user.currentLevel}) ${user.userId}`,
-        value: `Total Messages: ${user.messageCount} | Total Exp: ${user.totalExp}`,
+        name: `${i + 1}) ${username}`,
+        value: `**Level:** ${user.currentLevel} | **Total Messages:** ${getShortenedMessageCount(user.messageCount)} | **Total Exp:** ${formatExp(user.totalExp)} | **Exp to next level:** ${formatExp(levelExpDB.getLevelExp(user.currentLevel + 1) - user.totalExp)}`,
       });
     }
 

@@ -1,7 +1,8 @@
-import { ChatInputCommandInteraction, User } from "discord.js";
+import { AttachmentBuilder, ChatInputCommandInteraction, User } from "discord.js";
 import SlashCommand, { PARAM_TYPES } from "../../../../common/models/SlashCommand";
 import LevelsDB from "../../providers/Levels.Database";
 import { createImage } from "../../utils/imageGeneration";
+import LevelExpDB from "../../providers/LevelExp.Database";
 
 export default class RankCommand extends SlashCommand {
   constructor() {
@@ -11,26 +12,32 @@ export default class RankCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const user: User | undefined = this.getParamValue(interaction, PARAM_TYPES.USER, "user");
+    const userInput: User | undefined = this.getParamValue(interaction, PARAM_TYPES.USER, "user");
 
-    let userId = interaction.user.id;
-    if (user) {
-      userId = user.id;
-
-      const db = LevelsDB.getInstance();
-      const userLevel = db.getUser(userId);
-
-      if (userLevel) {
-        const imageBuffer = await createImage(
-          userLevel.messageCount,
-          userLevel.totalExp,
-          userLevel.currentLevel,
-          userLevel.currentLevel,
-          user.username,
-        );
-
-        interaction.reply({ files: [imageBuffer] });
-      }
+    let user: User;
+    if (userInput) {
+      user = userInput;
+    } else {
+      user = interaction.user;
     }
+
+    const db = LevelsDB.getInstance();
+    const levelExpDB = LevelExpDB.getInstance();
+    const userLevel = db.getUser(user.id);
+
+    if (userLevel) {
+      const imageBuffer = await createImage(
+        userLevel.messageCount,
+        userLevel.totalExp,
+        levelExpDB.getLevelExp(userLevel.currentLevel + 1),
+        userLevel.currentLevel,
+        user.username,
+      );
+
+      const attachment = new AttachmentBuilder(imageBuffer, { name: "rank.png" });
+      interaction.reply({ files: [attachment] });
+      return;
+    }
+    interaction.reply({ content: "You need to send a message before you can use this command!", ephemeral: true });
   }
 }

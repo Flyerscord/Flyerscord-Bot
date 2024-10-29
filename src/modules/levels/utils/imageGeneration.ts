@@ -1,4 +1,5 @@
 import { createCanvas, loadImage, CanvasRenderingContext2D } from "canvas";
+import { formatExp, getShortenedMessageCount } from "./leveling";
 
 function drawRoundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number): void {
   ctx.beginPath();
@@ -39,7 +40,7 @@ export async function createImage(totalMessages: number, currentExp: number, nee
   // Add total messages
   ctx.fillStyle = "#dddddd";
   ctx.font = "15px Arial";
-  ctx.fillText(`Total messages: ${totalMessages}`, 50, 100);
+  ctx.fillText(`Total messages: ${getShortenedMessageCount(totalMessages)}`, 50, 100);
 
   // Add level word
   ctx.fillStyle = "#000000";
@@ -71,7 +72,7 @@ export async function createImage(totalMessages: number, currentExp: number, nee
   // Set exp text
   ctx.fillStyle = "#ffffff";
   ctx.font = "30px Arial";
-  ctx.fillText(`${currentExp} exp / ${neededExp} exp`, 100, 210);
+  ctx.fillText(`${formatExp(currentExp)} exp / ${formatExp(neededExp)} exp`, 100, 210);
 
   return canvas.toBuffer("image/png");
 }

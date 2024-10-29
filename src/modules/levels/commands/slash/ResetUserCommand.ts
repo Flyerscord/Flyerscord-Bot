@@ -27,6 +27,10 @@ export default class ResetUserCommand extends AdminSlashCommand {
       Stumper.warning(`Resetting exp for username: ${user.username} id: ${user.id}.  Performed by: ${interaction.user.username}`, "ResetUserCommand");
 
       db.resetUser(user.id);
+      interaction.reply({ content: `Resetting exp for username: ${user.username} id: ${user.id}`, ephemeral: true });
+      return;
     }
+
+    interaction.reply({ content: "Error resetting user!", ephemeral: true });
   }
 }

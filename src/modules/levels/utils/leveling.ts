@@ -12,13 +12,18 @@ function getExpAmount(): number {
   return getRandomNumber(15, 25);
 }
 
-export function addMessage(message: Message): void {
-  const MESSAGE_THRESHOLD = 1 * 60 * 1000;
+export async function addMessage(message: Message): Promise<void> {
+  // const MESSAGE_THRESHOLD = 1 * 60 * 1000;
+  const MESSAGE_THRESHOLD = 1 * 3 * 1000;
   const db = LevelsDB.getInstance();
   const userId = message.author.id;
 
   db.addNewUser(userId);
   const userLevel = db.getUser(userId)!;
+  Stumper.debug(
+    `Time since last message: ${Time.timeSince(userLevel.timeOfLastMessage)} true? ${Time.timeSince(userLevel.timeOfLastMessage) >= MESSAGE_THRESHOLD}`,
+    "addMessage",
+  );
 
   if (Time.timeSince(userLevel.timeOfLastMessage) >= MESSAGE_THRESHOLD) {
     userLevel.messageCount++;
@@ -26,7 +31,7 @@ export function addMessage(message: Message): void {
     userLevel.totalExp += getExpAmount();
     if (checkForLevelUp(userLevel.currentLevel, userLevel.totalExp)) {
       userLevel.currentLevel++;
-      sendLevelUpMessage(message, userId, userLevel.currentLevel);
+      await sendLevelUpMessage(message, userId, userLevel.currentLevel);
     }
     db.updateUser(userId, userLevel);
   }
@@ -35,12 +40,12 @@ export function addMessage(message: Message): void {
 function checkForLevelUp(currentLevel: number, exp: number): boolean {
   const db = LevelExpDB.getInstance();
   const expToNextLevel = db.getExpUntilNextLevel(currentLevel, exp);
-  return expToNextLevel >= 0;
+  return expToNextLevel <= 0;
 }
 
-function sendLevelUpMessage(message: Message, userId: string, currentLevel: number): void {
+async function sendLevelUpMessage(message: Message, userId: string, currentLevel: number): Promise<void> {
   const rankupMessage = `GG ${userMention(userId)}, you just advanced to ${bold(`Level ${currentLevel}`)} <:flyersflag:398273111071391744>`;
-  const pNumMessage = getPlayerNumMessage(currentLevel);
+  const pNumMessage = await getPlayerNumMessage(currentLevel);
 
   const messages = [rankupMessage, pNumMessage];
 
@@ -104,4 +109,23 @@ function createSpacedNames(input: string): string {
     }
   });
   return result + "```";
+}
+
+export function getShortenedMessageCount(messageCount: number): string {
+  if (messageCount < 1000) {
+    return messageCount.toString();
+  } else if (messageCount < 1000000) {
+    const wholeNumber = Math.floor(messageCount / 1000);
+    const remainder = messageCount % 1000;
+    return `${wholeNumber}.${remainder.toString().slice(0, 2)}k`;
+  } else {
+    const wholeNumber = Math.floor(messageCount / 1000000);
+    const remainder = messageCount % 1000000;
+    return `${wholeNumber}.${remainder.toString().slice(0, 2)}m`;
+  }
+}
+
+// Add commas to the exp number
+export function formatExp(exp: number): string {
+  return exp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

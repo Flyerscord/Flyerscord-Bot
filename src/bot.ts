@@ -7,7 +7,7 @@ Stumper.setConfig({ logLevel: LOG_LEVEL.ALL });
 /* -------------------------------------------------------------------------- */
 /*                        Setup Process Error Handling                        */
 /* -------------------------------------------------------------------------- */
-import processErrorHandling from "./common/listeners/processErrorHandling";
+import processErrorHandling from "./common/listeners/processErrorHandling.js";
 
 processErrorHandling();
 

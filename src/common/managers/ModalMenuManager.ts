@@ -24,10 +24,10 @@ export default class ModalMenuManager {
 
   addCommand(command: ModalMenu): void {
     if (this.hasCommand(command)) {
-      Stumper.warning(`ModalMenu ${command.title} already exists`);
+      Stumper.warning(`ModalMenu ${command.id} already exists`);
       return;
     }
-    this.commands.set(command.title, command);
+    this.commands.set(command.id, command);
   }
 
   getCommands(): Collection<string, ModalMenu> {
@@ -35,6 +35,6 @@ export default class ModalMenuManager {
   }
 
   hasCommand(command: ModalMenu): boolean {
-    return this.commands.has(command.title);
+    return this.commands.has(command.id);
   }
 }

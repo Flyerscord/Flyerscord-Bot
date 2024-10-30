@@ -1,4 +1,4 @@
-import { Collection } from "discord.js";
+import { Collection, RESTPostAPIChatInputApplicationCommandsJSONBody } from "discord.js";
 import SlashCommand from "../models/SlashCommand";
 import Stumper from "stumper";
 
@@ -6,9 +6,11 @@ export default class SlashCommandManager {
   private static instance: SlashCommandManager;
 
   private commands: Collection<string, SlashCommand>;
+  private registrationInfo: RESTPostAPIChatInputApplicationCommandsJSONBody[];
 
   private constructor() {
     this.commands = new Collection();
+    this.registrationInfo = [];
   }
 
   static getInstance(): SlashCommandManager {
@@ -36,5 +38,13 @@ export default class SlashCommandManager {
 
   hasCommand(command: SlashCommand): boolean {
     return this.commands.has(command.name);
+  }
+
+  setRegistrationInfo(registrationInfo: RESTPostAPIChatInputApplicationCommandsJSONBody[]): void {
+    this.registrationInfo = registrationInfo;
+  }
+
+  getRegistrationInfo(): RESTPostAPIChatInputApplicationCommandsJSONBody[] {
+    return this.registrationInfo;
   }
 }

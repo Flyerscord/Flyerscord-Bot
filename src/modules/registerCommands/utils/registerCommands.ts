@@ -2,14 +2,18 @@ import { Client, REST, RESTPostAPIChatInputApplicationCommandsJSONBody, RESTPost
 import Config from "../../../common/config/Config";
 import Stumper from "stumper";
 import ClientManager from "../../../common/managers/ClientManager";
+import Time from "../../../common/utils/Time";
 import SlashCommandManager from "../../../common/managers/SlashCommandManager";
 import ContextMenuCommandManager from "../../../common/managers/ContextMenuManager";
-import Time from "../../../common/utils/Time";
 
 export async function readAndRegisterCommands(): Promise<void> {
   const client = ClientManager.getInstance().client;
-  const slashCommands = await readSlashCommands(client);
-  const contextMenus = await readContextMenus(client);
+
+  const slashCommandManager = SlashCommandManager.getInstance();
+  const contextMenuManager = ContextMenuCommandManager.getInstance();
+
+  const slashCommands = slashCommandManager.getRegistrationInfo();
+  const contextMenus = contextMenuManager.getRegistrationInfo();
 
   const commands = [...slashCommands, ...contextMenus];
   Stumper.info(`Registering ${commands.length} commands...`, "readAndRegisterCommands");
@@ -49,32 +53,6 @@ async function registerAllCommands(
       throw err;
     }
   }
-}
-
-async function readSlashCommands(client: Client): Promise<Array<RESTPostAPIChatInputApplicationCommandsJSONBody>> {
-  const commands: Array<RESTPostAPIChatInputApplicationCommandsJSONBody> = [];
-
-  const slashCommands = SlashCommandManager.getInstance().getCommands();
-  slashCommands.forEach((command) => {
-    commands.push(command.data.toJSON());
-    client.slashCommands.set(command.name, command);
-  });
-
-  Stumper.success(`Successfully loaded ${slashCommands.size} slash commands!`, "readSlashCommands");
-  return commands;
-}
-
-async function readContextMenus(client: Client): Promise<Array<RESTPostAPIContextMenuApplicationCommandsJSONBody>> {
-  const menus: Array<RESTPostAPIContextMenuApplicationCommandsJSONBody> = [];
-
-  const contextMenus = ContextMenuCommandManager.getInstance().getCommands();
-  contextMenus.forEach((menu) => {
-    client.contextMenus.set(menu.name, menu);
-    menus.push(menu.data.toJSON());
-  });
-
-  Stumper.success(`Successfully loaded ${client.contextMenus.size} context menus!`, "readContextMenus");
-  return menus;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

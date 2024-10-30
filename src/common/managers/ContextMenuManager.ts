@@ -1,4 +1,4 @@
-import { Collection } from "discord.js";
+import { Collection, RESTPostAPIContextMenuApplicationCommandsJSONBody } from "discord.js";
 import ContextMenuCommand from "../models/ContextMenuCommand";
 import Stumper from "stumper";
 
@@ -6,9 +6,11 @@ export default class ContextMenuCommandManager {
   private static instance: ContextMenuCommandManager;
 
   private commands: Collection<string, ContextMenuCommand>;
+  private registrationInfo: RESTPostAPIContextMenuApplicationCommandsJSONBody[];
 
   private constructor() {
     this.commands = new Collection();
+    this.registrationInfo = [];
   }
 
   static getInstance(): ContextMenuCommandManager {
@@ -36,5 +38,13 @@ export default class ContextMenuCommandManager {
 
   hasCommand(command: ContextMenuCommand): boolean {
     return this.commands.has(command.name);
+  }
+
+  setRegistrationInfo(registrationInfo: RESTPostAPIContextMenuApplicationCommandsJSONBody[]): void {
+    this.registrationInfo = registrationInfo;
+  }
+
+  getRegistrationInfo(): RESTPostAPIContextMenuApplicationCommandsJSONBody[] {
+    return this.registrationInfo;
   }
 }

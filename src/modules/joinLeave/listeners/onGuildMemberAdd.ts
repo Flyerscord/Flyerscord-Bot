@@ -6,7 +6,8 @@ import { createImage } from "../utils/imageGeneration";
 import Stumper from "stumper";
 
 export default (): void => {
-  ClientManager.getInstance().client.on("guildMemberAdd", async (member) => {
+  const client = ClientManager.getInstance().client;
+  client.on("guildMemberAdd", async (member) => {
     const username = member.displayName || member.user.username;
 
     const message = `<@${member.id}>\nWelcome to the ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;

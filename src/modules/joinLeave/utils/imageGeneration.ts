@@ -74,7 +74,7 @@ export async function createImage(username: string, profilePictureUrl: string, m
 
   // Add circle for photo
   const innerRadius = 90;
-  const profilePicture = await loadImage("./profile.gif");
+  const profilePicture = await loadImage(profilePictureUrl);
   ctx.beginPath();
   ctx.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI);
   ctx.closePath();

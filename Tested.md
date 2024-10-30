@@ -28,3 +28,5 @@
   - Adding member role to new members
   - Removing visitor role from members
   - Adding visitor role to members
+- Join and leave module
+  - Sending a message when a user joins or leaves the server

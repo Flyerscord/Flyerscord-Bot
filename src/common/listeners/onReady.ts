@@ -6,6 +6,7 @@ import SlashCommandManager from "../managers/SlashCommandManager";
 import TextCommandManager from "../managers/TextCommandManager";
 import ModalMenuManager from "../managers/ModalMenuManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
+import BotHealthManager from "../managers/BotHealthManager";
 
 export default (client: Client): void => {
   client.on("ready", async () => {
@@ -19,6 +20,8 @@ export default (client: Client): void => {
     await registerAllCommands(client, commands);
 
     Stumper.info("Bot Online!", "clientReady");
+    const healthManager = BotHealthManager.getInstance();
+    healthManager.setHealthy(true);
   });
 };
 

@@ -6,7 +6,7 @@ import { sendLogMessage } from "../../utils/ChannelLogging";
 
 export default class WarnUserCommand extends AdminSlashCommand {
   constructor() {
-    super("warnuser", "Add a warning to a user");
+    super("userwarn", "Add a warning to a user");
 
     this.data
       .addUserOption((option) => option.setName("user").setDescription("The user to add the warning to").setRequired(true))

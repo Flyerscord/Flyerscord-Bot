@@ -7,7 +7,7 @@ import Time from "../../../../common/utils/Time";
 
 export default class ViewCommand extends AdminSlashCommand {
   constructor() {
-    super("viewuser", "View info for a user");
+    super("userview", "View info for a user");
 
     this.data
       .addUserOption((option) => option.setName("user").setDescription("The user to ge the info for").setRequired(true))

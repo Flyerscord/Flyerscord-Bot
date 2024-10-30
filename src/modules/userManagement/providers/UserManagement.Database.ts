@@ -22,12 +22,18 @@ export default class UserManagementDB extends Database {
   }
 
   addWarning(userId: string, reason: string): void {
+    if (!this.hasUser(userId)) {
+      this.addUser(userId);
+    }
     const warningEvent: IUserEvent = { date: Date.now(), reason: reason };
     this.db.push(userId, warningEvent, "warnings");
     Stumper.info(`Warning added for user: ${userId} with the reason: ${reason}`, "UserManagementDB:addWarning");
   }
 
   addNote(userId: string, reason: string): void {
+    if (!this.hasUser(userId)) {
+      this.addUser(userId);
+    }
     const noteEvent: IUserEvent = { date: Date.now(), reason: reason };
     this.db.push(userId, noteEvent, "notes");
     Stumper.info(`Note added for user: ${userId} with the reason: ${reason}`, "UserManagementDB:addNote");

@@ -86,7 +86,7 @@ export default class LeaderboardCommand extends SlashCommand {
     });
   }
 
-  private async createEmbedPage(data: Array<IUserLevel>, pageNumber: number): Promise<EmbedBuilder> {
+  private async createEmbedPage(data: IUserLevel[], pageNumber: number): Promise<EmbedBuilder> {
     const embed = new EmbedBuilder();
     const levelExpDB = LevelExpDB.getInstance();
 

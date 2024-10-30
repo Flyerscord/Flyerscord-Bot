@@ -91,7 +91,7 @@ export default abstract class Time {
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
 
-    const outputPieces: Array<string> = [];
+    const outputPieces: string[] = [];
 
     if (days > 0) {
       outputPieces.push(`${days} day${days > 1 ? "s" : ""}`);

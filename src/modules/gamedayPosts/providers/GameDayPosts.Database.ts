@@ -36,11 +36,11 @@ export default class GameDayPostsDB extends Database {
     return this.db.find((post) => post.channelId == postId);
   }
 
-  getAllPost(): Array<IGameDayPost> {
+  getAllPost(): IGameDayPost[] {
     return this.getAllValues();
   }
 
-  getAllPostIds(): Array<string> {
+  getAllPostIds(): string[] {
     return this.db.map((post) => post.channelId);
   }
 }

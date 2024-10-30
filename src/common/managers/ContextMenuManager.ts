@@ -20,7 +20,7 @@ export default class ContextMenuCommandManager {
     return ContextMenuCommandManager.instance;
   }
 
-  addCommands(commands: Array<ContextMenuCommand>): void {
+  addCommands(commands: ContextMenuCommand[]): void {
     commands.forEach((command) => this.addCommand(command));
   }
 

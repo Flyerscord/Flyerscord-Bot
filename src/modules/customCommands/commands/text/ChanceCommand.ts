@@ -11,7 +11,7 @@ export default class ChanceTextCommand extends TextCommand {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async execute(message: Message, args: Array<string>): Promise<void> {
+  async execute(message: Message, args: string[]): Promise<void> {
     const options = [
       "https://i.imgur.com/sW3zl2i.png",
       "https://i.imgur.com/mMLYXHu.png",

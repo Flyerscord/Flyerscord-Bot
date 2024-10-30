@@ -27,11 +27,11 @@ export default class PlayerEmojisDB extends Database {
     this.db.clear();
   }
 
-  getAllPlayers(): Array<string> {
+  getAllPlayers(): string[] {
     return this.getAllValues();
   }
 
-  getAllPlayersIds(): Array<number> {
-    return this.getAllKeys() as Array<number>;
+  getAllPlayersIds(): number[] {
+    return this.getAllKeys() as number[];
   }
 }

@@ -4,7 +4,7 @@ export default interface ITextCommandOptions {
   description?: string;
   allowedUsers?: string[];
   allowedRoles?: string[];
-  allowedPermissions?: Array<PermissionResolvable>;
+  allowedPermissions?: PermissionResolvable[];
   allowedLocations?: Array<COMMAND_LOCATION>;
 }
 

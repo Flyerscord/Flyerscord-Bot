@@ -40,8 +40,8 @@ export const events: IEvents = {
   season: season,
 };
 
-export function getEventNames(): Array<string> {
-  const names: Array<string> = [];
+export function getEventNames(): string[] {
+  const names: string[] = [];
 
   Object.keys(events).forEach((key) => {
     const event = events[key];

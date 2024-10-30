@@ -11,7 +11,7 @@ export default class Fuck2TextCommand extends TextCommand {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async execute(message: Message, args: Array<string>): Promise<void> {
+  async execute(message: Message, args: string[]): Promise<void> {
     const teams = ["Pens", "Pens", "Rags", "Rags", "Isles", "Bruins", "caps", "Devils"];
     const index = getRandomNumber(0, teams.length - 1);
     const team = teams[index];

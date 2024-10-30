@@ -51,11 +51,11 @@ export default class LevelsDB extends Database {
     this.db.delete(userId);
   }
 
-  getAllUsers(): Array<IUserLevel> {
+  getAllUsers(): IUserLevel[] {
     return this.getAllValues();
   }
 
-  getAllUsersSortedByExp(): Array<IUserLevel> {
+  getAllUsersSortedByExp(): IUserLevel[] {
     const users = this.getAllUsers();
     users.sort((a, b) => b.totalExp - a.totalExp);
     return users;

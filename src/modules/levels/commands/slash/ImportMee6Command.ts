@@ -31,7 +31,7 @@ export default class ImportMee6Command extends AdminSlashCommand {
 
         const guildId = Config.getConfig().masterGuildId;
         if (guildId) {
-          const users: Array<User> = await Mee6LevelsApi.getLeaderboard(guildId);
+          const users: User[] = await Mee6LevelsApi.getLeaderboard(guildId);
 
           for (let i = 0; i < users.length; i++) {
             const user = users[i];

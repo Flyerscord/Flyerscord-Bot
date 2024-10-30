@@ -20,7 +20,7 @@ export default abstract class Database {
     return this.db.count;
   }
 
-  protected getAllValues(): Array<any> {
+  protected getAllValues(): any[] {
     const arr = Array.from(this.db);
     return arr.map((val) => val[1]);
   }

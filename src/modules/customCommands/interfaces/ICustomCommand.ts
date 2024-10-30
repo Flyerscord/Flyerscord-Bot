@@ -3,7 +3,7 @@ export default interface ICustomCommand {
   text: string; // Text to be sent by the command
   createdOn: Date;
   createdBy: string; // Discord User ID
-  history: Array<ICustomCommandHistory>;
+  history: ICustomCommandHistory[];
 }
 
 export interface ICustomCommandHistory {

@@ -27,7 +27,7 @@ export default abstract class Module {
   }
 
   protected async readInCommands<T>(dir: string, commandsPath: string): Promise<void> {
-    const commands: Array<T> = [];
+    const commands: T[] = [];
 
     const location = `${dir}/commands/${commandsPath}`;
     const files = fs.readdirSync(location);
@@ -58,18 +58,18 @@ export default abstract class Module {
     this.addCommandsToManager<T>(commands);
   }
 
-  private addCommandsToManager<T>(commands: Array<T>): void {
+  private addCommandsToManager<T>(commands: T[]): void {
     if (commands.length > 0) {
       const firstCommand = commands[0];
 
       if (firstCommand instanceof SlashCommand) {
-        SlashCommandManager.getInstance().addCommands(commands as Array<SlashCommand>);
+        SlashCommandManager.getInstance().addCommands(commands as SlashCommand[]);
       } else if (firstCommand instanceof TextCommand) {
-        TextCommandManager.getInstance().addCommands(commands as Array<TextCommand>);
+        TextCommandManager.getInstance().addCommands(commands as TextCommand[]);
       } else if (firstCommand instanceof ModalMenu) {
-        ModalMenuManager.getInstance().addCommands(commands as Array<ModalMenu>);
+        ModalMenuManager.getInstance().addCommands(commands as ModalMenu[]);
       } else if (firstCommand instanceof ContextMenuCommand) {
-        ContextMenuCommandManager.getInstance().addCommands(commands as Array<ContextMenuCommand>);
+        ContextMenuCommandManager.getInstance().addCommands(commands as ContextMenuCommand[]);
       }
     }
   }

@@ -20,7 +20,7 @@ export default class SlashCommandManager {
     return SlashCommandManager.instance;
   }
 
-  addCommands(commands: Array<SlashCommand>): void {
+  addCommands(commands: SlashCommand[]): void {
     commands.forEach((command) => this.addCommand(command));
   }
 

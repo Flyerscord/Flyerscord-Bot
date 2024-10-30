@@ -31,7 +31,7 @@ async function removeCommand(interaction: AutocompleteInteraction): Promise<bool
   return false;
 }
 
-async function sendAutocompleteOptions(interaction: AutocompleteInteraction, options: Array<string>): Promise<void> {
+async function sendAutocompleteOptions(interaction: AutocompleteInteraction, options: string[]): Promise<void> {
   if (options.length > 25) {
     options = options.slice(0, 24);
   }

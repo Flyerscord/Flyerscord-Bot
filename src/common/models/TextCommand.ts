@@ -18,9 +18,9 @@ export default abstract class TextCommand {
     this.description = options?.description || "";
   }
 
-  protected abstract execute(message: Message, args: Array<string>): Promise<void>;
+  protected abstract execute(message: Message, args: string[]): Promise<void>;
 
-  async run(message: Message, args: Array<string>): Promise<void> {
+  async run(message: Message, args: string[]): Promise<void> {
     const hasPerms = this.checkPermissions(message);
     const hasLocation = this.checkLocation(message);
 

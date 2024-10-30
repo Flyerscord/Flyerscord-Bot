@@ -29,8 +29,8 @@ export default class CustomCommandsDB extends Database {
     return this.db.get(name.toLowerCase());
   }
 
-  getAllCommandNames(): Array<string> {
-    return this.getAllKeys() as Array<string>;
+  getAllCommandNames(): string[] {
+    return this.getAllKeys() as string[];
   }
 
   async addCommand(name: string, text: string, userId: string): Promise<boolean> {
@@ -82,7 +82,7 @@ export default class CustomCommandsDB extends Database {
     return false;
   }
 
-  getAllCommands(): Array<ICustomCommand> {
+  getAllCommands(): ICustomCommand[] {
     return this.getAllValues();
   }
 

@@ -22,7 +22,7 @@ export async function addEmoji(emoji: IEmoji): Promise<GuildEmoji | undefined> {
   return undefined;
 }
 
-export async function addMultipleEmojis(emojis: Array<IEmoji>): Promise<Array<GuildEmoji | undefined>> {
+export async function addMultipleEmojis(emojis: IEmoji[]): Promise<Array<GuildEmoji | undefined>> {
   const guild = getGuild();
   const emojisCreated: Array<GuildEmoji | undefined> = [];
   if (guild) {
@@ -48,7 +48,7 @@ export async function deleteEmoji(emojiName: string, reason: string): Promise<bo
   return false;
 }
 
-export async function deleteMultipleEmojis(emojiNames: Array<string>, reasons: Array<string>): Promise<boolean> {
+export async function deleteMultipleEmojis(emojiNames: string[], reasons: string[]): Promise<boolean> {
   let returnVal = true;
   const guild = getGuild();
   if (guild) {

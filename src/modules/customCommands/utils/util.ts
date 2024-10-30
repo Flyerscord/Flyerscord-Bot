@@ -15,7 +15,7 @@ export async function updateCommandList(): Promise<void> {
 
   const textCommandManager = TextCommandManager.getInstance();
   const hardcodedCommands = textCommandManager.getCommands().filter((value) => value.prefix == Config.getConfig().prefix.normal);
-  const hardcodedCommandsCustom: Array<ICustomCommand> = hardcodedCommands.map((command) => {
+  const hardcodedCommandsCustom: ICustomCommand[] = hardcodedCommands.map((command) => {
     return {
       name: command.command,
       text: "",
@@ -40,7 +40,7 @@ export async function updateCommandList(): Promise<void> {
   }
 }
 
-function createCommandListMessage(commands: Array<ICustomCommand>): string {
+function createCommandListMessage(commands: ICustomCommand[]): string {
   const date = Time.getCurrentDate();
   let output = `**Commands as of ${date} (${commands.length} commands)**\n`;
   const prefix = Config.getConfig().prefix.normal;

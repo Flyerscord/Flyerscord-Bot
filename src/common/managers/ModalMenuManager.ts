@@ -18,7 +18,7 @@ export default class ModalMenuManager {
     return ModalMenuManager.instance;
   }
 
-  addCommands(commands: Array<ModalMenu>): void {
+  addCommands(commands: ModalMenu[]): void {
     commands.forEach((command) => this.addCommand(command));
   }
 

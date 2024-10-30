@@ -18,7 +18,7 @@ export default class TextCommandManager {
     return TextCommandManager.instance;
   }
 
-  addCommands(commands: Array<TextCommand>): void {
+  addCommands(commands: TextCommand[]): void {
     commands.forEach((command) => this.addCommand(command));
   }
 

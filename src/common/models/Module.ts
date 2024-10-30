@@ -42,8 +42,12 @@ export default abstract class Module {
       const Command = await import(`${location}/${file}`);
       const command: T = new Command.default();
 
-      if (command instanceof SlashCommand || command instanceof TextCommand || command instanceof ContextMenuCommand) {
-        Stumper.debug(`Read in command: ${command.name}`, "readInCommands");
+      if (command instanceof SlashCommand) {
+        Stumper.debug(`Read in slash command: ${command.name}`, "readInCommands");
+      } else if (command instanceof TextCommand) {
+        Stumper.debug(`Read in text command: ${command.name}`, "readInCommands");
+      } else if (command instanceof ContextMenuCommand) {
+        Stumper.debug(`Read in context menu: ${command.name}`, "readInCommands");
       } else if (command instanceof ModalMenu) {
         Stumper.debug(`Read in modal: ${command.id}`, "readInCommands");
       }

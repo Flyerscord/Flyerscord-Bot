@@ -26,7 +26,7 @@ export default class SlashCommandManager {
 
   addCommand(command: SlashCommand): void {
     if (this.hasCommand(command)) {
-      Stumper.warning(`Slash command ${command.name} already exists`);
+      Stumper.warning(`Slash command ${command.name} already exists`, "common:SlashCommandManager:addCommand");
       return;
     }
     this.commands.set(command.name, command);

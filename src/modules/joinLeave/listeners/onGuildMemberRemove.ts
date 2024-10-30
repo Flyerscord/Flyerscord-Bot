@@ -15,6 +15,6 @@ export default (): void => {
       message,
       new AttachmentBuilder("https://i.imgur.com/dDrkXV6.gif"),
     );
-    Stumper.info(`User ${username} has left the server!`, "onGuildMemberRemove");
+    Stumper.info(`User ${username} has left the server!`, "joinLeave:onGuildMemberRemove");
   });
 };

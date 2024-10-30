@@ -21,7 +21,7 @@ export async function addMessage(message: Message): Promise<void> {
   const userLevel = db.getUser(userId)!;
   Stumper.debug(
     `Time since last message: ${Time.timeSince(userLevel.timeOfLastMessage)} true? ${Time.timeSince(userLevel.timeOfLastMessage) >= MESSAGE_THRESHOLD}`,
-    "addMessage",
+    "levels:Levels:addMessage",
   );
 
   if (Time.timeSince(userLevel.timeOfLastMessage) >= MESSAGE_THRESHOLD) {
@@ -81,9 +81,8 @@ async function makeRequest(pNum: number): Promise<string | undefined> {
     });
 
     return results.join("\n");
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    Stumper.error("Error fetching data", "getPlayersWithNumber");
+    Stumper.caughtError(error, "levels:Levels:getPlayerNumMessage");
   }
   return undefined;
 }

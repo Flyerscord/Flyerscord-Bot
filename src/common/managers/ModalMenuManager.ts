@@ -24,7 +24,7 @@ export default class ModalMenuManager {
 
   addCommand(command: ModalMenu): void {
     if (this.hasCommand(command)) {
-      Stumper.warning(`ModalMenu ${command.id} already exists`);
+      Stumper.warning(`ModalMenu ${command.id} already exists`, "common:ModalMenuManager:addCommand");
       return;
     }
     this.commands.set(command.id, command);

@@ -26,7 +26,7 @@ export default class ContextMenuCommandManager {
 
   addCommand(command: ContextMenuCommand): void {
     if (this.hasCommand(command)) {
-      Stumper.warning(`ContextMenuCommand ${command.name} already exists`);
+      Stumper.warning(`ContextMenuCommand ${command.name} already exists`, "common:ContextMenuCommandManager:addCommand");
       return;
     }
     this.commands.set(command.name, command);

@@ -21,7 +21,7 @@ export default class KickSlashCommand extends AdminSlashCommand {
 
     Stumper.warning(
       `User ${member.displayName || member.user.username} (id: ${member.user.id}) has been kicked by ${interaction.user.username}! Reason: ${reason}`,
-      "KickSlashCommand",
+      "userManagement:KickSlashCommand:execute",
     );
     sendLogMessage(`User ${member.displayName || member.user.username} has been kicked by ${interaction.user.username}! Reason: ${reason}`);
 

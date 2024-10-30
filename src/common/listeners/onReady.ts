@@ -16,7 +16,7 @@ export default (client: Client): void => {
 
     const healthManager = BotHealthManager.getInstance();
     healthManager.setHealthy(true);
-    Stumper.info("Bot Online!", "clientReady");
+    Stumper.info("Bot Online!", "common:onReady:clientReady");
   });
 };
 
@@ -26,7 +26,7 @@ function readTextCommands(client: Client): void {
     client.textCommands.set(`${command.prefix}${command.command}`, command);
   });
 
-  Stumper.success(`Successfully loaded ${textCommands.size} text commands!`, "readTextCommands");
+  Stumper.success(`Successfully loaded ${textCommands.size} text commands!`, "common:onReady:readTextCommands");
 }
 
 function readModals(client: Client): void {
@@ -35,7 +35,7 @@ function readModals(client: Client): void {
     client.modals.set(command.id, command);
   });
 
-  Stumper.success(`Successfully loaded ${client.modals.size} modals!`, "readModals");
+  Stumper.success(`Successfully loaded ${client.modals.size} modals!`, "common:onReady:readModals");
 }
 
 async function readSlashCommands(client: Client): Promise<void> {
@@ -49,7 +49,7 @@ async function readSlashCommands(client: Client): Promise<void> {
   });
 
   slashCommandManager.setRegistrationInfo(commands);
-  Stumper.success(`Successfully loaded ${slashCommands.size} slash commands!`, "readSlashCommands");
+  Stumper.success(`Successfully loaded ${slashCommands.size} slash commands!`, "common:onReady:readSlashCommands");
 }
 
 async function readContextMenus(client: Client): Promise<void> {
@@ -63,5 +63,5 @@ async function readContextMenus(client: Client): Promise<void> {
   });
 
   contextMenuManager.setRegistrationInfo(menus);
-  Stumper.success(`Successfully loaded ${client.contextMenus.size} context menus!`, "readContextMenus");
+  Stumper.success(`Successfully loaded ${client.contextMenus.size} context menus!`, "common:onReady:readContextMenus");
 }

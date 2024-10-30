@@ -18,9 +18,9 @@ export async function createVisitorRoleMessageIfNeeded(): Promise<void> {
     if (message) {
       db.setVisitorRoleMessageId(message.id);
       discord.reactions.reactToMessageWithEmoji(message, visitorEmojiId);
-      Stumper.info(`Created visitor role message with id: ${message.id}`, "createVisitorRoleMessageIfNeeded");
+      Stumper.info(`Created visitor role message with id: ${message.id}`, "visitorRole:utils:createVisitorRoleMessageIfNeeded");
     } else {
-      Stumper.error("Error creating visitor role message!", "createVisitorRoleMessageIfNeeded");
+      Stumper.error("Error creating visitor role message!", "visitorRole:utils:createVisitorRoleMessageIfNeeded");
     }
   }
 }

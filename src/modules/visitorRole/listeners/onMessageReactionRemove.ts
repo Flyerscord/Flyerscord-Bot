@@ -34,7 +34,7 @@ export default (): void => {
     if (reaction.emoji.id == visitorEmojiId) {
       discord.roles.removeRoleToUser(member, visitorRoleId);
       discord.roles.addRoleToUser(member, memberRoleId);
-      Stumper.debug(`Reaction removed from message ${reaction.message.id} by user ${user.id}`, "onMessageReactionRemove");
+      Stumper.debug(`Reaction removed from message ${reaction.message.id} by user ${user.id}`, "visitorRole:onMessageReactionRemove");
     }
   });
 };

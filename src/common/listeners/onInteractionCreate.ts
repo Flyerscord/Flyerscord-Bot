@@ -26,10 +26,10 @@ async function onSlashCommand(client: Client, interaction: ChatInputCommandInter
   const command = client.slashCommands.get(interaction.commandName);
   if (!command) return;
   try {
-    Stumper.info(`Running command: ${interaction.commandName} User: ${interaction.user.id}`, "onSlashCommand");
+    Stumper.info(`Running command: ${interaction.commandName} User: ${interaction.user.id}`, "common:onInteractionCreate:onSlashCommand");
     await command.execute(interaction);
   } catch (error) {
-    if (error) Stumper.error(error);
+    Stumper.caughtError(error, "common:onInteractionCreate:onSlashCommand");
     await interaction.reply({
       content: "There was an error while executing this command!",
       ephemeral: true,
@@ -43,10 +43,10 @@ async function onModalSubmit(client: Client, interaction: ModalSubmitInteraction
   const modal: ModalMenu | undefined = client.modals.get(interaction.customId);
   if (!modal) return;
   try {
-    Stumper.info(`Running modal submit for ${modal.id}`, "onModalSubmit");
+    Stumper.info(`Running modal submit for ${modal.id}`, "common:onInteractionCreate:onModalSubmit");
     await modal.execute(interaction);
   } catch (error) {
-    if (error) Stumper.error(error);
+    Stumper.caughtError(error, "common:onInteractionCreate:onModalSubmit");
     await interaction.reply({ content: "There was an error while executing this modal submit!", ephemeral: true });
   }
 }
@@ -57,10 +57,10 @@ async function onUserContextMenuCommand(client: Client, interaction: UserContext
   const userContextMenu: UserContextMenuCommand | undefined = client.contextMenus.get(interaction.commandName);
   if (!userContextMenu) return;
   try {
-    Stumper.info(`Running context menu command for ${userContextMenu.name}`, "onUserContextMenuCommand");
+    Stumper.info(`Running context menu command for ${userContextMenu.name}`, "common:onInteractionCreate:onUserContextMenuCommand");
     await userContextMenu.execute(interaction);
   } catch (error) {
-    if (error) Stumper.error(error);
+    Stumper.caughtError(error, "common:onInteractionCreate:onUserContextMenuCommand");
     await interaction.reply({ content: "There was an error while executing this user context menu command!", ephemeral: true });
   }
 }
@@ -71,10 +71,10 @@ async function onMessageContextMenuCommand(client: Client, interaction: MessageC
   const messageContextMenu: MessageContextMenuCommand | undefined = client.contextMenus.get(interaction.commandName);
   if (!messageContextMenu) return;
   try {
-    Stumper.info(`Running context menu command for ${messageContextMenu.name}`, "onMessageContextMenuCommand");
+    Stumper.info(`Running context menu command for ${messageContextMenu.name}`, "common:onInteractionCreate:onMessageContextMenuCommand");
     await messageContextMenu.execute(interaction);
   } catch (error) {
-    if (error) Stumper.error(error);
+    Stumper.caughtError(error, "common:onInteractionCreate:onMessageContextMenuCommand");
     await interaction.reply({ content: "There was an error while executing this message context menu command!", ephemeral: true });
   }
 }

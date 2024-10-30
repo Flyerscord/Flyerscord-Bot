@@ -5,7 +5,7 @@ export function calculateLevels(levelsToCalc: number): void {
   const db = LevelExpDB.getInstance();
 
   if (db.getNumOfKeys() != levelsToCalc) {
-    Stumper.warning(`Regenerating table of ${levelsToCalc} levels!`, "calculateLevels");
+    Stumper.warning(`Regenerating table of ${levelsToCalc} levels!`, "levels:requiredExp:calculateLevels");
     db.wipe();
 
     let currentTotal = 0;
@@ -15,7 +15,7 @@ export function calculateLevels(levelsToCalc: number): void {
       db.addLevel(i + 1, currentTotal);
     }
   } else {
-    Stumper.debug(`Skipping the generation of the table of levels`, "calculateLevels");
+    Stumper.debug(`Skipping the generation of the table of levels`, "levels:requiredExp:calculateLevels");
   }
 }
 

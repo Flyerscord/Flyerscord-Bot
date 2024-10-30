@@ -28,12 +28,12 @@ export default abstract class TextCommand {
       await this.execute(message, args);
     } else if (!hasPerms) {
       await message.reply({ content: "You do not have permission to run this command!" });
-      Stumper.warning(`User ${message.author.username} tried to run command ${this.name} but did not have permission!`, "TextCommand:run");
+      Stumper.warning(`User ${message.author.username} tried to run command ${this.name} but did not have permission!`, "common:TextCommand:run");
     } else if (!hasLocation) {
       await message.reply({ content: "This command is not available in this location!" });
       Stumper.warning(
         `User ${message.author.username} tried to run command ${this.name} but it is not available in this location!`,
-        "TextCommand:run",
+        "common:TextCommand:run",
       );
     }
   }

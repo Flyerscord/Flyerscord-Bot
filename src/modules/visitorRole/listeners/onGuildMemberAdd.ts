@@ -10,7 +10,7 @@ export default (): void => {
 
     const memberRoleId = Config.getConfig().vistorReactRole.memberRoleId;
     if (!member.roles.cache.has(memberRoleId)) {
-      Stumper.info(`Adding member role to user: ${member.displayName}`, "guildMemberAdd");
+      Stumper.info(`Adding member role to user: ${member.displayName}`, "visitorRole:onGuildMemberAdd");
       member.roles.add(memberRoleId);
     }
   });

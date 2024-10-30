@@ -24,7 +24,7 @@ export default class TextCommandManager {
 
   addCommand(command: TextCommand): void {
     if (this.hasCommand(command)) {
-      Stumper.warning(`Text command ${command.name} already exists`);
+      Stumper.warning(`Text command ${command.name} already exists`, "common:TextCommandManager:addCommand");
       return;
     }
     this.commands.set(command.name, command);

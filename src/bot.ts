@@ -24,12 +24,12 @@ onSigInt();
 import Config from "./common/config/Config";
 
 if (!Config.fileExists()) {
-  Stumper.error("Config file not found", "main");
+  Stumper.error("Config file not found", "main:CheckConfig");
   process.exit(1);
 }
 
 Stumper.setConfig({ logLevel: Config.getConfig().logLevel });
-Stumper.info(`Starting Bot in ${Config.isProductionMode() ? "production" : "non-production"} mode!`, "main");
+Stumper.info(`Starting Bot in ${Config.isProductionMode() ? "production" : "non-production"} mode!`, "main:CheckConfig");
 
 /* -------------------------------------------------------------------------- */
 /*                          Initialize Health Manager                         */

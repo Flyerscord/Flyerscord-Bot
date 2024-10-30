@@ -80,7 +80,7 @@ export default class ScheduleCommand extends SlashCommand {
           });
         }
       } else {
-        Stumper.error(`Error fetching teams or franchises`, "ScheduleCommand");
+        Stumper.error(`Error fetching teams or franchises`, "nhl:ScheduleCommand:createEmbed");
       }
     }
 

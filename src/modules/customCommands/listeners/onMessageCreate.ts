@@ -26,13 +26,13 @@ function checkForCustomTextCommand(message: Message): boolean {
   const db = CustomCommandsDB.getInstance();
   const customCommand = db.getCommand(command);
   if (customCommand) {
-    Stumper.info(`Executing custom command ${customCommand.name}.`, "checkForCustomTextCommand");
+    Stumper.info(`Executing custom command ${customCommand.name}.`, "customCommands:onMessageCreate:checkForCustomTextCommand");
     discord.messages.sendMessageToChannel(message.channel.id, customCommand.text);
     return true;
   } else if (message.client.textCommands.hasAny(command)) {
     // Command is a hardcoded text command and will be caught by the normal text command check
   } else {
-    Stumper.debug(`Custom Command ${command} not found!`, "checkForCustomTextCommand");
+    Stumper.debug(`Custom Command ${command} not found!`, "customCommands:onMessageCreate:checkForCustomTextCommand");
   }
   return false;
 }

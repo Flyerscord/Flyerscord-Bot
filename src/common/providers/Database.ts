@@ -12,7 +12,7 @@ export default abstract class Database {
   }
 
   wipe(): void {
-    Stumper.info("Wiping database", this.name);
+    Stumper.info(`Wiping ${this.name} database`, "common:Database:wipe");
     this.db.clear();
   }
 
@@ -37,7 +37,7 @@ export default abstract class Database {
   }
 
   close(): void {
-    Stumper.warning(`Closing database: ${this.name}`, "Database:close");
+    Stumper.warning(`Closing database: ${this.name}`, "common:Database:close");
     this.db.close();
   }
 }

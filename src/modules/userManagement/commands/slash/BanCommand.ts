@@ -27,14 +27,14 @@ export default class BanSlashCommand extends AdminSlashCommand {
 
     Stumper.warning(
       `User ${member.displayName || member.user.username} (id: ${member.user.id}) has been banned by ${interaction.user.username}!`,
-      "BanSlashCommand",
+      "userManagement:BanSlashCommand:execute",
     );
     sendLogMessage(`User ${member.displayName || member.user.username} has been banned by ${interaction.user.username}!`);
 
     if (deleteMessagesSeconds > 0) {
       Stumper.warning(
         `Deleting messages from ${member.displayName || member.user.username} for the last ${deleteMessagesSeconds} seconds.`,
-        "BanSlashCommand",
+        "userManagement:BanSlashCommand:execute",
       );
       sendLogMessage(`Deleting messages from ${member.displayName || member.user.username} for the last ${deleteMessagesSeconds} seconds.`);
     }

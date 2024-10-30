@@ -66,7 +66,7 @@ export async function checkForGameDay(): Promise<void> {
 
           if (post) {
             post.setArchived(false);
-            Stumper.info(`Created post for game: ${game.id}`, "checkForGameDay");
+            Stumper.info(`Created post for game: ${game.id}`, "gameDayPosts:GameChecker:checkForGameDay");
             db.addPost(game.id, post.id);
           }
         }

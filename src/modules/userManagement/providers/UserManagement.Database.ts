@@ -27,7 +27,7 @@ export default class UserManagementDB extends Database {
     }
     const warningEvent: IUserEvent = { date: Date.now(), reason: reason };
     this.db.push(userId, warningEvent, "warnings");
-    Stumper.info(`Warning added for user: ${userId} with the reason: ${reason}`, "UserManagementDB:addWarning");
+    Stumper.info(`Warning added for user: ${userId} with the reason: ${reason}`, "userManagement:UserManagementDB:addWarning");
   }
 
   addNote(userId: string, reason: string): void {
@@ -36,7 +36,7 @@ export default class UserManagementDB extends Database {
     }
     const noteEvent: IUserEvent = { date: Date.now(), reason: reason };
     this.db.push(userId, noteEvent, "notes");
-    Stumper.info(`Note added for user: ${userId} with the reason: ${reason}`, "UserManagementDB:addNote");
+    Stumper.info(`Note added for user: ${userId} with the reason: ${reason}`, "userManagement:UserManagementDB:addNote");
   }
 
   private hasUser(userId: string): boolean {

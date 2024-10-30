@@ -24,7 +24,10 @@ export default class ResetUserCommand extends AdminSlashCommand {
     const db = LevelsDB.getInstance();
 
     if (confirmation == "CONFIRM") {
-      Stumper.warning(`Resetting exp for username: ${user.username} id: ${user.id}.  Performed by: ${interaction.user.username}`, "ResetUserCommand");
+      Stumper.warning(
+        `Resetting exp for username: ${user.username} id: ${user.id}.  Performed by: ${interaction.user.username}`,
+        "levels:ResetUserCommand:execute",
+      );
 
       db.resetUser(user.id);
       interaction.reply({ content: `Resetting exp for username: ${user.username} id: ${user.id}`, ephemeral: true });

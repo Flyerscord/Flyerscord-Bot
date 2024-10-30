@@ -12,11 +12,11 @@ export async function addEmoji(emoji: IEmoji): Promise<GuildEmoji | undefined> {
   if (guild) {
     try {
       const createEmoji = await guild.emojis.create({ attachment: emoji.url, name: emoji.name });
-      Stumper.info(`Successfully created emoji: ${createEmoji.name}`, "addEmoji");
+      Stumper.info(`Successfully created emoji: ${createEmoji.name}`, "common:emojis:addEmoji");
       return createEmoji;
     } catch (error) {
-      Stumper.error(`Failed to create ${emoji.name} emoji using the url: ${emoji.url}`, "addEmoji");
-      Stumper.error(error), "addEmoji";
+      Stumper.error(`Failed to create ${emoji.name} emoji using the url: ${emoji.url}`, "common:emojis:addEmoji");
+      Stumper.caughtError(error, "common:emojis:addEmoji");
     }
   }
   return undefined;
@@ -40,9 +40,10 @@ export async function deleteEmoji(emojiName: string, reason: string): Promise<bo
   if (guild) {
     try {
       await guild.emojis.delete(emojiName, reason);
-      Stumper.info(`Successfully deleted emoji ${emojiName}. Reason: ${reason}`, "deleteEmoji");
+      Stumper.info(`Successfully deleted emoji ${emojiName}. Reason: ${reason}`, "common:emojis:deleteEmoji");
     } catch (error) {
-      Stumper.error(`Failed to delete ${emojiName}. Error: ${error}`, "deleteEmoji");
+      Stumper.error(`Failed to delete ${emojiName}.`, "common:emojis:deleteEmoji");
+      Stumper.caughtError(error, "common:emojis:deleteEmoji");
     }
   }
   return false;
@@ -78,7 +79,7 @@ export async function getClientEmojiByName(name: string): Promise<GuildEmoji | u
   if (emoji) {
     return emoji;
   } else {
-    Stumper.debug(`Emoji ${name} not found in cache`, "getClientEmojiByName");
+    Stumper.debug(`Emoji ${name} not found in cache`, "common:emojis:getClientEmojiByName");
     return undefined;
   }
 }
@@ -89,7 +90,7 @@ export async function getClientEmojiByNameAndGuildID(name: string, guildId: stri
   if (emoji) {
     return emoji;
   } else {
-    Stumper.debug(`Emoji ${name} not found in cache`, "getClientEmojiByIdAndGuildID");
+    Stumper.debug(`Emoji ${name} not found in cache`, "common:emojis:getClientEmojiByIdAndGuildID");
     return undefined;
   }
 }

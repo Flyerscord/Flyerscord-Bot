@@ -15,20 +15,20 @@ export async function getMessage(channelId: string, messageId: string): Promise<
 
 export async function sendStringReplytoMessage(messageObj: Message, message: string, mentionUser = false): Promise<Message> {
   if (mentionUser) {
-    Stumper.debug(`Sending string reply with mention to message: ${messageObj.id}`, "sendStringReplytoMessage");
+    Stumper.debug(`Sending string reply with mention to message: ${messageObj.id}`, "common:messages:sendStringReplytoMessage");
     return await messageObj.reply(message);
   } else {
-    Stumper.debug(`Sending string reply to message: ${messageObj.id}`, "sendStringReplytoMessage");
+    Stumper.debug(`Sending string reply to message: ${messageObj.id}`, "common:messages:sendStringReplytoMessage");
     return await (messageObj.channel as TextChannel).send(message);
   }
 }
 
 export async function sendEmbedReplytoMessage(messageObj: Message, embed: EmbedBuilder, mentionUser = false): Promise<void> {
   if (mentionUser) {
-    Stumper.debug(`Sending embed reply with mention to message: ${messageObj.id}`, "sendEmbedReplytoMessage");
+    Stumper.debug(`Sending embed reply with mention to message: ${messageObj.id}`, "common:messages:sendEmbedReplytoMessage");
     messageObj.reply({ embeds: [embed] });
   } else {
-    Stumper.debug(`Sending embed reply to message: ${messageObj.id}`, "sendEmbedReplytoMessage");
+    Stumper.debug(`Sending embed reply to message: ${messageObj.id}`, "common:messages:sendEmbedReplytoMessage");
     (messageObj.channel as TextChannel).send({ embeds: [embed] });
   }
 }
@@ -36,7 +36,7 @@ export async function sendEmbedReplytoMessage(messageObj: Message, embed: EmbedB
 export async function sendMessageToChannel(channelId: string, message: string): Promise<Message | undefined> {
   const channel = await getTextChannel(channelId);
   if (channel) {
-    Stumper.debug(`Sending message to channel: ${channelId}`, "sendMessageToChannel");
+    Stumper.debug(`Sending message to channel: ${channelId}`, "common:messages:sendMessageToChannel");
     return await channel.send(message);
   }
   return undefined;
@@ -45,7 +45,7 @@ export async function sendMessageToChannel(channelId: string, message: string): 
 export async function sendEmbedToChannel(channelId: string, embed: EmbedBuilder): Promise<Message | undefined> {
   const channel = await getTextChannel(channelId);
   if (channel) {
-    Stumper.debug(`Sending embed to channel: ${channelId}`, "sendEmbedToChannel");
+    Stumper.debug(`Sending embed to channel: ${channelId}`, "common:messages:sendEmbedToChannel");
     return await channel.send({ embeds: [embed] });
   }
   return undefined;
@@ -54,7 +54,7 @@ export async function sendEmbedToChannel(channelId: string, embed: EmbedBuilder)
 export async function sendMessageAndImageBufferToChannel(channelId: string, message: string, attachment: Buffer): Promise<Message | undefined> {
   const channel = await getTextChannel(channelId);
   if (channel) {
-    Stumper.debug(`Sending message and image buffer attchment to channel: ${channelId}`, "sendMessageAndImageBufferToChannel");
+    Stumper.debug(`Sending message and image buffer attchment to channel: ${channelId}`, "common:messages:sendMessageAndImageBufferToChannel");
     return await channel.send({ content: message, files: [attachment] });
   }
 }
@@ -66,7 +66,7 @@ export async function sendMessageAndAttachmentToChannel(
 ): Promise<Message | undefined> {
   const channel = await getTextChannel(channelId);
   if (channel) {
-    Stumper.debug(`Sending message and attachment to channel: ${channelId}`, "sendMessageAndAttachmentToChannel");
+    Stumper.debug(`Sending message and attachment to channel: ${channelId}`, "common:messages:sendMessageAndAttachmentToChannel");
     return await channel.send({ content: message, files: [attachment] });
   }
 }
@@ -74,7 +74,7 @@ export async function sendMessageAndAttachmentToChannel(
 export async function sendMesssageDMToUser(userId: string, message: string): Promise<Message | undefined> {
   const user = getUser(userId);
   if (user) {
-    Stumper.debug(`Sending message to User DM: ${userId}`, "sendMesssageDMToUser");
+    Stumper.debug(`Sending message to User DM: ${userId}`, "common:messages:sendMesssageDMToUser");
     return await user.send(message);
   }
   return undefined;
@@ -83,7 +83,7 @@ export async function sendMesssageDMToUser(userId: string, message: string): Pro
 export async function sendEmbedDMToUser(userId: string, embed: EmbedBuilder): Promise<Message | undefined> {
   const user = getUser(userId);
   if (user) {
-    Stumper.debug(`Sending embed to User DM: ${userId}`, "sendEmbedDMToUser");
+    Stumper.debug(`Sending embed to User DM: ${userId}`, "common:messages:sendEmbedDMToUser");
     return await user.send({ embeds: [embed] });
   }
   return undefined;

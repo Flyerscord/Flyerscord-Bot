@@ -24,7 +24,7 @@ export default class HealthCheckModule extends Module {
     });
 
     app.listen(port, () => {
-      Stumper.info(`Health check server is running on port ${port}`, "healthCheck");
+      Stumper.info(`Health check server is running on port ${port}`, "healthCheck:HealthCheckModule:setup");
     });
   }
 }

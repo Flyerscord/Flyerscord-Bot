@@ -52,12 +52,12 @@ export default class CustomCommandsDB extends Database {
         history: [],
       };
       this.db.set(name, customCommand);
-      Stumper.info(`Custom Command created! Command: ${name}  By user: ${userId}`, "CustomCommandsDB:addCommand");
+      Stumper.info(`Custom Command created! Command: ${name}  By user: ${userId}`, "common:CustomCommandsDB:addCommand");
 
       updateCommandList();
       return true;
     }
-    Stumper.error(`Error adding command: ${name}`, "CustomCommandsDB:addCommand");
+    Stumper.error(`Error adding command: ${name}`, "common:CustomCommandsDB:addCommand");
     return false;
   }
 
@@ -66,7 +66,7 @@ export default class CustomCommandsDB extends Database {
       return false;
     }
     this.db.delete(name);
-    Stumper.info(`Custom Command removed! Command: ${name}  By user: ${userId}`, "CustomCommandsDB:deleteCommand");
+    Stumper.info(`Custom Command removed! Command: ${name}  By user: ${userId}`, "common:CustomCommandsDB:deleteCommand");
 
     updateCommandList();
     return true;
@@ -132,7 +132,7 @@ export default class CustomCommandsDB extends Database {
           return directUrl;
         }
       } catch (error) {
-        Stumper.caughtError(error, "CustomCommandsDB:formatImgurUrl");
+        Stumper.caughtError(error, "customCommands:CustomCommandsDB:formatImgurUrl");
       }
     }
 

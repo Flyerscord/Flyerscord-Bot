@@ -16,7 +16,7 @@ export async function readAndRegisterCommands(): Promise<void> {
   const contextMenus = contextMenuManager.getRegistrationInfo();
 
   const commands = [...slashCommands, ...contextMenus];
-  Stumper.info(`Registering ${commands.length} commands...`, "readAndRegisterCommands");
+  Stumper.info(`Registering ${commands.length} commands...`, "registerCommands:registerCommands:readAndRegisterCommands");
   await registerAllCommands(client, commands);
 }
 
@@ -27,7 +27,7 @@ async function registerAllCommands(
   const rest = new REST({ version: "10" }).setToken(Config.getConfig().token);
 
   if (!client.user) {
-    Stumper.error("Client user not found", "registerAllCommands");
+    Stumper.error("Client user not found", "registerCommands:registerCommands:registerAllCommands");
     throw new Error("Client user not found");
   }
 
@@ -36,7 +36,7 @@ async function registerAllCommands(
 
   const guildId = Config.getConfig().guildId;
   if (!isProduction && !guildId) {
-    Stumper.error("Guild id missing from non production config", "registerAllCommands");
+    Stumper.error("Guild id missing from non production config", "registerCommands:registerCommands:registerAllCommands");
     throw new Error("Guild id missing from non production config");
   }
 
@@ -44,9 +44,10 @@ async function registerAllCommands(
 
   try {
     await withTimeout(rest.put(route, { body: commands }), 10 * 60 * 1000);
-    Stumper.success(`Successfully registered commands for ${target}.`, "registerAllCommands");
+    Stumper.success(`Successfully registered commands for ${target}.`, "registerCommands:registerCommands:registerAllCommands");
   } catch (err) {
-    Stumper.error(`Error registering commands for ${target}: ${err}`, "registerAllCommands");
+    Stumper.error(`Error registering commands for ${target}`, "registerCommands:registerCommands:registerAllCommands");
+    Stumper.caughtError(err, "registerCommands:registerCommands:registerAllCommands");
     if (err instanceof Error && err.message.includes("Request timed out")) {
       // Do nothing
     } else {

@@ -58,7 +58,7 @@ export default abstract class Time {
     const currTime = this.getCurrentTime().getTime();
     const diff = currTime - time;
     if (diff < 0) {
-      Stumper.warning("Given time is after the current time", "timeSince");
+      Stumper.warning("Given time is after the current time", "common:Time:timeSince");
     }
     return diff;
   }
@@ -67,7 +67,7 @@ export default abstract class Time {
     const currTime = this.getCurrentTime().getTime();
     const diff = time - currTime;
     if (diff < 0) {
-      Stumper.warning("Given time is before the current time", "timeUntil");
+      Stumper.warning("Given time is before the current time", "common:Time:timeUntil");
     }
     return diff;
   }

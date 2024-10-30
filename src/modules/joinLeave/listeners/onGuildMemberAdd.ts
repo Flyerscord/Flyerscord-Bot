@@ -14,6 +14,6 @@ export default (): void => {
     const joinPhoto = await createImage(username, member.displayAvatarURL(), await discord.members.getMemberJoinPosition(member));
 
     await discord.messages.sendMessageAndImageBufferToChannel(Config.getConfig().joinLeaveMessageChannelId, message, joinPhoto);
-    Stumper.info(`User ${username} has joined the server!`, "onGuildMemberAdd");
+    Stumper.info(`User ${username} has joined the server!`, "joinLeave:onGuildMemberAdd");
   });
 };

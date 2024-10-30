@@ -32,7 +32,7 @@ export default abstract class Module {
     const location = `${dir}/commands/${commandsPath}`;
     const files = fs.readdirSync(location);
 
-    Stumper.info(`Reading in commands from ${location}`, "readInCommands");
+    Stumper.info(`Reading in commands from ${location}`, "common:Module:readInCommands");
 
     for (const file of files) {
       if (!file.endsWith(".js")) {
@@ -43,13 +43,13 @@ export default abstract class Module {
       const command: T = new Command.default();
 
       if (command instanceof SlashCommand) {
-        Stumper.debug(`Read in slash command: ${command.name}`, "readInCommands");
+        Stumper.debug(`Read in slash command: ${command.name}`, "common:Module:readInCommands");
       } else if (command instanceof TextCommand) {
-        Stumper.debug(`Read in text command: ${command.name}`, "readInCommands");
+        Stumper.debug(`Read in text command: ${command.name}`, "common:Module:readInCommands");
       } else if (command instanceof ContextMenuCommand) {
-        Stumper.debug(`Read in context menu: ${command.name}`, "readInCommands");
+        Stumper.debug(`Read in context menu: ${command.name}`, "common:Module:readInCommands");
       } else if (command instanceof ModalMenu) {
-        Stumper.debug(`Read in modal: ${command.id}`, "readInCommands");
+        Stumper.debug(`Read in modal: ${command.id}`, "common:Module:readInCommands");
       }
 
       commands.push(command);

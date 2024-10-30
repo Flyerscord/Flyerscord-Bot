@@ -22,7 +22,7 @@ export default class Imgur {
   async uploadImage(url: string, title: string): Promise<string | undefined> {
     this.setupConnection();
 
-    Stumper.debug(`Uploading image: ${url}`, "Imgur:uploadImage");
+    Stumper.debug(`Uploading image: ${url}`, "customCommands:Imgur:uploadImage");
 
     const response = await this.client!.upload({
       image: url,
@@ -31,7 +31,7 @@ export default class Imgur {
     });
 
     if (response.success) {
-      Stumper.debug(`Image uploaded successfully: ${response.data.link}`, "Imgur:uploadImage");
+      Stumper.debug(`Image uploaded successfully: ${response.data.link}`, "customCommands:Imgur:uploadImage");
       return response.data.link;
     }
     return undefined;

@@ -23,14 +23,18 @@ function checkForNormalTextCommand(message: Message): boolean {
   const textCmd: TextCommand = message.client.textCommands.get(command);
   try {
     if (textCmd) {
-      Stumper.info(`Command ${command} called by user ${message.author.username}!`, "checkForNormalTextCommand");
+      Stumper.info(`Command ${command} called by user ${message.author.username}!`, "common:onMessageCreate:checkForNormalTextCommand");
       textCmd.run(message, args);
       return true;
     } else {
-      Stumper.debug(`Command ${command} not found!`, "checkForNormalTextCommand");
+      Stumper.debug(`Command ${command} not found!`, "common:onMessageCreate:checkForNormalTextCommand");
     }
   } catch (err) {
-    Stumper.error(`Message content: ${message.content}  Error: ${err}`, "checkForNormalTextCommand");
+    Stumper.error(
+      `Error parsing normal text command message. Message content: ${message.content}`,
+      "common:onMessageCreate:checkForNormalTextCommand",
+    );
+    Stumper.caughtError(err, "common:onMessageCreate:checkForNormalTextCommand");
   }
   return false;
 }

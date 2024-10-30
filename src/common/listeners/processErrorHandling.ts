@@ -24,7 +24,6 @@ export default (): void => {
     if (warning.name === "ExperimentalWarning" && warning.message.includes("buffer.File")) {
       return;
     }
-    Stumper.warning(warning.message, warning.name);
-    Stumper.warning(warning.stack, warning.name);
+    Stumper.caughtWarning(warning, "Unhandled Warning");
   });
 };

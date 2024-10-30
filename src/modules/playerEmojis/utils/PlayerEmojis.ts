@@ -13,7 +13,7 @@ export async function checkForNewEmojis(): Promise<void> {
     const roster = rosterRes.data;
 
     if (!checkForNewPlayers(roster)) {
-      Stumper.info("No new players found", "EmojiCheckTask");
+      Stumper.info("No new players found", "playerEmojis:EmojiCheckTask:checkForNewEmojis");
       return;
     }
 

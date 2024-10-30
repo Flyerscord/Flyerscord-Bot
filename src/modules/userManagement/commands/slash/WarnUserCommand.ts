@@ -20,7 +20,7 @@ export default class WarnUserCommand extends AdminSlashCommand {
     const db = UserManagementDB.getInstance();
     db.addWarning(user.id, reason);
 
-    Stumper.info(`Added warning for user: ${user.username} by user ${interaction.user.username}`, "WarnUserCommand");
+    Stumper.info(`Added warning for user: ${user.username} by user ${interaction.user.username}`, "userManagement:WarnUserCommand:execute");
     sendLogMessage(`Added warning for user: ${user.username} by user ${interaction.user.username} Reason: ${reason}`);
     interaction.reply(`Added warning for user: ${user.username}!`);
   }

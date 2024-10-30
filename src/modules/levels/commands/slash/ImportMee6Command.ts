@@ -24,7 +24,7 @@ export default class ImportMee6Command extends AdminSlashCommand {
     // Check if the user is flyerzrule
     if (interaction.user.id == "140656762960347136") {
       if (confirmation == "CONFIRM") {
-        Stumper.warning("Importing levels from Mee6 all previous levels will be wiped!", "ImportMee6Command");
+        Stumper.warning("Importing levels from Mee6 all previous levels will be wiped!", "levels:ImportMee6Command:execute");
 
         const db = LevelsDB.getInstance();
         db.wipe();
@@ -49,7 +49,7 @@ export default class ImportMee6Command extends AdminSlashCommand {
         return;
       }
     } else {
-      Stumper.warning(`User ${interaction.user.username} attempted to import mee6 levels!`, "ImportMee6Command");
+      Stumper.warning(`User ${interaction.user.username} attempted to import mee6 levels!`, "levels:ImportMee6Command:execute");
       interaction.reply({ ephemeral: true, content: "Only flyerzrule can run this command!" });
       return;
     }

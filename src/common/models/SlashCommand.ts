@@ -55,7 +55,7 @@ export default abstract class SlashCommand {
     return interaction.options.getSubcommandGroup() == subCommandGroupName;
   }
 
-  public toString(): string {
+  toString(): string {
     return JSON.stringify(this);
   }
 }

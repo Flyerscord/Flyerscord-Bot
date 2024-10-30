@@ -11,18 +11,18 @@ export default class ModalMenuManager {
     this.commands = new Collection();
   }
 
-  public static getInstance(): ModalMenuManager {
+  static getInstance(): ModalMenuManager {
     if (!ModalMenuManager.instance) {
       ModalMenuManager.instance = new ModalMenuManager();
     }
     return ModalMenuManager.instance;
   }
 
-  public addCommands(commands: Array<ModalMenu>): void {
+  addCommands(commands: Array<ModalMenu>): void {
     commands.forEach((command) => this.addCommand(command));
   }
 
-  public addCommand(command: ModalMenu): void {
+  addCommand(command: ModalMenu): void {
     if (this.hasCommand(command)) {
       Stumper.warning(`ModalMenu ${command.title} already exists`);
       return;
@@ -30,11 +30,11 @@ export default class ModalMenuManager {
     this.commands.set(command.title, command);
   }
 
-  public getCommands(): Collection<string, ModalMenu> {
+  getCommands(): Collection<string, ModalMenu> {
     return this.commands;
   }
 
-  public hasCommand(command: ModalMenu): boolean {
+  hasCommand(command: ModalMenu): boolean {
     return this.commands.has(command.title);
   }
 }

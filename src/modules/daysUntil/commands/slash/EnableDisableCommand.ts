@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
 import DaysUntilDB from "../../providers/DaysUtil.Database";
-import events, { getKeyByName } from "../../models/DaysUntilEvents";
+import { events } from "../../models/DaysUntilEvents";
 
 export default class EnableDisableCommand extends AdminSlashCommand {
   constructor() {
@@ -22,9 +22,8 @@ export default class EnableDisableCommand extends AdminSlashCommand {
 
     const db = DaysUntilDB.getInstance();
 
-    const key = getKeyByName(eventName);
-    if (key) {
-      const event = events[key];
+    const event = Object.values(events).find((event) => event.name == eventName);
+    if (event) {
       db.setEventEnabled(event.dbKey, enable);
 
       interaction.reply({

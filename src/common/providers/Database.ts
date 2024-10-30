@@ -36,7 +36,7 @@ export default abstract class Database {
     });
   }
 
-  public close(): void {
+  close(): void {
     Stumper.warning(`Closing database: ${this.name}`, "Database:close");
     this.db.close();
   }

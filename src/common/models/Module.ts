@@ -17,7 +17,7 @@ export default abstract class Module {
     this.name = name;
   }
 
-  public async enable(): Promise<void> {
+  async enable(): Promise<void> {
     await this.setup();
     Stumper.success(`${this.name} module enabled!`);
   }

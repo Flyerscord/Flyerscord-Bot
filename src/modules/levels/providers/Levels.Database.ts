@@ -10,25 +10,25 @@ export default class LevelsDB extends Database {
     });
   }
 
-  public static getInstance(): LevelsDB {
+  static getInstance(): LevelsDB {
     if (!LevelsDB.instance) {
       LevelsDB.instance = new LevelsDB();
     }
     return LevelsDB.instance;
   }
 
-  public hasUser(userId: string): boolean {
+  hasUser(userId: string): boolean {
     return this.db.has(userId);
   }
 
-  public getUser(userId: string): IUserLevel | undefined {
+  getUser(userId: string): IUserLevel | undefined {
     if (this.hasUser(userId)) {
       return this.db.get(userId);
     }
     return undefined;
   }
 
-  public addNewUser(userId: string): IUserLevel {
+  addNewUser(userId: string): IUserLevel {
     if (!this.hasUser(userId)) {
       const newUser: IUserLevel = {
         userId: userId,
@@ -43,19 +43,19 @@ export default class LevelsDB extends Database {
     return this.getUser(userId)!;
   }
 
-  public updateUser(userId: string, newUserLevel: IUserLevel): void {
+  updateUser(userId: string, newUserLevel: IUserLevel): void {
     this.db.set(userId, newUserLevel);
   }
 
-  public resetUser(userId: string): void {
+  resetUser(userId: string): void {
     this.db.delete(userId);
   }
 
-  public getAllUsers(): Array<IUserLevel> {
+  getAllUsers(): Array<IUserLevel> {
     return this.getAllValues();
   }
 
-  public getAllUsersSortedByExp(): Array<IUserLevel> {
+  getAllUsersSortedByExp(): Array<IUserLevel> {
     const users = this.getAllUsers();
     users.sort((a, b) => b.totalExp - a.totalExp);
     return users;

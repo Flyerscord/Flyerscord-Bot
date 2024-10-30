@@ -33,14 +33,12 @@ const season: IDaysUntilEvent = {
   exactMessage: "The NHL Season is starting now!",
 };
 
-const events: IEvents = {
+export const events: IEvents = {
   tradeDeadline: tradeDeadline,
   draft: draft,
   lottery: lottery,
   season: season,
 };
-
-export default events;
 
 export function getEventNames(): Array<string> {
   const names: Array<string> = [];
@@ -51,26 +49,4 @@ export function getEventNames(): Array<string> {
   });
 
   return names;
-}
-
-export function getEventDbKeys(): Array<string> {
-  const dbKeys: Array<string> = [];
-
-  Object.keys(events).forEach((key) => {
-    const event = events[key];
-    dbKeys.push(event.dbKey);
-  });
-
-  return dbKeys;
-}
-
-export function getKeyByName(name: string): string | undefined {
-  const keys = Object.keys(events);
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i];
-    if (events[key].name == name) {
-      return key;
-    }
-  }
-  return undefined;
 }

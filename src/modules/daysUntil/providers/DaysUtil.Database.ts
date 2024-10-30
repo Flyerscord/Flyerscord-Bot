@@ -1,6 +1,6 @@
 import Database from "../../../common/providers/Database";
 import IDbEvent from "../interfaces/IDbEvent";
-import events from "../models/DaysUntilEvents";
+import { events } from "../models/DaysUntilEvents";
 
 export default class DaysUntilDB extends Database {
   private static instance: DaysUntilDB;
@@ -33,5 +33,12 @@ export default class DaysUntilDB extends Database {
 
   setEventDate(dbKey: string, date: number): void {
     this.db.set(dbKey, { date: date, enabled: true });
+  }
+
+  getEnabledEventNames(): string[] {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const enabledEvents: Array<{ key: string | number; value: any }> = this.getAllKeysAndValues().filter((keyValue) => keyValue.value.enabled);
+
+    return enabledEvents.map((keyValue) => keyValue.key as string);
   }
 }

@@ -22,11 +22,11 @@ export default class CommandImporter {
     this.prefix = "";
   }
 
-  public static getInstance(): CommandImporter {
+  static getInstance(): CommandImporter {
     return this.instance || (this.instance = new this());
   }
 
-  public enable(channelId: string, userId: string, botId: string, prefix: string): void {
+  enable(channelId: string, userId: string, botId: string, prefix: string): void {
     this.channelId = channelId;
     this.enabled = true;
     this.userId = userId;
@@ -34,7 +34,7 @@ export default class CommandImporter {
     this.prefix = prefix;
   }
 
-  public disable(): void {
+  disable(): void {
     this.enabled = false;
     this.name = "";
     this.text = "";
@@ -44,36 +44,36 @@ export default class CommandImporter {
     this.prefix = "";
   }
 
-  public isEnabled(): boolean {
+  isEnabled(): boolean {
     return this.enabled;
   }
 
-  public getUserId(): string {
+  getUserId(): string {
     return this.userId;
   }
 
-  public getChannelId(): string {
+  getChannelId(): string {
     return this.channelId;
   }
 
-  public getBotId(): string {
+  getBotId(): string {
     return this.botId;
   }
 
-  public setNewCommandName(name: string): void {
+  setNewCommandName(name: string): void {
     this.name = name.replace(this.prefix, "").toLowerCase();
   }
 
-  public getNewCommandName(): string {
+  getNewCommandName(): string {
     return this.name;
   }
 
-  public setNewCommandText(text: string): void {
+  setNewCommandText(text: string): void {
     this.text = text;
     this.createCommand();
   }
 
-  public getNewCommandText(): string {
+  getNewCommandText(): string {
     return this.text;
   }
 

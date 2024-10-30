@@ -11,18 +11,18 @@ export default class TextCommandManager {
     this.commands = new Collection();
   }
 
-  public static getInstance(): TextCommandManager {
+  static getInstance(): TextCommandManager {
     if (!TextCommandManager.instance) {
       TextCommandManager.instance = new TextCommandManager();
     }
     return TextCommandManager.instance;
   }
 
-  public addCommands(commands: Array<TextCommand>): void {
+  addCommands(commands: Array<TextCommand>): void {
     commands.forEach((command) => this.addCommand(command));
   }
 
-  public addCommand(command: TextCommand): void {
+  addCommand(command: TextCommand): void {
     if (this.hasCommand(command)) {
       Stumper.warning(`Text command ${command.name} already exists`);
       return;
@@ -30,11 +30,11 @@ export default class TextCommandManager {
     this.commands.set(command.name, command);
   }
 
-  public getCommands(): Collection<string, TextCommand> {
+  getCommands(): Collection<string, TextCommand> {
     return this.commands;
   }
 
-  public hasCommand(command: TextCommand): boolean {
+  hasCommand(command: TextCommand): boolean {
     return this.commands.has(command.name);
   }
 }

@@ -19,7 +19,7 @@ export default class Imgur {
     return this.instance || (this.instance = new this());
   }
 
-  public async uploadImage(url: string, title: string): Promise<string | undefined> {
+  async uploadImage(url: string, title: string): Promise<string | undefined> {
     this.setupConnection();
 
     Stumper.debug(`Uploading image: ${url}`, "Imgur:uploadImage");

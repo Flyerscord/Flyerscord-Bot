@@ -7,11 +7,11 @@ export default class PlayerEmojisDB extends Database {
     super({ name: "player-emojis" });
   }
 
-  public static getInstance(): PlayerEmojisDB {
+  static getInstance(): PlayerEmojisDB {
     return this.instance || (this.instance = new this());
   }
 
-  public addPlayer(playerName: number, emojiId: string): boolean {
+  addPlayer(playerName: number, emojiId: string): boolean {
     if (!this.hasPlayer(playerName)) {
       this.db.set(playerName.toString(), emojiId);
       return true;
@@ -19,19 +19,19 @@ export default class PlayerEmojisDB extends Database {
     return false;
   }
 
-  public hasPlayer(playerName: number): boolean {
+  hasPlayer(playerName: number): boolean {
     return this.db.has(playerName.toString());
   }
 
-  public clearPlayers(): void {
+  clearPlayers(): void {
     this.db.clear();
   }
 
-  public getAllPlayers(): Array<string> {
+  getAllPlayers(): Array<string> {
     return this.getAllValues();
   }
 
-  public getAllPlayersIds(): Array<number> {
+  getAllPlayersIds(): Array<number> {
     return this.getAllKeys() as Array<number>;
   }
 }

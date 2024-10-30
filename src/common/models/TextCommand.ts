@@ -46,7 +46,7 @@ export default abstract class TextCommand {
     return true;
   }
 
-  public toString(): string {
+  toString(): string {
     return JSON.stringify(this);
   }
 }

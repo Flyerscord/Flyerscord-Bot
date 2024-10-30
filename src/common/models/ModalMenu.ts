@@ -15,7 +15,7 @@ export default abstract class ModalMenu {
 
   abstract execute(interaction: ModalSubmitInteraction): Promise<void>;
 
-  public getModal(): ModalBuilder {
+  getModal(): ModalBuilder {
     return this.data;
   }
 

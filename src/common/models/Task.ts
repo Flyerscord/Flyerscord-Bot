@@ -14,20 +14,20 @@ export default abstract class Task {
 
   protected abstract execute(): Promise<void>;
 
-  public getName(): string {
+  getName(): string {
     return this.name;
   }
 
-  public getInterval(): string {
+  getInterval(): string {
     return this.interval;
   }
 
-  public createScheduledJob(): void {
+  createScheduledJob(): void {
     Stumper.debug(`Creating scheduled job: ${this.name}`, "createScheduledJob");
     this.job = schedule.scheduleJob(this.interval, this.execute);
   }
 
-  public stopScheduledJob(): void {
+  stopScheduledJob(): void {
     if (this.job) {
       Stumper.debug(`Stopping scheduled job: ${this.name}`, "stopScheduledJob");
       this.job.cancel();

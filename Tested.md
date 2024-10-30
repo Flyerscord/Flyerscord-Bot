@@ -30,3 +30,9 @@
   - Adding visitor role to members
 - Join and leave module
   - Sending a message when a user joins or leaves the server
+- Admin module
+  - /roleallassign
+- Days until module
+  - Change the event to a new date
+  - Toggle the event on and off
+  - Get the number of days until an event

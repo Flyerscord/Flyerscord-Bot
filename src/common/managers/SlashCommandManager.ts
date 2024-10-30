@@ -11,18 +11,18 @@ export default class SlashCommandManager {
     this.commands = new Collection();
   }
 
-  public static getInstance(): SlashCommandManager {
+  static getInstance(): SlashCommandManager {
     if (!SlashCommandManager.instance) {
       SlashCommandManager.instance = new SlashCommandManager();
     }
     return SlashCommandManager.instance;
   }
 
-  public addCommands(commands: Array<SlashCommand>): void {
+  addCommands(commands: Array<SlashCommand>): void {
     commands.forEach((command) => this.addCommand(command));
   }
 
-  public addCommand(command: SlashCommand): void {
+  addCommand(command: SlashCommand): void {
     if (this.hasCommand(command)) {
       Stumper.warning(`Slash command ${command.name} already exists`);
       return;
@@ -30,11 +30,11 @@ export default class SlashCommandManager {
     this.commands.set(command.name, command);
   }
 
-  public getCommands(): Collection<string, SlashCommand> {
+  getCommands(): Collection<string, SlashCommand> {
     return this.commands;
   }
 
-  public hasCommand(command: SlashCommand): boolean {
+  hasCommand(command: SlashCommand): boolean {
     return this.commands.has(command.name);
   }
 }

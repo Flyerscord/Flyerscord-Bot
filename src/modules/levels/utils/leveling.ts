@@ -13,8 +13,7 @@ function getExpAmount(): number {
 }
 
 export async function addMessage(message: Message): Promise<void> {
-  // const MESSAGE_THRESHOLD = 1 * 60 * 1000;
-  const MESSAGE_THRESHOLD = 1 * 3 * 1000;
+  const MESSAGE_THRESHOLD = 1 * 60 * 1000;
   const db = LevelsDB.getInstance();
   const userId = message.author.id;
 

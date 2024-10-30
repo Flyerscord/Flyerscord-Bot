@@ -6,13 +6,13 @@
   - leveling
   - level up messages
 - Custom commands
-  - Add custom commands
-  - Run custom commands (some images post the imgur post link)
+  - TODO Add custom commands (some images post the imgur post link)
+  - TODO Run custom commands (some images post the imgur post link)
   - Delete custom commands
   - Edit custom commands
   - View custom commands
   - 2 hardcoded custom commands
-  - update the custom commands list
+  - TODO update the custom commands list (RETEST)
   - TODO STILL NEED TO TEST THE AUTO COMMAND INPUT
 - Game day posts
 - Health check
@@ -36,3 +36,5 @@
   - Change the event to a new date
   - Toggle the event on and off
   - Get the number of days until an event
+- TODO Register commands module
+- TODO User management module

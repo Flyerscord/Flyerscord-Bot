@@ -3,7 +3,10 @@ export default {
   production: {
     token: "",
     logLevel: 3,
-    prefix: ".",
+    prefix: {
+      normal: "!",
+      admin: ".",
+    },
     masterGuildId: "",
     vistorReactRole: {
       memberRoleId: "",
@@ -37,7 +40,10 @@ export default {
   nonProduction: {
     token: "",
     logLevel: 3,
-    prefix: ".",
+    prefix: {
+      normal: "!",
+      admin: ".",
+    },
     masterGuildId: "",
     vistorReactRole: {
       memberRoleId: "",

@@ -49,8 +49,9 @@ const client = new Client({
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.DirectMessages,
   ],
-  partials: [Partials.Message, Partials.Reaction, Partials.User],
+  partials: [Partials.Message, Partials.Reaction, Partials.User, Partials.Channel],
 });
 
 /* -------------------------------------------------------------------------- */
@@ -98,6 +99,7 @@ import NHLModule from "./modules/nhl/NHLModule";
 import PlayerEmojisModule from "./modules/playerEmojis/PlayerEmojisModule";
 import UserManagementModule from "./modules/userManagement/UserManagementModule";
 import VisitorRoleModule from "./modules/visitorRole/VisitorRoleModule";
+import RegisterCommandsModule from "./modules/registerCommands/RegisterCommandsModule";
 
 /* -------------------------------------------------------------------------- */
 /*                       Import Our Other Event Handlers                      */
@@ -125,6 +127,9 @@ async function startUp(): Promise<void> {
   await new PlayerEmojisModule().enable();
   await new UserManagementModule().enable();
   await new VisitorRoleModule().enable();
+
+  // Must be enabled last
+  await new RegisterCommandsModule().enable();
 
   /* -------------------------------------------------------------------------- */
   /*                      Register Our Other Event Handlers                     */

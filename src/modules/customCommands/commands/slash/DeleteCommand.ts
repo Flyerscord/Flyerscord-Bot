@@ -21,7 +21,7 @@ export default class DeleteCommand extends AdminSlashCommand {
 
     if (!db.hasCommand(name)) {
       interaction.reply({
-        content: `Command ${Config.getConfig().prefix}${name} does not exist!`,
+        content: `Command ${Config.getConfig().prefix.normal}${name} does not exist!`,
         ephemeral: true,
       });
       return;
@@ -29,7 +29,7 @@ export default class DeleteCommand extends AdminSlashCommand {
 
     db.removeCommand(name, interaction.user.id);
     interaction.reply({
-      content: `Command ${Config.getConfig().prefix}${name} removed!`,
+      content: `Command ${Config.getConfig().prefix.normal}${name} removed!`,
       ephemeral: true,
     });
   }

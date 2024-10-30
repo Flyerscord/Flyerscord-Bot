@@ -53,7 +53,7 @@ export default class AddCommand extends AdminSlashCommand {
     if (name != "" && text != "") {
       if (db.hasCommand(name) || interaction.client.textCommands.hasAny(name)) {
         interaction.reply({
-          content: `Command ${Config.getConfig().prefix}${name} already exists!`,
+          content: `Command ${Config.getConfig().prefix.normal}${name} already exists!`,
           ephemeral: true,
         });
         return;
@@ -61,7 +61,7 @@ export default class AddCommand extends AdminSlashCommand {
 
       db.addCommand(name, text, interaction.user.id);
       interaction.reply({
-        content: `Command ${Config.getConfig().prefix}${name} added!`,
+        content: `Command ${Config.getConfig().prefix.normal}${name} added!`,
         ephemeral: true,
       });
     }

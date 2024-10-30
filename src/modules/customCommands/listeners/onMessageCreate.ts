@@ -15,7 +15,7 @@ export default (): void => {
 };
 
 function checkForCustomTextCommand(message: Message): boolean {
-  const prefix = Config.getConfig().prefix;
+  const prefix = Config.getConfig().prefix.normal;
   if (message.author.bot) return false;
   if (!message.channel.isTextBased()) return false;
   if (!message.content.startsWith(prefix)) return false;
@@ -30,9 +30,9 @@ function checkForCustomTextCommand(message: Message): boolean {
     discord.messages.sendMessageToChannel(message.channel.id, customCommand.text);
     return true;
   } else if (message.client.textCommands.hasAny(command)) {
-    // Command is a hardcoded text command
+    // Command is a hardcoded text command and will be caught by the normal text command check
   } else {
-    Stumper.warning(`Custom Command ${command} not found!`, "checkForCustomTextCommand");
+    Stumper.debug(`Custom Command ${command} not found!`, "checkForCustomTextCommand");
   }
   return false;
 }

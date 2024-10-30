@@ -10,12 +10,17 @@ interface ICommonConfig {
   token: string;
   logLevel: LOG_LEVEL;
   masterGuildId: string;
-  prefix: string;
+  prefix: IPrefixConfig;
   customCommandListChannelId: string;
   imgur: IImgurConfig;
   vistorReactRole: IVistorReactConfig;
   gameDayPosts: IGameDayPostsConfig;
   joinLeaveMessageChannelId: string;
+}
+
+interface IPrefixConfig {
+  normal: string;
+  admin: string;
 }
 
 interface IVistorReactConfig {

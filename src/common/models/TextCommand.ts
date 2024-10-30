@@ -1,52 +1,118 @@
 import { Message } from "discord.js";
-import ITextCommandOptions from "../interfaces/ITextCommandOptions";
+import ITextCommandOptions, { COMMAND_LOCATION } from "../interfaces/ITextCommandOptions";
+import Stumper from "stumper";
+import Config from "../config/Config";
 
 export default abstract class TextCommand {
+  readonly prefix: string;
   readonly name: string;
   readonly command: string;
   readonly description: string;
   readonly options?: ITextCommandOptions;
 
-  constructor(name: string, command: string, options?: ITextCommandOptions) {
+  constructor(prefix: string, name: string, command: string, options?: ITextCommandOptions) {
+    this.prefix = prefix;
     this.name = name;
     this.command = command;
     this.options = options;
     this.description = options?.description || "";
   }
 
-  abstract execute(message: Message, args: Array<string>): Promise<void>;
+  protected abstract execute(message: Message, args: Array<string>): Promise<void>;
 
-  protected checkPermissions(message: Message): boolean {
+  async run(message: Message, args: Array<string>): Promise<void> {
+    const hasPerms = this.checkPermissions(message);
+    const hasLocation = this.checkLocation(message);
+
+    if (hasPerms && hasLocation) {
+      await this.execute(message, args);
+    } else if (!hasPerms) {
+      await message.reply({ content: "You do not have permission to run this command!" });
+      Stumper.warning(`User ${message.author.username} tried to run command ${this.name} but did not have permission!`, "TextCommand:run");
+    } else if (!hasLocation) {
+      await message.reply({ content: "This command is not available in this location!" });
+      Stumper.warning(
+        `User ${message.author.username} tried to run command ${this.name} but it is not available in this location!`,
+        "TextCommand:run",
+      );
+    }
+  }
+
+  private checkPermissions(message: Message): boolean {
     if (this.options) {
       if (this.options.allowedPermissions) {
-        for (let i = 0; i < this.options.allowedPermissions.length; i++) {
-          const permission = this.options.allowedPermissions[i];
+        for (const permission of this.options.allowedPermissions) {
           if (message.member?.permissions.has(permission)) {
             return true;
           }
         }
+        return false;
       }
 
       if (this.options.allowedUsers) {
-        if (message.member?.user.id && this.options.allowedUsers.includes(message.member?.user.id)) {
+        if (this.options.allowedUsers.includes(message.author.id)) {
           return true;
         }
+        return false;
       }
 
       if (this.options.allowedRoles) {
-        for (let i = 0; i < this.options.allowedRoles.length; i++) {
-          const role = this.options.allowedRoles[i];
+        for (const role of this.options.allowedRoles) {
           if (message.member?.roles.cache.has(role)) {
             return true;
           }
         }
+        return false;
       }
-      return false;
+    }
+    return true;
+  }
+
+  private checkLocation(message: Message): boolean {
+    if (this.options && this.options.allowedLocations) {
+      // Check if the message is in a guild
+      if (message.guild && !this.options.allowedLocations.includes(COMMAND_LOCATION.GUILD)) {
+        return false;
+      }
+
+      // Check if the message is a DM
+      if (message.channel.isDMBased() && !this.options.allowedLocations.includes(COMMAND_LOCATION.DM)) {
+        return false;
+      }
     }
     return true;
   }
 
   toString(): string {
     return JSON.stringify(this);
+  }
+}
+
+export abstract class AdminTextCommand extends TextCommand {
+  constructor(name: string, command: string, options: ITextCommandOptions = {}) {
+    options.allowedPermissions = ["Administrator"];
+    super(Config.getConfig().prefix.admin, name, command, options);
+  }
+}
+
+export abstract class AdminDMTextCommand extends TextCommand {
+  constructor(name: string, command: string, options: ITextCommandOptions = {}) {
+    options.allowedPermissions = ["Administrator"];
+    options.allowedLocations = [COMMAND_LOCATION.DM];
+    super(Config.getConfig().prefix.admin, name, command, options);
+  }
+}
+
+export abstract class GuildTextCommand extends TextCommand {
+  constructor(prefix: string, name: string, command: string, options: ITextCommandOptions = {}) {
+    options.allowedLocations = [COMMAND_LOCATION.GUILD];
+    super(prefix, name, command, options);
+  }
+}
+
+export abstract class DMTextCommand extends TextCommand {
+  constructor(prefix: string, name: string, command: string, options: ITextCommandOptions = {}) {
+    options.allowedLocations = [COMMAND_LOCATION.DM];
+    super(prefix, name, command, options);
   }
 }

@@ -2,10 +2,12 @@ import { Message } from "discord.js";
 import TextCommand from "../../../../common/models/TextCommand";
 import { getRandomNumber } from "../../../../common/utils/misc";
 import discord from "../../../../common/utils/discord/discord";
+import Config from "../../../../common/config/Config";
+import { COMMAND_LOCATION } from "../../../../common/interfaces/ITextCommandOptions";
 
 export default class ChanceTextCommand extends TextCommand {
   constructor() {
-    super("chance", "chance");
+    super(Config.getConfig().prefix.normal, "chance", "chance", { allowedLocations: [COMMAND_LOCATION.GUILD] });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

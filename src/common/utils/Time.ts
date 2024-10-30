@@ -125,4 +125,24 @@ export default abstract class Time {
   static isSameDay(date1: Date, date2: Date): boolean {
     return date1.getDate() == date2.getDate() && date1.getMonth() == date2.getMonth() && date1.getFullYear() == date2.getFullYear();
   }
+
+  static getFormattedTimeFromMilliseconds(milliseconds: number): string {
+    const days = Math.floor(milliseconds / (24 * 60 * 60 * 1000));
+    milliseconds %= 24 * 60 * 60 * 1000;
+    const hours = Math.floor(milliseconds / (60 * 60 * 1000));
+    milliseconds %= 60 * 60 * 1000;
+    const minutes = Math.floor(milliseconds / (60 * 1000));
+    milliseconds %= 60 * 1000;
+    const seconds = Math.floor(milliseconds / 1000);
+    milliseconds %= 1000;
+
+    const parts = [];
+    if (days) parts.push(`${days}d`);
+    if (hours) parts.push(`${hours}h`);
+    if (minutes) parts.push(`${minutes}m`);
+    if (seconds) parts.push(`${seconds}s`);
+    if (milliseconds) parts.push(`${milliseconds}ms`);
+
+    return parts.join(" ");
+  }
 }

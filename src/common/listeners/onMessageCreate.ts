@@ -14,18 +14,20 @@ function checkForNormalTextCommand(message: Message): boolean {
   const prefix = Config.getConfig().prefix;
   if (message.author.bot) return false;
   if (!message.channel.isTextBased()) return false;
-  if (!message.content.startsWith(prefix)) return false;
+  if (!message.content.startsWith(prefix.normal) && !message.content.startsWith(prefix.admin)) return false;
 
   const messageArray = message.content.split(" ");
-  const command = messageArray[0];
+  let command = messageArray[0];
   const args = messageArray.slice(1);
 
-  const textCmd: TextCommand = message.client.textCommands.get(command.slice(prefix.length));
+  const textCmd: TextCommand = message.client.textCommands.get(command);
   try {
     if (textCmd) {
-      textCmd.execute(message, args);
-      Stumper.info(`Command ${command} called!`, "checkForNormalTextCommand");
+      Stumper.info(`Command ${command} called by user ${message.author.username}!`, "checkForNormalTextCommand");
+      textCmd.run(message, args);
       return true;
+    } else {
+      Stumper.debug(`Command ${command} not found!`, "checkForNormalTextCommand");
     }
   } catch (err) {
     Stumper.error(`Message content: ${message.content}  Error: ${err}`, "checkForNormalTextCommand");

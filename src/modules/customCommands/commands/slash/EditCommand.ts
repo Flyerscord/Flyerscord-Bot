@@ -26,7 +26,7 @@ export default class EditCommand extends AdminSlashCommand {
 
     if (!db.hasCommand(name)) {
       interaction.reply({
-        content: `Command ${Config.getConfig().prefix}${name} does not exist!`,
+        content: `Command ${Config.getConfig().prefix.normal}${name} does not exist!`,
         ephemeral: true,
       });
       return;
@@ -34,7 +34,7 @@ export default class EditCommand extends AdminSlashCommand {
 
     db.updateCommand(name, newResponse, interaction.user.id);
     interaction.reply({
-      content: `Command ${Config.getConfig().prefix}${name} updated!`,
+      content: `Command ${Config.getConfig().prefix.normal}${name} updated!`,
       ephemeral: true,
     });
   }

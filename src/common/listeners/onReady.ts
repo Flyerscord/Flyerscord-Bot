@@ -1,4 +1,4 @@
-import { Client, REST, Routes, RESTPostAPIChatInputApplicationCommandsJSONBody } from "discord.js";
+import { Client, REST, Routes, RESTPostAPIChatInputApplicationCommandsJSONBody, RESTPostAPIContextMenuApplicationCommandsJSONBody } from "discord.js";
 
 import Stumper from "stumper";
 import Config from "../config/Config";
@@ -12,44 +12,44 @@ export default (client: Client): void => {
     const slashCommands = await readSlashCommands(client);
     await readTextCommands(client);
     await readModals(client);
-    await readContextMenus(client);
+    const contextMenus = await readContextMenus(client);
 
-    Stumper.info("Registering guild slash commands", "clientReady");
-    registerSlashCommands(client, slashCommands);
+    const commands = [...slashCommands, ...contextMenus];
+    Stumper.info("Registering commands", "clientReady");
+    await registerAllCommands(client, commands);
+
     Stumper.info("Bot Online!", "clientReady");
   });
 };
 
-function registerSlashCommands(client: Client, slashCommands: Array<RESTPostAPIChatInputApplicationCommandsJSONBody>): void {
+async function registerAllCommands(
+  client: Client,
+  commands: (RESTPostAPIChatInputApplicationCommandsJSONBody | RESTPostAPIContextMenuApplicationCommandsJSONBody)[],
+): Promise<void> {
   const rest = new REST().setToken(Config.getConfig().token);
 
-  if (client.user) {
-    // If the bot is in production mode register the commands globally (changes will take longer to appear)
-    if (Config.isProductionMode()) {
-      rest
-        .put(Routes.applicationCommands(client.user.id), {
-          body: slashCommands,
-        })
-        .then(() => Stumper.info("Successfully registered application commands for production.", "registerSlashCommands"))
-        .catch((err) => {
-          Stumper.error(`Error registering application commands for production: ${err}`, "registerSlashCommands");
-        });
-    } else {
-      // If the bot is in non production mode register the commands to the testing guild (changes will appear immediately)
-      const guildId = Config.getConfig().guildId;
-      if (guildId) {
-        rest
-          .put(Routes.applicationGuildCommands(client.user.id, guildId), {
-            body: slashCommands,
-          })
-          .then(() => Stumper.info("Successfully registered application commands for development guild.", "registerSlashCommands"))
-          .catch((err) => {
-            Stumper.error(`Error registering application commands for development guild: ${err}`, "registerSlashCommands");
-          });
-      } else {
-        Stumper.error("Guild id missing from non production config", "registerSlashCommands");
-      }
-    }
+  if (!client.user) {
+    Stumper.error("Client user not found", "registerCommands");
+    throw new Error("Client user not found");
+  }
+
+  const isProduction = Config.isProductionMode();
+  const target = isProduction ? "production" : "non-production";
+
+  const guildId = Config.getConfig().guildId;
+  if (!isProduction && !guildId) {
+    Stumper.error("Guild id missing from non production config", "registerCommands");
+    throw new Error("Guild id missing from non production config");
+  }
+
+  const route = isProduction ? Routes.applicationCommands(client.user.id) : Routes.applicationGuildCommands(client.user.id, guildId!);
+
+  try {
+    await rest.put(route, { body: commands });
+    Stumper.success(`Successfully registered commands for ${target}.`, "registerCommands");
+  } catch (err) {
+    Stumper.error(`Error registering commands for ${target}: ${err}`, "registerCommands");
+    throw err;
   }
 }
 
@@ -62,7 +62,7 @@ async function readSlashCommands(client: Client): Promise<Array<RESTPostAPIChatI
     client.slashCommands.set(command.name, command);
   });
 
-  Stumper.info(`Successfully loaded ${slashCommands.size} slash commands!`, "readSlashCommands");
+  Stumper.success(`Successfully loaded ${slashCommands.size} slash commands!`, "readSlashCommands");
   return commands;
 }
 
@@ -72,7 +72,7 @@ async function readTextCommands(client: Client): Promise<void> {
     client.textCommands.set(command.command, command);
   });
 
-  Stumper.info(`Successfully loaded ${textCommands.size} text commands!`, "readTextCommands");
+  Stumper.success(`Successfully loaded ${textCommands.size} text commands!`, "readTextCommands");
 }
 
 async function readModals(client: Client): Promise<void> {
@@ -81,14 +81,18 @@ async function readModals(client: Client): Promise<void> {
     client.modals.set(command.id, command);
   });
 
-  Stumper.info(`Successfully loaded ${client.modals.size} modals!`, "readModals");
+  Stumper.success(`Successfully loaded ${client.modals.size} modals!`, "readModals");
 }
 
-async function readContextMenus(client: Client): Promise<void> {
+async function readContextMenus(client: Client): Promise<Array<RESTPostAPIContextMenuApplicationCommandsJSONBody>> {
+  const menus: Array<RESTPostAPIContextMenuApplicationCommandsJSONBody> = [];
+
   const contextMenus = ContextMenuCommandManager.getInstance().getCommands();
-  contextMenus.forEach((command) => {
-    client.contextMenus.set(command.name, command);
+  contextMenus.forEach((menu) => {
+    client.contextMenus.set(menu.name, menu);
+    menus.push(menu.data.toJSON());
   });
 
-  Stumper.info(`Successfully loaded ${client.contextMenus.size} context menus!`, "readContextMenus");
+  Stumper.success(`Successfully loaded ${client.contextMenus.size} context menus!`, "readContextMenus");
+  return menus;
 }

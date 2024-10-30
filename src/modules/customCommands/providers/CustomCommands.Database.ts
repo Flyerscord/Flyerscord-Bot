@@ -11,7 +11,7 @@ export default class CustomCommandsDB extends Database {
   private static instance: CustomCommandsDB;
 
   private constructor() {
-    super({ name: "CustomCommands" });
+    super({ name: "custom-commands" });
   }
 
   static getInstance(): CustomCommandsDB {

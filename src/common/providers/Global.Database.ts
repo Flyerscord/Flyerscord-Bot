@@ -8,7 +8,7 @@ export default class GlobalDB extends Database {
   private readonly VISITOR_ROLE_MESSAGE_ID_KEY = "visitorRoleMessageId";
 
   private constructor() {
-    super({ name: "Cache" });
+    super({ name: "global" });
     this.db.ensure(this.COMMAND_LIST_MESSAGE_ID_KEY, "");
     this.db.ensure(this.USER_LOG_CHANNEL_ID_KEY, "");
     this.db.ensure(this.VISITOR_ROLE_MESSAGE_ID_KEY, "");

@@ -1,10 +1,20 @@
 import Stumper from "stumper";
+import { closeAllDbConnections } from "../utils/cleanup";
 
 export default (): void => {
   // Process UnhandledRejection
   process.on("unhandledRejection", function (err, p) {
-    Stumper.error(err, "Unhandled Exception");
+    Stumper.caughtError(err, "Unhandled Exception");
     Stumper.error(p, "Unhandled Exception");
+  });
+
+  // Process UncaughtException
+  process.on("uncaughtException", function (err) {
+    Stumper.caughtError(err, "Uncaught Exception");
+
+    closeAllDbConnections();
+
+    process.exit(1);
   });
 
   // Process Warning

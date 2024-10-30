@@ -25,6 +25,12 @@ export default [
       "@typescript-eslint/no-unused-vars": ["error"],
       "@typescript-eslint/explicit-module-boundary-types": "warn",
       "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/explicit-member-accessibility": [
+        "warn",
+        {
+          accessibility: "no-public",
+        },
+      ],
 
       // Prettier integration
       "prettier/prettier": "error",

@@ -118,7 +118,6 @@ export default class CustomCommandsDB extends Database {
     const match = url.match(imgurRegex);
 
     if (!match) {
-      console.log("Invalid Imgur URL format.");
       return url;
     }
 
@@ -130,16 +129,13 @@ export default class CustomCommandsDB extends Database {
       try {
         const response = await axios.head(directUrl);
         if (response.headers["content-type"].startsWith("image/")) {
-          // If a valid image type is found, return the direct URL
           return directUrl;
         }
       } catch (error) {
-        // Continue to the next extension if this one fails
-        console.log(`Attempt with ${ext} failed:`, error);
+        Stumper.caughtError(error, "CustomCommandsDB:formatImgurUrl");
       }
     }
 
-    console.log("Failed to retrieve a valid image URL.");
     return url;
   }
 }

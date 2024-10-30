@@ -2,8 +2,8 @@ import { PermissionResolvable } from "discord.js";
 
 export default interface ITextCommandOptions {
   description?: string;
-  allowedUsers?: Array<string>;
-  allowedRoles?: Array<string>;
+  allowedUsers?: string[];
+  allowedRoles?: string[];
   allowedPermissions?: Array<PermissionResolvable>;
   allowedLocations?: Array<COMMAND_LOCATION>;
 }

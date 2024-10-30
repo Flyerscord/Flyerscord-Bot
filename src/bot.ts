@@ -32,6 +32,12 @@ Stumper.setConfig({ logLevel: Config.getConfig().logLevel });
 Stumper.info(`Starting Bot in ${Config.isProductionMode() ? "production" : "non-production"} mode!`, "main");
 
 /* -------------------------------------------------------------------------- */
+/*                          Initialize Health Manager                         */
+/* -------------------------------------------------------------------------- */
+import BotHealthManager from "./common/managers/BotHealthManager";
+BotHealthManager.getInstance();
+
+/* -------------------------------------------------------------------------- */
 /*                            Create Discord Client                           */
 /* -------------------------------------------------------------------------- */
 import { Client, Collection, GatewayIntentBits, Partials } from "discord.js";

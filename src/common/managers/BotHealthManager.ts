@@ -1,3 +1,5 @@
+import Stumper from "stumper";
+
 export default class BotHealthManager {
   private static instance: BotHealthManager;
 
@@ -5,6 +7,7 @@ export default class BotHealthManager {
 
   private constructor() {
     this.healthy = false;
+    Stumper.warning("Bot is NOT healthy!", "BotHealthManager:setHealthy");
   }
 
   static getInstance(): BotHealthManager {
@@ -20,5 +23,11 @@ export default class BotHealthManager {
 
   setHealthy(healthy: boolean): void {
     this.healthy = healthy;
+
+    if (healthy) {
+      Stumper.success("Bot is healthy!", "BotHealthManager:setHealthy");
+    } else {
+      Stumper.warning("Bot is NOT healthy!", "BotHealthManager:setHealthy");
+    }
   }
 }

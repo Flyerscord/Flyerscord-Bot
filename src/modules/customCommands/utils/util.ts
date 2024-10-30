@@ -4,6 +4,7 @@ import Config from "../../../common/config/Config";
 import discord from "../../../common/utils/discord/discord";
 import ICustomCommand from "../interfaces/ICustomCommand";
 import Time from "../../../common/utils/Time";
+import TextCommandManager from "../../../common/managers/TextCommandManager";
 
 export async function updateCommandList(): Promise<void> {
   const customCommandsDB = CustomCommandsDB.getInstance();
@@ -12,7 +13,20 @@ export async function updateCommandList(): Promise<void> {
   const commandListMessageId = db.getCommandListMessageId();
   const commandListChannelId = Config.getConfig().customCommandListChannelId;
 
-  const commands = customCommandsDB.getAllCommands();
+  const textCommandManager = TextCommandManager.getInstance();
+  const hardcodedCommands = textCommandManager.getCommands().filter((value) => value.prefix == Config.getConfig().prefix.normal);
+  const hardcodedCommandsCustom: Array<ICustomCommand> = hardcodedCommands.map((command) => {
+    return {
+      name: command.command,
+      text: "",
+      createdBy: "System",
+      createdOn: Time.getCurrentTime(),
+      history: [],
+    };
+  });
+
+  let commands = [...hardcodedCommandsCustom, ...customCommandsDB.getAllCommands()];
+  commands = commands.sort((a, b) => a.name.localeCompare(b.name));
   const commandListMessage = createCommandListMessage(commands);
 
   if (commandListMessageId == "") {
@@ -29,7 +43,7 @@ export async function updateCommandList(): Promise<void> {
 function createCommandListMessage(commands: Array<ICustomCommand>): string {
   const date = Time.getCurrentDate();
   let output = `**Commands as of ${date} (${commands.length} commands)**\n`;
-  const prefix = Config.getConfig().prefix;
+  const prefix = Config.getConfig().prefix.normal;
 
   for (let i = 0; i < commands.length; i++) {
     const command = commands[i];

@@ -8,7 +8,7 @@ export default class GameDayPostsModule extends Module {
   }
 
   protected override async setup(): Promise<void> {
-    this.readInCommands<SlashCommand>(__dirname, "slash");
+    await this.readInCommands<SlashCommand>(__dirname, "slash");
 
     this.registerSchedules();
   }

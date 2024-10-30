@@ -13,14 +13,14 @@ export default class PlayerEmojisDB extends Database {
 
   public addPlayer(playerName: number, emojiId: string): boolean {
     if (!this.hasPlayer(playerName)) {
-      this.db.set(playerName, emojiId);
+      this.db.set(playerName.toString(), emojiId);
       return true;
     }
     return false;
   }
 
   public hasPlayer(playerName: number): boolean {
-    return this.db.has(playerName);
+    return this.db.has(playerName.toString());
   }
 
   public clearPlayers(): void {

@@ -11,7 +11,9 @@ export async function addEmoji(emoji: IEmoji): Promise<GuildEmoji | undefined> {
   const guild = getGuild();
   if (guild) {
     try {
-      return await guild.emojis.create({ attachment: emoji.url, name: emoji.name });
+      const createEmoji = await guild.emojis.create({ attachment: emoji.url, name: emoji.name });
+      Stumper.info(`Successfully created emoji: ${createEmoji.name}`, "addEmoji");
+      return createEmoji;
     } catch (error) {
       Stumper.error(`Failed to create ${emoji.name} emoji using the url: ${emoji.url}`, "addEmoji");
       Stumper.error(error), "addEmoji";

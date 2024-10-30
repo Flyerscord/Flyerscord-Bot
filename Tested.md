@@ -1,6 +1,6 @@
 # List of tested and working features
 
-- leveling
+- Level Module
   - /rank
   - /leaderboard
   - leveling
@@ -16,8 +16,11 @@
   - TODO STILL NEED TO TEST THE AUTO COMMAND INPUT
 - Game day posts
 - Health check
-- misc module
+- Misc module
   - /ping
 - NHL module
   - NHL standings
   - NHL schedule
+- Player Emojis module
+  - Adding player emojis
+  - Removing player emojis

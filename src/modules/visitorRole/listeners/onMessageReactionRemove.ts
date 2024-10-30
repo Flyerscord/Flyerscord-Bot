@@ -8,6 +8,8 @@ import discord from "../../../common/utils/discord/discord";
 export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("messageReactionRemove", async (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) => {
+    if (user.bot) return;
+
     const db = GlobalDB.getInstance();
 
     const vistorMessageId = db.getVisitorRoleMessageId();

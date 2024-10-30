@@ -24,3 +24,7 @@
 - Player Emojis module
   - Adding player emojis
   - Removing player emojis
+- Visitor Role module
+  - Adding member role to new members
+  - Removing visitor role from members
+  - Adding visitor role to members

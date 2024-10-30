@@ -37,7 +37,13 @@ Stumper.info(`Starting Bot in ${Config.isProductionMode() ? "production" : "non-
 import { Client, Collection, GatewayIntentBits, Partials } from "discord.js";
 
 const client = new Client({
-  intents: [GatewayIntentBits.MessageContent, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
+  intents: [
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+  ],
   partials: [Partials.Message, Partials.Reaction, Partials.User],
 });
 

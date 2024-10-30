@@ -22,9 +22,9 @@ export async function addEmoji(emoji: IEmoji): Promise<GuildEmoji | undefined> {
   return undefined;
 }
 
-export async function addMultipleEmojis(emojis: IEmoji[]): Promise<Array<GuildEmoji | undefined>> {
+export async function addMultipleEmojis(emojis: IEmoji[]): Promise<(GuildEmoji | undefined)[]> {
   const guild = getGuild();
-  const emojisCreated: Array<GuildEmoji | undefined> = [];
+  const emojisCreated: (GuildEmoji | undefined)[] = [];
   if (guild) {
     for (let i = 0; i < emojis.length; i++) {
       const emoji = emojis[i];

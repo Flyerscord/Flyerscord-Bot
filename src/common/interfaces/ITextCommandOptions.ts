@@ -5,7 +5,7 @@ export default interface ITextCommandOptions {
   allowedUsers?: string[];
   allowedRoles?: string[];
   allowedPermissions?: PermissionResolvable[];
-  allowedLocations?: Array<COMMAND_LOCATION>;
+  allowedLocations?: COMMAND_LOCATION[];
 }
 
 export enum COMMAND_LOCATION {

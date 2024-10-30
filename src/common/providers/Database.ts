@@ -25,11 +25,11 @@ export default abstract class Database {
     return arr.map((val) => val[1]);
   }
 
-  protected getAllKeys(): Array<string | number> {
+  protected getAllKeys(): (string | number)[] {
     return Array.from(this.db.keys());
   }
 
-  protected getAllKeysAndValues(): Array<{ key: string | number; value: any }> {
+  protected getAllKeysAndValues(): { key: string | number; value: any }[] {
     const arr = Array.from(this.db);
     return arr.map((val) => {
       return { key: val[0], value: val[1] };

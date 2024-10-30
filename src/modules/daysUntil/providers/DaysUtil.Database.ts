@@ -37,7 +37,7 @@ export default class DaysUntilDB extends Database {
 
   getEnabledEventNames(): string[] {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const enabledEvents: Array<{ key: string | number; value: any }> = this.getAllKeysAndValues().filter((keyValue) => keyValue.value.enabled);
+    const enabledEvents: { key: string | number; value: any }[] = this.getAllKeysAndValues().filter((keyValue) => keyValue.value.enabled);
 
     return enabledEvents.map((keyValue) => keyValue.key as string);
   }

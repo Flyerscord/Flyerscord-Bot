@@ -1,10 +1,6 @@
 import { LOG_LEVEL } from "stumper";
 
-export type IConfig = IDevConfig;
-
-interface IDevConfig extends ICommonConfig {
-  guildId?: string;
-}
+export type IConfig = ICommonConfig;
 
 interface ICommonConfig {
   token: string;

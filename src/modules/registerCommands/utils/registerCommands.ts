@@ -31,22 +31,15 @@ async function registerAllCommands(
     throw new Error("Client user not found");
   }
 
-  const isProduction = Config.isProductionMode();
-  const target = isProduction ? "production" : "non-production";
+  const guildId = Config.getConfig().masterGuildId;
 
-  const guildId = Config.getConfig().guildId;
-  if (!isProduction && !guildId) {
-    Stumper.error("Guild id missing from non production config", "registerCommands:registerCommands:registerAllCommands");
-    throw new Error("Guild id missing from non production config");
-  }
-
-  const route = isProduction ? Routes.applicationCommands(client.user.id) : Routes.applicationGuildCommands(client.user.id, guildId!);
+  const route = Routes.applicationGuildCommands(client.user.id, guildId);
 
   try {
     await withTimeout(rest.put(route, { body: commands }), 10 * 60 * 1000);
-    Stumper.success(`Successfully registered commands for ${target}.`, "registerCommands:registerCommands:registerAllCommands");
+    Stumper.success("Successfully registered commands.`", "registerCommands:registerCommands:registerAllCommands");
   } catch (err) {
-    Stumper.error(`Error registering commands for ${target}`, "registerCommands:registerCommands:registerAllCommands");
+    Stumper.error("Error registering commands!", "registerCommands:registerCommands:registerAllCommands");
     Stumper.caughtError(err, "registerCommands:registerCommands:registerAllCommands");
     if (err instanceof Error && err.message.includes("Request timed out")) {
       // Do nothing

@@ -15,7 +15,14 @@ export default {
       rolesChannelId: "",
     },
     joinLeaveMessageChannelId: "",
+    userLogChannelId: "",
     customCommandListChannelId: "",
+    imageKit: {
+      publicKey: "",
+      privateKey: "",
+      urlEndpoint: "",
+      redirectUrl: "",
+    },
     imgur: {
       clientId: "",
       clientSecret: "",
@@ -36,6 +43,12 @@ export default {
         ],
       },
     },
+    voiceStatsChannels: [
+      {
+        name: "",
+        channelId: "",
+      },
+    ],
   },
   nonProduction: {
     token: "",
@@ -52,7 +65,14 @@ export default {
       rolesChannelId: "",
     },
     joinLeaveMessageChannelId: "",
+    userLogChannelId: "",
     customCommandListChannelId: "",
+    imageKit: {
+      publicKey: "",
+      privateKey: "",
+      urlEndpoint: "",
+      redirectUrl: "",
+    },
     imgur: {
       clientId: "",
       clientSecret: "",
@@ -73,6 +93,11 @@ export default {
         ],
       },
     },
-    guildId: "",
+    voiceStatsChannels: [
+      {
+        name: "",
+        channelId: "",
+      },
+    ],
   },
 };

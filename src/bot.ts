@@ -97,6 +97,7 @@ import LevelsModule from "./modules/levels/LevelsModule";
 import MiscModule from "./modules/misc/MiscModule";
 import NHLModule from "./modules/nhl/NHLModule";
 import PlayerEmojisModule from "./modules/playerEmojis/PlayerEmojisModule";
+import StatsVoiceChannelModule from "./modules/statsVoiceChannel/StatsVoiceChannelModule";
 import UserManagementModule from "./modules/userManagement/UserManagementModule";
 import VisitorRoleModule from "./modules/visitorRole/VisitorRoleModule";
 import RegisterCommandsModule from "./modules/registerCommands/RegisterCommandsModule";
@@ -125,6 +126,7 @@ async function startUp(): Promise<void> {
   await new MiscModule().enable();
   await new NHLModule().enable();
   await new PlayerEmojisModule().enable();
+  await new StatsVoiceChannelModule().enable();
   await new UserManagementModule().enable();
   await new VisitorRoleModule().enable();
 

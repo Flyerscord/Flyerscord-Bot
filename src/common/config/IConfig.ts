@@ -17,6 +17,7 @@ interface ICommonConfig {
   gameDayPosts: IGameDayPostsConfig;
   joinLeaveMessageChannelId: string;
   userLogChannelId: string;
+  voiceStatsChannels: IVoiceStatsConfig[];
 }
 
 interface IPrefixConfig {
@@ -53,4 +54,9 @@ interface IGameDayPostsTagIdsSeasonsConfig {
 interface IImgurConfig {
   clientId: string;
   clientSecret: string;
+}
+
+interface IVoiceStatsConfig {
+  name: string;
+  channelId: string;
 }

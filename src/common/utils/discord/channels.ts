@@ -1,4 +1,4 @@
-import { Channel, ForumChannel, ForumThreadChannel, TextChannel } from "discord.js";
+import { Channel, ForumChannel, ForumThreadChannel, TextChannel, VoiceChannel } from "discord.js";
 import ClientManager from "../../managers/ClientManager";
 
 export async function getChannel(channelId: string): Promise<Channel | null> {
@@ -26,6 +26,14 @@ export async function getForumPostChannel(forumChannelId: string, postChannelId:
   const forumChannel = await getForumChannel(forumChannelId);
   if (forumChannel) {
     return await forumChannel.threads.fetch(postChannelId);
+  }
+  return undefined;
+}
+
+export async function getVoiceChannel(channelId: string): Promise<VoiceChannel | undefined> {
+  const channel = await getChannel(channelId);
+  if (channel && channel instanceof VoiceChannel) {
+    return channel;
   }
   return undefined;
 }

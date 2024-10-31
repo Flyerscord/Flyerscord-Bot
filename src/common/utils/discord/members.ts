@@ -1,5 +1,6 @@
-import { Collection, GuildMember } from "discord.js";
+import { Collection, Guild, GuildMember } from "discord.js";
 import { getGuild } from "./guilds";
+import Stumper from "stumper";
 
 export async function getMember(userId: string): Promise<GuildMember | undefined> {
   return await getGuild()?.members.fetch(userId);
@@ -22,4 +23,13 @@ export async function getMemberJoinPosition(member: GuildMember): Promise<number
     return memberIds.indexOf(member.id) + 1;
   }
   return -1;
+}
+
+export async function getNitroBoosters(): Promise<GuildMember[]> {
+  const members = await getMembers();
+  if (!members) {
+    Stumper.error("Error finding members", "common:members:getNitroBoosters");
+    return [];
+  }
+  return members.filter((member) => member.premiumSince != null).map((member) => member);
 }

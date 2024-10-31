@@ -9,7 +9,7 @@ import CommandImporter from "../utils/CommandImporter";
 
 export default (): void => {
   ClientManager.getInstance().client.on("messageCreate", async (message: Message) => {
-    if (checkCommandImport(message)) return;
+    if (await checkCommandImport(message)) return;
     if (checkForCustomTextCommand(message)) return;
   });
 };
@@ -37,7 +37,7 @@ function checkForCustomTextCommand(message: Message): boolean {
   return false;
 }
 
-function checkCommandImport(message: Message): boolean {
+async function checkCommandImport(message: Message): Promise<boolean> {
   if (!message.channel.isTextBased()) return false;
 
   const importer = CommandImporter.getInstance();
@@ -49,7 +49,7 @@ function checkCommandImport(message: Message): boolean {
   if (message.author.id == importer.getUserId()) {
     importer.setNewCommandName(message.content);
   } else {
-    importer.setNewCommandText(message.content);
+    await importer.setNewCommandText(message.content);
   }
 
   return true;

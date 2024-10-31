@@ -12,6 +12,7 @@ interface ICommonConfig {
   masterGuildId: string;
   prefix: IPrefixConfig;
   customCommandListChannelId: string;
+  imageKit: IImageKitConfig;
   imgur: IImgurConfig;
   vistorReactRole: IVistorReactConfig;
   gameDayPosts: IGameDayPostsConfig;
@@ -49,6 +50,13 @@ interface IGameDayPostsTagIdsSeasonsConfig {
   startingYear: number;
   endingYear: number;
   tagId: string;
+}
+
+interface IImageKitConfig {
+  publicKey: string;
+  privateKey: string;
+  urlEndpoint: string;
+  redirectUrl: string;
 }
 
 interface IImgurConfig {

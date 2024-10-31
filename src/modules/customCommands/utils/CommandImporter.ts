@@ -1,4 +1,7 @@
 import discord from "../../../common/utils/discord/discord";
+import { ErrorUploadingToImageKitException } from "../exceptions/ErrorUploadingToImageKitException";
+import { InvalidImgurUrlException } from "../exceptions/InvalidImgurUrlException";
+import PageNotFoundException from "../exceptions/PageNotFoundException";
 import CustomCommandsDB from "../providers/CustomCommands.Database";
 
 export default class CommandImporter {
@@ -68,26 +71,37 @@ export default class CommandImporter {
     return this.name;
   }
 
-  setNewCommandText(text: string): void {
+  async setNewCommandText(text: string): Promise<void> {
     this.text = text;
-    this.createCommand();
+    await this.createCommand();
   }
 
   getNewCommandText(): string {
     return this.text;
   }
 
-  private createCommand(): void {
+  private async createCommand(): Promise<void> {
     if (this.name == "" || this.text == "") {
-      discord.messages.sendMessageToChannel(this.channelId, "Error creating command! Name or text is missing!");
+      await discord.messages.sendMessageToChannel(this.channelId, "Error creating command! Name or text is missing!");
       return;
     }
 
     const db = CustomCommandsDB.getInstance();
     if (db.hasCommand(this.name)) {
-      discord.messages.sendMessageToChannel(this.channelId, `Command ${this.name} already exists!`);
+      await discord.messages.sendMessageToChannel(this.channelId, `Command ${this.name} already exists!`);
       return;
     }
-    db.addCommand(this.name, this.text, this.userId);
+
+    try {
+      await db.addCommand(this.name, this.text, this.userId);
+    } catch (error) {
+      if (error instanceof InvalidImgurUrlException || error instanceof ErrorUploadingToImageKitException) {
+        await discord.messages.sendMessageToChannel(this.channelId, "Error creating command! There was an issue with the url.");
+      } else if (error instanceof PageNotFoundException) {
+        await discord.messages.sendMessageToChannel(this.channelId, "Error creating command! The url returns a 404.");
+      } else {
+        await discord.messages.sendMessageToChannel(this.channelId, "Error creating command!");
+      }
+    }
   }
 }

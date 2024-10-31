@@ -2,6 +2,10 @@ import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
 import Config from "../../../../common/config/Config";
+import { InvalidImgurUrlException } from "../../exceptions/InvalidImgurUrlException";
+import { ErrorUploadingToImageKitException } from "../../exceptions/ErrorUploadingToImageKitException";
+import Stumper from "stumper";
+import PageNotFoundException from "../../exceptions/PageNotFoundException";
 
 export default class EditCommand extends AdminSlashCommand {
   constructor() {
@@ -32,7 +36,30 @@ export default class EditCommand extends AdminSlashCommand {
       return;
     }
 
-    db.updateCommand(name, newResponse, interaction.user.id);
+    try {
+      await db.updateCommand(name, newResponse, interaction.user.id);
+    } catch (error) {
+      Stumper.caughtError(error, "customCommands:EditCommand:execute");
+      if (error instanceof InvalidImgurUrlException || error instanceof ErrorUploadingToImageKitException) {
+        interaction.reply({
+          content: `Error updating command ${Config.getConfig().prefix.normal}${name}! There was an issue with the url. Contact flyerzrule for help.`,
+          ephemeral: true,
+        });
+        return;
+      } else if (error instanceof PageNotFoundException) {
+        interaction.reply({
+          content: `Error adding command ${Config.getConfig().prefix.normal}${name}! The url returns a 404.`,
+          ephemeral: true,
+        });
+        return;
+      } else {
+        interaction.reply({
+          content: `Error adding command ${Config.getConfig().prefix.normal}${name}!`,
+          ephemeral: true,
+        });
+        throw error;
+      }
+    }
     interaction.reply({
       content: `Command ${Config.getConfig().prefix.normal}${name} updated!`,
       ephemeral: true,

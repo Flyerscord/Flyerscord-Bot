@@ -4,8 +4,12 @@ import Time from "../../../common/utils/Time";
 import Database from "../../../common/providers/Database";
 import ICustomCommand, { ICustomCommandHistory } from "../interfaces/ICustomCommand";
 import { updateCommandList } from "../utils/util";
-import Imgur from "../utils/Imgur";
+import ImageKit from "../utils/ImageKit";
 import axios from "axios";
+import Imgur from "../utils/Imgur";
+import { InvalidImgurUrlException } from "../exceptions/InvalidImgurUrlException";
+import { ErrorUploadingToImageKitException } from "../exceptions/ErrorUploadingToImageKitException";
+import PageNotFoundException from "../exceptions/PageNotFoundException";
 
 export default class CustomCommandsDB extends Database {
   private static instance: CustomCommandsDB;
@@ -35,13 +39,10 @@ export default class CustomCommandsDB extends Database {
 
   async addCommand(name: string, text: string, userId: string): Promise<boolean> {
     if (!this.hasCommand(name)) {
-      if (this.isImageLink(text)) {
-        text = await this.formatImgurUrl(text);
-        const imgur = Imgur.getInstance();
-        const imgurLink = await imgur.uploadImage(text, `Flyerscord cmd: ${name}`);
-        if (imgurLink) {
-          text = imgurLink;
-        }
+      try {
+        text = await this.handleImageUpload(text, userId, name);
+      } catch (error) {
+        throw error;
       }
 
       const customCommand: ICustomCommand = {
@@ -72,10 +73,16 @@ export default class CustomCommandsDB extends Database {
     return true;
   }
 
-  updateCommand(name: string, text: string, userId: string): boolean {
+  async updateCommand(name: string, text: string, userId: string): Promise<boolean> {
     if (this.hasCommand(name)) {
       const oldCommand = this.getCommand(name)!;
-      const newCommand = this.updateObject(oldCommand, text, userId);
+
+      let newCommand: ICustomCommand;
+      try {
+        newCommand = await this.updateObject(oldCommand, text, userId);
+      } catch (error) {
+        throw error;
+      }
       this.db.set(name, newCommand);
       return true;
     }
@@ -86,8 +93,14 @@ export default class CustomCommandsDB extends Database {
     return this.getAllValues();
   }
 
-  private updateObject(oldCommand: ICustomCommand, newText: string, editUser: string): ICustomCommand {
+  private async updateObject(oldCommand: ICustomCommand, newText: string, editUser: string): Promise<ICustomCommand> {
     const newCommand = oldCommand;
+
+    try {
+      newText = await this.handleImageUpload(newText, editUser, oldCommand.name);
+    } catch (error) {
+      throw error;
+    }
 
     const historyEntry: ICustomCommandHistory = {
       oldText: oldCommand.text,
@@ -102,40 +115,55 @@ export default class CustomCommandsDB extends Database {
     return newCommand;
   }
 
-  private isImageLink(text: string): boolean {
-    const urlPattern = /^(https?:\/\/[^\s]+)$/g;
+  private async handleImageUpload(text: string, userId: string, name: string): Promise<string> {
+    if (this.isImageLink(text)) {
+      if (!(await this.isUrlValid(text))) {
+        throw new PageNotFoundException();
+      }
 
-    const urls = text.match(urlPattern);
-
-    if (urls && urls.length > 0) {
-      return true;
-    }
-    return false;
-  }
-
-  private async formatImgurUrl(url: string): Promise<string> {
-    const imgurRegex = /^https?:\/\/(www\.)?imgur\.com\/([a-zA-Z0-9]+)$/;
-    const match = url.match(imgurRegex);
-
-    if (!match) {
-      return url;
-    }
-
-    const imageId = match[2];
-    const extensions = [".jpg", ".png", ".gif"];
-
-    for (const ext of extensions) {
-      const directUrl = `https://i.imgur.com/${imageId}${ext}`;
-      try {
-        const response = await axios.head(directUrl);
-        if (response.headers["content-type"].startsWith("image/")) {
-          return directUrl;
+      if (text.match(/imgur.com/)) {
+        const imgurRes = await Imgur.getInstance().getImageUrlForImgurUrl(text);
+        if (imgurRes) {
+          text = imgurRes;
+        } else {
+          throw new InvalidImgurUrlException();
         }
-      } catch (error) {
-        Stumper.caughtError(error, "customCommands:CustomCommandsDB:formatImgurUrl");
+      }
+      const imageKit = ImageKit.getInstance();
+      const imageLink = await imageKit.uploadImage(text, `flyerscord-cmd-${name}`, userId, name);
+      if (imageLink) {
+        text = imageLink;
+      } else {
+        throw new ErrorUploadingToImageKitException();
       }
     }
 
-    return url;
+    return text;
+  }
+
+  private isImageLink(text: string): boolean {
+    const urlPattern = /^(https?:\/\/[^\s]+)$/g;
+    const youtubeRegex =
+      /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(?:-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|live\/|v\/)?)([\w\-]+)(\S+)?/;
+
+    const urlMatch = urlPattern.test(text);
+    const youtubeMatch = youtubeRegex.test(text);
+
+    return urlMatch && !youtubeMatch;
+  }
+
+  private async isUrlValid(url: string): Promise<boolean> {
+    try {
+      const response = await axios.head(url);
+      if (response.status == 200) {
+        Stumper.debug(`Url ${url} is valid`, "customCommands:CustomCommandsDB:isUrlValid");
+        return true;
+      }
+      Stumper.debug(`Url ${url} is not valid. Status code: ${response.status}`, "customCommands:CustomCommandsDB:isUrlValid");
+      return false;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      return false;
+    }
   }
 }

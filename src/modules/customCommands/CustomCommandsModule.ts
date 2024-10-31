@@ -3,7 +3,7 @@ import SlashCommand from "../../common/models/SlashCommand";
 import TextCommand from "../../common/models/TextCommand";
 import onAutocomplete from "./listeners/onAutocomplete";
 import onMessageCreate from "./listeners/onMessageCreate";
-import Imgur from "./utils/Imgur";
+import Imgur from "./utils/ImageKit";
 
 export default class CustomCommandsModule extends Module {
   constructor() {

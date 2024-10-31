@@ -1,48 +1,83 @@
-import { ImgurClient } from "imgur";
-import { ImgurSetupRequiredException } from "../exceptions/ImgurSetupRequiredException";
-import Config from "../../../common/config/Config";
+import ImgurClient from "imgur";
 import Stumper from "stumper";
+import Config from "../../../common/config/Config";
 
 export default class Imgur {
   private static instance: Imgur;
 
-  private client: ImgurClient | undefined;
   private clientId: string;
   private clientSecret: string;
+
+  private client: ImgurClient;
 
   private constructor() {
     this.clientId = Config.getConfig().imgur.clientId;
     this.clientSecret = Config.getConfig().imgur.clientSecret;
+
+    this.client = new ImgurClient({ clientId: this.clientId, clientSecret: this.clientSecret });
   }
 
   static getInstance(): Imgur {
     return this.instance || (this.instance = new this());
   }
 
-  async uploadImage(url: string, title: string): Promise<string | undefined> {
-    this.setupConnection();
-
-    Stumper.debug(`Uploading image: ${url}`, "customCommands:Imgur:uploadImage");
-
-    const response = await this.client!.upload({
-      image: url,
-      title: title,
-      description: "Image for Flyers Discord Command",
-    });
-
-    if (response.success) {
-      Stumper.debug(`Image uploaded successfully: ${response.data.link}`, "customCommands:Imgur:uploadImage");
-      return response.data.link;
+  async getImageUrlForImgurUrl(url: string): Promise<string | undefined> {
+    const imageType = await this.getImageType(url);
+    switch (imageType) {
+      case "image/jpeg":
+        return this.convertImgurUrlToImageUrl(url, "jpg");
+      case "image/png":
+        return this.convertImgurUrlToImageUrl(url, "png");
+      case "image/gif":
+        return this.convertImgurUrlToImageUrl(url, "gif");
+      case "image/apng":
+        return this.convertImgurUrlToImageUrl(url, "png");
+      case "image/tiff":
+        return this.convertImgurUrlToImageUrl(url, "tiff");
+      case "application/pdf":
+        return this.convertImgurUrlToImageUrl(url, "pdf");
+      default:
+        Stumper.error(`Image type ${imageType} not supported`, "customCommands:Imgur:getImageUrlForImgurUrl");
+        return undefined;
     }
+  }
+
+  private convertImgurUrlToImageUrl(url: string, fileEnding: string): string {
+    const hash = this.getHashFromUrl(url);
+    return `https://i.imgur.com/${hash}.${fileEnding}`;
+  }
+
+  private async getImageType(url: string): Promise<string | undefined> {
+    const hash = this.getHashFromUrl(url);
+    if (!hash) {
+      Stumper.error(`Error getting hash from url: ${url}`, "customCommands:Imgur:getImageType");
+      return undefined;
+    }
+
+    const imageData = await this.client.getImage(hash);
+
+    if (imageData.success) {
+      Stumper.debug(`Image ${url} has the type: ${imageData.data.type}`, "customCommands:Imgur:getImageType");
+      return imageData.data.type;
+    }
+    Stumper.error(`Error getting image type for image ${url}`, "customCommands:Imgur:getImageType");
     return undefined;
   }
 
-  private setupConnection(): void {
-    if (this.client == undefined) {
-      if (this.clientId == "") {
-        throw new ImgurSetupRequiredException();
-      }
-      this.client = new ImgurClient({ clientId: this.clientId, clientSecret: this.clientSecret });
+  private getHashFromUrl(url: string): string | undefined {
+    const hashRegex1 = /^https?:\/\/imgur.com\/([a-zA-Z0-9]+)$/;
+    const hashRegex2 = /^https?:\/\/i.imgur.com\/([a-zA-Z0-9]+)\.[a-z]+$/;
+    const match1 = url.match(hashRegex1);
+
+    if (match1) {
+      return match1[1];
     }
+
+    const match2 = url.match(hashRegex2);
+    if (match2) {
+      return match2[1];
+    }
+
+    return undefined;
   }
 }

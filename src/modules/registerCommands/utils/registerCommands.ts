@@ -57,7 +57,7 @@ async function registerAllCommands(
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function withTimeout(promise: Promise<any>, ms: number) {
+async function withTimeout(promise: Promise<any>, ms: number): Promise<any> {
   const timeout = new Promise((_, reject) =>
     setTimeout(() => reject(new Error(`Request timed out after ${Time.getFormattedTimeFromMilliseconds(ms)}`)), ms),
   );

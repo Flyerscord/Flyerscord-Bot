@@ -14,11 +14,12 @@ export async function checkForGameDay(): Promise<void> {
   const db = GameDayPostsDB.getInstance();
 
   if (res.status == 200) {
-    const game = res.data.games.find((game) => Time.isSameDay(new Date(), new Date(game.gameDate)));
+    const game = res.data.games.find((game) => Time.isSameDay(new Date(), new Date(game.startTimeUTC)));
 
     if (game) {
       // Don't create a post if one already exists
       if (db.hasPostByGameId(game.id)) {
+        Stumper.info(`Game ${game.id} already has a post`, "gameDayPosts:GameChecker:checkForGameDay");
         return;
       }
       const teamsRes = await nhlApi.teams.getTeams({ lang: "en" });
@@ -86,6 +87,7 @@ export async function closeAndLockOldPosts(): Promise<void> {
       const gameInfo = gameInfoResp.data;
 
       if (!Time.isSameDay(new Date(), new Date(gameInfo.gameDate))) {
+        Stumper.info(`Closing and locking post for game ${post.gameId}`, "gameDayPosts:GameChecker:checkForGameDay");
         discord.forums.setLockPost(Config.getConfig().gameDayPosts.channelId, post.channelId, true);
         discord.forums.setClosedPost(Config.getConfig().gameDayPosts.channelId, post.channelId, true);
       }

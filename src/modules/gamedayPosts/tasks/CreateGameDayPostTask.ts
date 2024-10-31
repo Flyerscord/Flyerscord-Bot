@@ -3,7 +3,8 @@ import { checkForGameDay, closeAndLockOldPosts } from "../utils/GameChecker";
 
 export default class CreateGameDayPostTask extends Task {
   constructor() {
-    super("CreateGameDayPostTask", "0 0 0 * * *");
+    // Run every day at 12:30 AM
+    super("CreateGameDayPostTask", "0 30 0 * * *");
   }
 
   protected async execute(): Promise<void> {

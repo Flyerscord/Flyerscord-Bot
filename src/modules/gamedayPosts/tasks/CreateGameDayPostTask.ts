@@ -8,7 +8,7 @@ export default class CreateGameDayPostTask extends Task {
   }
 
   protected async execute(): Promise<void> {
-    await checkForGameDay();
     await closeAndLockOldPosts();
+    await checkForGameDay();
   }
 }

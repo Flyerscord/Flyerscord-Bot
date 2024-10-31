@@ -86,7 +86,7 @@ export async function closeAndLockOldPosts(): Promise<void> {
     if (gameInfoResp.status == 200) {
       const gameInfo = gameInfoResp.data;
 
-      if (!Time.isSameDay(new Date(), new Date(gameInfo.gameDate))) {
+      if (!Time.isSameDay(new Date(), new Date(gameInfo.startTimeUTC))) {
         Stumper.info(`Closing and locking post for game ${post.gameId}`, "gameDayPosts:GameChecker:checkForGameDay");
         discord.forums.setLockPost(Config.getConfig().gameDayPosts.channelId, post.channelId, true);
         discord.forums.setClosedPost(Config.getConfig().gameDayPosts.channelId, post.channelId, true);

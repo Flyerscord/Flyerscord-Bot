@@ -1,7 +1,7 @@
 /* -------------------------------------------------------------------------- */
 /*                                Setup Stumper                                */
 /* -------------------------------------------------------------------------- */
-import Stumper, { LOG_LEVEL } from "stumper";
+import Stumper, { LOG_LEVEL, TIMEZONE } from "stumper";
 Stumper.setConfig({ logLevel: LOG_LEVEL.ALL, useColors: false });
 
 /* -------------------------------------------------------------------------- */
@@ -28,7 +28,7 @@ if (!Config.fileExists()) {
   process.exit(1);
 }
 
-Stumper.setConfig({ logLevel: Config.getConfig().logLevel });
+Stumper.setConfig({ logLevel: Config.getConfig().logLevel, timezone: TIMEZONE.LOCAL });
 Stumper.info(`Starting Bot in ${Config.isProductionMode() ? "production" : "non-production"} mode!`, "main:CheckConfig");
 
 /* -------------------------------------------------------------------------- */

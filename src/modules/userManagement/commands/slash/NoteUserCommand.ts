@@ -18,10 +18,10 @@ export default class NoteUserCommand extends AdminSlashCommand {
     const note: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "note");
 
     const db = UserManagementDB.getInstance();
-    db.addNote(user.id, note);
+    db.addNote(user.id, note, interaction.user.id);
 
     Stumper.info(`Added note for user: ${user.username} by user ${interaction.user.username}`, "userManagement:NoteUserCommand:execute");
-    sendLogMessage(`Added note for user: ${user.username} by user ${interaction.user.username} Note: ${note}`);
+    sendLogMessage(`Added note for user: \`${user.username}\` by user \`${interaction.user.username}\` Note: \`${note}\``);
     interaction.reply(`Added note for user: ${user.username}!`);
   }
 }

@@ -1,14 +1,15 @@
-import { ChatInputCommandInteraction, GuildMember } from "discord.js";
+import { ChatInputCommandInteraction, User } from "discord.js";
 import Stumper from "stumper";
 import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
 import { sendLogMessage } from "../../utils/ChannelLogging";
+import discord from "../../../../common/utils/discord/discord";
 
 export default class BanSlashCommand extends AdminSlashCommand {
   constructor() {
     super("ban", "Ban a user");
 
     this.data
-      .addMentionableOption((option) => option.setName("user").setDescription("The user to ban").setRequired(true))
+      .addUserOption((option) => option.setName("user").setDescription("The user to ban").setRequired(true))
       .addStringOption((option) => option.setName("reason").setDescription("The reason for banning.").setRequired(true))
       .addIntegerOption((option) =>
         option
@@ -19,26 +20,32 @@ export default class BanSlashCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const member: GuildMember = this.getParamValue(interaction, PARAM_TYPES.MEMBER, "user");
+    const user: User = this.getParamValue(interaction, PARAM_TYPES.USER, "user");
     const reason: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "reason");
     const deleteMessagesSeconds: number = this.getParamValue(interaction, PARAM_TYPES.INTEGER, "deletemessagestime") || 0;
 
-    await member.ban({ deleteMessageSeconds: deleteMessagesSeconds, reason: reason });
-
-    Stumper.warning(
-      `User ${member.displayName || member.user.username} (id: ${member.user.id}) has been banned by ${interaction.user.username}!`,
-      "userManagement:BanSlashCommand:execute",
-    );
-    sendLogMessage(`User ${member.displayName || member.user.username} has been banned by ${interaction.user.username}!`);
-
-    if (deleteMessagesSeconds > 0) {
-      Stumper.warning(
-        `Deleting messages from ${member.displayName || member.user.username} for the last ${deleteMessagesSeconds} seconds.`,
-        "userManagement:BanSlashCommand:execute",
-      );
-      sendLogMessage(`Deleting messages from ${member.displayName || member.user.username} for the last ${deleteMessagesSeconds} seconds.`);
+    const member = await discord.members.getMember(user.id);
+    if (!member) {
+      interaction.reply({ content: "Error finding member!", ephemeral: true });
+      Stumper.error(`Error finding member for user ${user.id}`, "userManagement:BanSlashCommand:execute");
+      return;
     }
 
-    interaction.reply(`User ${member.displayName || member.user.username} has been banned!`);
+    await member.ban({ deleteMessageSeconds: deleteMessagesSeconds, reason: reason });
+
+    const username = member.displayName || member.user.username;
+
+    Stumper.warning(
+      `User ${username} (id: ${member.user.id}) has been banned by ${interaction.user.username}!`,
+      "userManagement:BanSlashCommand:execute",
+    );
+    sendLogMessage(`User \`${username}\` has been banned by \`${interaction.user.username}\`! Reason: \`${reason}\``);
+
+    if (deleteMessagesSeconds > 0) {
+      Stumper.warning(`Deleting messages from ${username} for the last ${deleteMessagesSeconds} seconds.`, "userManagement:BanSlashCommand:execute");
+      sendLogMessage(`Deleting messages from \`${username}\` for the last \`${deleteMessagesSeconds} seconds.\``);
+    }
+
+    interaction.reply(`User ${username} has been banned!`);
   }
 }

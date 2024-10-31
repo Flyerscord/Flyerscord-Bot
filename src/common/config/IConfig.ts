@@ -16,6 +16,7 @@ interface ICommonConfig {
   vistorReactRole: IVistorReactConfig;
   gameDayPosts: IGameDayPostsConfig;
   joinLeaveMessageChannelId: string;
+  userLogChannelId: string;
 }
 
 interface IPrefixConfig {

@@ -26,7 +26,7 @@ export default class WarningReasonModal extends ModalMenu {
     const reason = this.getTextInputValue(interaction, "warningReasonInput");
 
     const db = UserManagementDB.getInstance();
-    db.addWarning(interaction.user.id, reason);
+    db.addWarning(interaction.user.id, reason, interaction.user.id);
 
     Stumper.info(
       `Added warning for user: ${this.targetUser.username} by user ${interaction.user.username}`,

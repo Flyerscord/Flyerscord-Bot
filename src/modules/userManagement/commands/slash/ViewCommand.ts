@@ -4,6 +4,7 @@ import UserManagementDB from "../../providers/UserManagement.Database";
 import { IUserInfo } from "../../interfaces/IUserInfo";
 import discord from "../../../../common/utils/discord/discord";
 import Time from "../../../../common/utils/Time";
+import Stumper from "stumper";
 
 export default class ViewCommand extends AdminSlashCommand {
   constructor() {
@@ -38,48 +39,62 @@ export default class ViewCommand extends AdminSlashCommand {
 
 async function createEmbed(userInfo: IUserInfo, view: string): Promise<EmbedBuilder | undefined> {
   const embed = new EmbedBuilder();
-  const user = discord.users.getUser(userInfo.userId);
   const member = await discord.members.getMember(userInfo.userId);
 
-  if (user && member) {
-    if (view == "warnings") {
-      embed.setTitle(`${user.username}'s Warnings`);
-      embed.setColor("Orange");
+  if (!member) {
+    Stumper.error(`Error finding member for user ${userInfo.userId}`, "userManagement:ViewCommand:createEmbed");
+    return undefined;
+  }
+  const user = member.user;
 
-      const warnings = userInfo.warnings;
-      for (let i = 0; i < warnings.length; i++) {
-        const warning = warnings[i];
-        embed.addFields({ name: `Warning ${i + 1}: ${Time.getFormattedDate(Time.getDate(warning.date))}`, value: warning.reason });
+  if (view == "warnings") {
+    embed.setTitle(`Warnings`);
+    embed.setColor("Orange");
+
+    const warnings = userInfo.warnings;
+    for (let i = 0; i < warnings.length; i++) {
+      const warning = warnings[i];
+      const addedBy = await discord.members.getMember(warning.addedBy);
+      if (!addedBy) {
+        Stumper.error(`Error finding member for user ${warning.addedBy}`, "userManagement:ViewCommand:createEmbed");
+        return undefined;
       }
-    } else if (view == "notes") {
-      embed.setTitle(`${user.username}'s Notes`);
-      embed.setColor("Blue");
+      const addedByUsername = addedBy.displayName || addedBy.user.username;
+      embed.addFields({ name: `${i + 1} (${addedByUsername}): ${Time.getFormattedDate(Time.getDate(warning.date))}`, value: warning.reason });
+    }
+  } else if (view == "notes") {
+    embed.setTitle(`Notes`);
+    embed.setColor("Blue");
 
-      const notes = userInfo.notes;
-      for (let i = 0; i < notes.length; i++) {
-        const note = notes[i];
-        embed.addFields({ name: `Note ${i + 1}: ${Time.getFormattedDate(Time.getDate(note.date))}`, value: note.reason });
+    const notes = userInfo.notes;
+    for (let i = 0; i < notes.length; i++) {
+      const note = notes[i];
+      const addedBy = await discord.members.getMember(note.addedBy);
+      if (!addedBy) {
+        Stumper.error(`Error finding member for user ${note.addedBy}`, "userManagement:ViewCommand:createEmbed");
+        return undefined;
       }
-    } else {
-      embed.setTitle(`${user.username}'s User Info`);
-      embed.setColor("Grey");
+      const addedByUsername = addedBy.displayName || addedBy.user.username;
+      embed.addFields({ name: `${i + 1} (${addedByUsername}): ${Time.getFormattedDate(Time.getDate(note.date))}`, value: note.reason });
+    }
+  } else {
+    embed.setTitle("User Info");
+    embed.setColor("Grey");
 
-      embed.addFields({ name: "User ID", value: `${userInfo.userId}` });
+    embed.addFields({ name: "User ID", value: `${userInfo.userId}` });
 
-      if (member.joinedAt) {
-        embed.addFields({ name: "Joined Server", value: time(member.joinedAt, TimestampStyles.RelativeTime) });
-      }
-
-      embed.addFields({ name: "Account Created", value: time(user.createdAt, TimestampStyles.RelativeTime) });
-
-      embed.addFields({ name: "Number of warnings", value: `${userInfo.warnings.length}` });
-      embed.addFields({ name: "Number of notes", value: `${userInfo.notes.length}` });
+    if (member.joinedAt) {
+      embed.addFields({ name: "Joined Server", value: time(member.joinedAt, TimestampStyles.RelativeTime) });
     }
 
-    embed.setAuthor({ name: member.displayName || user.username, iconURL: member.displayAvatarURL() || user.displayAvatarURL() });
-    embed.setTimestamp(Time.getCurrentTime());
+    embed.addFields({ name: "Account Created", value: time(user.createdAt, TimestampStyles.RelativeTime) });
 
-    return embed;
+    embed.addFields({ name: "Number of warnings", value: `${userInfo.warnings.length}` });
+    embed.addFields({ name: "Number of notes", value: `${userInfo.notes.length}` });
   }
-  return undefined;
+
+  embed.setAuthor({ name: member.displayName || user.username, iconURL: member.displayAvatarURL() || user.displayAvatarURL() });
+  embed.setTimestamp(Time.getCurrentTime());
+
+  return embed;
 }

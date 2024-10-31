@@ -26,7 +26,7 @@ export default class NoteModal extends ModalMenu {
     const note = this.getTextInputValue(interaction, "noteInput");
 
     const db = UserManagementDB.getInstance();
-    db.addNote(this.targetUser.id, note);
+    db.addNote(this.targetUser.id, note, interaction.user.id);
 
     Stumper.info(`Added note for user: ${this.targetUser.username} by user ${interaction.user.username}`, "userManagement:NoteUserCommand:execute");
     sendLogMessage(`Added note for user: ${this.targetUser.username} by user ${interaction.user.username} Note: ${note}`);

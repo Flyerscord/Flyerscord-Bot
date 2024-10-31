@@ -36,5 +36,10 @@
   - Change the event to a new date
   - Toggle the event on and off
   - Get the number of days until an event
-- TODO Register commands module
-- TODO User management module
+- Register commands module
+- User management module
+  - /kick
+  - /ban
+  - /userview
+  - /usernote
+  - /userwarn

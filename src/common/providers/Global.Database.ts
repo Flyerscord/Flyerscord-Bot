@@ -10,7 +10,6 @@ export default class GlobalDB extends Database {
   private constructor() {
     super({ name: "global" });
     this.db.ensure(this.COMMAND_LIST_MESSAGE_ID_KEY, "");
-    this.db.ensure(this.USER_LOG_CHANNEL_ID_KEY, "");
     this.db.ensure(this.VISITOR_ROLE_MESSAGE_ID_KEY, "");
   }
 
@@ -28,18 +27,6 @@ export default class GlobalDB extends Database {
 
   setCommandListMessageId(newMessageId: string): void {
     this.db.set(this.COMMAND_LIST_MESSAGE_ID_KEY, newMessageId);
-  }
-
-  /* -------------------------------------------------------------------------- */
-  /*                           User Log Channel ID                              */
-  /* -------------------------------------------------------------------------- */
-
-  getUserLogChannelId(): string {
-    return this.db.get(this.USER_LOG_CHANNEL_ID_KEY);
-  }
-
-  setUserLogChannelId(newChannelId: string): void {
-    this.db.set(this.USER_LOG_CHANNEL_ID_KEY, newChannelId);
   }
 
   /* -------------------------------------------------------------------------- */

@@ -1,8 +1,10 @@
 import { AttachmentBuilder, ChatInputCommandInteraction, User } from "discord.js";
 import SlashCommand, { PARAM_TYPES } from "../../../../common/models/SlashCommand";
 import LevelsDB from "../../providers/Levels.Database";
-import { createImage } from "../../utils/imageGeneration";
 import LevelExpDB from "../../providers/LevelExp.Database";
+import RankImageGenerator from "../../utils/RankImageGenerator";
+import discord from "../../../../common/utils/discord/discord";
+import Stumper from "stumper";
 
 export default class RankCommand extends SlashCommand {
   constructor() {
@@ -21,18 +23,38 @@ export default class RankCommand extends SlashCommand {
       user = interaction.user;
     }
 
+    const member = await discord.members.getMember(user.id);
+    if (!member) {
+      interaction.reply({ content: "Error finding member!", ephemeral: true });
+      Stumper.error(`Error finding member for user ${user.id}`, "levels:RankCommand:createEmbed");
+      return;
+    }
+
+    const profilePictureUrl = member.displayAvatarURL() || user.displayAvatarURL();
+    const username = member.displayName || user.username;
+
     const db = LevelsDB.getInstance();
     const levelExpDB = LevelExpDB.getInstance();
     const userLevel = db.getUser(user.id);
+    const rank = db.getUserRank(user.id);
+
+    if (rank == -1) {
+      interaction.reply({ content: "Error finding rank!", ephemeral: true });
+      Stumper.error(`Error finding rank for user ${user.id}`, "levels:RankCommand:createEmbed");
+      return;
+    }
 
     if (userLevel) {
-      const imageBuffer = await createImage(
+      const rankImageGenerator = new RankImageGenerator(
         userLevel.messageCount,
         userLevel.totalExp,
         levelExpDB.getLevelExp(userLevel.currentLevel + 1),
         userLevel.currentLevel,
-        user.username,
+        rank,
+        username,
+        profilePictureUrl,
       );
+      const imageBuffer = await rankImageGenerator.getImage();
 
       const attachment = new AttachmentBuilder(imageBuffer, { name: "rank.png" });
       interaction.reply({ files: [attachment] });

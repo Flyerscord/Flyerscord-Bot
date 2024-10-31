@@ -4,6 +4,13 @@ export default class CanvasBuilder {
   private canvas: Canvas;
   private ctx: CanvasRenderingContext2D;
 
+  // Default values
+  private readonly defaultFillStyle: string = "#000000";
+  private readonly defaultFont: string = "10px Arial";
+  private readonly defaultTextAlign: CanvasTextAlign = "left";
+  private readonly defaultLineWidth: number = 1;
+  private readonly defaultTextBaseline: CanvasTextBaseline = "alphabetic";
+
   constructor(width: number, height: number) {
     this.canvas = createCanvas(width, height);
     this.ctx = this.canvas.getContext("2d") as unknown as CanvasRenderingContext2D;
@@ -322,6 +329,31 @@ export default class CanvasBuilder {
 
   setTextAlign(align: CanvasTextAlign): CanvasBuilder {
     this.ctx.textAlign = align;
+    return this;
+  }
+
+  resetFillStyle(): CanvasBuilder {
+    this.ctx.fillStyle = this.defaultFillStyle;
+    return this;
+  }
+
+  resetFont(): CanvasBuilder {
+    this.ctx.font = this.defaultFont;
+    return this;
+  }
+
+  resetTextAlign(): CanvasBuilder {
+    this.ctx.textAlign = this.defaultTextAlign;
+    return this;
+  }
+
+  resetLineWidth(): CanvasBuilder {
+    this.ctx.lineWidth = this.defaultLineWidth;
+    return this;
+  }
+
+  resetTextBaseline(): CanvasBuilder {
+    this.ctx.textBaseline = this.defaultTextBaseline;
     return this;
   }
 

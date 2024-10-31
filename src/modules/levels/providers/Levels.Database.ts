@@ -60,4 +60,11 @@ export default class LevelsDB extends Database {
     users.sort((a, b) => b.totalExp - a.totalExp);
     return users;
   }
+
+  getUserRank(userId: string): number {
+    let users = this.getAllUsers();
+    users = users.sort((a, b) => b.currentLevel - a.currentLevel);
+
+    return users.findIndex((user) => user.userId == userId);
+  }
 }

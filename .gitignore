@@ -1,7 +1,6 @@
-node_modules/
-npm-debug.log
-package-lock.json
-chance-files/
-data/storage.json
+node_modules
 .vscode
-dist/
+data
+dist
+**/config.json
+**/configFile.ts

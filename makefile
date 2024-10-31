@@ -1,15 +1,13 @@
-docker:
-	bash -c "sed -i 's/\"testMode\": true,/\"testMode\": false,/' config.json" \
-	docker-compose -f docker-compose.yml -p nhl-helper-discord down && \
-	docker-compose -f docker-compose.yml -p nhl-helper-discord up --build -d
+prod:
+	bash -c "sed -i 's/\"productionMode\": false,/\"productionMode\": true,/' src/common/config/configFile.ts" && \
+	docker compose -f docker-compose.yml -p flyerscord-discord-prod up --build -d
 
-test-docker:
-	bash -c "sed -i 's/\"testMode\": false,/\"testMode\": true,/' config.json" \
-	docker-compose -f docker-compose.yml -p test-nhl-helper-discord down && \
-	docker-compose -f docker-compose.yml -p test-nhl-helper-discord up --build -d
+np:
+	bash -c "sed -i 's/\"productionMode\": true,/\"productionMode\": false,/' src/common/config/configFile.ts" && \
+	docker compose -f docker-compose.yml -p flyerscord-discord-np up --build -d
 
-enable-test:
-	bash -c "sed -i 's/\"testMode\": false,/\"testMode\": true,/' config.json"
+np-clean:
+	bash -c "sed -i 's/\"productionMode\": true,/\"productionMode\": false,/' src/common/config/configFile.ts" && \
+	docker compose -f docker-compose.yml -p flyerscord-discord-np down --volumes --rmi all && \
+	docker compose -f docker-compose.yml -p flyerscord-discord-np up --build -d
 
-disable-test:
-	bash -c "sed -i 's/\"testMode\": true,/\"testMode\": false,/' config.json"

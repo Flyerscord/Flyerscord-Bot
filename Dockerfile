@@ -1,22 +1,30 @@
-FROM node:16.10
+# Build the builder image
+FROM node:18 AS builder
 
-# Set the timezone
+WORKDIR /usr/src/build
+
+COPY package*.json .
+
+RUN npm ci
+
+COPY . .
+
+RUN npm run build
+
+# Build the production image
+FROM node:18
+
+# Set the timezone so that the logs are in the correct timezone
 ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Create app directory
 WORKDIR /usr/src/app
 
-# Install app dependencies
-COPY package*.json ./
+COPY package*.json .
 
-RUN npm install
+RUN npm install --production
 
-# Install packages
-RUN apt update
-RUN apt install html-xml-utils
+COPY --from=builder /usr/src/build/dist src/
 
-# Bundle app source
-COPY . .
-
-CMD [ "node", "nhl_helper.js"]
+CMD ["npm", "run", "start:prod"]
+# CMD ["tail", "-f", "/dev/null"]

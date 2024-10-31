@@ -10,21 +10,21 @@ export default class TestAllCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
     const db = CustomCommandsDB.getInstance();
     const commands = db.getAllCommands();
 
     const channel = interaction.channel;
 
     if (channel) {
-      interaction.deferred = true;
       for (let i = 0; i < commands.length; i++) {
         const command = commands[i];
-        discord.messages.sendMessageToChannel(channel.id, command.name);
-        discord.messages.sendMessageToChannel(channel.id, command.text);
+        await discord.messages.sendMessageToChannel(channel.id, command.name);
+        await discord.messages.sendMessageToChannel(channel.id, command.text);
       }
-      interaction.reply({ content: "Command test complete", ephemeral: true });
+      interaction.editReply({ content: "Command test complete" });
     } else {
-      interaction.reply({ content: "Error testing commands", ephemeral: true });
+      interaction.editReply({ content: "Error testing commands" });
     }
   }
 }

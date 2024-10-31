@@ -12,8 +12,9 @@
   - Edit custom commands
   - View custom commands
   - 2 hardcoded custom commands
-  - TODO update the custom commands list (RETEST)
-  - TODO STILL NEED TO TEST THE AUTO COMMAND INPUT
+  - Update the custom commands list
+  - /customimport
+    - Start and stop
 - Game day posts
 - Health check
 - Misc module

@@ -1,4 +1,4 @@
-import { Client, RESTPostAPIChatInputApplicationCommandsJSONBody, RESTPostAPIContextMenuApplicationCommandsJSONBody } from "discord.js";
+import { ActivityType, Client, RESTPostAPIChatInputApplicationCommandsJSONBody, RESTPostAPIContextMenuApplicationCommandsJSONBody } from "discord.js";
 
 import Stumper from "stumper";
 import TextCommandManager from "../managers/TextCommandManager";
@@ -6,6 +6,7 @@ import ModalMenuManager from "../managers/ModalMenuManager";
 import BotHealthManager from "../managers/BotHealthManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
 import SlashCommandManager from "../managers/SlashCommandManager";
+import fs from "fs";
 
 export default (client: Client): void => {
   client.on("ready", async () => {
@@ -14,11 +15,29 @@ export default (client: Client): void => {
     readTextCommands(client);
     readModals(client);
 
+    setupBot(client);
+
     const healthManager = BotHealthManager.getInstance();
     healthManager.setHealthy(true);
     Stumper.info("Bot Online!", "common:onReady:clientReady");
   });
 };
+
+function setupBot(client: Client): void {
+  Stumper.info("Setting bot presence", "common:onReady:setupBot");
+  client.user?.setPresence({ status: "online", activities: [{ name: "Flyers Hockey", type: ActivityType.Watching }] });
+
+  Stumper.info("Setting bot avatar", "common:onReady:setupBot");
+  const avatar = fs.readFileSync(`${__dirname}/../assets/botAvatar.png`);
+  client.user?.setAvatar(avatar);
+
+  Stumper.info("Setting bot banner", "common:onReady:setupBot");
+  const banner = fs.readFileSync(`${__dirname}/../assets/botBanner.png`);
+  client.user?.setBanner(banner);
+
+  Stumper.info("Setting bot username", "common:onReady:setupBot");
+  client.user?.setUsername("Gritty");
+}
 
 function readTextCommands(client: Client): void {
   const textCommands = TextCommandManager.getInstance().getCommands();

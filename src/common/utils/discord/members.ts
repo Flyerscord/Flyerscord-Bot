@@ -1,4 +1,4 @@
-import { Collection, Guild, GuildMember } from "discord.js";
+import { Collection, GuildMember } from "discord.js";
 import { getGuild } from "./guilds";
 import Stumper from "stumper";
 

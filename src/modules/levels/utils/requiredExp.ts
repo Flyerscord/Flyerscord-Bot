@@ -19,7 +19,7 @@ export function calculateLevels(levelsToCalc: number): void {
   }
 }
 
-function expNeededForNextLevel(currentLevel: number) {
+function expNeededForNextLevel(currentLevel: number): number {
   // The formula that mee6 uses (from their old docs)
   // 5 * (lvl ^ 2) + (50 * lvl) + 100 - xp
   return 5 * Math.pow(currentLevel, 2) + 50 * currentLevel + 100;

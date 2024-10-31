@@ -23,6 +23,7 @@ export default [
     rules: {
       // TypeScript rules
       "@typescript-eslint/no-unused-vars": ["error"],
+      "@typescript-eslint/explicit-function-return-type": "error",
       "@typescript-eslint/explicit-module-boundary-types": "warn",
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/explicit-member-accessibility": [

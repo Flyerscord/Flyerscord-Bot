@@ -11,6 +11,7 @@ interface ICommonConfig {
   imageKit: IImageKitConfig;
   imgur: IImgurConfig;
   vistorReactRole: IVistorReactConfig;
+  bagReactionRole: IReactionRoleConfig;
   gameDayPosts: IGameDayPostsConfig;
   joinLeaveMessageChannelId: string;
   userLogChannelId: string;
@@ -62,5 +63,11 @@ interface IImgurConfig {
 
 interface IVoiceStatsConfig {
   name: string;
+  channelId: string;
+}
+
+interface IReactionRoleConfig {
+  roleId: string;
+  emojiId: string;
   channelId: string;
 }

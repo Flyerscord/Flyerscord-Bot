@@ -88,6 +88,7 @@ ModalMenuManager.getInstance();
 /*                               Import Modules                               */
 /* -------------------------------------------------------------------------- */
 import AdminModule from "./modules/admin/AdminModule";
+import BagReactionRoleModule from "./modules/bagReactionRole/BagReactionRoleModule";
 import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule";
 import DaysUntilModule from "./modules/daysUntil/DaysUntilModule";
 import GameDayPostsModule from "./modules/gamedayPosts/GameDayPostsModule";
@@ -117,6 +118,7 @@ startUp();
 async function startUp(): Promise<void> {
   // Enable all modules before starting the bot
   await new AdminModule().enable();
+  await new BagReactionRoleModule().enable();
   await new CustomCommandsModule().enable();
   await new DaysUntilModule().enable();
   await new GameDayPostsModule().enable();

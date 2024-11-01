@@ -24,6 +24,7 @@ export default (): void => {
     const member = await discord.members.getMember(user.id);
 
     if (!member) {
+      Stumper.error(`Error finding member for user ${user.id}`, "visitorRole:onMessageReactionRemove");
       return;
     }
 

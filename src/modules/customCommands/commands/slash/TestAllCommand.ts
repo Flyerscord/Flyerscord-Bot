@@ -5,6 +5,8 @@ import CustomCommandsDB from "../../providers/CustomCommands.Database";
 import discord from "../../../../common/utils/discord/discord";
 import Config from "../../../../common/config/Config";
 import { sleepSec } from "../../../../common/utils/sleep";
+import Stumper from "stumper";
+import MyImageKit from "../../utils/ImageKit";
 
 export default class TestAllCommand extends AdminSlashCommand {
   constructor() {
@@ -24,8 +26,21 @@ export default class TestAllCommand extends AdminSlashCommand {
     if (channel) {
       for (let i = 0; i < commands.length; i++) {
         const command = commands[i];
+        let text = command.text;
+
+        const imageKit = MyImageKit.getInstance();
+
+        if (imageKit.isImageKitUrl(text)) {
+          const url = await imageKit.convertToProxyUrlIfNeeded(text);
+
+          if (url) {
+            text = url;
+            Stumper.debug(`Converted image kit url to proxy url: ${text}`, "customCommands:onMessageCreate:checkForCustomTextCommand");
+          }
+        }
+
         await discord.messages.sendMessageToChannel(channel.id, `\`${Config.getConfig().prefix.normal}${command.name}\``);
-        await discord.messages.sendMessageToChannel(channel.id, command.text);
+        await discord.messages.sendMessageToChannel(channel.id, text);
 
         await sleepSec(1);
       }

@@ -77,13 +77,19 @@ export default class LeaderboardCommand extends SlashCommand {
 
       // Update button states based on current page
       prevButton.setDisabled(currentPage === 0);
-      nextButton.setDisabled(currentPage === totalPages - 1);
+      nextButton.setDisabled(currentPage === totalPages);
 
       // Update the embed and buttons
       await interaction.editReply({
         embeds: [await this.createEmbedPage(users, currentPage)],
         components: [row],
       });
+    });
+
+    collector.on("end", async () => {
+      prevButton.setDisabled(true);
+      nextButton.setDisabled(true);
+      await interaction.editReply({ components: [row] });
     });
   }
 
@@ -97,7 +103,7 @@ export default class LeaderboardCommand extends SlashCommand {
     embed.setTimestamp(Date.now());
 
     const startingIndex = (pageNumber - 1) * this.EMBED_PAGE_SIZE;
-    const endingIndex = startingIndex + data.length;
+    const endingIndex = Math.min(startingIndex + this.EMBED_PAGE_SIZE, data.length);
 
     for (let i = startingIndex; i < endingIndex; i++) {
       const user = data[i];

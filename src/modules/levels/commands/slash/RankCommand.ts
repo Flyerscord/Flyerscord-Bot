@@ -14,7 +14,7 @@ export default class RankCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply();
 
     const userInput: User | undefined = this.getParamValue(interaction, PARAM_TYPES.USER, "user");
 
@@ -27,7 +27,7 @@ export default class RankCommand extends SlashCommand {
 
     const member = await discord.members.getMember(user.id);
     if (!member) {
-      interaction.editReply({ content: "Error finding member!" });
+      interaction.followUp({ content: "Error finding member!", ephemeral: true });
       Stumper.error(`Error finding member for user ${user.id}`, "levels:RankCommand:createEmbed");
       return;
     }
@@ -41,7 +41,7 @@ export default class RankCommand extends SlashCommand {
     const rank = db.getUserRank(user.id);
 
     if (rank == -1) {
-      interaction.editReply({ content: "Error finding rank!" });
+      interaction.followUp({ content: "Error finding rank!", ephemeral: true });
       Stumper.error(`Error finding rank for user ${user.id}`, "levels:RankCommand:createEmbed");
       return;
     }
@@ -59,9 +59,9 @@ export default class RankCommand extends SlashCommand {
       const imageBuffer = await rankImageGenerator.getImage();
 
       const attachment = new AttachmentBuilder(imageBuffer, { name: "rank.png" });
-      interaction.followUp({ files: [attachment], ephemeral: false });
+      interaction.editReply({ files: [attachment] });
       return;
     }
-    interaction.editReply({ content: "You need to send a message before you can use this command!" });
+    interaction.followUp({ content: "You need to send a message before you can use this command!", ephemeral: true });
   }
 }

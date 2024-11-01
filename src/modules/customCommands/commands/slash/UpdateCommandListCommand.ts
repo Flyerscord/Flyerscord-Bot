@@ -8,11 +8,12 @@ export default class UpdateCommandListCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     updateCommandList();
 
-    interaction.reply({
+    interaction.editReply({
       content: "Custom Command List Updated!",
-      ephemeral: true,
     });
   }
 }

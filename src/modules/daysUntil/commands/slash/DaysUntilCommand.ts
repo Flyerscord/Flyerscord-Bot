@@ -14,12 +14,14 @@ export default class DaysUntilCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply();
+
     const eventKey: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "event");
 
     const event = Object.values(events).find((event) => event.name == eventKey);
 
     if (!event) {
-      interaction.reply({ content: "Error finding event!", ephemeral: true });
+      interaction.followUp({ content: "Error finding event!", ephemeral: true });
       return;
     }
 
@@ -30,13 +32,13 @@ export default class DaysUntilCommand extends SlashCommand {
 
     let output = "";
     if (timeUntil > 0) {
-      output = event.daysUntilMessage.replace("{time}", Time.getFormattedTimeUntil(eventData.date));
+      output = event.daysUntilMessage.replace("{time}", Time.getFormattedTimeUntil(timeUntil));
     } else if (timeUntil < 0) {
       output = event.pastMessage;
     } else {
       output = event.exactMessage;
     }
 
-    interaction.reply({ content: output });
+    interaction.editReply({ content: output });
   }
 }

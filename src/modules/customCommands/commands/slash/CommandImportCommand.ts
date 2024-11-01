@@ -21,6 +21,8 @@ export default class CommandImportCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     if (this.isSubCommand(interaction, "start")) {
       const channel: Channel = this.getParamValue(interaction, PARAM_TYPES.CHANNEL, "channel");
       const botUser: User = this.getParamValue(interaction, PARAM_TYPES.USER, "botuser");
@@ -28,15 +30,13 @@ export default class CommandImportCommand extends AdminSlashCommand {
 
       CommandImporter.getInstance().enable(channel.id, interaction.user.id, botUser.id, prefix);
 
-      interaction.reply({
+      interaction.editReply({
         content: "Command import process started! Start running commands!",
-        ephemeral: true,
       });
     } else if (this.isSubCommand(interaction, "stop")) {
       CommandImporter.getInstance().disable();
-      interaction.reply({
+      interaction.editReply({
         content: "Command import process stopped!",
-        ephemeral: true,
       });
     }
   }

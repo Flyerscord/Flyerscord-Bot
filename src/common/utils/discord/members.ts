@@ -3,11 +3,22 @@ import { getGuild } from "./guilds";
 import Stumper from "stumper";
 
 export async function getMember(userId: string): Promise<GuildMember | undefined> {
-  return await getGuild()?.members.fetch(userId);
+  try {
+    return await getGuild()?.members.fetch(userId);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {
+    Stumper.error(`Error finding member for user ${userId}`, "common:members:getMember");
+    return undefined;
+  }
 }
 
 export async function getMembers(): Promise<Collection<string, GuildMember> | undefined> {
-  return await getGuild()?.members.fetch();
+  try {
+    return await getGuild()?.members.fetch();
+  } catch (error) {
+    Stumper.error(error, "common:members:getMembers");
+    return undefined;
+  }
 }
 
 export async function getMemberJoinPosition(member: GuildMember): Promise<number> {

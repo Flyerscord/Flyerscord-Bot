@@ -18,6 +18,8 @@ export default class ResetUserCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     const confirmation: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "confirm");
     const user: User = this.getParamValue(interaction, PARAM_TYPES.USER, "user");
 
@@ -30,10 +32,10 @@ export default class ResetUserCommand extends AdminSlashCommand {
       );
 
       db.resetUser(user.id);
-      interaction.reply({ content: `Resetting exp for username: ${user.username} id: ${user.id}`, ephemeral: true });
+      interaction.editReply({ content: `Resetting exp for username: ${user.username} id: ${user.id}` });
       return;
     }
 
-    interaction.reply({ content: "Error resetting user!", ephemeral: true });
+    interaction.editReply({ content: "Error resetting user!" });
   }
 }

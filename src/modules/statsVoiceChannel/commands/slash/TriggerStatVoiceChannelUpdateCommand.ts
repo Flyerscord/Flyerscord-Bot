@@ -10,6 +10,7 @@ export default class TriggerStatVoiceChannelUpdateCommand extends AdminSlashComm
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     await interaction.deferReply({ ephemeral: true });
+
     const statsVoiceChannelsManager = StatsVoiceChannelsManager.getInstance();
     const statChannels = statsVoiceChannelsManager.getStatChannels();
 

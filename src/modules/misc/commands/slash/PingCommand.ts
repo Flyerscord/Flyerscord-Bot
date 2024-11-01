@@ -8,10 +8,11 @@ export default class PingCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     const healthManager = BotHealthManager.getInstance();
-    interaction.reply({
+    interaction.editReply({
       content: `PONG! ${healthManager.isHealthy() && interaction.client.isReady() ? "Bot is healthy!" : "Bot is not healthy!"}`,
-      ephemeral: true,
     });
   }
 }

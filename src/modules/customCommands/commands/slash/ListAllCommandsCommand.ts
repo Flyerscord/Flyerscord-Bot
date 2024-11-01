@@ -9,6 +9,8 @@ export default class ListAllCommandsCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     const db = CustomCommandsDB.getInstance();
     const commands = db.getAllCommands();
 
@@ -16,7 +18,7 @@ export default class ListAllCommandsCommand extends AdminSlashCommand {
 
     const output = this.wrapTextInCodeblock(outputStrings.join("\n"));
 
-    interaction.reply({ content: output, ephemeral: true });
+    interaction.editReply({ content: output });
   }
 
   private wrapTextInCodeblock(text: string): string {

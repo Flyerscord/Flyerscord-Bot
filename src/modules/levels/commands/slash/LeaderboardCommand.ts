@@ -14,6 +14,7 @@ import { IUserLevel } from "../../interfaces/IUserLevel";
 import discord from "../../../../common/utils/discord/discord";
 import LevelExpDB from "../../providers/LevelExp.Database";
 import { formatExp, getShortenedMessageCount } from "../../utils/leveling";
+import Stumper from "stumper";
 
 export default class LeaderboardCommand extends SlashCommand {
   private readonly EMBED_PAGE_SIZE = 25;
@@ -23,6 +24,7 @@ export default class LeaderboardCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply();
     const db = LevelsDB.getInstance();
     const users = db.getAllUsersSortedByExp();
     const totalPages = Math.ceil(users.length / this.EMBED_PAGE_SIZE);
@@ -44,10 +46,9 @@ export default class LeaderboardCommand extends SlashCommand {
     const row = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(prevButton, nextButton);
 
     // Send the initial message with the first page and buttons
-    const message = await interaction.reply({
+    const message = await interaction.editReply({
       embeds: [await this.createEmbedPage(users, currentPage)],
       components: [row],
-      fetchReply: true,
     });
 
     // Create a collector to handle button interactions
@@ -56,18 +57,20 @@ export default class LeaderboardCommand extends SlashCommand {
       time: 60000, // 1 minute collector
     });
 
-    collector.on("collect", async (interaction) => {
+    collector.on("collect", async (i) => {
       // Ensure the user who clicked the button is the one who initiated the command
-      if (interaction.user.id !== interaction.user.id) {
-        return interaction.reply({ content: "These buttons aren't for you!", ephemeral: true });
+      if (interaction.user.id !== i.user.id) {
+        return i.reply({ content: "These buttons aren't for you!", ephemeral: true });
       }
 
-      if (interaction.customId === "next") {
+      await i.deferUpdate();
+
+      if (i.customId === "next") {
         currentPage++;
         if (currentPage > totalPages) {
           currentPage = totalPages;
         }
-      } else if (interaction.customId === "prev") {
+      } else if (i.customId === "prev") {
         currentPage--;
         if (currentPage < 1) {
           currentPage = 1;
@@ -76,13 +79,19 @@ export default class LeaderboardCommand extends SlashCommand {
 
       // Update button states based on current page
       prevButton.setDisabled(currentPage === 0);
-      nextButton.setDisabled(currentPage === totalPages - 1);
+      nextButton.setDisabled(currentPage === totalPages);
 
       // Update the embed and buttons
-      await interaction.update({
+      await interaction.editReply({
         embeds: [await this.createEmbedPage(users, currentPage)],
         components: [row],
       });
+    });
+
+    collector.on("end", async () => {
+      prevButton.setDisabled(true);
+      nextButton.setDisabled(true);
+      await interaction.editReply({ components: [row] });
     });
   }
 
@@ -96,11 +105,16 @@ export default class LeaderboardCommand extends SlashCommand {
     embed.setTimestamp(Date.now());
 
     const startingIndex = (pageNumber - 1) * this.EMBED_PAGE_SIZE;
-    const endingIndex = startingIndex + data.length;
+    const endingIndex = Math.min(startingIndex + this.EMBED_PAGE_SIZE, data.length);
 
     for (let i = startingIndex; i < endingIndex; i++) {
       const user = data[i];
       const member = await discord.members.getMember(user.userId);
+
+      if (!member) {
+        Stumper.debug(`Failed to find member with user id: ${user.userId}. User probably left server`, "levels:LeaderboardCommand:createEmbedPage");
+        continue;
+      }
       const username = member ? member.displayName || member.user.username : user.userId;
 
       embed.addFields({

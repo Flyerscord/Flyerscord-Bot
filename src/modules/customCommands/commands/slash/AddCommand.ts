@@ -38,10 +38,13 @@ export default class AddCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     const db = CustomCommandsDB.getInstance();
 
     let name: string = "";
     let text: string = "";
+    let isTextOnly: boolean = false;
 
     if (this.isSubCommand(interaction, "image")) {
       name = (this.getParamValue(interaction, PARAM_TYPES.STRING, "name") as string).toLowerCase();
@@ -52,44 +55,44 @@ export default class AddCommand extends AdminSlashCommand {
     } else if (this.isSubCommand(interaction, "text")) {
       name = (this.getParamValue(interaction, PARAM_TYPES.STRING, "name") as string).toLowerCase();
       text = this.getParamValue(interaction, PARAM_TYPES.STRING, "text");
+      isTextOnly = true;
     }
 
     if (name != "" && text != "") {
       if (db.hasCommand(name) || interaction.client.textCommands.hasAny(name)) {
-        interaction.reply({
+        interaction.editReply({
           content: `Command ${Config.getConfig().prefix.normal}${name} already exists!`,
-          ephemeral: true,
         });
         return;
       }
 
       try {
-        await db.addCommand(name, text, interaction.user.id);
+        if (isTextOnly) {
+          await db.addCommandSkippingUpload(name, text, interaction.user.id);
+        } else {
+          await db.addCommand(name, text, interaction.user.id);
+        }
       } catch (error) {
         Stumper.caughtError(error, "customCommands:AddCommand:execute");
         if (error instanceof InvalidImgurUrlException || error instanceof ErrorUploadingToImageKitException) {
-          interaction.reply({
+          interaction.editReply({
             content: `Error adding command ${Config.getConfig().prefix.normal}${name}! There was an issue with the url. Contact flyerzrule for help.`,
-            ephemeral: true,
           });
           return;
         } else if (error instanceof PageNotFoundException) {
-          interaction.reply({
+          interaction.editReply({
             content: `Error adding command ${Config.getConfig().prefix.normal}${name}! The url returns a 404.`,
-            ephemeral: true,
           });
           return;
         } else {
-          interaction.reply({
+          interaction.editReply({
             content: `Error adding command ${Config.getConfig().prefix.normal}${name}!`,
-            ephemeral: true,
           });
           throw error;
         }
       }
-      interaction.reply({
+      interaction.editReply({
         content: `Command ${Config.getConfig().prefix.normal}${name} added!`,
-        ephemeral: true,
       });
     }
   }

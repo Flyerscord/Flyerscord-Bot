@@ -2,7 +2,7 @@ import Stumper from "stumper";
 
 import { sleepMs } from "../sleep";
 import { getGuild } from "./guilds";
-import { GuildEmoji } from "discord.js";
+import { Collection, GuildEmoji } from "discord.js";
 import ClientManager from "../../managers/ClientManager";
 
 export const NHL_EMOJI_GUILD_ID = "670839648683163656";
@@ -67,7 +67,13 @@ export async function deleteMultipleEmojis(emojiNames: string[], reasons: string
 export async function getGuildEmojiByName(name: string): Promise<GuildEmoji | undefined> {
   const guild = getGuild();
   if (guild) {
-    const emojis = await guild.emojis.fetch();
+    let emojis: Collection<string, GuildEmoji> | undefined;
+    try {
+      emojis = await guild.emojis.fetch();
+    } catch (error) {
+      Stumper.caughtError(error, "common:emojis:getGuildEmojiByName");
+      return undefined;
+    }
     return emojis.find((emoji) => emoji.name == name);
   }
   return undefined;

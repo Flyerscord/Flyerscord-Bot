@@ -3,6 +3,10 @@ import { AdminSlashCommand } from "../../../../common/models/SlashCommand";
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
 
 import discord from "../../../../common/utils/discord/discord";
+import Config from "../../../../common/config/Config";
+import { sleepSec } from "../../../../common/utils/sleep";
+import Stumper from "stumper";
+import MyImageKit from "../../utils/ImageKit";
 
 export default class TestAllCommand extends AdminSlashCommand {
   constructor() {
@@ -10,17 +14,35 @@ export default class TestAllCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply();
+
     const db = CustomCommandsDB.getInstance();
-    const commands = db.getAllCommands();
+    let commands = db.getAllCommands();
+
+    commands = commands.sort((a, b) => a.name.localeCompare(b.name));
 
     const channel = interaction.channel;
 
     if (channel) {
       for (let i = 0; i < commands.length; i++) {
         const command = commands[i];
-        await discord.messages.sendMessageToChannel(channel.id, command.name);
-        await discord.messages.sendMessageToChannel(channel.id, command.text);
+        let text = command.text;
+
+        const imageKit = MyImageKit.getInstance();
+
+        if (imageKit.isImageKitUrl(text)) {
+          const url = await imageKit.convertToProxyUrlIfNeeded(text);
+
+          if (url) {
+            text = url;
+            Stumper.debug(`Converted image kit url to proxy url: ${text}`, "customCommands:onMessageCreate:checkForCustomTextCommand");
+          }
+        }
+
+        await discord.messages.sendMessageToChannel(channel.id, `\`${Config.getConfig().prefix.normal}${command.name}\``);
+        await discord.messages.sendMessageToChannel(channel.id, text);
+
+        await sleepSec(1);
       }
       interaction.editReply({ content: "Command test complete" });
     } else {

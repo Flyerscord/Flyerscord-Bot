@@ -19,6 +19,8 @@ export default class ScheduleCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply();
+
     const numberOfGames: number = this.getParamValue(interaction, PARAM_TYPES.INTEGER, "number") || 5;
 
     const response = await nhlApi.teams.schedule.getCurrentTeamSchedule({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
@@ -27,9 +29,9 @@ export default class ScheduleCommand extends SlashCommand {
       const schedule = response.data;
 
       const embed = await this.createEmbed(numberOfGames, schedule);
-      interaction.reply({ embeds: [embed] });
+      interaction.editReply({ embeds: [embed] });
     } else {
-      interaction.reply({
+      interaction.followUp({
         content: "Error fetching the schedule!",
         ephemeral: true,
       });

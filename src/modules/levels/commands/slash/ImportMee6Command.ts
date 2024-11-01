@@ -19,6 +19,8 @@ export default class ImportMee6Command extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     const confirmation: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "confirm");
 
     // Check if the user is flyerzrule
@@ -32,6 +34,7 @@ export default class ImportMee6Command extends AdminSlashCommand {
         const guildId = Config.getConfig().masterGuildId;
         if (guildId) {
           const users: User[] = await Mee6LevelsApi.getLeaderboard(guildId);
+          Stumper.debug(`Retrieved ${users.length} from mee6 leaderboards`, "levels:ImportMee6Command:execute");
 
           for (let i = 0; i < users.length; i++) {
             const user = users[i];
@@ -41,18 +44,18 @@ export default class ImportMee6Command extends AdminSlashCommand {
             userLevel.totalExp = user.xp.totalXp;
             db.updateUser(user.id, userLevel);
           }
-          interaction.reply({ content: "Successfully imported levels!", ephemeral: true });
+          interaction.editReply({ content: "Successfully imported levels!" });
           return;
         }
       } else {
-        interaction.reply({ content: "Failed to confirm import!", ephemeral: true });
+        interaction.editReply({ content: "Failed to confirm import!" });
         return;
       }
     } else {
       Stumper.warning(`User ${interaction.user.username} attempted to import mee6 levels!`, "levels:ImportMee6Command:execute");
-      interaction.reply({ ephemeral: true, content: "Only flyerzrule can run this command!" });
+      interaction.editReply({ content: "Only flyerzrule can run this command!" });
       return;
     }
-    interaction.reply({ content: "Error importing levels!", ephemeral: true });
+    interaction.editReply({ content: "Error importing levels!" });
   }
 }

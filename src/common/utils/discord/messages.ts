@@ -8,7 +8,12 @@ import { getUser } from "./users";
 export async function getMessage(channelId: string, messageId: string): Promise<Message | undefined> {
   const channel = await getTextChannel(channelId);
   if (channel) {
-    return await channel.messages.fetch(messageId);
+    try {
+      return await channel.messages.fetch(messageId);
+    } catch (error) {
+      Stumper.caughtError(error, "common:messages:getMessage");
+      return undefined;
+    }
   }
   return undefined;
 }

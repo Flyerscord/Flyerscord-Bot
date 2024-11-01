@@ -87,12 +87,13 @@ ModalMenuManager.getInstance();
 /* -------------------------------------------------------------------------- */
 /*                               Import Modules                               */
 /* -------------------------------------------------------------------------- */
+import HealthCheckModule from "./modules/healthcheck/HealthCheckModule";
+import ImageProxyModule from "./modules/imageProxy/ImageProxyModule";
 import AdminModule from "./modules/admin/AdminModule";
 import BagReactionRoleModule from "./modules/bagReactionRole/BagReactionRoleModule";
 import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule";
 import DaysUntilModule from "./modules/daysUntil/DaysUntilModule";
 import GameDayPostsModule from "./modules/gamedayPosts/GameDayPostsModule";
-import HealthCheckModule from "./modules/healthcheck/HealthCheckModule";
 import JoinLeaveModule from "./modules/joinLeave/JoinLeaveModule";
 import LevelsModule from "./modules/levels/LevelsModule";
 import MiscModule from "./modules/misc/MiscModule";
@@ -117,12 +118,19 @@ startUp();
 
 async function startUp(): Promise<void> {
   // Enable all modules before starting the bot
+  // Health check must be enabled first followed by the image proxy
+  await new HealthCheckModule().enable();
+
+  // Only enable the image proxy in production
+  if (Config.isProductionMode()) {
+    await new ImageProxyModule().enable();
+  }
+
   await new AdminModule().enable();
   await new BagReactionRoleModule().enable();
   await new CustomCommandsModule().enable();
   await new DaysUntilModule().enable();
   await new GameDayPostsModule().enable();
-  await new HealthCheckModule().enable();
   await new JoinLeaveModule().enable();
   await new LevelsModule().enable();
   await new MiscModule().enable();

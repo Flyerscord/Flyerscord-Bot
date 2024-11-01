@@ -13,6 +13,8 @@ export default class DeleteCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     const db = CustomCommandsDB.getInstance();
 
     let name: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "name");
@@ -20,17 +22,15 @@ export default class DeleteCommand extends AdminSlashCommand {
     name = name.toLowerCase();
 
     if (!db.hasCommand(name)) {
-      interaction.reply({
+      interaction.editReply({
         content: `Command ${Config.getConfig().prefix.normal}${name} does not exist!`,
-        ephemeral: true,
       });
       return;
     }
 
     db.removeCommand(name, interaction.user.id);
-    interaction.reply({
+    interaction.editReply({
       content: `Command ${Config.getConfig().prefix.normal}${name} removed!`,
-      ephemeral: true,
     });
   }
 }

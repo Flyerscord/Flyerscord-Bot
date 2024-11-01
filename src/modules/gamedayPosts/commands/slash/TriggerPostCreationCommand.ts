@@ -8,8 +8,10 @@ export default class TriggerPostCreationCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     await closeAndLockOldPosts();
     await checkForGameDay();
-    interaction.reply({ content: "Triggered game day post creation process!", ephemeral: true });
+    interaction.editReply({ content: "Triggered game day post creation process!" });
   }
 }

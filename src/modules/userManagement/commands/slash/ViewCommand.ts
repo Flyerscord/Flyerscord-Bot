@@ -22,6 +22,8 @@ export default class ViewCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     const user: User = this.getParamValue(interaction, PARAM_TYPES.USER, "user");
     const view: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "view");
 
@@ -30,9 +32,9 @@ export default class ViewCommand extends AdminSlashCommand {
 
     const embed = await createEmbed(userInfo, view);
     if (embed) {
-      interaction.reply({ embeds: [embed], ephemeral: true });
+      interaction.editReply({ embeds: [embed] });
     } else {
-      interaction.reply("There was an error finding the info for the user!");
+      interaction.editReply("There was an error finding the info for the user!");
     }
   }
 }

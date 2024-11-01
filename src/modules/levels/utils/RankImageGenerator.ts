@@ -29,7 +29,7 @@ export default class RankImageGenerator extends ImageGenerator {
     this.builder.drawImage(backgroundImage, 0, 0, this.width, this.height);
 
     // Add background color
-    this.builder.setFillStyle("#44444499").fillRect(0, 0, this.width, this.height);
+    this.builder.setFillStyle("#444444dd").fillRect(0, 0, this.width, this.height);
 
     // Add border
     this.builder.setStrokeStyle("#aaaaaa66").setLineWidth(15).strokeRect(0, 0, this.width, this.height);

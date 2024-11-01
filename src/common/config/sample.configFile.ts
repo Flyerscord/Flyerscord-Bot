@@ -49,6 +49,11 @@ export default {
         channelId: "",
       },
     ],
+    bagReactionRole: {
+      roleId: "",
+      emojiId: "",
+      channelId: "",
+    },
   },
   nonProduction: {
     token: "",
@@ -99,5 +104,10 @@ export default {
         channelId: "",
       },
     ],
+    bagReactionRole: {
+      roleId: "",
+      emojiId: "",
+      channelId: "",
+    },
   },
 };

@@ -5,8 +5,9 @@ import Stumper from "stumper";
 export async function getMember(userId: string): Promise<GuildMember | undefined> {
   try {
     return await getGuild()?.members.fetch(userId);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    Stumper.caughtError(error, "common:members:getMember");
+    Stumper.error(`Error finding member for user ${userId}`, "common:members:getMember");
     return undefined;
   }
 }
@@ -15,7 +16,7 @@ export async function getMembers(): Promise<Collection<string, GuildMember> | un
   try {
     return await getGuild()?.members.fetch();
   } catch (error) {
-    Stumper.caughtError(error, "common:members:getMembers");
+    Stumper.error(error, "common:members:getMembers");
     return undefined;
   }
 }

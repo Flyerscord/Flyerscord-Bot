@@ -2,7 +2,7 @@ import { TextChannel, EmbedBuilder, Message } from "discord.js";
 
 import Stumper from "stumper";
 import { AttachmentBuilder } from "discord.js";
-import { getTextChannel } from "./channels";
+import { getChannel, getTextChannel } from "./channels";
 import { getUser } from "./users";
 
 export async function getMessage(channelId: string, messageId: string): Promise<Message | undefined> {
@@ -39,8 +39,8 @@ export async function sendEmbedReplytoMessage(messageObj: Message, embed: EmbedB
 }
 
 export async function sendMessageToChannel(channelId: string, message: string): Promise<Message | undefined> {
-  const channel = await getTextChannel(channelId);
-  if (channel) {
+  const channel = await getChannel(channelId);
+  if (channel && (channel instanceof TextChannel || channel.isThread())) {
     Stumper.debug(`Sending message to channel: ${channelId}`, "common:messages:sendMessageToChannel");
     return await channel.send(message);
   }

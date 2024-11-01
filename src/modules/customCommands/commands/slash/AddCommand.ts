@@ -44,6 +44,7 @@ export default class AddCommand extends AdminSlashCommand {
 
     let name: string = "";
     let text: string = "";
+    let isTextOnly: boolean = false;
 
     if (this.isSubCommand(interaction, "image")) {
       name = (this.getParamValue(interaction, PARAM_TYPES.STRING, "name") as string).toLowerCase();
@@ -54,6 +55,7 @@ export default class AddCommand extends AdminSlashCommand {
     } else if (this.isSubCommand(interaction, "text")) {
       name = (this.getParamValue(interaction, PARAM_TYPES.STRING, "name") as string).toLowerCase();
       text = this.getParamValue(interaction, PARAM_TYPES.STRING, "text");
+      isTextOnly = true;
     }
 
     if (name != "" && text != "") {
@@ -65,7 +67,11 @@ export default class AddCommand extends AdminSlashCommand {
       }
 
       try {
-        await db.addCommand(name, text, interaction.user.id);
+        if (isTextOnly) {
+          await db.addCommandSkippingUpload(name, text, interaction.user.id);
+        } else {
+          await db.addCommand(name, text, interaction.user.id);
+        }
       } catch (error) {
         Stumper.caughtError(error, "customCommands:AddCommand:execute");
         if (error instanceof InvalidImgurUrlException || error instanceof ErrorUploadingToImageKitException) {

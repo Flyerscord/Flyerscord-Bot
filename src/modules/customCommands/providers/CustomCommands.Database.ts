@@ -48,6 +48,14 @@ export default class CustomCommandsDB extends Database {
         throw error;
       }
 
+      return await this.addCommandSkippingUpload(name, text, userId);
+    }
+    Stumper.error(`Error adding command: ${name}`, "common:CustomCommandsDB:addCommand");
+    return false;
+  }
+
+  async addCommandSkippingUpload(name: string, text: string, userId: string): Promise<boolean> {
+    if (!this.hasCommand(name)) {
       const customCommand: ICustomCommand = {
         name: name.toLowerCase(),
         text: text,
@@ -56,12 +64,12 @@ export default class CustomCommandsDB extends Database {
         history: [],
       };
       this.db.set(name, customCommand);
-      Stumper.info(`Custom Command created! Command: ${name}  By user: ${userId}`, "common:CustomCommandsDB:addCommand");
+      Stumper.info(`Custom Command created! Command: ${name}  By user: ${userId}`, "common:CustomCommandsDB:addCommandSkippingUpload");
 
       updateCommandList();
       return true;
     }
-    Stumper.error(`Error adding command: ${name}`, "common:CustomCommandsDB:addCommand");
+    Stumper.error(`Error adding command: ${name}`, "common:CustomCommandsDB:addCommandSkippingUpload");
     return false;
   }
 

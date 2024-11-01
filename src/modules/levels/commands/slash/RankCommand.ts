@@ -59,7 +59,7 @@ export default class RankCommand extends SlashCommand {
       const imageBuffer = await rankImageGenerator.getImage();
 
       const attachment = new AttachmentBuilder(imageBuffer, { name: "rank.png" });
-      interaction.followUp({ files: [attachment] });
+      interaction.followUp({ files: [attachment], ephemeral: false });
       return;
     }
     interaction.editReply({ content: "You need to send a message before you can use this command!" });

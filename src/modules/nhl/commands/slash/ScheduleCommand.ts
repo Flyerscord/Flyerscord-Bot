@@ -29,7 +29,7 @@ export default class ScheduleCommand extends SlashCommand {
       const schedule = response.data;
 
       const embed = await this.createEmbed(numberOfGames, schedule);
-      interaction.followUp({ embeds: [embed] });
+      interaction.followUp({ embeds: [embed], ephemeral: false });
     } else {
       interaction.editReply({
         content: "Error fetching the schedule!",

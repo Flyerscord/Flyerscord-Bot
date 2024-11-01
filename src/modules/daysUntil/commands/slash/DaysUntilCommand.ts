@@ -39,6 +39,6 @@ export default class DaysUntilCommand extends SlashCommand {
       output = event.exactMessage;
     }
 
-    interaction.followUp({ content: output });
+    interaction.followUp({ content: output, ephemeral: false });
   }
 }

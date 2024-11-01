@@ -38,6 +38,6 @@ export default class KickSlashCommand extends AdminSlashCommand {
       `User \`${member.displayName || member.user.username}\` has been kicked by \`${interaction.user.username}\`! Reason: \`${reason}\``,
     );
 
-    interaction.followUp(`User ${member.displayName || member.user.username} has been kicked!`);
+    interaction.followUp({ content: `User ${member.displayName || member.user.username} has been kicked!`, ephemeral: false });
   }
 }

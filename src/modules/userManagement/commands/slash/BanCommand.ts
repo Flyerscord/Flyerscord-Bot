@@ -48,6 +48,6 @@ export default class BanSlashCommand extends AdminSlashCommand {
       sendLogMessage(`Deleting messages from \`${username}\` for the last \`${deleteMessagesSeconds} seconds.\``);
     }
 
-    interaction.followUp(`User ${username} has been banned!`);
+    interaction.followUp({ content: `User ${username} has been banned!`, ephemeral: false });
   }
 }

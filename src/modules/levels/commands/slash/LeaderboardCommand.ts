@@ -63,6 +63,8 @@ export default class LeaderboardCommand extends SlashCommand {
         return i.reply({ content: "These buttons aren't for you!", ephemeral: true });
       }
 
+      await i.deferUpdate();
+
       if (i.customId === "next") {
         currentPage++;
         if (currentPage > totalPages) {

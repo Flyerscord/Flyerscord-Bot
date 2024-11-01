@@ -81,9 +81,9 @@ export default class RankImageGenerator extends ImageGenerator {
     let levelWordX = levelX - 140;
     let levelWordY = levelY;
     if (this.level > 99) {
-      levelWordX = levelX - 325;
+      levelWordX = levelX - 330;
     } else if (this.level > 9) {
-      levelWordX = levelX - 230;
+      levelWordX = levelX - 235;
     }
 
     // Add level word

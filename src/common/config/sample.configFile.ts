@@ -54,6 +54,7 @@ export default {
       emojiId: "",
       channelId: "",
     },
+    commandTempChannelId: "",
   },
   nonProduction: {
     token: "",
@@ -109,5 +110,6 @@ export default {
       emojiId: "",
       channelId: "",
     },
+    commandTempChannelId: "",
   },
 };

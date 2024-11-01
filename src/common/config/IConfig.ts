@@ -16,6 +16,7 @@ interface ICommonConfig {
   joinLeaveMessageChannelId: string;
   userLogChannelId: string;
   voiceStatsChannels: IVoiceStatsConfig[];
+  commandTempChannelId: string;
 }
 
 interface IPrefixConfig {

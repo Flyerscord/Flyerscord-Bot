@@ -39,6 +39,7 @@
     "nhl-api-wrapper-ts": "^1.0.0",
     "node-schedule": "^2.1.1",
     "request": "^2.88.2",
+    "sharp": "^0.33.5",
     "stumper": "^1.0.5"
   },
   "devDependencies": {

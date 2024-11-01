@@ -38,7 +38,10 @@ export default class RankImageGenerator extends ImageGenerator {
     this.builder.setFillStyle("#FFFFFF").setFont("36px Arial").fillText(this.username, 235, 215);
 
     // Add total messages
-    this.builder.setFillStyle("#aaaaaa").setFont("15px Arial").fillText(`Messages: ${this.messages}`, 25, 35);
+    this.builder
+      .setFillStyle("#aaaaaa")
+      .setFont("15px Arial")
+      .fillText(`Messages: ${this.getShortenedMessageCount(this.messages)}`, 25, 35);
 
     // Rank
     let rankNumX = 710;
@@ -84,14 +87,15 @@ export default class RankImageGenerator extends ImageGenerator {
     }
 
     // Add level word
-    this.builder.setFillStyle("#b13302").setFont("30px Arial").fillText("LVL", levelWordX, levelWordY);
+    this.builder.setFillStyle("#b3b3b3").setFont("30px Arial").fillText("LVL", levelWordX, levelWordY);
 
     // Add level number
-    this.builder.setFillStyle("#b13302").setFont("150px Arial").setTextAlign("right").fillText(`${this.level}`, levelX, levelY);
+    this.builder.setFillStyle("#b3b3b3").setFont("150px Arial").setTextAlign("right").fillText(`${this.level}`, levelX, levelY);
     this.builder.resetTextAlign();
 
     // Set Exp text
-    this.builder.setFillStyle("#ffffff").setFont("20px Arial").fillText(`${this.curExp} exp / ${this.neededExp} exp`, 650, 215);
+    this.builder.setFillStyle("#ffffff").setFont("20px Arial").setTextAlign("right").fillText(`${this.curExp} exp / ${this.neededExp} exp`, 840, 215);
+    this.builder.resetTextAlign();
 
     // Exp Pill
     const pillWidth = 640;
@@ -140,5 +144,19 @@ export default class RankImageGenerator extends ImageGenerator {
       .closePath()
       .clip()
       .drawImage(profilePicture, photoX - innerRadius, photoY - innerRadius, innerRadius * 2, innerRadius * 2);
+  }
+
+  private getShortenedMessageCount(messageCount: number): string {
+    if (messageCount < 1000) {
+      return messageCount.toString();
+    } else if (messageCount < 1000000) {
+      const wholeNumber = Math.floor(messageCount / 1000);
+      const remainder = messageCount % 1000;
+      return `${wholeNumber}.${remainder.toString().slice(0, 2)}K`;
+    } else {
+      const wholeNumber = Math.floor(messageCount / 1000000);
+      const remainder = messageCount % 1000000;
+      return `${wholeNumber}.${remainder.toString().slice(0, 2)}M`;
+    }
   }
 }

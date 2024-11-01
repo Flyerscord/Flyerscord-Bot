@@ -23,6 +23,15 @@ export default class HealthCheckModule extends Module {
       }
     });
 
+    const request = require("request");
+
+    app.get("/proxy/:imageId.gif", (req, res) => {
+      const imageId = req.params.imageId;
+      const imageUrl = `https://ik.imagekit.io/flyerzrule/${imageId}`;
+
+      request({ url: imageUrl, headers: { "Content-Type": "image/gif" } }).pipe(res);
+    });
+
     app.listen(port, () => {
       Stumper.info(`Health check server is running on port ${port}`, "healthCheck:HealthCheckModule:setup");
     });

@@ -32,6 +32,7 @@ export default class ImportMee6Command extends AdminSlashCommand {
         const guildId = Config.getConfig().masterGuildId;
         if (guildId) {
           const users: User[] = await Mee6LevelsApi.getLeaderboard(guildId);
+          Stumper.debug(`Retrieved ${users.length} from mee6 leaderboards`, "levels:ImportMee6Command:execute");
 
           for (let i = 0; i < users.length; i++) {
             const user = users[i];

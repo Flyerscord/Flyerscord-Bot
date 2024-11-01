@@ -3,11 +3,21 @@ import { getGuild } from "./guilds";
 import Stumper from "stumper";
 
 export async function getMember(userId: string): Promise<GuildMember | undefined> {
-  return await getGuild()?.members.fetch(userId);
+  try {
+    return await getGuild()?.members.fetch(userId);
+  } catch (error) {
+    Stumper.caughtError(error, "common:members:getMember");
+    return undefined;
+  }
 }
 
 export async function getMembers(): Promise<Collection<string, GuildMember> | undefined> {
-  return await getGuild()?.members.fetch();
+  try {
+    return await getGuild()?.members.fetch();
+  } catch (error) {
+    Stumper.caughtError(error, "common:members:getMembers");
+    return undefined;
+  }
 }
 
 export async function getMemberJoinPosition(member: GuildMember): Promise<number> {

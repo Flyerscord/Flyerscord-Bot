@@ -1,9 +1,19 @@
 import { Channel, ForumChannel, ForumThreadChannel, TextChannel, VoiceChannel } from "discord.js";
 import ClientManager from "../../managers/ClientManager";
+import Stumper from "stumper";
 
-export async function getChannel(channelId: string): Promise<Channel | null> {
+export async function getChannel(channelId: string): Promise<Channel | undefined> {
   const client = ClientManager.getInstance().client;
-  return await client.channels.fetch(channelId);
+  try {
+    const channel = await client.channels.fetch(channelId);
+    if (channel) {
+      return channel;
+    }
+    return undefined;
+  } catch (error) {
+    Stumper.caughtError(error, "common:channels:getChannel");
+    return undefined;
+  }
 }
 
 export async function getForumChannel(channelId: string): Promise<ForumChannel | undefined> {
@@ -22,12 +32,20 @@ export async function getTextChannel(channelId: string): Promise<TextChannel | u
   return undefined;
 }
 
-export async function getForumPostChannel(forumChannelId: string, postChannelId: string): Promise<ForumThreadChannel | null | undefined> {
+export async function getForumPostChannel(forumChannelId: string, postChannelId: string): Promise<ForumThreadChannel | undefined> {
   const forumChannel = await getForumChannel(forumChannelId);
   if (forumChannel) {
-    return await forumChannel.threads.fetch(postChannelId);
+    try {
+      const postChannel = await forumChannel.threads.fetch(postChannelId);
+      if (postChannel) {
+        return postChannel;
+      }
+      return undefined;
+    } catch (error) {
+      Stumper.caughtError(error, "common:channels:getForumPostChannel");
+      return undefined;
+    }
   }
-  return undefined;
 }
 
 export async function getVoiceChannel(channelId: string): Promise<VoiceChannel | undefined> {

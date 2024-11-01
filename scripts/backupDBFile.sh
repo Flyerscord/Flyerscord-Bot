@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 containerName=$1
 backupLocation=$2
 

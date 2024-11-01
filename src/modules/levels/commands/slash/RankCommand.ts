@@ -41,7 +41,7 @@ export default class RankCommand extends SlashCommand {
     const rank = db.getUserRank(user.id);
 
     if (rank == -1) {
-      interaction.followUp({ content: "Error finding rank!", ephemeral: true });
+      interaction.followUp({ content: "Error finding rank! You may need to send a message first!", ephemeral: true });
       Stumper.error(`Error finding rank for user ${user.id}`, "levels:RankCommand:createEmbed");
       return;
     }
@@ -56,7 +56,13 @@ export default class RankCommand extends SlashCommand {
         username,
         profilePictureUrl,
       );
-      const imageBuffer = await rankImageGenerator.getImage();
+      let imageBuffer: Buffer;
+      try {
+        imageBuffer = await rankImageGenerator.getImage();
+      } catch (error) {
+        Stumper.caughtError(error, "levels:RankCommand:execute");
+        return;
+      }
 
       const attachment = new AttachmentBuilder(imageBuffer, { name: "rank.png" });
       interaction.editReply({ files: [attachment] });

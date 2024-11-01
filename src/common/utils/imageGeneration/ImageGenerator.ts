@@ -1,5 +1,8 @@
 import { loadImage } from "canvas";
 import CanvasBuilder from "./CanvasBuilder";
+import axios from "axios";
+import Stumper from "stumper";
+import sharp from "sharp";
 
 export default abstract class ImageGenerator {
   protected builder: CanvasBuilder;
@@ -25,7 +28,11 @@ export default abstract class ImageGenerator {
   }
 
   async getImage(): Promise<Buffer> {
-    await this.createImage();
+    try {
+      await this.createImage();
+    } catch (error) {
+      throw error;
+    }
     return this.builder.exportToBuffer();
   }
 
@@ -80,6 +87,21 @@ export default abstract class ImageGenerator {
   }
 
   protected async loadImage(path: string): Promise<CanvasImageSource> {
+    if (path.startsWith("http") && path.endsWith(".webp")) {
+      const response = await axios.get(path, { responseType: "arraybuffer" });
+      if (response.status !== 200) {
+        Stumper.error(`Error downloading image: ${path}`, "common:ImageGenerator:loadImage");
+        throw new Error("Error downloading image");
+      }
+
+      const webpBuffer = Buffer.from(response.data);
+      const pngBuffer = await sharp(webpBuffer).png().toBuffer();
+      return this.loadImageSource(pngBuffer);
+    }
+    return this.loadImageSource(path);
+  }
+
+  private async loadImageSource(path: string | Buffer): Promise<CanvasImageSource> {
     const image = await loadImage(path);
     return image as unknown as CanvasImageSource;
   }

@@ -30,7 +30,7 @@ async function onSlashCommand(client: Client, interaction: ChatInputCommandInter
     await command.execute(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onSlashCommand");
-    await interaction.reply({
+    await interaction.followUp({
       content: "There was an error while executing this command!",
       ephemeral: true,
     });

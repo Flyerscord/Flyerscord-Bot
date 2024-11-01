@@ -15,7 +15,12 @@ export default class JoinImageGenerator extends ImageGenerator {
   protected override async createImage(): Promise<void> {
     this.roundCornersOfCanvas(15);
 
-    const backgroundImage = await this.loadImage(`${__dirname}/../assets/background.png`);
+    let backgroundImage: CanvasImageSource;
+    try {
+      backgroundImage = await this.loadImage(`${__dirname}/../assets/background.png`);
+    } catch (error) {
+      throw error;
+    }
 
     // Add background image
     this.builder.drawImage(backgroundImage, 0, 0, this.width, this.height);
@@ -54,7 +59,12 @@ export default class JoinImageGenerator extends ImageGenerator {
       .fillText(`Member #${this.memberNumber}`, memberNumberX, memberNumberY);
 
     // Add photo circle
-    const profilePicture = await this.loadImage(this.profilePictureUrl);
+    let profilePicture: CanvasImageSource;
+    try {
+      profilePicture = await this.loadImage(this.profilePictureUrl);
+    } catch (error) {
+      throw error;
+    }
     this.drawPhotoCircle(profilePicture, this.centerX, this.centerY, 92, 2);
   }
 }

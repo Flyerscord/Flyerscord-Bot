@@ -23,7 +23,12 @@ export default class RankImageGenerator extends ImageGenerator {
   protected override async createImage(): Promise<void> {
     this.roundCornersOfCanvas(15);
 
-    const backgroundImage = await this.loadImage(`${__dirname}/../assets/background.png`);
+    let backgroundImage: CanvasImageSource;
+    try {
+      backgroundImage = await this.loadImage(`${__dirname}/../assets/background.png`);
+    } catch (error) {
+      throw error;
+    }
 
     // Add background image
     this.builder.drawImage(backgroundImage, 0, 0, this.width, this.height);
@@ -94,7 +99,11 @@ export default class RankImageGenerator extends ImageGenerator {
     this.builder.resetTextAlign();
 
     // Set Exp text
-    this.builder.setFillStyle("#ffffff").setFont("20px Arial").setTextAlign("right").fillText(`${this.curExp} exp / ${this.neededExp} exp`, 840, 215);
+    this.builder
+      .setFillStyle("#ffffff")
+      .setFont("20px Arial")
+      .setTextAlign("right")
+      .fillText(`${this.formatNumber(this.curExp)} / ${this.formatNumber(this.neededExp)} exp`, 840, 215);
     this.builder.resetTextAlign();
 
     // Exp Pill
@@ -137,7 +146,12 @@ export default class RankImageGenerator extends ImageGenerator {
 
     // Add circle for photo
     const innerRadius = 90;
-    const profilePicture = await this.loadImage(this.profilePictureUrl);
+    let profilePicture: CanvasImageSource;
+    try {
+      profilePicture = await this.loadImage(this.profilePictureUrl);
+    } catch (error) {
+      throw error;
+    }
     this.builder
       .beginPath()
       .arc(photoX, photoY, innerRadius, 0, 2 * Math.PI)
@@ -158,5 +172,9 @@ export default class RankImageGenerator extends ImageGenerator {
       const remainder = messageCount % 1000000;
       return `${wholeNumber}.${remainder.toString().slice(0, 2)}M`;
     }
+  }
+
+  private formatNumber(number: number): string {
+    return number.toLocaleString("en-US");
   }
 }

@@ -6,15 +6,16 @@ import Config from "../../../common/config/Config";
 import ClientManager from "../../../common/managers/ClientManager";
 import discord from "../../../common/utils/discord/discord";
 import CommandImporter from "../utils/CommandImporter";
+import MyImageKit from "../utils/ImageKit";
 
 export default (): void => {
   ClientManager.getInstance().client.on("messageCreate", async (message: Message) => {
     if (await checkCommandImport(message)) return;
-    if (checkForCustomTextCommand(message)) return;
+    if (await checkForCustomTextCommand(message)) return;
   });
 };
 
-function checkForCustomTextCommand(message: Message): boolean {
+async function checkForCustomTextCommand(message: Message): Promise<boolean> {
   const prefix = Config.getConfig().prefix.normal;
   if (message.author.bot) return false;
   if (!message.channel.isTextBased()) return false;
@@ -26,8 +27,21 @@ function checkForCustomTextCommand(message: Message): boolean {
   const db = CustomCommandsDB.getInstance();
   const customCommand = db.getCommand(command);
   if (customCommand) {
+    let text = customCommand.text;
+
+    const imageKit = MyImageKit.getInstance();
+
+    if (imageKit.isImageKitUrl(text)) {
+      const url = await imageKit.convertToProxyUrlIfNeeded(text);
+
+      if (url) {
+        text = url;
+        Stumper.debug(`Converted image kit url to proxy url: ${text}`, "customCommands:onMessageCreate:checkForCustomTextCommand");
+      }
+    }
+
     Stumper.info(`Executing custom command ${customCommand.name}.`, "customCommands:onMessageCreate:checkForCustomTextCommand");
-    discord.messages.sendMessageToChannel(message.channel.id, customCommand.text);
+    discord.messages.sendMessageToChannel(message.channel.id, text);
     return true;
   } else if (message.client.textCommands.hasAny(command)) {
     // Command is a hardcoded text command and will be caught by the normal text command check

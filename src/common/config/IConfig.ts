@@ -55,6 +55,7 @@ interface IImageKitConfig {
   privateKey: string;
   urlEndpoint: string;
   redirectUrl: string;
+  proxyUrl: string;
 }
 
 interface IImgurConfig {

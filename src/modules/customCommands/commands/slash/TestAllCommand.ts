@@ -11,6 +11,7 @@ export default class TestAllCommand extends AdminSlashCommand {
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     await interaction.deferReply({ ephemeral: true });
+
     const db = CustomCommandsDB.getInstance();
     const commands = db.getAllCommands();
 

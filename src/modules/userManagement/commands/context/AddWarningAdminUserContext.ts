@@ -8,12 +8,14 @@ export default class AddNoteAdminUserContext extends AdminUserContextMenuCommand
   }
 
   async execute(interaction: UserContextMenuCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     const user = interaction.targetUser;
     if (user) {
       const warningModal = new WarningReasonModal(user);
 
       await interaction.showModal(warningModal.getModal());
     }
-    interaction.reply({ content: "Error adding warning!", ephemeral: true });
+    interaction.editReply({ content: "Error adding warning!" });
   }
 }

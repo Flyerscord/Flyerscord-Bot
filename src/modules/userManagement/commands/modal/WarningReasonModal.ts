@@ -23,6 +23,8 @@ export default class WarningReasonModal extends ModalMenu {
   }
 
   async execute(interaction: ModalSubmitInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     const reason = this.getTextInputValue(interaction, "warningReasonInput");
 
     const db = UserManagementDB.getInstance();
@@ -33,6 +35,6 @@ export default class WarningReasonModal extends ModalMenu {
       "userManagement:WarningReasonModal:execute",
     );
     sendLogMessage(`Added warning for user: ${this.targetUser.username} by user ${interaction.user.username} Reason: ${reason}`);
-    interaction.reply(`Added warning for user: ${this.targetUser.username}!`);
+    interaction.editReply(`Added warning for user: ${this.targetUser.username}!`);
   }
 }

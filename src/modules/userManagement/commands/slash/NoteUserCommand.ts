@@ -14,6 +14,8 @@ export default class NoteUserCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     const user: User = this.getParamValue(interaction, PARAM_TYPES.USER, "user");
     const note: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "note");
 
@@ -22,6 +24,6 @@ export default class NoteUserCommand extends AdminSlashCommand {
 
     Stumper.info(`Added note for user: ${user.username} by user ${interaction.user.username}`, "userManagement:NoteUserCommand:execute");
     sendLogMessage(`Added note for user: \`${user.username}\` by user \`${interaction.user.username}\` Note: \`${note}\``);
-    interaction.reply(`Added note for user: ${user.username}!`);
+    interaction.editReply(`Added note for user: ${user.username}!`);
   }
 }

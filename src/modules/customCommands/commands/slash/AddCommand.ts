@@ -38,6 +38,8 @@ export default class AddCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     const db = CustomCommandsDB.getInstance();
 
     let name: string = "";
@@ -56,9 +58,8 @@ export default class AddCommand extends AdminSlashCommand {
 
     if (name != "" && text != "") {
       if (db.hasCommand(name) || interaction.client.textCommands.hasAny(name)) {
-        interaction.reply({
+        interaction.editReply({
           content: `Command ${Config.getConfig().prefix.normal}${name} already exists!`,
-          ephemeral: true,
         });
         return;
       }
@@ -68,28 +69,24 @@ export default class AddCommand extends AdminSlashCommand {
       } catch (error) {
         Stumper.caughtError(error, "customCommands:AddCommand:execute");
         if (error instanceof InvalidImgurUrlException || error instanceof ErrorUploadingToImageKitException) {
-          interaction.reply({
+          interaction.editReply({
             content: `Error adding command ${Config.getConfig().prefix.normal}${name}! There was an issue with the url. Contact flyerzrule for help.`,
-            ephemeral: true,
           });
           return;
         } else if (error instanceof PageNotFoundException) {
-          interaction.reply({
+          interaction.editReply({
             content: `Error adding command ${Config.getConfig().prefix.normal}${name}! The url returns a 404.`,
-            ephemeral: true,
           });
           return;
         } else {
-          interaction.reply({
+          interaction.editReply({
             content: `Error adding command ${Config.getConfig().prefix.normal}${name}!`,
-            ephemeral: true,
           });
           throw error;
         }
       }
-      interaction.reply({
+      interaction.editReply({
         content: `Command ${Config.getConfig().prefix.normal}${name} added!`,
-        ephemeral: true,
       });
     }
   }

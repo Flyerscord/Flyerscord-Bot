@@ -15,6 +15,8 @@ export default class EnableDisableCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     const eventName: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "event");
     const setEnabled: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "setenabled");
 
@@ -26,9 +28,8 @@ export default class EnableDisableCommand extends AdminSlashCommand {
     if (event) {
       db.setEventEnabled(event.dbKey, enable);
 
-      interaction.reply({
+      interaction.editReply({
         content: `Event ${event.name} ${enable ? "enabled" : "disabled"}!`,
-        ephemeral: true,
       });
     }
   }

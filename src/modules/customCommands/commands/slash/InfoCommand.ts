@@ -16,6 +16,8 @@ export default class InfoCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     const db = CustomCommandsDB.getInstance();
 
     const commandName: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "name");
@@ -24,11 +26,10 @@ export default class InfoCommand extends AdminSlashCommand {
 
     if (command) {
       const embed = await createEmbed(command);
-      interaction.reply({ embeds: [embed], ephemeral: true });
+      interaction.editReply({ embeds: [embed] });
     } else {
-      interaction.reply({
+      interaction.editReply({
         content: `A custom comamnd with the name ${commandName} does not exist!`,
-        ephemeral: true,
       });
     }
   }

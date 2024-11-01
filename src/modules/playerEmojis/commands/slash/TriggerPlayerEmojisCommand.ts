@@ -9,7 +9,9 @@ export default class TriggerPlayerEmojisCommand extends AdminSlashCommand {
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     await interaction.deferReply({ ephemeral: true });
+
     await checkForNewEmojis();
+
     interaction.editReply({ content: "Triggered player emoji process!" });
   }
 }

@@ -18,18 +18,20 @@ export default class ChangeCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     const dateStr = this.getParamValue(interaction, PARAM_TYPES.STRING, "date");
     const eventKey: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "event");
 
     const event = Object.values(events).find((event) => event.name == eventKey);
     if (!event) {
-      interaction.reply({ content: "Error finding event!", ephemeral: true });
+      interaction.editReply({ content: "Error finding event!" });
       return;
     }
 
     const date = Time.getDateFromString(dateStr);
     if (!date) {
-      interaction.reply({ content: "Error parsing date!", ephemeral: true });
+      interaction.editReply({ content: "Error parsing date!" });
       return;
     }
 
@@ -37,6 +39,6 @@ export default class ChangeCommand extends AdminSlashCommand {
 
     db.setEventDate(event.dbKey, date.getTime());
 
-    interaction.reply({ content: `Event ${event.name} date set to ${dateStr}!`, ephemeral: true });
+    interaction.editReply({ content: `Event ${event.name} date set to ${dateStr}!` });
   }
 }

@@ -14,6 +14,8 @@ export default class WarnUserCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    await interaction.deferReply({ ephemeral: true });
+
     const user: User = this.getParamValue(interaction, PARAM_TYPES.USER, "user");
     const reason: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "reason");
 
@@ -22,6 +24,6 @@ export default class WarnUserCommand extends AdminSlashCommand {
 
     Stumper.info(`Added warning for user: ${user.username} by user ${interaction.user.username}`, "userManagement:WarnUserCommand:execute");
     sendLogMessage(`Added warning for user: \`${user.username}\` by user \`${interaction.user.username}\` Reason: \`${reason}\``);
-    interaction.reply(`Added warning for user: ${user.username}!`);
+    interaction.editReply(`Added warning for user: ${user.username}!`);
   }
 }

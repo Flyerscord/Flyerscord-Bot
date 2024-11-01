@@ -132,7 +132,7 @@ export default class MyImageKit {
         return undefined;
       }
 
-      return `${Config.getConfig().imageKit.proxyUrl}/${imagePath}.gif`;
+      return `${Config.getConfig().imageKit.proxyUrl}${imagePath}.gif`;
     }
   }
 }

@@ -32,7 +32,7 @@ export default class DaysUntilCommand extends SlashCommand {
 
     let output = "";
     if (timeUntil > 0) {
-      output = event.daysUntilMessage.replace("{time}", Time.getFormattedTimeUntil(eventData.date));
+      output = event.daysUntilMessage.replace("{time}", Time.getFormattedTimeUntil(timeUntil));
     } else if (timeUntil < 0) {
       output = event.pastMessage;
     } else {

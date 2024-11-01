@@ -86,30 +86,23 @@ export default abstract class Time {
   }
 
   static getFormattedTimeUntil(timeUntil: number): string {
+    const days = Math.floor(timeUntil / (1000 * 60 * 60 * 24));
+    timeUntil %= 1000 * 60 * 60 * 24;
+
+    const hours = Math.floor(timeUntil / (1000 * 60 * 60));
+    timeUntil %= 1000 * 60 * 60;
+
+    const minutes = Math.floor(timeUntil / (1000 * 60));
+    timeUntil %= 1000 * 60;
+
     const seconds = Math.floor(timeUntil / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
 
-    const outputPieces: string[] = [];
+    const dayStr = days === 1 ? "day" : "days";
+    const hourStr = hours === 1 ? "hour" : "hours";
+    const minuteStr = minutes === 1 ? "minute" : "minutes";
+    const secondStr = seconds === 1 ? "second" : "seconds";
 
-    if (days > 0) {
-      outputPieces.push(`${days} day${days > 1 ? "s" : ""}`);
-    }
-
-    if (hours > 0) {
-      outputPieces.push(`${hours} hour${hours > 1 ? "s" : ""}`);
-    }
-
-    if (minutes > 0) {
-      outputPieces.push(`${minutes} minute${minutes > 1 ? "s" : ""}`);
-    }
-
-    if (seconds > 0) {
-      outputPieces.push(`${seconds} second${seconds > 1 ? "s" : ""}`);
-    }
-
-    return outputPieces.join(" ");
+    return `${days} ${dayStr}, ${hours} ${hourStr}, ${minutes} ${minuteStr}, ${seconds} ${secondStr}`;
   }
 
   static getDateFromString(dateString: string): Date | undefined {

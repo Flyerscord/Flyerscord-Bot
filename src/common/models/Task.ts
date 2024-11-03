@@ -12,6 +12,12 @@ export default abstract class Task {
     this.interval = interval;
   }
 
+  private async run(): Promise<void> {
+    Stumper.info(`Running task: ${this.name}`, "common:Task:run");
+    await this.execute();
+    Stumper.info(`Task ${this.name} completed!`, "common:Task:run");
+  }
+
   protected abstract execute(): Promise<void>;
 
   getName(): string {
@@ -24,7 +30,7 @@ export default abstract class Task {
 
   createScheduledJob(): void {
     Stumper.debug(`Creating scheduled job: ${this.name}`, "common:Task:createScheduledJob");
-    this.job = schedule.scheduleJob(this.interval, this.execute);
+    this.job = schedule.scheduleJob(this.interval, this.run);
   }
 
   stopScheduledJob(): void {

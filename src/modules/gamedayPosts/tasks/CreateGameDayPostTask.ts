@@ -1,5 +1,5 @@
 import Task from "../../../common/models/Task";
-import { checkForGameDay, closeAndLockOldPosts } from "../utils/GameChecker";
+import { checkForGameDay } from "../utils/GameChecker";
 
 export default class CreateGameDayPostTask extends Task {
   constructor() {
@@ -8,7 +8,6 @@ export default class CreateGameDayPostTask extends Task {
   }
 
   protected async execute(): Promise<void> {
-    await closeAndLockOldPosts();
     await checkForGameDay();
   }
 }

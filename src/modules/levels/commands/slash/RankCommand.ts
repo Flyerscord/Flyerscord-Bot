@@ -38,7 +38,7 @@ export default class RankCommand extends SlashCommand {
     const db = LevelsDB.getInstance();
     const levelExpDB = LevelExpDB.getInstance();
     const userLevel = db.getUser(user.id);
-    const rank = db.getUserRank(user.id);
+    const rank = db.getUserRank(user.id) + 1;
 
     if (rank == -1) {
       interaction.followUp({ content: "Error finding rank! You may need to send a message first!", ephemeral: true });

@@ -31,44 +31,53 @@ export async function checkForGameDay(): Promise<void> {
         const awayTeam = teams.find((team) => team.id == game.awayTeam.id);
 
         if (homeTeam && awayTeam) {
-          const availableTags = await discord.forums.getAvailableTags(Config.getConfig().gameDayPosts.channelId);
+          const franchiseRes = await nhlApi.teams.getFranchiseInfo({ lang: "en" });
 
-          let tags: GuildForumTag[] = [];
-          if (game.gameType == GAME_TYPE.PRESEASON) {
-            tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.preseason);
-          } else if (game.gameType == GAME_TYPE.REGULAR_SEASON) {
-            tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.regularSeason);
-          } else if (game.gameType == GAME_TYPE.POSTSEASON) {
-            tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.postseason);
-          }
+          if (franchiseRes.status == 200) {
+            const homeFranchise = franchiseRes.data.data.find((franchise) => franchise.id == homeTeam.franchiseId);
+            const awayFranchise = franchiseRes.data.data.find((franchise) => franchise.id == awayTeam.franchiseId);
 
-          const seasonTag = await getCurrentSeasonTagId(game);
-          if (seasonTag) {
-            tags.push(seasonTag);
-          }
+            if (homeFranchise && awayFranchise) {
+              const availableTags = await discord.forums.getAvailableTags(Config.getConfig().gameDayPosts.channelId);
 
-          let titlePrefix = "";
-          const gameNumber = await getGameNumber(game.id);
-          if (game.gameType == GAME_TYPE.PRESEASON) {
-            titlePrefix = `Preseason ${gameNumber}`;
-          } else if (game.gameType == GAME_TYPE.REGULAR_SEASON) {
-            titlePrefix = `Game ${gameNumber}`;
-          } else if (game.gameType == GAME_TYPE.POSTSEASON) {
-            // TODO: Implement logic for playoff rounds
-            titlePrefix = `Postseason ${gameNumber}`;
-          }
+              let tags: GuildForumTag[] = [];
+              if (game.gameType == GAME_TYPE.PRESEASON) {
+                tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.preseason);
+              } else if (game.gameType == GAME_TYPE.REGULAR_SEASON) {
+                tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.regularSeason);
+              } else if (game.gameType == GAME_TYPE.POSTSEASON) {
+                tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.postseason);
+              }
 
-          const post = await discord.forums.createPost(
-            Config.getConfig().gameDayPosts.channelId,
-            `${titlePrefix} - ${awayTeam.fullName} @ ${homeTeam.fullName}`,
-            `${time(new Date(game.startTimeUTC), TimestampStyles.RelativeTime)}`,
-            tags,
-          );
+              const seasonTag = await getCurrentSeasonTagId(game);
+              if (seasonTag) {
+                tags.push(seasonTag);
+              }
 
-          if (post) {
-            post.setArchived(false);
-            Stumper.info(`Created post for game: ${game.id}`, "gameDayPosts:GameChecker:checkForGameDay");
-            db.addPost(game.id, post.id);
+              let titlePrefix = "";
+              const gameNumber = await getGameNumber(game.id);
+              if (game.gameType == GAME_TYPE.PRESEASON) {
+                titlePrefix = `Preseason ${gameNumber}`;
+              } else if (game.gameType == GAME_TYPE.REGULAR_SEASON) {
+                titlePrefix = `Game ${gameNumber}`;
+              } else if (game.gameType == GAME_TYPE.POSTSEASON) {
+                // TODO: Implement logic for playoff rounds
+                titlePrefix = `Postseason ${gameNumber}`;
+              }
+
+              const post = await discord.forums.createPost(
+                Config.getConfig().gameDayPosts.channelId,
+                `${titlePrefix} - ${awayFranchise.teamCommonName} @ ${homeFranchise.teamCommonName}`,
+                `${time(new Date(game.startTimeUTC), TimestampStyles.RelativeTime)}`,
+                tags,
+              );
+
+              if (post) {
+                post.setArchived(false);
+                Stumper.info(`Created post for game: ${game.id}`, "gameDayPosts:GameChecker:checkForGameDay");
+                db.addPost(game.id, post.id);
+              }
+            }
           }
         }
       }

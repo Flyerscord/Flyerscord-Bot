@@ -9,7 +9,7 @@ export default class HealthCheckModule extends Module {
     super("HealthCheck");
   }
 
-  protected override async setup(): Promise<void> {
+  protected async setup(): Promise<void> {
     const expressManager = ExpressManager.getInstance();
 
     expressManager.addRoute("/health", (req, res) => {

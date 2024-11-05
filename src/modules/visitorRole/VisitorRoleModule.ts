@@ -9,7 +9,7 @@ export default class VistorRoleModule extends Module {
     super("VistorRole");
   }
 
-  protected override async setup(): Promise<void> {
+  protected async setup(): Promise<void> {
     this.registerListeners();
   }
 

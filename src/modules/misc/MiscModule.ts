@@ -6,7 +6,7 @@ export default class MiscModule extends Module {
     super("Misc");
   }
 
-  protected override async setup(): Promise<void> {
+  protected async setup(): Promise<void> {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
   }
 }

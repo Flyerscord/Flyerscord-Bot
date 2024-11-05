@@ -7,7 +7,7 @@ export default class PlayerEmojisModule extends Module {
     super("PlayerEmojis");
   }
 
-  protected override async setup(): Promise<void> {
+  protected async setup(): Promise<void> {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
 
     this.registerSchedules();

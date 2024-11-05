@@ -8,7 +8,7 @@ export default class ImageProxyModule extends Module {
     super("ImageProxy");
   }
 
-  protected override async setup(): Promise<void> {
+  protected async setup(): Promise<void> {
     const expressManager = ExpressManager.getInstance();
 
     expressManager.addRoute("/proxy/:imageId.gif", (req, res) => {

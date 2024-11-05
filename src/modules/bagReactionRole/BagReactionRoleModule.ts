@@ -8,7 +8,7 @@ export default class BagReactionRoleModule extends Module {
     super("BagReactioRole");
   }
 
-  protected override async setup(): Promise<void> {
+  protected async setup(): Promise<void> {
     this.registerListeners();
   }
 

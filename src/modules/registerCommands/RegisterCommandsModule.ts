@@ -6,7 +6,7 @@ export default class RegisterCommandsModule extends Module {
     super("RegisterCommands");
   }
 
-  protected override async setup(): Promise<void> {
+  protected async setup(): Promise<void> {
     await this.readInCommands<TextCommand>(__dirname, "text");
   }
 }

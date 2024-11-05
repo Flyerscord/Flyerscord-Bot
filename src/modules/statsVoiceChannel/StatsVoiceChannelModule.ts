@@ -10,7 +10,7 @@ export default class StatsVoiceChannelModule extends Module {
     super("StatsVoiceChannel");
   }
 
-  protected override async setup(): Promise<void> {
+  protected async setup(): Promise<void> {
     this.readInCommands<SlashCommand>(__dirname, "slash");
 
     this.registerStatChannels();

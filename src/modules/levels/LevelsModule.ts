@@ -8,7 +8,7 @@ export default class LevelsModule extends Module {
     super("Levels");
   }
 
-  protected override async setup(): Promise<void> {
+  protected async setup(): Promise<void> {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
 
     this.registerListeners();

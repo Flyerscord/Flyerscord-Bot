@@ -6,7 +6,7 @@ export default class AdminModule extends Module {
     super("Admin");
   }
 
-  protected override async setup(): Promise<void> {
+  protected async setup(): Promise<void> {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
   }
 }

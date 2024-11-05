@@ -8,7 +8,7 @@ export default class UserManagementModule extends Module {
     super("UserManagement");
   }
 
-  protected override async setup(): Promise<void> {
+  protected async setup(): Promise<void> {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
     await this.readInCommands<ContextMenuCommand>(__dirname, "context");
     await this.readInCommands<ModalMenu>(__dirname, "modal");

@@ -1,4 +1,3 @@
-import ModuleSetupMissingException from "../exceptions/ModuleSetupMissingException";
 import Stumper from "stumper";
 import SlashCommand from "./SlashCommand";
 import ModalMenu from "./ModalMenu";
@@ -22,9 +21,7 @@ export default abstract class Module {
     Stumper.success(`${this.name} module enabled!`);
   }
 
-  protected async setup(): Promise<void> {
-    throw new ModuleSetupMissingException();
-  }
+  protected abstract setup(): Promise<void>;
 
   protected async readInCommands<T>(dir: string, commandsPath: string): Promise<void> {
     const commands: T[] = [];

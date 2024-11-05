@@ -30,7 +30,7 @@ export default abstract class Task {
 
   createScheduledJob(): void {
     Stumper.debug(`Creating scheduled job: ${this.name}`, "common:Task:createScheduledJob");
-    this.job = schedule.scheduleJob(this.interval, this.run);
+    this.job = schedule.scheduleJob(this.interval, this.run.bind(this));
   }
 
   stopScheduledJob(): void {

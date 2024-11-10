@@ -7,8 +7,7 @@ import { IClubScheduleNowOutput } from "nhl-api-wrapper-ts/dist/interfaces/club/
 import { NHL_EMOJI_GUILD_ID } from "../../../../common/utils/discord/emojis";
 import discord from "../../../../common/utils/discord/discord";
 import Stumper from "stumper";
-import { ITeamsOutput } from "nhl-api-wrapper-ts/dist/interfaces/stats/teams/Teams";
-import { IFranchisesOutput } from "nhl-api-wrapper-ts/dist/interfaces/stats/franchise/Franchises";
+import CombinedTeamInfoCache from "../../../../common/cache/CombinedTeamInfoCache";
 
 export default class ScheduleCommand extends SlashCommand {
   constructor() {
@@ -25,17 +24,15 @@ export default class ScheduleCommand extends SlashCommand {
     const numberOfGames: number = this.getParamValue(interaction, PARAM_TYPES.INTEGER, "number") || 5;
 
     const scheduleResponse = await nhlApi.teams.schedule.getCurrentTeamSchedule({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
-    const teamsResponse = await nhlApi.teams.getTeams({ lang: "en" });
-    const franchisesResponse = await nhlApi.teams.getFranchiseInfo({ lang: "en" });
 
-    if (scheduleResponse.status == 200 && teamsResponse.status == 200 && franchisesResponse.status == 200) {
+    if (scheduleResponse.status == 200) {
       const schedule = scheduleResponse.data;
 
-      const embed = await this.createEmbed(numberOfGames, schedule, teamsResponse.data, franchisesResponse.data);
+      const embed = await this.createEmbed(numberOfGames, schedule);
       interaction.editReply({ embeds: [embed] });
     } else {
       Stumper.error(
-        `Error fetching the data from the NHL API! Status code 1: ${scheduleResponse.status} 2: ${teamsResponse.status} 3: ${franchisesResponse.status}`,
+        `Error fetching the schedule data from the NHL API! Status code: ${scheduleResponse.status}`,
         "levels:LeaderboardCommand:execute",
       );
       interaction.followUp({
@@ -45,12 +42,7 @@ export default class ScheduleCommand extends SlashCommand {
     }
   }
 
-  private async createEmbed(
-    numberOfGames: number,
-    schedule: IClubScheduleNowOutput,
-    teams: ITeamsOutput,
-    franchises: IFranchisesOutput,
-  ): Promise<EmbedBuilder> {
+  private async createEmbed(numberOfGames: number, schedule: IClubScheduleNowOutput): Promise<EmbedBuilder> {
     const embed = new EmbedBuilder();
 
     if (numberOfGames == 1) {
@@ -68,23 +60,23 @@ export default class ScheduleCommand extends SlashCommand {
 
       const date = new Date(game.startTimeUTC);
 
-      const awayTeam = teams.data.find((team) => team.id == game.awayTeam.id);
-      const homeTeam = teams.data.find((team) => team.id == game.homeTeam.id);
-      const awayFranchise = franchises.data.find((franchise) => franchise.id == awayTeam?.franchiseId);
-      const homeFranchise = franchises.data.find((franchise) => franchise.id == homeTeam?.franchiseId);
+      const combinedTeamInfoCache = CombinedTeamInfoCache.getInstance();
 
-      if (awayTeam && homeTeam && awayFranchise && homeFranchise) {
+      const awayTeam = combinedTeamInfoCache.getTeamByTeamId(game.awayTeam.id);
+      const homeTeam = combinedTeamInfoCache.getTeamByTeamId(game.homeTeam.id);
+
+      if (awayTeam && homeTeam) {
         const awayTeamEmoji = await discord.emojis.getClientEmojiByNameAndGuildID(
-          awayFranchise.teamCommonName.toLowerCase().replaceAll(" ", ""),
+          awayTeam.franchise.teamCommonName.toLowerCase().replaceAll(" ", ""),
           NHL_EMOJI_GUILD_ID,
         );
         const homeTeamEmoji = await discord.emojis.getClientEmojiByNameAndGuildID(
-          homeFranchise.teamCommonName.toLowerCase().replaceAll(" ", ""),
+          homeTeam.franchise.teamCommonName.toLowerCase().replaceAll(" ", ""),
           NHL_EMOJI_GUILD_ID,
         );
         embed.addFields({
           name: `${time(date, TimestampStyles.LongDateTime)}`,
-          value: `${awayTeamEmoji} ${awayFranchise.teamCommonName} @ ${homeFranchise.teamCommonName} ${homeTeamEmoji}`,
+          value: `${awayTeamEmoji} ${awayTeam.franchise.teamCommonName} @ ${homeTeam.franchise.teamCommonName} ${homeTeamEmoji}`,
         });
       }
     }

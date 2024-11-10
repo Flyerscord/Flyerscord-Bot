@@ -112,11 +112,19 @@ import onInteractionCreate from "./common/listeners/onInteractionCreate";
 import onReady from "./common/listeners/onReady";
 
 /* -------------------------------------------------------------------------- */
+/*                                Import Caches                               */
+/* -------------------------------------------------------------------------- */
+import CombinedTeamInfoCache from "./common/cache/CombinedTeamInfoCache";
+
+/* -------------------------------------------------------------------------- */
 /*                                 Run Startup                                */
 /* -------------------------------------------------------------------------- */
 startUp();
 
 async function startUp(): Promise<void> {
+  // Initialize and update the caches
+  await CombinedTeamInfoCache.getInstance().forceUpdate();
+
   // Enable all modules before starting the bot
   // Health check must be enabled first followed by the image proxy
   await new HealthCheckModule().enable();

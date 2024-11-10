@@ -13,6 +13,7 @@ import PageNotFoundException from "../exceptions/PageNotFoundException";
 import Config from "../../../common/config/Config";
 import discord from "../../../common/utils/discord/discord";
 import { sleepMs } from "../../../common/utils/sleep";
+import HTMLPageException from "../exceptions/HTMLPageException";
 
 export default class CustomCommandsDB extends Database {
   private static instance: CustomCommandsDB;
@@ -128,7 +129,15 @@ export default class CustomCommandsDB extends Database {
 
   private async handleImageUpload(text: string, userId: string, name: string): Promise<string> {
     if (this.isImageLink(text)) {
-      if (!(await this.isUrlValid(text))) {
+      let isUrlValid: boolean;
+      try {
+        isUrlValid = await this.isUrlValid(text);
+      } catch (error) {
+        throw error;
+      }
+
+      if (!isUrlValid) {
+        // Check if the url is a discord url and if it is, there is a chance that the url is old and needs to be updated
         const discordRegex = /discordapp.com/;
         if (!discordRegex.test(text)) {
           throw new PageNotFoundException();
@@ -178,13 +187,23 @@ export default class CustomCommandsDB extends Database {
     try {
       const response = await axios.head(url);
       if (response.status == 200) {
+        // Check the content type
+        console.log(response.headers["content-type"]);
+        const htmlContentTypeRegex = /text\/html/;
+        if (response.headers["content-type"].match(htmlContentTypeRegex)) {
+          Stumper.error(`Url ${url} is a HTML page and not an image`, "customCommands:CustomCommandsDB:isUrlValid");
+          throw new HTMLPageException();
+        }
+
         Stumper.debug(`Url ${url} is valid`, "customCommands:CustomCommandsDB:isUrlValid");
         return true;
       }
       Stumper.debug(`Url ${url} is not valid. Status code: ${response.status}`, "customCommands:CustomCommandsDB:isUrlValid");
       return false;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
+      if (error instanceof HTMLPageException) {
+        throw error;
+      }
       return false;
     }
   }

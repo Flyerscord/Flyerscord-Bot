@@ -6,6 +6,7 @@ import { InvalidImgurUrlException } from "../../exceptions/InvalidImgurUrlExcept
 import { ErrorUploadingToImageKitException } from "../../exceptions/ErrorUploadingToImageKitException";
 import Stumper from "stumper";
 import PageNotFoundException from "../../exceptions/PageNotFoundException";
+import HTMLPageException from "../../exceptions/HTMLPageException";
 
 export default class AddCommand extends AdminSlashCommand {
   constructor() {
@@ -76,12 +77,17 @@ export default class AddCommand extends AdminSlashCommand {
         Stumper.caughtError(error, "customCommands:AddCommand:execute");
         if (error instanceof InvalidImgurUrlException || error instanceof ErrorUploadingToImageKitException) {
           interaction.editReply({
-            content: `Error adding command ${Config.getConfig().prefix.normal}${name}! There was an issue with the url. Contact flyerzrule for help.`,
+            content: `Error adding command ${Config.getConfig().prefix.normal}${name}! There was an issue with the url. Try downloading the image and uploading it with the image subcommand. Otherwise contact flyerzrule for help.`,
           });
           return;
         } else if (error instanceof PageNotFoundException) {
           interaction.editReply({
             content: `Error adding command ${Config.getConfig().prefix.normal}${name}! The url returns a 404.`,
+          });
+          return;
+        } else if (error instanceof HTMLPageException) {
+          interaction.editReply({
+            content: `Error adding command ${Config.getConfig().prefix.normal}${name}! The url is a HTML page and not an image. Try downloading the image and uploading it with the image subcommand.`,
           });
           return;
         } else {

@@ -8,6 +8,7 @@ import { GuildForumTag, time, TimestampStyles } from "discord.js";
 import Config from "../../../common/config/Config";
 import GameDayPostsDB from "../providers/GameDayPosts.Database";
 import { IClubScheduleOutput_games } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubSchedule";
+import CombinedTeamInfoCache from "../../../common/cache/CombinedTeamInfoCache";
 
 export async function checkForGameDay(): Promise<void> {
   const res = await nhlApi.teams.schedule.getCurrentTeamSchedule({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
@@ -22,63 +23,51 @@ export async function checkForGameDay(): Promise<void> {
         Stumper.info(`Game ${game.id} already has a post`, "gameDayPosts:GameChecker:checkForGameDay");
         return;
       }
-      const teamsRes = await nhlApi.teams.getTeams({ lang: "en" });
+      const combinedTeamInfoCache = CombinedTeamInfoCache.getInstance();
+      await combinedTeamInfoCache.forceUpdate();
 
-      if (teamsRes.status == 200) {
-        const teams = teamsRes.data.data;
+      const homeTeam = combinedTeamInfoCache.getTeamByTeamId(game.homeTeam.id);
+      const awayTeam = combinedTeamInfoCache.getTeamByTeamId(game.awayTeam.id);
 
-        const homeTeam = teams.find((team) => team.id == game.homeTeam.id);
-        const awayTeam = teams.find((team) => team.id == game.awayTeam.id);
+      if (homeTeam && awayTeam) {
+        const availableTags = await discord.forums.getAvailableTags(Config.getConfig().gameDayPosts.channelId);
 
-        if (homeTeam && awayTeam) {
-          const franchiseRes = await nhlApi.teams.getFranchiseInfo({ lang: "en" });
+        let tags: GuildForumTag[] = [];
+        if (game.gameType == GAME_TYPE.PRESEASON) {
+          tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.preseason);
+        } else if (game.gameType == GAME_TYPE.REGULAR_SEASON) {
+          tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.regularSeason);
+        } else if (game.gameType == GAME_TYPE.POSTSEASON) {
+          tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.postseason);
+        }
 
-          if (franchiseRes.status == 200) {
-            const homeFranchise = franchiseRes.data.data.find((franchise) => franchise.id == homeTeam.franchiseId);
-            const awayFranchise = franchiseRes.data.data.find((franchise) => franchise.id == awayTeam.franchiseId);
+        const seasonTag = await getCurrentSeasonTagId(game);
+        if (seasonTag) {
+          tags.push(seasonTag);
+        }
 
-            if (homeFranchise && awayFranchise) {
-              const availableTags = await discord.forums.getAvailableTags(Config.getConfig().gameDayPosts.channelId);
+        let titlePrefix = "";
+        const gameNumber = await getGameNumber(game.id);
+        if (game.gameType == GAME_TYPE.PRESEASON) {
+          titlePrefix = `Preseason ${gameNumber}`;
+        } else if (game.gameType == GAME_TYPE.REGULAR_SEASON) {
+          titlePrefix = `Game ${gameNumber}`;
+        } else if (game.gameType == GAME_TYPE.POSTSEASON) {
+          // TODO: Implement logic for playoff rounds
+          titlePrefix = `Postseason ${gameNumber}`;
+        }
 
-              let tags: GuildForumTag[] = [];
-              if (game.gameType == GAME_TYPE.PRESEASON) {
-                tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.preseason);
-              } else if (game.gameType == GAME_TYPE.REGULAR_SEASON) {
-                tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.regularSeason);
-              } else if (game.gameType == GAME_TYPE.POSTSEASON) {
-                tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.postseason);
-              }
+        const post = await discord.forums.createPost(
+          Config.getConfig().gameDayPosts.channelId,
+          `${titlePrefix} - ${awayTeam.franchise.teamCommonName} @ ${homeTeam.franchise.teamCommonName}`,
+          `${time(new Date(game.startTimeUTC), TimestampStyles.RelativeTime)}`,
+          tags,
+        );
 
-              const seasonTag = await getCurrentSeasonTagId(game);
-              if (seasonTag) {
-                tags.push(seasonTag);
-              }
-
-              let titlePrefix = "";
-              const gameNumber = await getGameNumber(game.id);
-              if (game.gameType == GAME_TYPE.PRESEASON) {
-                titlePrefix = `Preseason ${gameNumber}`;
-              } else if (game.gameType == GAME_TYPE.REGULAR_SEASON) {
-                titlePrefix = `Game ${gameNumber}`;
-              } else if (game.gameType == GAME_TYPE.POSTSEASON) {
-                // TODO: Implement logic for playoff rounds
-                titlePrefix = `Postseason ${gameNumber}`;
-              }
-
-              const post = await discord.forums.createPost(
-                Config.getConfig().gameDayPosts.channelId,
-                `${titlePrefix} - ${awayFranchise.teamCommonName} @ ${homeFranchise.teamCommonName}`,
-                `${time(new Date(game.startTimeUTC), TimestampStyles.RelativeTime)}`,
-                tags,
-              );
-
-              if (post) {
-                post.setArchived(false);
-                Stumper.info(`Created post for game: ${game.id}`, "gameDayPosts:GameChecker:checkForGameDay");
-                db.addPost(game.id, post.id);
-              }
-            }
-          }
+        if (post) {
+          post.setArchived(false);
+          Stumper.info(`Created post for game: ${game.id}`, "gameDayPosts:GameChecker:checkForGameDay");
+          db.addPost(game.id, post.id);
         }
       }
     }

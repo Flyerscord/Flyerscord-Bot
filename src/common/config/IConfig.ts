@@ -17,6 +17,7 @@ interface ICommonConfig {
   userLogChannelId: string;
   voiceStatsChannels: IVoiceStatsConfig[];
   commandTempChannelId: string;
+  bluesky: IBlueSkyConfig;
 }
 
 interface IPrefixConfig {
@@ -71,5 +72,12 @@ interface IVoiceStatsConfig {
 interface IReactionRoleConfig {
   roleId: string;
   emojiId: string;
+  channelId: string;
+}
+
+interface IBlueSkyConfig {
+  username: string;
+  password: string;
+  listId: string;
   channelId: string;
 }

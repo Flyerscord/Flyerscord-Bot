@@ -1,9 +1,11 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
-import BlueSkyDB from "../../providers/BlueSky.Database";
 import { AccountAlreadyExistsException } from "../../exceptions/AccountAlreadyExistsException";
 import { AccountDoesNotExistException } from "../../exceptions/AccountDoesNotExistException";
 import Stumper from "stumper";
+import AccountHistoryDB from "../../providers/AccountHistory.Database";
+import BlueSky from "../../utils/BlueSky";
+import { HISTORY_ITEM_TYPE } from "../../interfaces/IHistoryItem";
 
 export default class BlueSkyCommand extends AdminSlashCommand {
   constructor() {
@@ -30,12 +32,14 @@ export default class BlueSkyCommand extends AdminSlashCommand {
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     await interaction.deferReply();
 
-    const db = BlueSkyDB.getInstance();
+    const historyDb = AccountHistoryDB.getInstance();
+    const bk = BlueSky.getInstance();
 
     if (this.isSubCommand(interaction, "add")) {
       const account: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "account");
       try {
-        db.addAccount(account, interaction.user.id);
+        await bk.addAccountToList(account);
+        historyDb.addHistoryItem(HISTORY_ITEM_TYPE.ADD, account, interaction.user.id);
         interaction.editReply({
           content: `Account ${account} added!`,
         });
@@ -56,7 +60,8 @@ export default class BlueSkyCommand extends AdminSlashCommand {
     } else if (this.isSubCommand(interaction, "remove")) {
       const account: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "account");
       try {
-        db.removeAccount(account);
+        await bk.removeAccountFromList(account);
+        historyDb.addHistoryItem(HISTORY_ITEM_TYPE.REMOVE, account, interaction.user.id);
         interaction.editReply({
           content: `Account ${account} removed!`,
         });
@@ -75,7 +80,7 @@ export default class BlueSkyCommand extends AdminSlashCommand {
         }
       }
     } else if (this.isSubCommand(interaction, "list")) {
-      const accounts = db.getAllAccounts();
+      const accounts = await bk.getListAccounts();
       if (accounts.length == 0) {
         interaction.editReply({
           content: "No accounts found!",

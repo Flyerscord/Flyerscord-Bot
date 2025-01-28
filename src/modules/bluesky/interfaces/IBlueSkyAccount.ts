@@ -1,6 +1,6 @@
 export interface IBlueSkyAccount {
-  account: string;
-  addedOn: Date;
-  addedBy: string;
-  lastPostId: string;
+  userHandle: string;
+  userDid: string;
+  displayName: string;
+  uri: string;
 }

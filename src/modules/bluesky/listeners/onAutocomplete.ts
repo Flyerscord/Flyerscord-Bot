@@ -1,6 +1,6 @@
 import ClientManager from "../../../common/managers/ClientManager";
 import { AutocompleteInteraction, Interaction } from "discord.js";
-import BlueSkyDB from "../providers/BlueSky.Database";
+import BlueSky from "../utils/BlueSky";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
@@ -26,11 +26,13 @@ async function removeAccount(interaction: AutocompleteInteraction): Promise<bool
     if (focusedOption.name == "account") {
       const value = focusedOption.value as string;
 
-      const db = BlueSkyDB.getInstance();
+      const bk = BlueSky.getInstance();
       try {
-        const accounts = db.getAllAccounts();
+        const accounts = await bk.getListAccounts();
 
-        const filteredCommandNames = accounts.filter((name) => name.toLowerCase().startsWith(value.toLowerCase()));
+        const filteredCommandNames = accounts
+          .filter((ele) => ele.userHandle.toLowerCase().startsWith(value.toLowerCase()))
+          .map((ele) => ele.userHandle);
         sendAutocompleteOptions(interaction, filteredCommandNames);
         return true;
       } catch {

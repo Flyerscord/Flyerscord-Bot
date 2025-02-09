@@ -1,19 +1,19 @@
-import { AtpAgent, AtUri } from "@atproto/api";
 import Config from "../../../common/config/Config";
 import { IPost } from "../interfaces/IPost";
 import Stumper from "stumper";
 import { IBlueSkyAccount } from "../interfaces/IBlueSkyAccount";
 import { AccountNotinListException } from "../exceptions/AccountNotInListException";
+import BlueSkyDB from "../providers/BlueSky.Database";
+import AxiosWrapper from "./AxiosWrapper";
 
-// https://docs.bsky.app/docs/tutorials/user-lists#add-a-user-to-a-list
 export default class BlueSky {
   private static instance: BlueSky;
 
-  private agent: AtpAgent;
+  private accessJwt: string;
+  private refreshJwt: string;
+  private userDid: string;
 
   constructor() {
-    this.agent = new AtpAgent({ service: "https://bsky.social" });
-
     this.login();
   }
 
@@ -25,7 +25,25 @@ export default class BlueSky {
     const username = Config.getConfig().bluesky.username;
     const password = Config.getConfig().bluesky.password;
 
-    await this.agent.login({ identifier: username, password: password });
+    const resp = await AxiosWrapper.post("com.atproto.server.createSession", { identifier: username, password: password });
+
+    if (resp.status != 200) {
+      Stumper.error("Login failed!", "blueSky:BlueSky:login");
+      throw new Error("Login failed!");
+    } else {
+      Stumper.info("Login successful!", "blueSky:BlueSky:login");
+      this.accessJwt = resp.data.accessJwt;
+      this.refreshJwt = resp.data.refreshJwt;
+    }
+  }
+
+  private async refreshAccessToken(): Promise<void> {
+    const resp = await AxiosWrapper.post("com.atproto.server.refreshSession", {
+      accessJwt: this.accessJwt,
+      refreshJwt: this.refreshJwt,
+      handle: Config.getConfig().bluesky.username,
+      did: this.userDid,
+    });
   }
 
   async getUserDid(accountTag: string): Promise<string> {
@@ -38,16 +56,37 @@ export default class BlueSky {
     return "";
   }
 
-  async checkAccountForNewPosts(): Promise<IPost[]> {
-    const posts: IPost[] = [];
+  async checkForNewPosts(): Promise<IPost[]> {
+    const postDatas: IPost[] = [];
+
+    const db = BlueSkyDB.getInstance();
+
+    const lastPost = db.getLastPostId();
 
     const listUri = await this.createListUri();
 
     try {
       const response = await this.agent.app.bsky.feed.getListFeed({ list: listUri });
+      console.log(response);
       if (response.success) {
-        for (const item of response.data.feed) {
-          // item.
+        const sortedPosts = response.data.feed.sort((a, b) => (b.post.record as any).createdAt - (a.post.record as any).createdAt);
+        for (const post of sortedPosts) {
+          console.log(post.post.record);
+          if (lastPost == "") {
+            db.setLastPostId(post.post.cid);
+            break;
+          }
+
+          if (post.post.cid != lastPost) {
+            const postData: IPost = {
+              account: post.post.author.handle,
+              postId: post.post.cid,
+              url: `https://bsky.app/profile/${post.post.author.handle}/post/${post.post.uri.split("/").pop()}`,
+            };
+            postDatas.push(postData);
+          } else {
+            break;
+          }
         }
       }
     } catch (error) {
@@ -55,7 +94,7 @@ export default class BlueSky {
       return [];
     }
 
-    return posts;
+    return postDatas;
   }
 
   async addAccountToList(account: string): Promise<void> {
@@ -100,8 +139,8 @@ export default class BlueSky {
     const accounts: IBlueSkyAccount[] = [];
 
     try {
-      const response = await this.agent.app.bsky.graph.getList({ list: listUri });
-
+      const response = await this.agent.app.bsky.graph.getList({ list: listUri, limit: 100 });
+      console.log(response);
       if (response.success) {
         for (const item of response.data.items) {
           accounts.push({
@@ -122,6 +161,7 @@ export default class BlueSky {
   private async createListUri(): Promise<string> {
     const listId = Config.getConfig().bluesky.listId;
     const userDid = await this.getUserDid(Config.getConfig().bluesky.username);
-    return `at://did:plc:${userDid}/app.bsky.feed.list/${listId}`;
+    console.log(`at://${userDid}/app.bsky.graph.list/${listId}`);
+    return `at://${userDid}/app.bsky.feed.graph/${listId}`;
   }
 }

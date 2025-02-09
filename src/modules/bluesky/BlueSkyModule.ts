@@ -16,7 +16,7 @@ export default class BlueSkyModule extends Module {
     BlueSky.getInstance();
 
     this.registerListeners();
-    this.registerSchedules();
+    // this.registerSchedules();
   }
 
   private registerSchedules(): void {

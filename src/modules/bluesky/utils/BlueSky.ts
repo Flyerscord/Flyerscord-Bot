@@ -4,16 +4,19 @@ import Stumper from "stumper";
 import { IBlueSkyAccount } from "../interfaces/IBlueSkyAccount";
 import { AccountNotinListException } from "../exceptions/AccountNotInListException";
 import BlueSkyDB from "../providers/BlueSky.Database";
-import AxiosWrapper from "./AxiosWrapper";
+import AxiosWrapper from "../../../common/utils/AxiosWrapper";
 
 export default class BlueSky {
   private static instance: BlueSky;
 
-  private accessJwt: string;
-  private refreshJwt: string;
+  private wrapper: AxiosWrapper;
+
   private userDid: string;
 
   constructor() {
+    this.userDid = "";
+
+    this.wrapper = new AxiosWrapper("bluesky", "https://bsky.social/xrpc/");
     this.login();
   }
 
@@ -25,31 +28,22 @@ export default class BlueSky {
     const username = Config.getConfig().bluesky.username;
     const password = Config.getConfig().bluesky.password;
 
-    const resp = await AxiosWrapper.post("com.atproto.server.createSession", { identifier: username, password: password });
+    try {
+      const data = await this.wrapper.post("com.atproto.server.createSession", { identifier: username, password: password });
 
-    if (resp.status != 200) {
-      Stumper.error("Login failed!", "blueSky:BlueSky:login");
-      throw new Error("Login failed!");
-    } else {
+      this.wrapper.setAccessJwt(data.accessJwt, data.refreshJwt, "com.atproto.server.refreshSession");
+      this.userDid = data.did;
       Stumper.info("Login successful!", "blueSky:BlueSky:login");
-      this.accessJwt = resp.data.accessJwt;
-      this.refreshJwt = resp.data.refreshJwt;
+    } catch (e) {
+      Stumper.error("Login failed!", "blueSky:BlueSky:login");
+      throw e;
     }
-  }
-
-  private async refreshAccessToken(): Promise<void> {
-    const resp = await AxiosWrapper.post("com.atproto.server.refreshSession", {
-      accessJwt: this.accessJwt,
-      refreshJwt: this.refreshJwt,
-      handle: Config.getConfig().bluesky.username,
-      did: this.userDid,
-    });
   }
 
   async getUserDid(accountTag: string): Promise<string> {
     try {
-      const resp = await this.agent.getProfile({ actor: accountTag });
-      return resp.data.did;
+      const resp = await this.wrapper.get("app.bsky.actor.getProfile", { actor: accountTag });
+      return resp.did;
     } catch (error) {
       Stumper.caughtError(error, "blueSky:BlueSky:getUserDid");
     }

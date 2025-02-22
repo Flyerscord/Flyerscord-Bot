@@ -1,4 +1,6 @@
 export class AccountDoesNotExistException extends Error {
-  name: string = "AccountDoesNotExistException";
-  message: string = "The account does not exist";
+  constructor(account: string) {
+    super(`Account ${account} does not exist`);
+    this.name = "AccountDoesNotExistException";
+  }
 }

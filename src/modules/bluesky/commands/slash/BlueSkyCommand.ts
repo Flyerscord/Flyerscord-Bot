@@ -86,7 +86,7 @@ export default class BlueSkyCommand extends AdminSlashCommand {
           content: "No accounts found!",
         });
       } else {
-        const names = accounts.join("\n");
+        const names = accounts.map((ele) => ele.userHandle).join("\n");
         const message = `Current Accounts:\n\`\`\`\n${names}\n\`\`\``;
 
         interaction.editReply({

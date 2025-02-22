@@ -188,7 +188,6 @@ export default class CustomCommandsDB extends Database {
       const response = await axios.head(url);
       if (response.status == 200) {
         // Check the content type
-        console.log(response.headers["content-type"]);
         const htmlContentTypeRegex = /text\/html/;
         if (response.headers["content-type"].match(htmlContentTypeRegex)) {
           Stumper.error(`Url ${url} is a HTML page and not an image`, "customCommands:CustomCommandsDB:isUrlValid");

@@ -103,6 +103,7 @@ import StatsVoiceChannelModule from "./modules/statsVoiceChannel/StatsVoiceChann
 import UserManagementModule from "./modules/userManagement/UserManagementModule";
 import VisitorRoleModule from "./modules/visitorRole/VisitorRoleModule";
 import RegisterCommandsModule from "./modules/registerCommands/RegisterCommandsModule";
+import BlueSkyModule from "./modules/bluesky/BlueSkyModule";
 
 /* -------------------------------------------------------------------------- */
 /*                       Import Our Other Event Handlers                      */
@@ -147,6 +148,7 @@ async function startUp(): Promise<void> {
   await new StatsVoiceChannelModule().enable();
   await new UserManagementModule().enable();
   await new VisitorRoleModule().enable();
+  await new BlueSkyModule().enable();
 
   // Must be enabled last
   await new RegisterCommandsModule().enable();

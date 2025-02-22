@@ -55,6 +55,11 @@ export default {
       channelId: "",
     },
     commandTempChannelId: "",
+    bluesky: {
+      username: "",
+      password: "",
+      channelId: "",
+    },
   },
   nonProduction: {
     token: "",
@@ -111,5 +116,10 @@ export default {
       channelId: "",
     },
     commandTempChannelId: "",
+    bluesky: {
+      username: "",
+      password: "",
+      channelId: "",
+    },
   },
 };

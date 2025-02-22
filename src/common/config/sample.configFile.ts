@@ -8,6 +8,18 @@ export default {
       admin: ".",
     },
     masterGuildId: "",
+    reactionRoles: {
+      channelId: "",
+      reactionRoles: [
+        {
+          name: "",
+          description: "",
+          colorHex: "",
+          roleId: "",
+          emojiId: "",
+        },
+      ],
+    },
     vistorReactRole: {
       memberRoleId: "",
       visitorRoleId: "",
@@ -49,11 +61,6 @@ export default {
         channelId: "",
       },
     ],
-    bagReactionRole: {
-      roleId: "",
-      emojiId: "",
-      channelId: "",
-    },
     commandTempChannelId: "",
   },
   nonProduction: {
@@ -64,6 +71,18 @@ export default {
       admin: ".",
     },
     masterGuildId: "",
+    reactionRoles: {
+      channelId: "",
+      reactionRoles: [
+        {
+          name: "",
+          description: "",
+          colorHex: "",
+          roleId: "",
+          emojiId: "",
+        },
+      ],
+    },
     vistorReactRole: {
       memberRoleId: "",
       visitorRoleId: "",
@@ -105,11 +124,6 @@ export default {
         channelId: "",
       },
     ],
-    bagReactionRole: {
-      roleId: "",
-      emojiId: "",
-      channelId: "",
-    },
     commandTempChannelId: "",
   },
 };

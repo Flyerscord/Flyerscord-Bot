@@ -1,5 +1,5 @@
 import ClientManager from "../../../common/managers/ClientManager";
-import { createBagRoleMessageIfNeeded } from "../utils/utils";
+import { createBagRoleMessageIfNeeded } from "../../bagReactionRole/utils/utils";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;

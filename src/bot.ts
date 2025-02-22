@@ -90,7 +90,6 @@ ModalMenuManager.getInstance();
 import HealthCheckModule from "./modules/healthcheck/HealthCheckModule";
 import ImageProxyModule from "./modules/imageProxy/ImageProxyModule";
 import AdminModule from "./modules/admin/AdminModule";
-import BagReactionRoleModule from "./modules/bagReactionRole/BagReactionRoleModule";
 import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule";
 import DaysUntilModule from "./modules/daysUntil/DaysUntilModule";
 import GameDayPostsModule from "./modules/gamedayPosts/GameDayPostsModule";
@@ -99,6 +98,7 @@ import LevelsModule from "./modules/levels/LevelsModule";
 import MiscModule from "./modules/misc/MiscModule";
 import NHLModule from "./modules/nhl/NHLModule";
 import PlayerEmojisModule from "./modules/playerEmojis/PlayerEmojisModule";
+import ReactionRoleModule from "./modules/reactionRole/ReactionRoleModule";
 import StatsVoiceChannelModule from "./modules/statsVoiceChannel/StatsVoiceChannelModule";
 import UserManagementModule from "./modules/userManagement/UserManagementModule";
 import VisitorRoleModule from "./modules/visitorRole/VisitorRoleModule";
@@ -135,7 +135,6 @@ async function startUp(): Promise<void> {
   }
 
   await new AdminModule().enable();
-  await new BagReactionRoleModule().enable();
   await new CustomCommandsModule().enable();
   await new DaysUntilModule().enable();
   await new GameDayPostsModule().enable();
@@ -144,6 +143,7 @@ async function startUp(): Promise<void> {
   await new MiscModule().enable();
   await new NHLModule().enable();
   await new PlayerEmojisModule().enable();
+  await new ReactionRoleModule().enable();
   await new StatsVoiceChannelModule().enable();
   await new UserManagementModule().enable();
   await new VisitorRoleModule().enable();

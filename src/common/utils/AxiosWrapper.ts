@@ -9,7 +9,7 @@ export default class AxiosWrapper {
 
   private accessJwt: string;
   private refreshToken: string;
-  private refreshTokenEndpoint: string;
+  private refreshTokenCallback: ((refreshToken: string) => Promise<ITokens>) | undefined;
   private axiosInstance: AxiosInstance;
 
   constructor(name: string, baseUrl: string) {
@@ -18,7 +18,6 @@ export default class AxiosWrapper {
 
     this.accessJwt = "";
     this.refreshToken = "";
-    this.refreshTokenEndpoint = "";
 
     this.axiosInstance = axios.create({
       baseURL: this.baseUrl,
@@ -26,24 +25,24 @@ export default class AxiosWrapper {
     });
   }
 
-  setAccessJwt(accessJwt: string, refreshToken: string, refreshTokenEndpoint?: string): void {
+  setAccessJwt(accessJwt: string, refreshToken: string, refreshTokenCallback?: (refreshToken: string) => Promise<ITokens>): void {
     this.accessJwt = accessJwt;
     this.refreshToken = refreshToken;
-    if (refreshTokenEndpoint) {
-      this.refreshTokenEndpoint = refreshTokenEndpoint;
+    if (refreshTokenCallback) {
+      this.refreshTokenCallback = refreshTokenCallback;
     }
     this.axiosInstance.defaults.headers.Authorization = `Bearer ${this.accessJwt}`;
 
     this.scheduleTokenRefresh();
   }
 
-  async post(endpoint: string, data: Record<string, any>): Promise<any> {
+  async post<T>(endpoint: string, data: Record<string, any>): Promise<T> {
     Stumper.debug(`Sending POST request to ${endpoint}`, `common:AxiosWrapper(${this.name}):post`);
     const response = await this.axiosInstance.post(endpoint, data);
     return this.getData(endpoint, response);
   }
 
-  async get(endpoint: string, params?: Record<string, any>): Promise<any> {
+  async get<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
     Stumper.debug(`Sending GET request to ${endpoint}`, `common:AxiosWrapper(${this.name}):get`);
     const response = await this.axiosInstance.get(endpoint, { params });
     return this.getData(endpoint, response);
@@ -60,8 +59,14 @@ export default class AxiosWrapper {
   }
 
   private async refreshJwt(): Promise<void> {
-    const resp = await this.post(this.refreshTokenEndpoint, { refresh_token: this.refreshToken });
-    this.setAccessJwt(resp.access_token, resp.refresh_token);
+    if (this.refreshTokenCallback !== undefined) {
+      try {
+        const resp = await this.refreshTokenCallback(this.refreshToken);
+        this.setAccessJwt(resp.accessToken, resp.refreshToken);
+      } catch (error) {
+        Stumper.caughtError(error, `common:AxiosWrapper(${this.name}):refreshJwt`);
+      }
+    }
   }
 
   private async scheduleTokenRefresh(): Promise<void> {
@@ -100,4 +105,9 @@ export default class AxiosWrapper {
       Stumper.caughtError(err, `common:AxiosWrapper(${this.name}):scheduleTokenRefresh`);
     }
   }
+}
+
+export interface ITokens {
+  accessToken: string;
+  refreshToken: string;
 }

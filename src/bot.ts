@@ -128,26 +128,26 @@ async function startUp(): Promise<void> {
 
   // Enable all modules before starting the bot
   // Health check must be enabled first followed by the image proxy
-  // await new HealthCheckModule().enable();
+  await new HealthCheckModule().enable();
 
   // Only enable the image proxy in production
   if (Config.isProductionMode()) {
     await new ImageProxyModule().enable();
   }
 
-  // await new AdminModule().enable();
-  // await new BagReactionRoleModule().enable();
-  // await new CustomCommandsModule().enable();
-  // await new DaysUntilModule().enable();
-  // await new GameDayPostsModule().enable();
-  // await new JoinLeaveModule().enable();
-  // await new LevelsModule().enable();
-  // await new MiscModule().enable();
-  // await new NHLModule().enable();
-  // await new PlayerEmojisModule().enable();
-  // await new StatsVoiceChannelModule().enable();
-  // await new UserManagementModule().enable();
-  // await new VisitorRoleModule().enable();
+  await new AdminModule().enable();
+  await new BagReactionRoleModule().enable();
+  await new CustomCommandsModule().enable();
+  await new DaysUntilModule().enable();
+  await new GameDayPostsModule().enable();
+  await new JoinLeaveModule().enable();
+  await new LevelsModule().enable();
+  await new MiscModule().enable();
+  await new NHLModule().enable();
+  await new PlayerEmojisModule().enable();
+  await new StatsVoiceChannelModule().enable();
+  await new UserManagementModule().enable();
+  await new VisitorRoleModule().enable();
   await new BlueSkyModule().enable();
 
   // Must be enabled last

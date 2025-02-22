@@ -54,13 +54,12 @@ export default class BlueSky {
 
     const db = BlueSkyDB.getInstance();
 
-    const lastPost = db.getPostCursor();
+    const lastPost = db.getLastPostTime();
 
     const listUri = await this.createListUri();
 
     try {
-      const response = await this.agent.app.bsky.feed.getListFeed({ list: listUri, limit: 100, cursor: lastPost });
-      console.log(response);
+      const response = await this.agent.app.bsky.feed.getListFeed({ list: listUri, limit: 30 });
       if (response.success) {
         const data = response.data;
         const sortedPosts = data.feed.sort(
@@ -69,12 +68,16 @@ export default class BlueSky {
           (a, b) => new Date((a.post.record as any).createdAt).getTime() - new Date((b.post.record as any).createdAt).getTime(),
         );
         if (lastPost == "") {
-          db.setPostCursor(data.cursor || "");
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          db.setLastPostTime((data.feed[data.feed.length - 1].post.record as any).createdAt);
           return [];
         }
 
-        for (const post of sortedPosts) {
-          console.log(post.post.record);
+        const timeOfLastPost = new Date(lastPost).getTime();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const newPosts = sortedPosts.filter((post) => new Date((post.post.record as any).createdAt).getTime() > timeOfLastPost);
+
+        for (const post of newPosts) {
           const postData: IPost = {
             account: post.post.author.handle,
             postId: post.post.cid,
@@ -82,6 +85,8 @@ export default class BlueSky {
           };
           postDatas.push(postData);
         }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        db.setLastPostTime((data.feed[data.feed.length - 1].post.record as any).createdAt);
       }
     } catch (error) {
       Stumper.caughtError(error, "blueSky:BlueSky:checkAccountForNewPosts");

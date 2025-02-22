@@ -4,13 +4,13 @@ import Database from "../../../common/providers/Database";
 export default class BlueSkyDB extends Database {
   private static instance: BlueSkyDB;
 
-  private readonly postCursorKey = "postCursorKey";
+  private readonly lastPostTimeKey = "lastPostTimeId";
 
   constructor() {
     super({ name: "blue-sky" });
 
-    if (!this.db.has(this.postCursorKey)) {
-      this.db.set(this.postCursorKey, "");
+    if (!this.db.has(this.lastPostTimeKey)) {
+      this.db.set(this.lastPostTimeKey, "");
     }
   }
 
@@ -18,12 +18,12 @@ export default class BlueSkyDB extends Database {
     return this.instance || (this.instance = new this());
   }
 
-  setPostCursor(newPostCursor: string): void {
-    this.db.set(this.postCursorKey, newPostCursor);
-    Stumper.debug(`Setting last post id to: ${newPostCursor}`, "blueSky:BlueSkyDB:setPostCursor");
+  setLastPostTime(newPostTime: string): void {
+    this.db.set(this.lastPostTimeKey, newPostTime);
+    Stumper.debug(`Setting last post id to: ${newPostTime}`, "blueSky:BlueSkyDB:setLastPostTime");
   }
 
-  getPostCursor(): string {
-    return this.db.get(this.postCursorKey);
+  getLastPostTime(): string {
+    return this.db.get(this.lastPostTimeKey);
   }
 }

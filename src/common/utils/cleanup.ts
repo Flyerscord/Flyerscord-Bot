@@ -1,3 +1,5 @@
+import AccountHistoryDB from "../../modules/bluesky/providers/AccountHistory.Database";
+import BlueSkyDB from "../../modules/bluesky/providers/BlueSky.Database";
 import CustomCommandsDB from "../../modules/customCommands/providers/CustomCommands.Database";
 import DaysUntilDB from "../../modules/daysUntil/providers/DaysUtil.Database";
 import GameDayPostsDB from "../../modules/gamedayPosts/providers/GameDayPosts.Database";
@@ -16,6 +18,8 @@ export function closeAllDbConnections(): void {
   const levelsDB = LevelsDB.getInstance();
   const playerEmojisDB = PlayerEmojisDB.getInstance();
   const userManagementDB = UserManagementDB.getInstance();
+  const accountHistoryDB = AccountHistoryDB.getInstance();
+  const blueSkyDB = BlueSkyDB.getInstance();
 
   globalDb.close();
   customCommandsDB.close();
@@ -25,4 +29,6 @@ export function closeAllDbConnections(): void {
   levelsDB.close();
   playerEmojisDB.close();
   userManagementDB.close();
+  accountHistoryDB.close();
+  blueSkyDB.close();
 }

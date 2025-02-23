@@ -69,7 +69,7 @@ export default class BlueSky {
         );
         if (lastPost == "") {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          db.setLastPostTime((data.feed[data.feed.length - 1].post.record as any).createdAt);
+          db.setLastPostTime((sortedPosts[sortedPosts.length - 1].post.record as any).createdAt);
           return [];
         }
 
@@ -85,8 +85,10 @@ export default class BlueSky {
           };
           postDatas.push(postData);
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        db.setLastPostTime((data.feed[data.feed.length - 1].post.record as any).createdAt);
+        if (newPosts.length > 0) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          db.setLastPostTime((newPosts[newPosts.length - 1].post.record as any).createdAt);
+        }
       }
     } catch (error) {
       Stumper.caughtError(error, "blueSky:BlueSky:checkAccountForNewPosts");

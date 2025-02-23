@@ -105,7 +105,7 @@ export default class MyImageKit {
 
   async convertToProxyUrlIfNeeded(url: string): Promise<string | undefined> {
     const animatedOrVideoMimeTypes = [
-      "video/mp4",
+      // "video/mp4",
       "video/webm",
       "video/ogg",
       "video/quicktime",

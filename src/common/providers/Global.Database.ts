@@ -21,12 +21,20 @@ export default class GlobalDB extends Database {
   /* -------------------------------------------------------------------------- */
   /*                           Command List Message ID                          */
   /* -------------------------------------------------------------------------- */
-  getCommandListMessageId(): string {
+  getCommandListMessageIds(): string[] {
     return this.db.get(this.COMMAND_LIST_MESSAGE_ID_KEY);
   }
 
-  setCommandListMessageId(newMessageId: string): void {
-    this.db.set(this.COMMAND_LIST_MESSAGE_ID_KEY, newMessageId);
+  addCommandListMessageId(newMessageId: string): void {
+    this.db.push(this.COMMAND_LIST_MESSAGE_ID_KEY, newMessageId);
+  }
+
+  removeAllCommandListMessageIds(): void {
+    this.db.set(this.COMMAND_LIST_MESSAGE_ID_KEY, []);
+  }
+
+  removeCommandListMessageId(messageId: string): void {
+    this.db.remove(this.COMMAND_LIST_MESSAGE_ID_KEY, messageId);
   }
 
   /* -------------------------------------------------------------------------- */

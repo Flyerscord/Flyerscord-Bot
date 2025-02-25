@@ -14,10 +14,7 @@ export default class SlashCommandManager {
   }
 
   static getInstance(): SlashCommandManager {
-    if (!SlashCommandManager.instance) {
-      SlashCommandManager.instance = new SlashCommandManager();
-    }
-    return SlashCommandManager.instance;
+    return this.instance || (this.instance = new this());
   }
 
   addCommands(commands: SlashCommand[]): void {

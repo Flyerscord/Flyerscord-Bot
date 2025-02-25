@@ -12,10 +12,7 @@ export default class ModalMenuManager {
   }
 
   static getInstance(): ModalMenuManager {
-    if (!ModalMenuManager.instance) {
-      ModalMenuManager.instance = new ModalMenuManager();
-    }
-    return ModalMenuManager.instance;
+    return this.instance || (this.instance = new this());
   }
 
   addCommands(commands: ModalMenu[]): void {

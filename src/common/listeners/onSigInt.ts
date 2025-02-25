@@ -1,10 +1,10 @@
 import Stumper from "stumper";
-import { closeAllDbConnections } from "../utils/cleanup";
+import ModuleManager from "../managers/ModuleManager";
 
 export default (): void => {
   process.on("SIGINT", () => {
     Stumper.warning("Received SIGINT signal, shutting down...", "common:onSigInt");
-    closeAllDbConnections();
+    ModuleManager.getInstance().disableAllModules();
 
     process.exit(0);
   });

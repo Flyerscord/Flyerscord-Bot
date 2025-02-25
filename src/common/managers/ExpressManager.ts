@@ -17,10 +17,7 @@ export default class ExpressManager {
   }
 
   static getInstance(): ExpressManager {
-    if (!ExpressManager.instance) {
-      ExpressManager.instance = new ExpressManager();
-    }
-    return ExpressManager.instance;
+    return this.instance || (this.instance = new this());
   }
 
   addRoute(route: string, callback: RequestHandler): void {

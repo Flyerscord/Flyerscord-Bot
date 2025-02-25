@@ -9,4 +9,8 @@ export default class RegisterCommandsModule extends Module {
   protected async setup(): Promise<void> {
     await this.readInCommands<TextCommand>(__dirname, "text");
   }
+
+  protected async cleanup(): Promise<void> {
+    // Nothing to cleanup
+  }
 }

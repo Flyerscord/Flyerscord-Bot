@@ -1,14 +1,17 @@
-import Module from "../../common/models/Module";
+import { setMessageIdsFromConfig } from "./utils/utils";
+import onReady from "./listeners/onReady";
 import onMessageReactionAdd from "./listeners/onMessageReactionAdd";
 import onMessageReactionRemove from "./listeners/onMessageReactionRemove";
-import onReady from "./listeners/onReady";
+import Module from "../../common/models/Module";
 
-export default class BagReactionRoleModule extends Module {
+export default class ReactionRoleModule extends Module {
   constructor() {
-    super("BagReactioRole");
+    super("ReactionRole");
   }
 
   protected async setup(): Promise<void> {
+    setMessageIdsFromConfig();
+
     this.registerListeners();
   }
 

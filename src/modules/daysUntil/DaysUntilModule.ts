@@ -1,6 +1,7 @@
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 import onAutocomplete from "./listeners/onAutocomplete";
+import DaysUntilDB from "./providers/DaysUtil.Database";
 
 export default class DaysUntilModule extends Module {
   constructor() {
@@ -11,6 +12,10 @@ export default class DaysUntilModule extends Module {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
 
     this.registerListeners();
+  }
+
+  protected async cleanup(): Promise<void> {
+    DaysUntilDB.getInstance().close();
   }
 
   private registerListeners(): void {

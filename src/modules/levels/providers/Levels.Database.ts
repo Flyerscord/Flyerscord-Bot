@@ -11,10 +11,7 @@ export default class LevelsDB extends Database {
   }
 
   static getInstance(): LevelsDB {
-    if (!LevelsDB.instance) {
-      LevelsDB.instance = new LevelsDB();
-    }
-    return LevelsDB.instance;
+    return this.instance || (this.instance = new this());
   }
 
   hasUser(userId: string): boolean {

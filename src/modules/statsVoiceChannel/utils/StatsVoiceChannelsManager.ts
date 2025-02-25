@@ -10,10 +10,7 @@ export default class StatsVoiceChannelsManager {
   }
 
   static getInstance(): StatsVoiceChannelsManager {
-    if (!StatsVoiceChannelsManager.instance) {
-      StatsVoiceChannelsManager.instance = new StatsVoiceChannelsManager();
-    }
-    return StatsVoiceChannelsManager.instance;
+    return this.instance || (this.instance = new this());
   }
 
   addStatChannel(statChannel: StatsVoiceChannel): void {

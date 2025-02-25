@@ -12,10 +12,7 @@ export default class TextCommandManager {
   }
 
   static getInstance(): TextCommandManager {
-    if (!TextCommandManager.instance) {
-      TextCommandManager.instance = new TextCommandManager();
-    }
-    return TextCommandManager.instance;
+    return this.instance || (this.instance = new this());
   }
 
   addCommands(commands: TextCommand[]): void {

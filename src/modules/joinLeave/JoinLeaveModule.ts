@@ -11,6 +11,10 @@ export default class JoinLeaveModule extends Module {
     this.registerListeners();
   }
 
+  protected async cleanup(): Promise<void> {
+    // Nothing to cleanup
+  }
+
   private registerListeners(): void {
     onGuildMemberAdd();
     onGuildMemberRemove();

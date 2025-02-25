@@ -21,7 +21,14 @@ export default abstract class Module {
     Stumper.success(`${this.name} module enabled!`);
   }
 
+  async disable(): Promise<void> {
+    await this.cleanup();
+    Stumper.success(`${this.name} module disabled!`);
+  }
+
   protected abstract setup(): Promise<void>;
+
+  protected abstract cleanup(): Promise<void>;
 
   protected async readInCommands<T>(dir: string, commandsPath: string): Promise<void> {
     const commands: T[] = [];

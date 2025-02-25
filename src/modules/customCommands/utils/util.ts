@@ -86,7 +86,7 @@ export async function updateCommandList(): Promise<void> {
   }
 }
 
-function createCommandListMessages(commands: ICustomCommand[]): string[] {
+export function createCommandListMessages(commands: ICustomCommand[]): string[] {
   let output = `**Custom Commands (${commands.length} commands)**\n`;
   const prefix = Config.getConfig().prefix.normal;
 

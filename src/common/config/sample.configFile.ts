@@ -1,5 +1,5 @@
 export default {
-  productionMode: true,
+  productionMode: false,
   production: {
     token: "",
     logLevel: 3,
@@ -8,6 +8,18 @@ export default {
       admin: ".",
     },
     masterGuildId: "",
+    reactionRoles: {
+      channelId: "",
+      reactionRoles: [
+        {
+          name: "",
+          description: "",
+          colorHex: "",
+          roleId: "",
+          emojiId: "",
+        },
+      ],
+    },
     vistorReactRole: {
       memberRoleId: "",
       visitorRoleId: "",
@@ -22,6 +34,7 @@ export default {
       privateKey: "",
       urlEndpoint: "",
       redirectUrl: "",
+      proxyUrl: "",
     },
     imgur: {
       clientId: "",
@@ -36,8 +49,8 @@ export default {
         seasons: [
           {
             name: "",
-            startingYear: 0,
-            endingYear: 0,
+            startingYear: 2024,
+            endingYear: 2025,
             tagId: "",
           },
         ],
@@ -58,6 +71,7 @@ export default {
     bluesky: {
       username: "",
       password: "",
+      listId: "",
       channelId: "",
     },
   },
@@ -69,6 +83,19 @@ export default {
       admin: ".",
     },
     masterGuildId: "",
+    reactionRoles: {
+      channelId: "",
+      reactionRoles: [
+        {
+          name: "",
+          description: "",
+          colorHex: "",
+          roleId: "",
+          emojiId: "",
+          messageId: "",
+        },
+      ],
+    },
     vistorReactRole: {
       memberRoleId: "",
       visitorRoleId: "",
@@ -83,6 +110,7 @@ export default {
       privateKey: "",
       urlEndpoint: "",
       redirectUrl: "",
+      proxyUrl: "",
     },
     imgur: {
       clientId: "",
@@ -97,8 +125,8 @@ export default {
         seasons: [
           {
             name: "",
-            startingYear: 0,
-            endingYear: 0,
+            startingYear: 2024,
+            endingYear: 2025,
             tagId: "",
           },
         ],
@@ -119,6 +147,7 @@ export default {
     bluesky: {
       username: "",
       password: "",
+      listId: "",
       channelId: "",
     },
   },

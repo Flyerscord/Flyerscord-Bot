@@ -11,8 +11,13 @@ export async function createRoleReactionMessagesIfNeeded(): Promise<void> {
   const reactionRoles = Config.getConfig().reactionRoles.reactionRoles;
 
   for (const reactionRole of reactionRoles) {
-    if (!db.hasReactionMessage(reactionRole.name)) {
+    if (
+      !db.hasReactionMessage(reactionRole.name) ||
+      (await discord.messages.getMessage(Config.getConfig().reactionRoles.channelId, db.getReactionMessage(reactionRole.name)!)) == undefined
+    ) {
       await createRoleReactionMessage(reactionRole);
+    } else {
+      Stumper.debug(`Reaction role message for ${reactionRole.name} already exists!`, "reactionRole:utils:createRoleReactionMessagesIfNeeded");
     }
   }
 }
@@ -51,6 +56,7 @@ export function setMessageIdsFromConfig(): void {
   const reactionRoles = Config.getConfig().reactionRoles.reactionRoles;
   for (const reactionRole of reactionRoles) {
     if (reactionRole.messageId) {
+      Stumper.info(`Setting message id for ${reactionRole.name} to ${reactionRole.messageId}`, "reactionRole:utils:setMessageIdsFromConfig");
       db.setReactionMessage(reactionRole.name, reactionRole.messageId);
     }
   }

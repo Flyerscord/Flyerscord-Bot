@@ -14,7 +14,7 @@ export default class ModuleManager {
   }
 
   async addModule(module: Module): Promise<void> {
-    module.enable();
+    await module.enable();
     this.modules.push(module);
   }
 

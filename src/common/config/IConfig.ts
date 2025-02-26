@@ -1,8 +1,7 @@
 import { LOG_LEVEL } from "stumper";
 
-export type IConfig = ICommonConfig;
-
-interface ICommonConfig {
+export interface IConfig {
+  productionMode: boolean;
   token: string;
   logLevel: LOG_LEVEL;
   masterGuildId: string;

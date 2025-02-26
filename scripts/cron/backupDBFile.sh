@@ -15,6 +15,8 @@ if [ -z "$backupLocation" ]; then
   exit 1
 fi
 
+mkdir -p $backupLocation
+
 timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
 newFileName="enmap_$timestamp.sqlite"
 backupPath="$backupLocation/$newFileName"

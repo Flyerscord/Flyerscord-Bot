@@ -23,10 +23,7 @@ onSigInt();
 /* -------------------------------------------------------------------------- */
 import Config from "./common/config/Config";
 
-if (!Config.fileExists()) {
-  Stumper.error("Config file not found", "main:CheckConfig");
-  process.exit(1);
-}
+Config.loadConfig();
 
 Stumper.setConfig({ logLevel: Config.getConfig().logLevel, timezone: TIMEZONE.LOCAL });
 Stumper.info(`Starting Bot in ${Config.isProductionMode() ? "production" : "non-production"} mode!`, "main:CheckConfig");

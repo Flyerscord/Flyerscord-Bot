@@ -8,6 +8,7 @@ import SlashCommandManager from "../managers/SlashCommandManager";
 import ModalMenuManager from "../managers/ModalMenuManager";
 import TextCommandManager from "../managers/TextCommandManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
+import { IDefaultConfig } from "../interfaces/IDefaultConfig";
 
 export default abstract class Module {
   protected name: string;
@@ -29,6 +30,8 @@ export default abstract class Module {
   protected abstract setup(): Promise<void>;
 
   protected abstract cleanup(): Promise<void>;
+
+  abstract getDefaultConfig(): IDefaultConfig;
 
   protected async readInCommands<T>(dir: string, commandsPath: string): Promise<void> {
     const commands: T[] = [];

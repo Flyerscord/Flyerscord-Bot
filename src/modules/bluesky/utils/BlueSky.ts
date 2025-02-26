@@ -78,12 +78,15 @@ export default class BlueSky {
         const newPosts = sortedPosts.filter((post) => new Date((post.post.record as any).createdAt).getTime() > timeOfLastPost);
 
         for (const post of newPosts) {
-          const postData: IPost = {
-            account: post.post.author.handle,
-            postId: post.post.cid,
-            url: `https://bsky.app/profile/${post.post.author.handle}/post/${post.post.uri.split("/").pop()}`,
-          };
-          postDatas.push(postData);
+          // Only add posts that are not replies
+          if (!post.reply) {
+            const postData: IPost = {
+              account: post.post.author.handle,
+              postId: post.post.cid,
+              url: `https://bsky.app/profile/${post.post.author.handle}/post/${post.post.uri.split("/").pop()}`,
+            };
+            postDatas.push(postData);
+          }
         }
         if (newPosts.length > 0) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any

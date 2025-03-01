@@ -13,7 +13,8 @@
     "lintfix": "npx eslint . --fix",
     "format": "npx prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "update": "npx npm-check -u",
-    "depcheck": "npx npm-check"
+    "depcheck": "npx npm-check",
+    "generate-config": "npx ts-node src/createDefaultConfig.ts"
   },
   "repository": {
     "type": "git",

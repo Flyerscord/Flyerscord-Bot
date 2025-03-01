@@ -1,3 +1,4 @@
+import { IDefaultConfig } from "../../common/interfaces/IDefaultConfig";
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 import onAutocomplete from "./listeners/onAutocomplete";
@@ -24,6 +25,14 @@ export default class BlueSkyModule extends Module {
   protected async cleanup(): Promise<void> {
     AccountHistoryDB.getInstance().close();
     BlueSkyDB.getInstance().close();
+  }
+
+  protected getDefaultConfig(): IDefaultConfig {
+    return {
+      username: "",
+      password: "",
+      channelId: "",
+    };
   }
 
   private registerSchedules(): void {

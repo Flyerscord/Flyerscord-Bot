@@ -8,9 +8,9 @@ import SlashCommandManager from "../managers/SlashCommandManager";
 import ModalMenuManager from "../managers/ModalMenuManager";
 import TextCommandManager from "../managers/TextCommandManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
-import { IDefaultConfig } from "../interfaces/IDefaultConfig";
+import { IModuleConfig } from "../interfaces/IModuleConfig";
 
-export default abstract class Module {
+export default abstract class Module<TConfig> {
   protected name: string;
 
   constructor(name: string) {
@@ -27,11 +27,15 @@ export default abstract class Module {
     Stumper.success(`${this.name} module disabled!`);
   }
 
+  getModuleConfig(): IModuleConfig<TConfig> {
+    return this.wrapObject(this.cleanName(), this.getDefaultConfig());
+  }
+
   protected abstract setup(): Promise<void>;
 
   protected abstract cleanup(): Promise<void>;
 
-  abstract getDefaultConfig(): IDefaultConfig;
+  protected abstract getDefaultConfig(): TConfig;
 
   protected async readInCommands<T>(dir: string, commandsPath: string): Promise<void> {
     const commands: T[] = [];
@@ -79,5 +83,14 @@ export default abstract class Module {
         ContextMenuCommandManager.getInstance().addCommands(commands as ContextMenuCommand[]);
       }
     }
+  }
+
+  private wrapObject(key: string, obj: TConfig): IModuleConfig<TConfig> {
+    return { [key]: obj };
+  }
+
+  private cleanName(): string {
+    let name = this.name.replace(" ", "_");
+    return name.toLowerCase();
   }
 }

@@ -1,3 +1,4 @@
+import { IDefaultConfig } from "../../common/interfaces/IDefaultConfig";
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 
@@ -12,5 +13,9 @@ export default class AdminModule extends Module {
 
   protected async cleanup(): Promise<void> {
     // Nothing to cleanup
+  }
+
+  getDefaultConfig(): IDefaultConfig {
+    return {};
   }
 }

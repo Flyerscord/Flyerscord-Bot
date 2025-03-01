@@ -1,10 +1,9 @@
-import { IDefaultConfig } from "../../common/interfaces/IDefaultConfig";
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 
-export default class AdminModule extends Module {
-  constructor() {
-    super("Admin");
+export default class AdminModule extends Module<IAdminConfig> {
+  private constructor(config: IAdminConfig) {
+    super("Admin", config);
   }
 
   protected async setup(): Promise<void> {
@@ -15,7 +14,9 @@ export default class AdminModule extends Module {
     // Nothing to cleanup
   }
 
-  getDefaultConfig(): IDefaultConfig {
+  getDefaultConfig(): IAdminConfig {
     return {};
   }
 }
+
+export interface IAdminConfig {}

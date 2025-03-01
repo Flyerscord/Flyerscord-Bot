@@ -1,10 +1,14 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import { IDefaultConfig } from "./common/interfaces/IDefaultConfig";
 import Module from "./common/models/Module";
 import Stumper, { LOG_LEVEL } from "stumper";
 
 Stumper.setConfig({ logLevel: LOG_LEVEL.ALL });
+
+interface IDefaultConfig {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+}
 
 function combineObjects(objList: object[]): object {
   return objList.reduce((acc, obj) => ({ ...acc, ...obj }), {});

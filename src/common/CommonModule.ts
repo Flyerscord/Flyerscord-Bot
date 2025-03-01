@@ -1,8 +1,7 @@
-import { IDefaultConfig } from "./interfaces/IDefaultConfig";
 import Module from "./models/Module";
 import GlobalDB from "./providers/Global.Database";
 
-export default class CommonModule extends Module {
+export default class CommonModule extends Module<ICommonConfig> {
   constructor() {
     super("Common");
   }
@@ -15,7 +14,7 @@ export default class CommonModule extends Module {
     GlobalDB.getInstance().close();
   }
 
-  protected getDefaultConfig(): IDefaultConfig {
+  protected getDefaultConfig(): ICommonConfig {
     return {
       productionMode: false,
       token: "",
@@ -23,4 +22,11 @@ export default class CommonModule extends Module {
       masterGuildId: "",
     };
   }
+}
+
+export interface ICommonConfig {
+  productionMode: boolean;
+  token: string;
+  logLevel: number;
+  masterGuildId: string;
 }

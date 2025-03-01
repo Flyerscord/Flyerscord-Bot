@@ -1,10 +1,9 @@
-import { IDefaultConfig } from "../../common/interfaces/IDefaultConfig";
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 import onAutocomplete from "./listeners/onAutocomplete";
 import DaysUntilDB from "./providers/DaysUtil.Database";
 
-export default class DaysUntilModule extends Module {
+export default class DaysUntilModule extends Module<IDaysUntilConfig> {
   constructor() {
     super("DaysUntil");
   }
@@ -19,7 +18,7 @@ export default class DaysUntilModule extends Module {
     DaysUntilDB.getInstance().close();
   }
 
-  protected getDefaultConfig<T>(): T {
+  protected getDefaultConfig(): IDaysUntilConfig {
     return {};
   }
 
@@ -27,3 +26,5 @@ export default class DaysUntilModule extends Module {
     onAutocomplete();
   }
 }
+
+export interface IDaysUntilConfig {}

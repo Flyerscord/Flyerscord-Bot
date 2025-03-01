@@ -9,12 +9,22 @@ import ModalMenuManager from "../managers/ModalMenuManager";
 import TextCommandManager from "../managers/TextCommandManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
 import { IModuleConfig } from "../interfaces/IModuleConfig";
+import { Singleton } from "./Singleton";
+import { ILocalConfig } from "../interfaces/ILocalConfig";
 
-export default abstract class Module<TConfig> {
+export default abstract class Module<TConfig> extends Singleton<Module<TConfig>> {
   protected name: string;
+  protected config: TConfig | undefined;
 
-  constructor(name: string) {
+  protected constructor(name: string, config: ILocalConfig) {
+    super();
     this.name = name;
+
+    const cleanName = this.cleanName();
+    this.config = undefined;
+    if (cleanName in config) {
+      this.config = config[cleanName];
+    }
   }
 
   async enable(): Promise<void> {
@@ -27,8 +37,12 @@ export default abstract class Module<TConfig> {
     Stumper.success(`${this.name} module disabled!`);
   }
 
-  getModuleConfig(): IModuleConfig<TConfig> {
+  getModuleDefaultConfig(): IModuleConfig<TConfig> {
     return this.wrapObject(this.cleanName(), this.getDefaultConfig());
+  }
+
+  getModuleConfig(): TConfig | undefined {
+    return this.config;
   }
 
   protected abstract setup(): Promise<void>;

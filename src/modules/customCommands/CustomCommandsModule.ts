@@ -1,4 +1,3 @@
-import { IDefaultConfig } from "../../common/interfaces/IDefaultConfig";
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 import TextCommand from "../../common/models/TextCommand";
@@ -7,7 +6,7 @@ import onMessageCreate from "./listeners/onMessageCreate";
 import CustomCommandsDB from "./providers/CustomCommands.Database";
 import Imgur from "./utils/ImageKit";
 
-export default class CustomCommandsModule extends Module {
+export default class CustomCommandsModule extends Module<ICustomCommandsConfig> {
   constructor() {
     super("CustomCommands");
   }
@@ -25,7 +24,7 @@ export default class CustomCommandsModule extends Module {
     CustomCommandsDB.getInstance().close();
   }
 
-  getDefaultConfig(): IDefaultConfig {
+  getDefaultConfig(): ICustomCommandsConfig {
     return {
       prefix: ".",
       commandTempChannelId: "",
@@ -47,4 +46,24 @@ export default class CustomCommandsModule extends Module {
     onMessageCreate();
     onAutocomplete();
   }
+}
+
+export interface ICustomCommandsConfig {
+  prefix: string;
+  commandTempChannelId: string;
+  customCommandListChannelId: string;
+  imageKit: ICustomCommandsImageKitConfig;
+  imgur: ICustomCommandsImgurConfig;
+}
+
+interface ICustomCommandsImageKitConfig {
+  publicKey: string;
+  privateKey: string;
+  urlEndpoint: string;
+  redirectUrl: string;
+}
+
+interface ICustomCommandsImgurConfig {
+  clientId: string;
+  clientSecret: string;
 }

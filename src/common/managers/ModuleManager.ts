@@ -1,10 +1,10 @@
-import { IDefaultConfig } from "../interfaces/IDefaultConfig";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Module from "../models/Module";
 
 export default class ModuleManager {
   private static instance: ModuleManager;
 
-  private modules: Module[];
+  private modules: Module<any>[];
 
   private constructor() {
     this.modules = [];
@@ -14,14 +14,14 @@ export default class ModuleManager {
     return this.instance || (this.instance = new this());
   }
 
-  async addModule(module: Module, enable: boolean = true): Promise<void> {
+  async addModule(module: Module<any>, enable: boolean = true): Promise<void> {
     if (enable) {
       await module.enable();
     }
     this.modules.push(module);
   }
 
-  getModules(): Module[] {
+  getModules(): Module<any>[] {
     return this.modules;
   }
 
@@ -33,16 +33,5 @@ export default class ModuleManager {
     for (const module of this.modules) {
       await module.enable();
     }
-  }
-
-  getAllDefaultConfigs(): IDefaultConfig[] {
-    const configs: IDefaultConfig[] = [];
-    for (const module of this.modules) {
-      const defaultConfig = module.getDefaultConfig();
-      if (Object.keys(defaultConfig).length > 0) {
-        configs.push(defaultConfig);
-      }
-    }
-    return configs;
   }
 }

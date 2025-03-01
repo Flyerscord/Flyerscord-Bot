@@ -1,4 +1,3 @@
-import { IDefaultConfig } from "../../common/interfaces/IDefaultConfig";
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 import onAutocomplete from "./listeners/onAutocomplete";
@@ -7,7 +6,7 @@ import BlueSkyDB from "./providers/BlueSky.Database";
 import CheckForNewPostsTask from "./tasks/CheckForNewPostsTask";
 import BlueSky from "./utils/BlueSky";
 
-export default class BlueSkyModule extends Module {
+export default class BlueSkyModule extends Module<IBlueSkyConfig> {
   constructor() {
     super("BlueSky");
   }
@@ -27,7 +26,7 @@ export default class BlueSkyModule extends Module {
     BlueSkyDB.getInstance().close();
   }
 
-  protected getDefaultConfig(): IDefaultConfig {
+  protected getDefaultConfig(): IBlueSkyConfig {
     return {
       username: "",
       password: "",
@@ -42,4 +41,10 @@ export default class BlueSkyModule extends Module {
   private registerListeners(): void {
     onAutocomplete();
   }
+}
+
+export interface IBlueSkyConfig {
+  username: string;
+  password: string;
+  channelId: string;
 }

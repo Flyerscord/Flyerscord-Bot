@@ -4,8 +4,8 @@ import GameDayPostsDB from "./providers/GameDayPosts.Database";
 import CloseAndLockPostsTask from "./tasks/CloseAndLockPostsTask";
 import CreateGameDayPostTask from "./tasks/CreateGameDayPostTask";
 
-export default class GameDayPostsModule extends Module {
-  constructor() {
+export default class GameDayPostsModule extends Module<IGameDayPostsConfig> {
+  private constructor() {
     super("GameDayPosts");
   }
 
@@ -19,6 +19,18 @@ export default class GameDayPostsModule extends Module {
     GameDayPostsDB.getInstance().close();
   }
 
+  protected getDefaultConfig(): IGameDayPostsConfig {
+    return {
+      channelId: "",
+      tagIds: {
+        preseason: "",
+        regularSeason: "",
+        postSeason: "",
+        seasons: [],
+      },
+    };
+  }
+
   private registerSchedules(): void {
     // Run every day at 12:30 AM
     new CreateGameDayPostTask().createScheduledJob();
@@ -26,4 +38,23 @@ export default class GameDayPostsModule extends Module {
     // Run every day at 4:30 AM
     new CloseAndLockPostsTask().createScheduledJob();
   }
+}
+
+export interface IGameDayPostsConfig {
+  channelId: string;
+  tagIds: IGameDayPostsTagsConfig;
+}
+
+interface IGameDayPostsTagsConfig {
+  preseason: string;
+  regularSeason: string;
+  postSeason: string;
+  seasons: IGameDaayPostsTagsSeasonConfig[];
+}
+
+interface IGameDaayPostsTagsSeasonConfig {
+  name: string;
+  startingYear: number;
+  endingYear: number;
+  tagId: string;
 }

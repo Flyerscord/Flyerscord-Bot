@@ -7,8 +7,8 @@ import CheckForNewPostsTask from "./tasks/CheckForNewPostsTask";
 import BlueSky from "./utils/BlueSky";
 
 export default class BlueSkyModule extends Module<IBlueSkyConfig> {
-  constructor() {
-    super("BlueSky");
+  constructor(config: IBlueSkyConfig) {
+    super("BlueSky", config);
   }
 
   protected async setup(): Promise<void> {

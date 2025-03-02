@@ -3,9 +3,9 @@ import ExpressManager from "../../common/managers/ExpressManager";
 import Module from "../../common/models/Module";
 import request from "request";
 
-export default class ImageProxyModule extends Module {
-  constructor() {
-    super("ImageProxy");
+export default class ImageProxyModule extends Module<IImageProxyConfig> {
+  constructor(config: IImageProxyConfig) {
+    super("ImageProxy", config);
   }
 
   protected async setup(): Promise<void> {
@@ -22,4 +22,10 @@ export default class ImageProxyModule extends Module {
   protected async cleanup(): Promise<void> {
     // Nothing to cleanup
   }
+
+  protected getDefaultConfig(): IImageProxyConfig {
+    return {};
+  }
 }
+
+export interface IImageProxyConfig {}

@@ -10,7 +10,7 @@ import TextCommandManager from "../managers/TextCommandManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
 import { IModuleConfig } from "../interfaces/IModuleConfig";
 import { Singleton } from "./Singleton";
-import { ILocalConfig } from "../interfaces/ILocalConfig";
+import { ILocalConfig } from "../interfaces/IKeyedObject";
 
 export default abstract class Module<TConfig> extends Singleton<Module<TConfig>> {
   protected name: string;
@@ -21,11 +21,18 @@ export default abstract class Module<TConfig> extends Singleton<Module<TConfig>>
     this.name = name;
 
     const cleanName = this.cleanName();
-    this.config = undefined;
+
+    // Get the module config from the main config
     if (cleanName in config) {
       this.config = config[cleanName];
     }
   }
+
+  protected abstract setup(): Promise<void>;
+
+  protected abstract cleanup(): Promise<void>;
+
+  protected abstract getDefaultConfig(): TConfig;
 
   async enable(): Promise<void> {
     await this.setup();
@@ -44,12 +51,6 @@ export default abstract class Module<TConfig> extends Singleton<Module<TConfig>>
   getModuleConfig(): TConfig | undefined {
     return this.config;
   }
-
-  protected abstract setup(): Promise<void>;
-
-  protected abstract cleanup(): Promise<void>;
-
-  protected abstract getDefaultConfig(): TConfig;
 
   protected async readInCommands<T>(dir: string, commandsPath: string): Promise<void> {
     const commands: T[] = [];

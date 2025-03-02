@@ -4,9 +4,9 @@ import IBotHealth from "./interfaces/IBotHealth";
 import { getBotHealth } from "./utils/healthCheck";
 import ExpressManager from "../../common/managers/ExpressManager";
 
-export default class HealthCheckModule extends Module {
-  constructor() {
-    super("HealthCheck");
+export default class HealthCheckModule extends Module<IHealthCheckConfig> {
+  constructor(config: IHealthCheckConfig) {
+    super("HealthCheck", config);
   }
 
   protected async setup(): Promise<void> {
@@ -25,4 +25,10 @@ export default class HealthCheckModule extends Module {
   protected async cleanup(): Promise<void> {
     // Nothing to cleanup
   }
+
+  protected getDefaultConfig(): IHealthCheckConfig {
+    return {};
+  }
 }
+
+export interface IHealthCheckConfig {}

@@ -5,9 +5,9 @@ import TotalNitroBoostersStatChannel from "./statChannels/TotalNitroBoostersStat
 import UpdateStatsChannelsTask from "./tasks/UpdateStatsChannelsTask";
 import StatsVoiceChannelsManager from "./utils/StatsVoiceChannelsManager";
 
-export default class StatsVoiceChannelModule extends Module {
-  constructor() {
-    super("StatsVoiceChannel");
+export default class StatsVoiceChannelModule extends Module<IStatsVoiceChannelConfig> {
+  constructor(config: IStatsVoiceChannelConfig) {
+    super("StatsVoiceChannel", config);
   }
 
   protected async setup(): Promise<void> {
@@ -21,6 +21,12 @@ export default class StatsVoiceChannelModule extends Module {
     // Nothing to cleanup
   }
 
+  protected getDefaultConfig(): IStatsVoiceChannelConfig {
+    return {
+      channels: [],
+    };
+  }
+
   private registerSchedules(): void {
     new UpdateStatsChannelsTask().createScheduledJob();
   }
@@ -31,4 +37,13 @@ export default class StatsVoiceChannelModule extends Module {
     manager.addStatChannel(new TotalMembersStatChannel());
     manager.addStatChannel(new TotalNitroBoostersStatChannel());
   }
+}
+
+export interface IStatsVoiceChannelConfig {
+  channels: IStatsVoiceChannelChannelsConfig[];
+}
+
+interface IStatsVoiceChannelChannelsConfig {
+  name: string;
+  channelId: string;
 }

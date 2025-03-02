@@ -5,9 +5,9 @@ import { calculateLevels } from "./utils/requiredExp";
 import LevelExpDB from "./providers/LevelExp.Database";
 import LevelsDB from "./providers/Levels.Database";
 
-export default class LevelsModule extends Module {
-  constructor() {
-    super("Levels");
+export default class LevelsModule extends Module<ILevelsConfig> {
+  constructor(config: ILevelsConfig) {
+    super("Levels", config);
   }
 
   protected async setup(): Promise<void> {
@@ -23,7 +23,13 @@ export default class LevelsModule extends Module {
     LevelsDB.getInstance().close();
   }
 
+  protected getDefaultConfig(): ILevelsConfig {
+    return {};
+  }
+
   private registerListeners(): void {
     onMessageCreate();
   }
 }
+
+export interface ILevelsConfig {}

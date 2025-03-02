@@ -1,9 +1,9 @@
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 
-export default class NHLModule extends Module {
-  constructor() {
-    super("NHL");
+export default class NHLModule extends Module<INHLConfig> {
+  constructor(config: INHLConfig) {
+    super("NHL", config);
   }
 
   protected async setup(): Promise<void> {
@@ -13,4 +13,10 @@ export default class NHLModule extends Module {
   protected async cleanup(): Promise<void> {
     // Nothing to cleanup
   }
+
+  protected getDefaultConfig(): INHLConfig {
+    return {};
+  }
 }
+
+export interface INHLConfig {}

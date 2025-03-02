@@ -4,7 +4,7 @@ import localConfig from "./local.config";
 import defaultConfig from "./defaults.config";
 import { IConfig } from "./IConfig";
 import Stumper from "stumper";
-import { IDefaultConfig } from "../interfaces/IDefaultConfig";
+import { IKeyedObject } from "../interfaces/IKeyedObject";
 
 export default class Config {
   private static config: IConfig;
@@ -29,16 +29,15 @@ export default class Config {
     this.config = config as IConfig;
   }
 
-  private static mergeLocalAndDefaults(): IDefaultConfig {
-    // TODO: Implement this
-    return {};
+  private static mergeLocalAndDefaults(): IKeyedObject {
+    return Object.assign({}, defaultConfig, localConfig);
   }
 
   private static fileExists(): boolean {
     return fs.existsSync(`${__dirname}/configFile.js`);
   }
 
-  private static getEmptyFields(obj: IDefaultConfig, prefix = ""): string[] {
+  private static getEmptyFields(obj: IKeyedObject, prefix = ""): string[] {
     let emptyFields: string[] = [];
 
     for (const key in obj) {

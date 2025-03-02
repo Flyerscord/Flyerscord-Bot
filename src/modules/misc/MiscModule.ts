@@ -1,9 +1,9 @@
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 
-export default class MiscModule extends Module {
-  constructor() {
-    super("Misc");
+export default class MiscModule extends Module<IMiscConfig> {
+  constructor(config: IMiscConfig) {
+    super("Misc", config);
   }
 
   protected async setup(): Promise<void> {
@@ -13,4 +13,10 @@ export default class MiscModule extends Module {
   protected async cleanup(): Promise<void> {
     // Nothing to cleanup
   }
+
+  protected getDefaultConfig(): IMiscConfig {
+    return {};
+  }
 }
+
+export interface IMiscConfig {}

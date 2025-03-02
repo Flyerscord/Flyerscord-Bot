@@ -6,7 +6,7 @@ import LevelExpDB from "./providers/LevelExp.Database";
 import LevelsDB from "./providers/Levels.Database";
 
 export default class LevelsModule extends Module<ILevelsConfig> {
-  constructor(config: ILevelsConfig) {
+  protected constructor(config: ILevelsConfig) {
     super("Levels", config);
   }
 

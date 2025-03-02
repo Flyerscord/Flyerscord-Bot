@@ -6,7 +6,7 @@ import Module from "../../common/models/Module";
 import ReactionMessageDB from "./providers/ReactionMessage.Database";
 
 export default class ReactionRoleModule extends Module<IReactionRoleConfig> {
-  constructor(config: IReactionRoleConfig) {
+  protected constructor(config: IReactionRoleConfig) {
     super("ReactionRole", config);
   }
 

@@ -4,7 +4,7 @@ import PlayerEmojisDB from "./providers/PlayerEmojis.Database";
 import EmojiCheckTask from "./tasks/EmojiCheckTask";
 
 export default class PlayerEmojisModule extends Module<IPlayerEmojisConfig> {
-  constructor(config: IPlayerEmojisConfig) {
+  protected constructor(config: IPlayerEmojisConfig) {
     super("PlayerEmojis", config);
   }
 

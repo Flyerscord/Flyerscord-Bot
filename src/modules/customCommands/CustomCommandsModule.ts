@@ -7,7 +7,7 @@ import CustomCommandsDB from "./providers/CustomCommands.Database";
 import Imgur from "./utils/ImageKit";
 
 export default class CustomCommandsModule extends Module<ICustomCommandsConfig> {
-  constructor(config: ICustomCommandsConfig) {
+  protected constructor(config: ICustomCommandsConfig) {
     super("CustomCommands", config);
   }
 

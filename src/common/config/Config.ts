@@ -2,14 +2,13 @@ import fs from "fs";
 
 import localConfig from "./local.config";
 import defaultConfig from "./defaults.config";
-import { IConfig } from "./IConfig";
 import Stumper from "stumper";
 import { IKeyedObject } from "../interfaces/IKeyedObject";
 
 export default class Config {
-  private static config: IConfig;
+  private static config: IKeyedObject;
 
-  static loadConfig(): void {
+  static loadConfig(): IKeyedObject {
     const fileExists = this.fileExists();
 
     if (!fileExists) {
@@ -26,7 +25,8 @@ export default class Config {
       process.exit(1);
     }
 
-    this.config = config as IConfig;
+    this.config = config as IKeyedObject;
+    return this.config;
   }
 
   private static mergeLocalAndDefaults(): IKeyedObject {
@@ -51,13 +51,5 @@ export default class Config {
     }
 
     return emptyFields;
-  }
-
-  static getConfig(): IConfig {
-    return this.config;
-  }
-
-  static isProductionMode(): boolean {
-    return this.config.productionMode;
   }
 }

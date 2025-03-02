@@ -5,7 +5,7 @@ import CloseAndLockPostsTask from "./tasks/CloseAndLockPostsTask";
 import CreateGameDayPostTask from "./tasks/CreateGameDayPostTask";
 
 export default class GameDayPostsModule extends Module<IGameDayPostsConfig> {
-  private constructor(config: IGameDayPostsConfig) {
+  protected constructor(config: IGameDayPostsConfig) {
     super("GameDayPosts", config);
   }
 

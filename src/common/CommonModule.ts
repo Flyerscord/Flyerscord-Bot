@@ -2,8 +2,8 @@ import Module from "./models/Module";
 import GlobalDB from "./providers/Global.Database";
 
 export default class CommonModule extends Module<ICommonConfig> {
-  constructor() {
-    super("Common");
+  private constructor(config: ICommonConfig) {
+    super("Common", config);
   }
 
   protected async setup(): Promise<void> {

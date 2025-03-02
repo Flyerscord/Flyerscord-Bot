@@ -2,7 +2,7 @@ import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 
 export default class MiscModule extends Module<IMiscConfig> {
-  constructor(config: IMiscConfig) {
+  protected constructor(config: IMiscConfig) {
     super("Misc", config);
   }
 

@@ -6,7 +6,7 @@ import UpdateStatsChannelsTask from "./tasks/UpdateStatsChannelsTask";
 import StatsVoiceChannelsManager from "./utils/StatsVoiceChannelsManager";
 
 export default class StatsVoiceChannelModule extends Module<IStatsVoiceChannelConfig> {
-  constructor(config: IStatsVoiceChannelConfig) {
+  protected constructor(config: IStatsVoiceChannelConfig) {
     super("StatsVoiceChannel", config);
   }
 

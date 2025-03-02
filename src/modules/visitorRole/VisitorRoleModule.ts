@@ -5,7 +5,7 @@ import onMessageReactionRemove from "./listeners/onMessageReactionRemove";
 import onReady from "./listeners/onReady";
 
 export default class VistorRoleModule extends Module<IVisitorRoleConfig> {
-  constructor(config: IVisitorRoleConfig) {
+  protected constructor(config: IVisitorRoleConfig) {
     super("VistorRole", config);
   }
 

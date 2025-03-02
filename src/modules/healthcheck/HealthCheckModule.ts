@@ -5,7 +5,7 @@ import { getBotHealth } from "./utils/healthCheck";
 import ExpressManager from "../../common/managers/ExpressManager";
 
 export default class HealthCheckModule extends Module<IHealthCheckConfig> {
-  constructor(config: IHealthCheckConfig) {
+  protected constructor(config: IHealthCheckConfig) {
     super("HealthCheck", config);
   }
 

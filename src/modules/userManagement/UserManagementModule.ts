@@ -5,7 +5,7 @@ import SlashCommand from "../../common/models/SlashCommand";
 import UserManagementDB from "./providers/UserManagement.Database";
 
 export default class UserManagementModule extends Module<IUserManagementConfig> {
-  constructor(config: IUserManagementConfig) {
+  protected constructor(config: IUserManagementConfig) {
     super("UserManagement", config);
   }
 

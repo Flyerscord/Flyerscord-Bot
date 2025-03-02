@@ -4,7 +4,7 @@ import onAutocomplete from "./listeners/onAutocomplete";
 import DaysUntilDB from "./providers/DaysUtil.Database";
 
 export default class DaysUntilModule extends Module<IDaysUntilConfig> {
-  constructor(config: IDaysUntilConfig) {
+  protected constructor(config: IDaysUntilConfig) {
     super("DaysUntil", config);
   }
 

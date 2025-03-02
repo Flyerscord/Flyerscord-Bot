@@ -3,7 +3,7 @@ import onGuildMemberAdd from "./listeners/onGuildMemberAdd";
 import onGuildMemberRemove from "./listeners/onGuildMemberRemove";
 
 export default class JoinLeaveModule extends Module<IJoinLeaveConfig> {
-  constructor(config: IJoinLeaveConfig) {
+  protected constructor(config: IJoinLeaveConfig) {
     super("JoinLeave", config);
   }
 

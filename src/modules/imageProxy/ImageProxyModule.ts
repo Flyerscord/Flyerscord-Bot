@@ -4,7 +4,7 @@ import Module from "../../common/models/Module";
 import request from "request";
 
 export default class ImageProxyModule extends Module<IImageProxyConfig> {
-  constructor(config: IImageProxyConfig) {
+  protected constructor(config: IImageProxyConfig) {
     super("ImageProxy", config);
   }
 

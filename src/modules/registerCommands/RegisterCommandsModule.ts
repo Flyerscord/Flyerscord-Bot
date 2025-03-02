@@ -2,7 +2,7 @@ import Module from "../../common/models/Module";
 import TextCommand from "../../common/models/TextCommand";
 
 export default class RegisterCommandsModule extends Module<IRegisterCommandsConfig> {
-  constructor(config: IRegisterCommandsConfig) {
+  protected constructor(config: IRegisterCommandsConfig) {
     super("RegisterCommands", config);
   }
 

@@ -22,8 +22,11 @@ onSigInt();
 /*                                Check Config                                */
 /* -------------------------------------------------------------------------- */
 import Config from "./common/config/Config";
+import CommonModule from "./common/CommonModule";
 
-Config.loadConfig();
+const config = Config.loadConfig();
+
+CommonModule.getInstance(config);
 
 Stumper.setConfig({ logLevel: Config.getConfig().logLevel, timezone: TIMEZONE.LOCAL });
 Stumper.info(`Starting Bot in ${Config.isProductionMode() ? "production" : "non-production"} mode!`, "main:CheckConfig");

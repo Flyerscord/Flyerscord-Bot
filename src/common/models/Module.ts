@@ -12,9 +12,9 @@ import { IModuleConfig } from "../interfaces/IModuleConfig";
 import { Singleton } from "./Singleton";
 import { IKeyedObject } from "../interfaces/IKeyedObject";
 
-export default abstract class Module<TConfig> extends Singleton<Module<TConfig>> {
+export default abstract class Module<TConfig> extends Singleton {
   protected name: string;
-  protected config: TConfig | undefined;
+  protected config: TConfig;
 
   protected constructor(name: string, config: IKeyedObject) {
     super();
@@ -25,6 +25,8 @@ export default abstract class Module<TConfig> extends Singleton<Module<TConfig>>
     // Get the module config from the main config
     if (cleanName in config) {
       this.config = config[cleanName];
+    } else {
+      this.config = this.getDefaultConfig();
     }
   }
 
@@ -48,7 +50,7 @@ export default abstract class Module<TConfig> extends Singleton<Module<TConfig>>
     return this.wrapObject(this.cleanName(), this.getDefaultConfig());
   }
 
-  getModuleConfig(): TConfig | undefined {
+  getModuleConfig(): TConfig {
     return this.config;
   }
 

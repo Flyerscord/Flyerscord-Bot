@@ -2,14 +2,8 @@ import Stumper from "stumper";
 import Database from "../../../common/providers/Database";
 
 export default class LevelExpDB extends Database {
-  private static instance: LevelExpDB;
-
-  private constructor() {
+  constructor() {
     super({ name: "level-exp" });
-  }
-
-  static getInstance(): LevelExpDB {
-    return this.instance || (this.instance = new this());
   }
 
   addLevel(level: number, expRequired: number): void {

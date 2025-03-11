@@ -1,24 +1,20 @@
 import ImgurClient from "imgur";
 import Stumper from "stumper";
 import Config from "../../../common/config/Config";
+import { Singleton } from "../../../common/models/Singleton";
 
-export default class Imgur {
-  private static instance: Imgur;
-
+export default class Imgur extends Singleton {
   private clientId: string;
   private clientSecret: string;
 
   private client: ImgurClient;
 
-  private constructor() {
+  constructor() {
+    super();
     this.clientId = Config.getConfig().imgur.clientId;
     this.clientSecret = Config.getConfig().imgur.clientSecret;
 
     this.client = new ImgurClient({ clientId: this.clientId, clientSecret: this.clientSecret });
-  }
-
-  static getInstance(): Imgur {
-    return this.instance || (this.instance = new this());
   }
 
   async getImageUrlForImgurUrl(url: string): Promise<string | undefined> {

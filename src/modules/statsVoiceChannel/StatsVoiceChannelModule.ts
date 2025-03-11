@@ -1,3 +1,4 @@
+import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 import TotalMembersStatChannel from "./statChannels/TotalMembersStatChannel";
@@ -6,7 +7,7 @@ import UpdateStatsChannelsTask from "./tasks/UpdateStatsChannelsTask";
 import StatsVoiceChannelsManager from "./utils/StatsVoiceChannelsManager";
 
 export default class StatsVoiceChannelModule extends Module<IStatsVoiceChannelConfig> {
-  protected constructor(config: IStatsVoiceChannelConfig) {
+  constructor(config: IKeyedObject) {
     super("StatsVoiceChannel", config);
   }
 

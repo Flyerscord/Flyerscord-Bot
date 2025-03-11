@@ -26,10 +26,10 @@ import CommonModule from "./common/CommonModule";
 
 const config = Config.loadConfig();
 
-CommonModule.getInstance(config);
+const commonConfig = CommonModule.getInstance(config).getModuleConfig();
 
-Stumper.setConfig({ logLevel: Config.getConfig().logLevel, timezone: TIMEZONE.LOCAL });
-Stumper.info(`Starting Bot in ${Config.isProductionMode() ? "production" : "non-production"} mode!`, "main:CheckConfig");
+Stumper.setConfig({ logLevel: commonConfig.logLevel, timezone: TIMEZONE.LOCAL });
+Stumper.info(`Starting Bot in ${commonConfig.productionMode ? "production" : "non-production"} mode!`, "main:CheckConfig");
 
 /* -------------------------------------------------------------------------- */
 /*                          Initialize Health Manager                         */
@@ -134,30 +134,30 @@ async function startUp(): Promise<void> {
 
   // Enable all modules before starting the bot
   // Health check must be enabled first followed by the image proxy
-  await moduleManager.addModule(new HealthCheckModule());
+  await moduleManager.addModule(HealthCheckModule.getInstance(config));
 
   // Only enable the image proxy in production
-  if (Config.isProductionMode()) {
-    await moduleManager.addModule(new ImageProxyModule());
+  if (commonConfig.productionMode) {
+    await moduleManager.addModule(ImageProxyModule.getInstance(config));
   }
 
-  await moduleManager.addModule(new AdminModule());
-  await moduleManager.addModule(new CustomCommandsModule());
-  await moduleManager.addModule(new DaysUntilModule());
-  await moduleManager.addModule(new GameDayPostsModule());
-  await moduleManager.addModule(new JoinLeaveModule());
-  await moduleManager.addModule(new LevelsModule());
-  await moduleManager.addModule(new MiscModule());
-  await moduleManager.addModule(new NHLModule());
-  await moduleManager.addModule(new PlayerEmojisModule());
-  await moduleManager.addModule(new ReactionRoleModule());
-  await moduleManager.addModule(new StatsVoiceChannelModule());
-  await moduleManager.addModule(new UserManagementModule());
-  await moduleManager.addModule(new VisitorRoleModule());
-  await moduleManager.addModule(new BlueSkyModule());
+  await moduleManager.addModule(AdminModule.getInstance(config));
+  await moduleManager.addModule(CustomCommandsModule.getInstance(config));
+  await moduleManager.addModule(DaysUntilModule.getInstance(config));
+  await moduleManager.addModule(GameDayPostsModule.getInstance(config));
+  await moduleManager.addModule(JoinLeaveModule.getInstance(config));
+  await moduleManager.addModule(LevelsModule.getInstance(config));
+  await moduleManager.addModule(MiscModule.getInstance(config));
+  await moduleManager.addModule(NHLModule.getInstance(config));
+  await moduleManager.addModule(PlayerEmojisModule.getInstance(config));
+  await moduleManager.addModule(ReactionRoleModule.getInstance(config));
+  await moduleManager.addModule(StatsVoiceChannelModule.getInstance(config));
+  await moduleManager.addModule(UserManagementModule.getInstance(config));
+  await moduleManager.addModule(VisitorRoleModule.getInstance(config));
+  await moduleManager.addModule(BlueSkyModule.getInstance(config));
 
   // Must be enabled last
-  await moduleManager.addModule(new RegisterCommandsModule());
+  await moduleManager.addModule(RegisterCommandsModule.getInstance(config));
 
   /* -------------------------------------------------------------------------- */
   /*                      Register Our Other Event Handlers                     */
@@ -169,5 +169,5 @@ async function startUp(): Promise<void> {
   /* -------------------------------------------------------------------------- */
   /*                                Log into bot                                */
   /* -------------------------------------------------------------------------- */
-  client.login(Config.getConfig().token);
+  client.login(commonConfig.token);
 }

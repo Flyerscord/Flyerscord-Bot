@@ -1,17 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Module from "../models/Module";
+import { Singleton } from "../models/Singleton";
 
-export default class ModuleManager {
-  private static instance: ModuleManager;
-
+export default class ModuleManager extends Singleton {
   private modules: Module<any>[];
 
-  private constructor() {
+  constructor() {
+    super();
     this.modules = [];
-  }
-
-  static getInstance(): ModuleManager {
-    return this.instance || (this.instance = new this());
   }
 
   async addModule(module: Module<any>, enable: boolean = true): Promise<void> {

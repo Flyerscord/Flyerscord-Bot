@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Enmap, { EnmapOptions } from "enmap";
 import Stumper from "stumper";
+import { Singleton } from "../models/Singleton";
 
-export default abstract class Database {
+export default abstract class Database extends Singleton {
   protected db: Enmap;
   protected name: string;
 
-  constructor(protected options: EnmapOptions<any, any>) {
+  protected constructor(protected options: EnmapOptions<any, any>) {
+    super();
     this.db = new Enmap(options);
     this.name = options.name || "Database";
   }

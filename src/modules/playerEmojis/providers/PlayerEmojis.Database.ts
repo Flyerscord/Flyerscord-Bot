@@ -1,14 +1,8 @@
 import Database from "../../../common/providers/Database";
 
 export default class PlayerEmojisDB extends Database {
-  private static instance: PlayerEmojisDB;
-
-  private constructor() {
+  constructor() {
     super({ name: "player-emojis" });
-  }
-
-  static getInstance(): PlayerEmojisDB {
-    return this.instance || (this.instance = new this());
   }
 
   addPlayer(playerName: number, emojiId: string): boolean {

@@ -1,8 +1,9 @@
+import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 
 export default class MiscModule extends Module<IMiscConfig> {
-  protected constructor(config: IMiscConfig) {
+  constructor(config: IKeyedObject) {
     super("Misc", config);
   }
 

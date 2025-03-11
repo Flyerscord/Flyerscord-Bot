@@ -4,9 +4,10 @@ import onMessageCreate from "./listeners/onMessageCreate";
 import { calculateLevels } from "./utils/requiredExp";
 import LevelExpDB from "./providers/LevelExp.Database";
 import LevelsDB from "./providers/Levels.Database";
+import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
 
 export default class LevelsModule extends Module<ILevelsConfig> {
-  protected constructor(config: ILevelsConfig) {
+  constructor(config: IKeyedObject) {
     super("Levels", config);
   }
 

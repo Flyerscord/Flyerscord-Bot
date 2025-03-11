@@ -2,14 +2,8 @@ import Database from "../../../common/providers/Database";
 import IGameDayPost from "../interfaces/GameDayPost";
 
 export default class GameDayPostsDB extends Database {
-  private static instance: GameDayPostsDB;
-
-  private constructor() {
+  constructor() {
     super({ name: "game-day-posts" });
-  }
-
-  static getInstance(): GameDayPostsDB {
-    return this.instance || (this.instance = new this());
   }
 
   addPost(gameId: number, postId: string): void {

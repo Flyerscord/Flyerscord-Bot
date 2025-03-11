@@ -16,14 +16,8 @@ import { sleepMs } from "../../../common/utils/sleep";
 import HTMLPageException from "../exceptions/HTMLPageException";
 
 export default class CustomCommandsDB extends Database {
-  private static instance: CustomCommandsDB;
-
-  private constructor() {
+  constructor() {
     super({ name: "custom-commands" });
-  }
-
-  static getInstance(): CustomCommandsDB {
-    return this.instance || (this.instance = new this());
   }
 
   hasCommand(name: string): boolean {

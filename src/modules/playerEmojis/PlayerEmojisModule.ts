@@ -1,10 +1,11 @@
+import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 import PlayerEmojisDB from "./providers/PlayerEmojis.Database";
 import EmojiCheckTask from "./tasks/EmojiCheckTask";
 
 export default class PlayerEmojisModule extends Module<IPlayerEmojisConfig> {
-  protected constructor(config: IPlayerEmojisConfig) {
+  constructor(config: IKeyedObject) {
     super("PlayerEmojis", config);
   }
 

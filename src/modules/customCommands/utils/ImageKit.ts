@@ -3,10 +3,9 @@ import Config from "../../../common/config/Config";
 import Stumper from "stumper";
 import { UploadResponse } from "imagekit/dist/libs/interfaces/UploadResponse";
 import IKResponse from "imagekit/dist/libs/interfaces/IKResponse";
+import { Singleton } from "../../../common/models/Singleton";
 
-export default class MyImageKit {
-  private static instance: MyImageKit;
-
+export default class MyImageKit extends Singleton {
   private client: ImageKit;
 
   private publickey: string;
@@ -14,7 +13,8 @@ export default class MyImageKit {
   private urlEndpoint: string;
   private redirectUrl: string;
 
-  private constructor() {
+  constructor() {
+    super();
     this.publickey = Config.getConfig().imageKit.publicKey;
     this.privatekey = Config.getConfig().imageKit.privateKey;
     this.urlEndpoint = Config.getConfig().imageKit.urlEndpoint;
@@ -25,10 +25,6 @@ export default class MyImageKit {
       privateKey: this.privatekey,
       urlEndpoint: this.urlEndpoint,
     });
-  }
-
-  static getInstance(): MyImageKit {
-    return this.instance || (this.instance = new this());
   }
 
   async uploadImage(url: string, fileName: string, addedBy: string, command: string): Promise<string | undefined> {

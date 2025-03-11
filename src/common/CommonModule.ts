@@ -1,8 +1,9 @@
+import { IKeyedObject } from "./interfaces/IKeyedObject";
 import Module from "./models/Module";
 import GlobalDB from "./providers/Global.Database";
 
 export default class CommonModule extends Module<ICommonConfig> {
-  private constructor(config: ICommonConfig) {
+  constructor(config: IKeyedObject) {
     super("Common", config);
   }
 

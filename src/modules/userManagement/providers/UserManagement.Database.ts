@@ -4,14 +4,8 @@ import { IUserEvent } from "../interfaces/IUserEvent";
 import { IUserInfo } from "../interfaces/IUserInfo";
 
 export default class UserManagementDB extends Database {
-  private static instance: UserManagementDB;
-
-  private constructor() {
+  constructor() {
     super({ name: "user-management" });
-  }
-
-  static getInstance(): UserManagementDB {
-    return this.instance || (this.instance = new this());
   }
 
   getUser(userId: string): IUserInfo {

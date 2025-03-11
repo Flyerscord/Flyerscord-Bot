@@ -2,8 +2,6 @@ import Stumper from "stumper";
 import Database from "../../../common/providers/Database";
 
 export default class BlueSkyDB extends Database {
-  private static instance: BlueSkyDB;
-
   private readonly lastPostTimeKey = "lastPostTimeId";
 
   constructor() {
@@ -12,10 +10,6 @@ export default class BlueSkyDB extends Database {
     if (!this.db.has(this.lastPostTimeKey)) {
       this.db.set(this.lastPostTimeKey, "");
     }
-  }
-
-  static getInstance(): BlueSkyDB {
-    return this.instance || (this.instance = new this());
   }
 
   setLastPostTime(newPostTime: string): void {

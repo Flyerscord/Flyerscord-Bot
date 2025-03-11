@@ -1,3 +1,4 @@
+import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 import onAutocomplete from "./listeners/onAutocomplete";
@@ -7,7 +8,7 @@ import CheckForNewPostsTask from "./tasks/CheckForNewPostsTask";
 import BlueSky from "./utils/BlueSky";
 
 export default class BlueSkyModule extends Module<IBlueSkyConfig> {
-  protected constructor(config: IBlueSkyConfig) {
+  constructor(config: IKeyedObject) {
     super("BlueSky", config);
   }
 

@@ -1,12 +1,11 @@
+import { Singleton } from "../../../common/models/Singleton";
 import discord from "../../../common/utils/discord/discord";
 import { ErrorUploadingToImageKitException } from "../exceptions/ErrorUploadingToImageKitException";
 import { InvalidImgurUrlException } from "../exceptions/InvalidImgurUrlException";
 import PageNotFoundException from "../exceptions/PageNotFoundException";
 import CustomCommandsDB from "../providers/CustomCommands.Database";
 
-export default class CommandImporter {
-  private static instance: CommandImporter;
-
+export default class CommandImporter extends Singleton {
   private enabled: boolean;
   private name: string;
   private text: string;
@@ -15,7 +14,8 @@ export default class CommandImporter {
   private botId: string;
   private prefix: string;
 
-  private constructor() {
+  constructor() {
+    super();
     this.enabled = false;
     this.name = "";
     this.text = "";
@@ -23,10 +23,6 @@ export default class CommandImporter {
     this.userId = "";
     this.botId = "";
     this.prefix = "";
-  }
-
-  static getInstance(): CommandImporter {
-    return this.instance || (this.instance = new this());
   }
 
   enable(channelId: string, userId: string, botId: string, prefix: string): void {

@@ -1,10 +1,11 @@
-import Config from "../../common/config/Config";
 import ExpressManager from "../../common/managers/ExpressManager";
 import Module from "../../common/models/Module";
 import request from "request";
+import CustomCommandsModule from "../customCommands/CustomCommandsModule";
+import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
 
 export default class ImageProxyModule extends Module<IImageProxyConfig> {
-  protected constructor(config: IImageProxyConfig) {
+  constructor(config: IKeyedObject) {
     super("ImageProxy", config);
   }
 
@@ -13,7 +14,7 @@ export default class ImageProxyModule extends Module<IImageProxyConfig> {
 
     expressManager.addRoute("/proxy/:imageId.gif", (req, res) => {
       const imageId = req.params.imageId;
-      const imageUrl = `${Config.getConfig().imageKit.urlEndpoint}/${imageId}`;
+      const imageUrl = `${CustomCommandsModule.getInstance([]).getModuleConfig().imageKit.urlEndpoint}/${imageId}`;
 
       request({ url: imageUrl, headers: { "Content-Type": "image/gif" } }).pipe(res);
     });

@@ -1,14 +1,8 @@
 import Database from "../../../common/providers/Database";
 
 export default class ReactionMessageDB extends Database {
-  private static instance: ReactionMessageDB;
-
   constructor() {
     super({ name: "reaction-message" });
-  }
-
-  static getInstance(): ReactionMessageDB {
-    return this.instance || (this.instance = new this());
   }
 
   hasReactionMessage(reactionName: string): boolean {

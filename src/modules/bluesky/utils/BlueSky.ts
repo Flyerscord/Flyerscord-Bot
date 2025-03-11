@@ -6,23 +6,19 @@ import { AccountNotinListException } from "../exceptions/AccountNotInListExcepti
 import BlueSkyDB from "../providers/BlueSky.Database";
 import { AtpAgent, AtUri } from "@atproto/api";
 import { AccountDoesNotExistException } from "../exceptions/AccountDoesNotExistException";
+import { Singleton } from "../../../common/models/Singleton";
 
-export default class BlueSky {
-  private static instance: BlueSky;
-
+export default class BlueSky extends Singleton {
   private agent: AtpAgent;
 
   private userDid: string;
 
   constructor() {
+    super();
     this.userDid = "";
     this.agent = new AtpAgent({ service: "https://bsky.social" });
 
     this.login();
-  }
-
-  static getInstance(): BlueSky {
-    return this.instance || (this.instance = new this());
   }
 
   private async login(): Promise<void> {

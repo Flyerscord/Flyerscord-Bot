@@ -1,20 +1,16 @@
 import { Collection, RESTPostAPIChatInputApplicationCommandsJSONBody } from "discord.js";
 import SlashCommand from "../models/SlashCommand";
 import Stumper from "stumper";
+import { Singleton } from "../models/Singleton";
 
-export default class SlashCommandManager {
-  private static instance: SlashCommandManager;
-
+export default class SlashCommandManager extends Singleton {
   private commands: Collection<string, SlashCommand>;
   private registrationInfo: RESTPostAPIChatInputApplicationCommandsJSONBody[];
 
-  private constructor() {
+  constructor() {
+    super();
     this.commands = new Collection();
     this.registrationInfo = [];
-  }
-
-  static getInstance(): SlashCommandManager {
-    return this.instance || (this.instance = new this());
   }
 
   addCommands(commands: SlashCommand[]): void {

@@ -3,9 +3,10 @@ import Module from "../../common/models/Module";
 import IBotHealth from "./interfaces/IBotHealth";
 import { getBotHealth } from "./utils/healthCheck";
 import ExpressManager from "../../common/managers/ExpressManager";
+import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
 
 export default class HealthCheckModule extends Module<IHealthCheckConfig> {
-  protected constructor(config: IHealthCheckConfig) {
+  constructor(config: IKeyedObject) {
     super("HealthCheck", config);
   }
 

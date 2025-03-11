@@ -1,13 +1,15 @@
 import schedule, { Job } from "node-schedule";
 import Stumper from "stumper";
+import { Singleton } from "./Singleton";
 
-export default abstract class Task {
+export default abstract class Task extends Singleton {
   protected name: string;
   protected interval: string;
 
   private job: Job | undefined;
 
-  constructor(name: string, interval: string) {
+  protected constructor(name: string, interval: string) {
+    super();
     this.name = name;
     this.interval = interval;
   }

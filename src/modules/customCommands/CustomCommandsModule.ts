@@ -1,3 +1,4 @@
+import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 import TextCommand from "../../common/models/TextCommand";
@@ -7,7 +8,7 @@ import CustomCommandsDB from "./providers/CustomCommands.Database";
 import Imgur from "./utils/ImageKit";
 
 export default class CustomCommandsModule extends Module<ICustomCommandsConfig> {
-  protected constructor(config: ICustomCommandsConfig) {
+  constructor(config: IKeyedObject) {
     super("CustomCommands", config);
   }
 
@@ -26,7 +27,7 @@ export default class CustomCommandsModule extends Module<ICustomCommandsConfig> 
 
   getDefaultConfig(): ICustomCommandsConfig {
     return {
-      prefix: ".",
+      prefix: "!",
       commandTempChannelId: "",
       customCommandListChannelId: "",
       imageKit: {

@@ -1,3 +1,4 @@
+import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
 import Module from "../../common/models/Module";
 import onGuildMemberAdd from "./listeners/onGuildMemberAdd";
 import onMessageReactionAdd from "./listeners/onMessageReactionAdd";
@@ -5,7 +6,7 @@ import onMessageReactionRemove from "./listeners/onMessageReactionRemove";
 import onReady from "./listeners/onReady";
 
 export default class VistorRoleModule extends Module<IVisitorRoleConfig> {
-  protected constructor(config: IVisitorRoleConfig) {
+  constructor(config: IKeyedObject) {
     super("VistorRole", config);
   }
 

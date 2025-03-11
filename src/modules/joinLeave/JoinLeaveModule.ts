@@ -1,9 +1,10 @@
+import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
 import Module from "../../common/models/Module";
 import onGuildMemberAdd from "./listeners/onGuildMemberAdd";
 import onGuildMemberRemove from "./listeners/onGuildMemberRemove";
 
 export default class JoinLeaveModule extends Module<IJoinLeaveConfig> {
-  protected constructor(config: IJoinLeaveConfig) {
+  constructor(config: IKeyedObject) {
     super("JoinLeave", config);
   }
 

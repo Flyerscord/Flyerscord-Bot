@@ -1,8 +1,9 @@
+import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 
 export default class NHLModule extends Module<INHLConfig> {
-  protected constructor(config: INHLConfig) {
+  constructor(config: IKeyedObject) {
     super("NHL", config);
   }
 

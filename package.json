@@ -8,6 +8,7 @@
     "build": "npx tsc && npm run copy-assets",
     "build:no-assets": "npx tsc",
     "start": "npx tsx src/bot.ts",
+    "start:check": "npm run type-check && npm start",
     "start:dev": "npx tsx watch src/bot.ts",
     "type-check": "npx tsc --noEmit",
     "lint": "npx eslint .",

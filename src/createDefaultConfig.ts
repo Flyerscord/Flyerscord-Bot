@@ -1,4 +1,5 @@
 import { promises as fs } from "node:fs";
+import process from "node:process";
 import path from "node:path";
 import Module from "./common/models/Module";
 import Stumper, { LOG_LEVEL } from "stumper";
@@ -28,7 +29,8 @@ async function getModuleConfigs(): Promise<IDefaultConfig> {
 
   // Get common module config
   const commonModule = await import("./common/CommonModule");
-  objects.push((commonModule as unknown as Module).getModuleConfig());
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  objects.push((commonModule as unknown as Module<any>).getModuleConfig());
 
   for (const file of moduleFiles) {
     const module = await import(file);
@@ -52,8 +54,15 @@ async function writeObjectToTsFile(filePath: string, data: object): Promise<void
 }
 
 async function main(): Promise<void> {
+  const environment = process.env.ENVIRONMENT || "";
+
+  let fileLocation = path.join(__dirname, "/common/config/defaults.config.ts");
+  if (environment === "docker") {
+    fileLocation = "/config/defaults.config.ts";
+  }
+
   const defaultConfig = await getModuleConfigs();
-  await writeObjectToTsFile(path.join(__dirname, "/common/config/defaults.config.ts"), defaultConfig);
+  await writeObjectToTsFile(fileLocation, defaultConfig);
 }
 
 main();

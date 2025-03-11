@@ -14,7 +14,7 @@ export default class ImageProxyModule extends Module<IImageProxyConfig> {
 
     expressManager.addRoute("/proxy/:imageId.gif", (req, res) => {
       const imageId = req.params.imageId;
-      const imageUrl = `${CustomCommandsModule.getInstance([]).getModuleConfig().imageKit.urlEndpoint}/${imageId}`;
+      const imageUrl = `${CustomCommandsModule.getInstance().config.imageKit.urlEndpoint}/${imageId}`;
 
       request({ url: imageUrl, headers: { "Content-Type": "image/gif" } }).pipe(res);
     });

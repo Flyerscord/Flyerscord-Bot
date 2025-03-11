@@ -13,19 +13,21 @@ import { Singleton } from "./Singleton";
 import { IKeyedObject } from "../interfaces/IKeyedObject";
 
 export default abstract class Module<TConfig> extends Singleton {
-  protected name: string;
-  protected config: TConfig;
+  readonly name: string;
+  readonly cleanName: string;
+  readonly config: TConfig;
 
   protected constructor(name: string, config: IKeyedObject) {
     super();
     this.name = name;
 
-    const cleanName = this.cleanName();
+    this.cleanName = this.doCleanName();
 
     // Get the module config from the main config
-    if (cleanName in config) {
-      this.config = config[cleanName];
+    if (this.cleanName in config) {
+      this.config = config[this.cleanName];
     } else {
+      Stumper.error(`Config for module ${this.name} not found, using default! Clean name: ${this.cleanName}`, "common:Module:constructor");
       this.config = this.getDefaultConfig();
     }
   }
@@ -47,11 +49,7 @@ export default abstract class Module<TConfig> extends Singleton {
   }
 
   getDefaultModuleConfig(): IModuleConfig<TConfig> {
-    return this.wrapObject(this.cleanName(), this.getDefaultConfig());
-  }
-
-  getModuleConfig(): TConfig {
-    return this.config;
+    return this.wrapObject(this.cleanName, this.getDefaultConfig());
   }
 
   protected async readInCommands<T>(dir: string, commandsPath: string): Promise<void> {
@@ -106,7 +104,7 @@ export default abstract class Module<TConfig> extends Singleton {
     return { [key]: obj };
   }
 
-  private cleanName(): string {
+  private doCleanName(): string {
     let name = this.name.replace(" ", "_");
     return name.toLowerCase();
   }

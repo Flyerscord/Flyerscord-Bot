@@ -16,12 +16,8 @@ export default class RegisterCommandsModule extends Module<IRegisterCommandsConf
   }
 
   protected getDefaultConfig(): IRegisterCommandsConfig {
-    return {
-      prefix: ".",
-    };
+    return {};
   }
 }
 
-export interface IRegisterCommandsConfig {
-  prefix: string;
-}
+export interface IRegisterCommandsConfig {}

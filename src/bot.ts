@@ -26,7 +26,7 @@ import CommonModule from "./common/CommonModule";
 
 const config = Config.loadConfig();
 
-const commonConfig = CommonModule.getInstance(config).getModuleConfig();
+const commonConfig = CommonModule.getInstance(config).config;
 
 Stumper.setConfig({ logLevel: commonConfig.logLevel, timezone: TIMEZONE.LOCAL });
 Stumper.info(`Starting Bot in ${commonConfig.productionMode ? "production" : "non-production"} mode!`, "main:CheckConfig");

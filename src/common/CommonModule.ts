@@ -21,6 +21,7 @@ export default class CommonModule extends Module<ICommonConfig> {
       token: "",
       logLevel: 3,
       masterGuildId: "",
+      adminPrefix: ".",
     };
   }
 }
@@ -30,4 +31,5 @@ export interface ICommonConfig {
   token: string;
   logLevel: number;
   masterGuildId: string;
+  adminPrefix: string;
 }

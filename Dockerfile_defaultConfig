@@ -9,10 +9,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /usr/src/app
 
-COPY ./ .
+COPY . .
 
-RUN npm install
-
-COPY --from=builder /usr/src/build/dist src/
+RUN npm install --frozen-lockfile
 
 CMD ["npm", "run", "generate-config"]

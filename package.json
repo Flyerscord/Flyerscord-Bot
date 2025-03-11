@@ -2,19 +2,20 @@
   "name": "flyerscord-helper",
   "version": "2.0.2",
   "description": "Flyers' Discord Helper Bot",
-  "main": "dist/bot.js",
+  "main": "src/bot.ts",
   "scripts": {
     "copy-assets": "npx copyfiles -u 1 src/**/*.png dist/",
     "build": "npx tsc && npm run copy-assets",
     "build:no-assets": "npx tsc",
-    "start:prod": "node /usr/src/app/src/bot.js",
-    "start:dev": "npm run build:no-assets && node dist/bot.js",
+    "start": "npx tsx src/bot.ts",
+    "start:dev": "npx tsx watch src/bot.ts",
+    "type-check": "npx tsc --noEmit",
     "lint": "npx eslint .",
-    "lintfix": "npx eslint . --fix",
+    "lint:fix": "npx eslint . --fix",
     "format": "npx prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "update": "npx npm-check -u",
     "depcheck": "npx npm-check",
-    "generate-config": "npx ts-node src/createDefaultConfig.ts"
+    "generate-config": "npx tsx src/createDefaultConfig.ts"
   },
   "repository": {
     "type": "git",
@@ -58,9 +59,9 @@
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "nodemon": "^3.1.7",
     "npm-check": "^6.0.1",
     "prettier": "^3.3.3",
+    "tsx": "^4.19.3",
     "typescript": "^5.6.3"
   }
 }

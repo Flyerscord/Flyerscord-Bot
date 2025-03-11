@@ -6,3 +6,5 @@ services:
       dockerfile: Dockerfile_defaultConfig
     volumes:
       - src/common/config:/config
+    environment:
+      - ENVIRONMENT=docker

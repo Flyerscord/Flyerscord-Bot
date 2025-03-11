@@ -10,13 +10,13 @@ import TextCommandManager from "../managers/TextCommandManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
 import { IModuleConfig } from "../interfaces/IModuleConfig";
 import { Singleton } from "./Singleton";
-import { ILocalConfig } from "../interfaces/IKeyedObject";
+import { IKeyedObject } from "../interfaces/IKeyedObject";
 
 export default abstract class Module<TConfig> extends Singleton<Module<TConfig>> {
   protected name: string;
   protected config: TConfig | undefined;
 
-  protected constructor(name: string, config: ILocalConfig) {
+  protected constructor(name: string, config: IKeyedObject) {
     super();
     this.name = name;
 
@@ -44,7 +44,7 @@ export default abstract class Module<TConfig> extends Singleton<Module<TConfig>>
     Stumper.success(`${this.name} module disabled!`);
   }
 
-  getModuleDefaultConfig(): IModuleConfig<TConfig> {
+  getDefaultModuleConfig(): IModuleConfig<TConfig> {
     return this.wrapObject(this.cleanName(), this.getDefaultConfig());
   }
 

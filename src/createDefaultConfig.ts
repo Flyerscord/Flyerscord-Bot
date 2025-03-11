@@ -22,7 +22,7 @@ async function getModulesFiles(): Promise<string[]> {
   return entities.filter((entity) => entity.isFile()).map((file) => path.join(directory, file.name));
 }
 
-async function getModuleConfigs(): Promise<IDefaultConfig> {
+async function getDefaultModuleConfigs(): Promise<IDefaultConfig> {
   const moduleFiles = await getModulesFiles();
 
   const objects = [];
@@ -30,12 +30,12 @@ async function getModuleConfigs(): Promise<IDefaultConfig> {
   // Get common module config
   const commonModule = await import("./common/CommonModule");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  objects.push((commonModule as unknown as Module<any>).getModuleConfig());
+  objects.push((commonModule as unknown as Module<any>).getDefaultModuleConfig());
 
   for (const file of moduleFiles) {
     const module = await import(file);
 
-    objects.push(module.default.getModuleConfig());
+    objects.push(module.default.getDefaultModuleConfig());
   }
 
   Stumper.info(`Found ${objects.length} modules!`, "getModuleConfigs");
@@ -61,7 +61,7 @@ async function main(): Promise<void> {
     fileLocation = "/config/defaults.config.ts";
   }
 
-  const defaultConfig = await getModuleConfigs();
+  const defaultConfig = await getDefaultModuleConfigs();
   await writeObjectToTsFile(fileLocation, defaultConfig);
 }
 

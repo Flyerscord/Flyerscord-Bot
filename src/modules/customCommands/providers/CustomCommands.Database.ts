@@ -10,10 +10,10 @@ import Imgur from "../utils/Imgur";
 import { InvalidImgurUrlException } from "../exceptions/InvalidImgurUrlException";
 import { ErrorUploadingToImageKitException } from "../exceptions/ErrorUploadingToImageKitException";
 import PageNotFoundException from "../exceptions/PageNotFoundException";
-import Config from "../../../common/config/Config";
 import discord from "../../../common/utils/discord/discord";
 import { sleepMs } from "../../../common/utils/sleep";
 import HTMLPageException from "../exceptions/HTMLPageException";
+import CustomCommandsModule from "../CustomCommandsModule";
 
 export default class CustomCommandsDB extends Database {
   constructor() {
@@ -202,7 +202,7 @@ export default class CustomCommandsDB extends Database {
   }
 
   private async getNewDiscordUrl(url: string): Promise<string | undefined> {
-    const message = await discord.messages.sendMessageToChannel(Config.getConfig().commandTempChannelId, url);
+    const message = await discord.messages.sendMessageToChannel(CustomCommandsModule.getInstance().config.commandTempChannelId, url);
 
     if (!message) {
       return undefined;

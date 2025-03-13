@@ -35,6 +35,7 @@ export default class CustomCommandsModule extends Module<ICustomCommandsConfig> 
         privateKey: "",
         urlEndpoint: "",
         redirectUrl: "",
+        proxyUrl: "",
       },
       imgur: {
         clientId: "",
@@ -62,6 +63,7 @@ interface ICustomCommandsImageKitConfig {
   privateKey: string;
   urlEndpoint: string;
   redirectUrl: string;
+  proxyUrl: string;
 }
 
 interface ICustomCommandsImgurConfig {

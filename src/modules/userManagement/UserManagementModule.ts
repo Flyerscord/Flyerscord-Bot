@@ -22,11 +22,11 @@ export default class UserManagementModule extends Module<IUserManagementConfig> 
 
   protected getDefaultConfig(): IUserManagementConfig {
     return {
-      userLogChannelId: "",
+      channelId: "",
     };
   }
 }
 
 export interface IUserManagementConfig {
-  userLogChannelId: string;
+  channelId: string;
 }

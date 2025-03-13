@@ -1,16 +1,16 @@
 import { EmbedBuilder } from "discord.js";
-import Config from "../../../common/config/Config";
 import GlobalDB from "../../../common/providers/Global.Database";
 import discord from "../../../common/utils/discord/discord";
 import Stumper from "stumper";
+import VisitorRoleModule from "../VisitorRoleModule";
 
 export async function createVisitorRoleMessageIfNeeded(): Promise<void> {
   const db = GlobalDB.getInstance();
   const visitorMessageId = db.getVisitorRoleMessageId();
 
   if (visitorMessageId == "") {
-    const visitorEmojiId = Config.getConfig().vistorReactRole.visitorEmojiId;
-    const rolesChannelId = Config.getConfig().vistorReactRole.rolesChannelId;
+    const visitorEmojiId = VisitorRoleModule.getInstance().config.visitorEmojiId;
+    const rolesChannelId = VisitorRoleModule.getInstance().config.rolesChannelId;
 
     const embed = createEmbed();
 

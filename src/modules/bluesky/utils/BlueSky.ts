@@ -1,4 +1,3 @@
-import Config from "../../../common/config/Config";
 import { IPost } from "../interfaces/IPost";
 import Stumper from "stumper";
 import { IBlueSkyAccount } from "../interfaces/IBlueSkyAccount";
@@ -7,6 +6,7 @@ import BlueSkyDB from "../providers/BlueSky.Database";
 import { AtpAgent, AtUri } from "@atproto/api";
 import { AccountDoesNotExistException } from "../exceptions/AccountDoesNotExistException";
 import { Singleton } from "../../../common/models/Singleton";
+import BlueSkyModule from "../BlueSkyModule";
 
 export default class BlueSky extends Singleton {
   private agent: AtpAgent;
@@ -22,8 +22,8 @@ export default class BlueSky extends Singleton {
   }
 
   private async login(): Promise<void> {
-    const username = Config.getConfig().bluesky.username;
-    const password = Config.getConfig().bluesky.password;
+    const username = BlueSkyModule.getInstance().config.username;
+    const password = BlueSkyModule.getInstance().config.password;
 
     try {
       const resp = await this.agent.login({ identifier: username, password: password });
@@ -165,7 +165,7 @@ export default class BlueSky extends Singleton {
   }
 
   private createListUri(): string {
-    const listId = Config.getConfig().bluesky.listId;
+    const listId = BlueSkyModule.getInstance().config.listId;
     return `at://${this.userDid}/app.bsky.graph.list/${listId}`;
   }
 }

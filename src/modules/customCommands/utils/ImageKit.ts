@@ -1,9 +1,9 @@
 import ImageKit from "imagekit";
-import Config from "../../../common/config/Config";
 import Stumper from "stumper";
 import { UploadResponse } from "imagekit/dist/libs/interfaces/UploadResponse";
 import IKResponse from "imagekit/dist/libs/interfaces/IKResponse";
 import { Singleton } from "../../../common/models/Singleton";
+import CustomCommandsModule from "../CustomCommandsModule";
 
 export default class MyImageKit extends Singleton {
   private client: ImageKit;
@@ -15,10 +15,11 @@ export default class MyImageKit extends Singleton {
 
   constructor() {
     super();
-    this.publickey = Config.getConfig().imageKit.publicKey;
-    this.privatekey = Config.getConfig().imageKit.privateKey;
-    this.urlEndpoint = Config.getConfig().imageKit.urlEndpoint;
-    this.redirectUrl = Config.getConfig().imageKit.redirectUrl;
+    const config = CustomCommandsModule.getInstance().config;
+    this.publickey = config.imageKit.publicKey;
+    this.privatekey = config.imageKit.privateKey;
+    this.urlEndpoint = config.imageKit.urlEndpoint;
+    this.redirectUrl = config.imageKit.redirectUrl;
 
     this.client = new ImageKit({
       publicKey: this.publickey,
@@ -68,7 +69,7 @@ export default class MyImageKit extends Singleton {
   }
 
   private async getImageIdFromUrl(url: string): Promise<string | undefined> {
-    const imageFilePath = url.replace(Config.getConfig().imageKit.redirectUrl, "");
+    const imageFilePath = url.replace(CustomCommandsModule.getInstance().config.imageKit.redirectUrl, "");
     const resp = await this.client.listFiles({});
 
     if (resp.$ResponseMetadata.statusCode == 200) {
@@ -87,12 +88,12 @@ export default class MyImageKit extends Singleton {
   }
 
   private getImagePathFromUrl(url: string): string {
-    const imageFilePath = url.replace(Config.getConfig().imageKit.redirectUrl, "");
+    const imageFilePath = url.replace(CustomCommandsModule.getInstance().config.imageKit.redirectUrl, "");
     return imageFilePath;
   }
 
   isImageKitUrl(text: string): boolean {
-    const endpoint = Config.getConfig().imageKit.redirectUrl;
+    const endpoint = CustomCommandsModule.getInstance().config.imageKit.redirectUrl;
     const escapedEndpoint = endpoint.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const urlPattern = new RegExp(`^${escapedEndpoint}`);
 
@@ -128,7 +129,7 @@ export default class MyImageKit extends Singleton {
         return undefined;
       }
 
-      return `${Config.getConfig().imageKit.proxyUrl}${imagePath}.gif`;
+      return `${CustomCommandsModule.getInstance().config.imageKit.proxyUrl}${imagePath}.gif`;
     }
   }
 }

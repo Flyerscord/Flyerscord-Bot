@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 export abstract class Singleton {
   private static instances: Map<new (...args: any[]) => any, any> = new Map();
   private static allowInstantiation: WeakMap<Function, boolean> = new WeakMap();

@@ -5,10 +5,10 @@ import Stumper from "stumper";
 
 import discord from "../../../common/utils/discord/discord";
 import { GuildForumTag, time, TimestampStyles } from "discord.js";
-import Config from "../../../common/config/Config";
 import GameDayPostsDB from "../providers/GameDayPosts.Database";
 import { IClubScheduleOutput_games } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubSchedule";
 import CombinedTeamInfoCache from "../../../common/cache/CombinedTeamInfoCache";
+import GameDayPostsModule from "../GameDayPostsModule";
 
 export async function checkForGameDay(): Promise<void> {
   const res = await nhlApi.teams.schedule.getCurrentTeamSchedule({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
@@ -30,15 +30,15 @@ export async function checkForGameDay(): Promise<void> {
       const awayTeam = combinedTeamInfoCache.getTeamByTeamId(game.awayTeam.id);
 
       if (homeTeam && awayTeam) {
-        const availableTags = await discord.forums.getAvailableTags(Config.getConfig().gameDayPosts.channelId);
+        const availableTags = await discord.forums.getAvailableTags(GameDayPostsModule.getInstance().config.channelId);
 
         let tags: GuildForumTag[] = [];
         if (game.gameType == GAME_TYPE.PRESEASON) {
-          tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.preseason);
+          tags = availableTags.filter((tag) => tag.id == GameDayPostsModule.getInstance().config.tagIds.preseason);
         } else if (game.gameType == GAME_TYPE.REGULAR_SEASON) {
-          tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.regularSeason);
+          tags = availableTags.filter((tag) => tag.id == GameDayPostsModule.getInstance().config.tagIds.regularSeason);
         } else if (game.gameType == GAME_TYPE.POSTSEASON) {
-          tags = availableTags.filter((tag) => tag.id == Config.getConfig().gameDayPosts.tagIds.postseason);
+          tags = availableTags.filter((tag) => tag.id == GameDayPostsModule.getInstance().config.tagIds.postSeason);
         }
 
         const seasonTag = await getCurrentSeasonTagId(game);
@@ -58,7 +58,7 @@ export async function checkForGameDay(): Promise<void> {
         }
 
         const post = await discord.forums.createPost(
-          Config.getConfig().gameDayPosts.channelId,
+          GameDayPostsModule.getInstance().config.channelId,
           `${titlePrefix} - ${awayTeam.franchise.teamCommonName} @ ${homeTeam.franchise.teamCommonName}`,
           `${time(new Date(game.startTimeUTC), TimestampStyles.RelativeTime)}`,
           tags,
@@ -86,8 +86,8 @@ export async function closeAndLockOldPosts(): Promise<void> {
 
       if (!Time.isSameDay(new Date(), new Date(gameInfo.startTimeUTC))) {
         Stumper.info(`Closing and locking post for game ${post.gameId}`, "gameDayPosts:GameChecker:checkForGameDay");
-        discord.forums.setLockPost(Config.getConfig().gameDayPosts.channelId, post.channelId, true);
-        discord.forums.setClosedPost(Config.getConfig().gameDayPosts.channelId, post.channelId, true);
+        discord.forums.setLockPost(GameDayPostsModule.getInstance().config.channelId, post.channelId, true);
+        discord.forums.setClosedPost(GameDayPostsModule.getInstance().config.channelId, post.channelId, true);
       }
     }
   }
@@ -123,9 +123,9 @@ async function getGameNumber(gameId: number): Promise<number | undefined> {
 }
 
 async function getCurrentSeasonTagId(game: IClubScheduleOutput_games): Promise<GuildForumTag | undefined> {
-  const availableTags = await discord.forums.getAvailableTags(Config.getConfig().gameDayPosts.channelId);
+  const availableTags = await discord.forums.getAvailableTags(GameDayPostsModule.getInstance().config.channelId);
 
-  const seasonTags = Config.getConfig().gameDayPosts.tagIds.seasons;
+  const seasonTags = GameDayPostsModule.getInstance().config.tagIds.seasons;
 
   for (const seasonTag of seasonTags) {
     if (game.season.toString() == `${seasonTag.startingYear}${seasonTag.endingYear}`) {

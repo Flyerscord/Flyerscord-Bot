@@ -32,6 +32,7 @@ export default class BlueSkyModule extends Module<IBlueSkyConfig> {
       username: "",
       password: "",
       channelId: "",
+      listId: "",
     };
   }
 
@@ -48,4 +49,5 @@ export interface IBlueSkyConfig {
   username: string;
   password: string;
   channelId: string;
+  listId: string;
 }

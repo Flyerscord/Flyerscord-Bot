@@ -4,7 +4,7 @@ import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashC
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
 import ICustomCommand from "../../interfaces/ICustomCommand";
 import discord from "../../../../common/utils/discord/discord";
-import Config from "../../../../common/config/Config";
+import CustomCommandsModule from "../../CustomCommandsModule";
 
 export default class InfoCommand extends AdminSlashCommand {
   constructor() {
@@ -40,7 +40,9 @@ async function createEmbed(command: ICustomCommand): Promise<EmbedBuilder> {
   const member = await discord.members.getMember(command.createdBy);
   const username = member ? member.displayName || member.user.username : command.createdBy;
 
-  embed.setTitle(`${Config.getConfig().prefix.normal}${command.name}`);
+  const prefix = CustomCommandsModule.getInstance().config.prefix;
+
+  embed.setTitle(`${prefix}${command.name}`);
   embed.setDescription(`Created by: ${username}`);
   embed.setTimestamp(command.createdOn);
   embed.setColor("Yellow");

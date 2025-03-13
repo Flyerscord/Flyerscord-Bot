@@ -2,11 +2,11 @@ import { Message } from "discord.js";
 
 import Stumper from "stumper";
 import CustomCommandsDB from "../providers/CustomCommands.Database";
-import Config from "../../../common/config/Config";
 import ClientManager from "../../../common/managers/ClientManager";
 import discord from "../../../common/utils/discord/discord";
 import CommandImporter from "../utils/CommandImporter";
 import MyImageKit from "../utils/ImageKit";
+import CustomCommandsModule from "../CustomCommandsModule";
 
 export default (): void => {
   ClientManager.getInstance().client.on("messageCreate", async (message: Message) => {
@@ -16,7 +16,7 @@ export default (): void => {
 };
 
 async function checkForCustomTextCommand(message: Message): Promise<boolean> {
-  const prefix = Config.getConfig().prefix.normal;
+  const prefix = CustomCommandsModule.getInstance().config.prefix;
   if (message.author.bot) return false;
   if (!message.channel.isTextBased()) return false;
   if (!message.content.startsWith(prefix)) return false;

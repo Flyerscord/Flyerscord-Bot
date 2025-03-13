@@ -3,7 +3,7 @@ import Task from "../../../common/models/Task";
 import BlueSky from "../utils/BlueSky";
 import { IPost } from "../interfaces/IPost";
 import discord from "../../../common/utils/discord/discord";
-import Config from "../../../common/config/Config";
+import BlueSkyModule from "../BlueSkyModule";
 
 export default class CheckForNewPostsTask extends Task {
   constructor() {
@@ -23,7 +23,7 @@ export default class CheckForNewPostsTask extends Task {
   private async sendPostsToDiscord(posts: IPost[]): Promise<void> {
     for (const post of posts) {
       const message = `[Post Link](${post.url})`;
-      await discord.messages.sendMessageToChannel(Config.getConfig().bluesky.channelId, message);
+      await discord.messages.sendMessageToChannel(BlueSkyModule.getInstance().config.channelId, message);
     }
   }
 }

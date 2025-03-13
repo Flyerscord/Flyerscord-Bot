@@ -4,7 +4,7 @@ import Stumper from "stumper";
 import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
 import LevelsDB from "../../providers/Levels.Database";
-import Config from "../../../../common/config/Config";
+import CommonModule from "../../../../common/CommonModule";
 
 export default class ImportMee6Command extends AdminSlashCommand {
   constructor() {
@@ -31,7 +31,7 @@ export default class ImportMee6Command extends AdminSlashCommand {
         const db = LevelsDB.getInstance();
         db.wipe();
 
-        const guildId = Config.getConfig().masterGuildId;
+        const guildId = CommonModule.getInstance().config.masterGuildId;
         if (guildId) {
           const users: User[] = await Mee6LevelsApi.getLeaderboard(guildId);
           Stumper.debug(`Retrieved ${users.length} from mee6 leaderboards`, "levels:ImportMee6Command:execute");

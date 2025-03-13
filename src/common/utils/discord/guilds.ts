@@ -1,8 +1,8 @@
 import { Guild } from "discord.js";
 import ClientManager from "../../managers/ClientManager";
-import Config from "../../config/Config";
+import CommonModule from "../../CommonModule";
 
 export function getGuild(): Guild | undefined {
   const client = ClientManager.getInstance().client;
-  return client.guilds.cache.get(Config.getConfig().masterGuildId);
+  return client.guilds.cache.get(CommonModule.getInstance().config.masterGuildId);
 }

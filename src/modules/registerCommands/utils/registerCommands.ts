@@ -1,10 +1,10 @@
 import { Client, REST, RESTPostAPIChatInputApplicationCommandsJSONBody, RESTPostAPIContextMenuApplicationCommandsJSONBody, Routes } from "discord.js";
-import Config from "../../../common/config/Config";
 import Stumper from "stumper";
 import ClientManager from "../../../common/managers/ClientManager";
 import Time from "../../../common/utils/Time";
 import SlashCommandManager from "../../../common/managers/SlashCommandManager";
 import ContextMenuCommandManager from "../../../common/managers/ContextMenuManager";
+import CommonModule from "../../../common/CommonModule";
 
 export async function readAndRegisterCommands(): Promise<void> {
   const client = ClientManager.getInstance().client;
@@ -24,14 +24,15 @@ async function registerAllCommands(
   client: Client,
   commands: (RESTPostAPIChatInputApplicationCommandsJSONBody | RESTPostAPIContextMenuApplicationCommandsJSONBody)[],
 ): Promise<void> {
-  const rest = new REST({ version: "10" }).setToken(Config.getConfig().token);
+  const config = CommonModule.getInstance().config;
+  const rest = new REST({ version: "10" }).setToken(config.token);
 
   if (!client.user) {
     Stumper.error("Client user not found", "registerCommands:registerCommands:registerAllCommands");
     throw new Error("Client user not found");
   }
 
-  const guildId = Config.getConfig().masterGuildId;
+  const guildId = config.masterGuildId;
 
   const route = Routes.applicationGuildCommands(client.user.id, guildId);
 

@@ -1,9 +1,9 @@
 import { MessageReaction, PartialMessageReaction, PartialUser, User } from "discord.js";
 import Stumper from "stumper";
 import ClientManager from "../../../common/managers/ClientManager";
-import Config from "../../../common/config/Config";
 import GlobalDB from "../../../common/providers/Global.Database";
 import discord from "../../../common/utils/discord/discord";
+import VisitorRoleModule from "../VisitorRoleModule";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
@@ -28,9 +28,9 @@ export default (): void => {
       return;
     }
 
-    const visitorRoleId = Config.getConfig().vistorReactRole.visitorRoleId;
-    const memberRoleId = Config.getConfig().vistorReactRole.memberRoleId;
-    const visitorEmojiId = Config.getConfig().vistorReactRole.visitorEmojiId;
+    const visitorRoleId = VisitorRoleModule.getInstance().config.visitorRoleId;
+    const memberRoleId = VisitorRoleModule.getInstance().config.memberRoleId;
+    const visitorEmojiId = VisitorRoleModule.getInstance().config.visitorEmojiId;
 
     if (reaction.emoji.id == visitorEmojiId) {
       discord.roles.removeRoleToUser(member, visitorRoleId);

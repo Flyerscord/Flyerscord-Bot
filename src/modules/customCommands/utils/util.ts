@@ -1,20 +1,20 @@
 import CustomCommandsDB from "../providers/CustomCommands.Database";
 import GlobalDB from "../../../common/providers/Global.Database";
-import Config from "../../../common/config/Config";
 import discord from "../../../common/utils/discord/discord";
 import ICustomCommand from "../interfaces/ICustomCommand";
 import Time from "../../../common/utils/Time";
 import TextCommandManager from "../../../common/managers/TextCommandManager";
+import CustomCommandsModule from "../CustomCommandsModule";
 
 export async function updateCommandList(): Promise<void> {
   const customCommandsDB = CustomCommandsDB.getInstance();
   const db = GlobalDB.getInstance();
 
   const commandListMessageId = db.getCommandListMessageId();
-  const commandListChannelId = Config.getConfig().customCommandListChannelId;
+  const commandListChannelId = CustomCommandsModule.getInstance().config.customCommandListChannelId;
 
   const textCommandManager = TextCommandManager.getInstance();
-  const hardcodedCommands = textCommandManager.getCommands().filter((value) => value.prefix == Config.getConfig().prefix.normal);
+  const hardcodedCommands = textCommandManager.getCommands().filter((value) => value.prefix == CustomCommandsModule.getInstance().config.prefix);
   const hardcodedCommandsCustom: ICustomCommand[] = hardcodedCommands.map((command) => {
     return {
       name: command.command,
@@ -42,7 +42,7 @@ export async function updateCommandList(): Promise<void> {
 
 function createCommandListMessage(commands: ICustomCommand[]): string {
   let output = `**Custom Commands (${commands.length} commands)**\n`;
-  const prefix = Config.getConfig().prefix.normal;
+  const prefix = CustomCommandsModule.getInstance().config.prefix;
 
   for (let i = 0; i < commands.length; i++) {
     const command = commands[i];

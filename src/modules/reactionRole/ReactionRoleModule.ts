@@ -40,10 +40,11 @@ export interface IReactionRoleConfig {
   reactionRoles: IReactionRolesConfig[];
 }
 
-interface IReactionRolesConfig {
+export interface IReactionRolesConfig {
   name: string;
   description: string;
   colorHex: string;
   roleId: string;
   emojiId: string;
+  messageId: string | undefined;
 }

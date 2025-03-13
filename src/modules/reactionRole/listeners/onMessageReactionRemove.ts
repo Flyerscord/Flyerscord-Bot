@@ -1,9 +1,9 @@
 import { MessageReaction, PartialMessageReaction, PartialUser, User } from "discord.js";
 import Stumper from "stumper";
 import ClientManager from "../../../common/managers/ClientManager";
-import Config from "../../../common/config/Config";
 import discord from "../../../common/utils/discord/discord";
 import ReactionMessageDB from "../providers/ReactionMessage.Database";
+import ReactionRoleModule from "../ReactionRoleModule";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
@@ -21,7 +21,7 @@ export default (): void => {
       return;
     }
 
-    const reactionRole = Config.getConfig().reactionRoles.reactionRoles.find((r) => r.name == reactionName);
+    const reactionRole = ReactionRoleModule.getInstance().config.reactionRoles.find((r) => r.name == reactionName);
 
     if (!reactionRole) {
       Stumper.error(`Reaction role not found with name ${reactionName}`, "reactionRole:onMessageReactionRemove");

@@ -1,9 +1,9 @@
 import { bold } from "discord.js";
-import Config from "../../../common/config/Config";
 import ClientManager from "../../../common/managers/ClientManager";
 import discord from "../../../common/utils/discord/discord";
 import Stumper from "stumper";
 import JoinImageGenerator from "../utils/JoinImageGenerator";
+import JoinLeaveModule from "../JoinLeaveModule";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
@@ -20,7 +20,7 @@ export default (): void => {
       return;
     }
 
-    await discord.messages.sendMessageAndImageBufferToChannel(Config.getConfig().joinLeaveMessageChannelId, message, joinPhoto);
+    await discord.messages.sendMessageAndImageBufferToChannel(JoinLeaveModule.getInstance().config.channelId, message, joinPhoto);
     Stumper.info(`User ${username} has joined the server!`, "joinLeave:onGuildMemberAdd");
   });
 };

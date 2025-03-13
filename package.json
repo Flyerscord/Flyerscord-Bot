@@ -16,7 +16,8 @@
     "format": "npx prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "update": "npx npm-check -u",
     "depcheck": "npx npm-check",
-    "generate-config": "npx tsx src/createDefaultConfig.ts"
+    "generate-config": "npx tsx src/createDefaultConfig.ts",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -60,6 +61,7 @@
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "husky": "^9.1.7",
     "npm-check": "^6.0.1",
     "prettier": "^3.3.3",
     "tsx": "^4.19.3",

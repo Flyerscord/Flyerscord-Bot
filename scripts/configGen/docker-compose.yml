@@ -2,9 +2,9 @@ version: "3.3"
 services:
   configGenerator:
     build:
-      context: .
-      dockerfile: Dockerfile_defaultConfig
+      context: ../..
+      dockerfile: scripts/configGen/Dockerfile
     volumes:
-      - src/common/config:/config
+      - ./src/common/config:/config
     environment:
       - ENVIRONMENT=docker

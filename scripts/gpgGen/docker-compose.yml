@@ -1,0 +1,8 @@
+version: "3.3"
+services:
+  gpgGenerator:
+    build:
+      context: ../..
+      dockerfile: scripts/gpgGen/Dockerfile
+    volumes:
+      - ./keys:/keys

@@ -1,5 +1,5 @@
 .PHONY: all
-.DEFAULT_GOAL := all
 
-all: docker compose build && docker-compose run --rm gpgGenerator
+all:
+	sudo docker compose build && sudo docker compose run --rm gpg-generator   
 

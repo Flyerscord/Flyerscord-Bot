@@ -1,6 +1,6 @@
 version: "3.3"
 services:
-  configGenerator:
+  config-generator:
     build:
       context: ../..
       dockerfile: scripts/configGen/Dockerfile

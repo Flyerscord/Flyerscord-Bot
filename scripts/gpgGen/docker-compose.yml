@@ -1,6 +1,6 @@
 version: "3.3"
 services:
-  gpgGenerator:
+  gpg-generator:
     build:
       context: ../..
       dockerfile: scripts/gpgGen/Dockerfile

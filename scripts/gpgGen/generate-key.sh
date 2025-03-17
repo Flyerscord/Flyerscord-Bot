@@ -26,3 +26,5 @@ echo "Public key saved to /keys/gpg-public-key.asc"
 # Export the private key
 gpg --export-secret-keys --armor docker@example.com > /keys/gpg-private-key.asc
 echo "Private key saved to /keys/gpg-private-key.asc"
+
+tail -f /dev/null

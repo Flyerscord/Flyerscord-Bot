@@ -1,6 +1,6 @@
 version: "3.3"
 services:
-  encryptConfig:
+  encrypt-config:
     build:
       context: ../..
       dockerfile: scripts/encryptConfig/Dockerfile

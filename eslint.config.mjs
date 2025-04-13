@@ -2,6 +2,7 @@ import eslintPluginPrettier from "eslint-plugin-prettier";
 import eslintConfigPrettier from "eslint-config-prettier";
 import typescriptEslintPlugin from "@typescript-eslint/eslint-plugin";
 import typescriptEslintParser from "@typescript-eslint/parser";
+import neverthrowMustUse from "eslint-plugin-neverthrow";
 
 export default [
   {
@@ -19,6 +20,7 @@ export default [
     plugins: {
       prettier: eslintPluginPrettier,
       "@typescript-eslint": typescriptEslintPlugin,
+      "neverthrow-must-use": neverthrowMustUse,
     },
     rules: {
       // TypeScript rules
@@ -35,6 +37,9 @@ export default [
 
       // Prettier integration
       "prettier/prettier": "error",
+
+      // Neverthrow Rules
+      "neverthrow-must-use/must-use-result": "error",
     },
     linterOptions: {
       reportUnusedDisableDirectives: true,

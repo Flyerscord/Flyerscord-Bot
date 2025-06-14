@@ -16,17 +16,19 @@ export default class AddPinContext extends AdminMessageContextMenuCommand {
 
     const message = interaction.targetMessage;
     if (!message) {
-      interaction.followUp({ content: "Error adding pin!", ephemeral: true });
-      return;
+      return await replies.reply("Error adding pin!", true);
     }
 
     const db = PinsDB.getInstance();
+
+    if (db.getPinByMessageId(message.id)) {
+      return await replies.reply("Cannot pin a pinned message!", true);
+    }
 
     const pin = db.addPin(message.id, message.channelId, message.createdAt, interaction.user.id);
     if (!pin) {
       Stumper.error(`Failed to add pin for message ${message.id}. Message is already pinned!`, "pins:AddPinContext:execute");
       return await replies.reply("Error adding pin! Message is already pinned!", true);
-      return;
     }
 
     const embed = await getPinEmbed(pin);
@@ -38,13 +40,11 @@ export default class AddPinContext extends AdminMessageContextMenuCommand {
     const pinMessage = await discord.messages.sendEmbedToChannel(Config.getConfig().pinsChannelId, embed);
     if (!pinMessage) {
       Stumper.error(`Failed to send message to pins channel!`, "pins:AddPinContext:execute");
-      interaction.followUp({ content: "Error adding pin!", ephemeral: true });
       return await replies.reply("Error adding pin!", true);
     }
 
     db.updateMessageId(message.id, pinMessage.id);
 
-    interaction.editReply({ content: "Pin added!" });
-    await replies.reply("Pin added!");
+    await replies.reply(`Pin added! Checkout <#${Config.getConfig().pinsChannelId}> to see all pins!`);
   }
 }

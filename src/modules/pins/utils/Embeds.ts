@@ -38,9 +38,9 @@ export async function getPinEmbed(pin: IPin): Promise<EmbedBuilder | undefined> 
       embed.setImage(attachment.url);
       content = "";
     } else if (attachment.contentType?.startsWith("video")) {
-      content = "See message for video";
+      content = "See Message for Video";
     } else {
-      content = "See message for attachment";
+      content = "See Message for Attachment";
     }
   }
 

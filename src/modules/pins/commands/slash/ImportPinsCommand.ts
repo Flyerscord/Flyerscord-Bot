@@ -23,8 +23,17 @@ export default class ImportPinsCommand extends SlashCommand {
 
     if (channel && channel instanceof TextChannel) {
       const textChannel = channel as TextChannel;
+
+      if (Config.getConfig().pinsChannelId == textChannel.id) {
+        return await replies.reply("Cannot import pins from the pins channel!", true);
+      }
+
       // Gets the pinned messages from the channel sorted oldest to newest
       const pinnedMessages = (await textChannel.messages.fetchPinned()).sort((a, b) => a.createdTimestamp - b.createdTimestamp);
+
+      if (pinnedMessages.size == 0) {
+        return await replies.reply("No pinned messages found!", true);
+      }
 
       for (const message of pinnedMessages) {
         // Send message to pin channel

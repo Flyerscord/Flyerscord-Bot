@@ -56,6 +56,10 @@ export default class PinsDB extends Database {
     return this.db.get(originalMessageId);
   }
 
+  getPinByMessageId(messageId: string): IPin | undefined {
+    return this.db.find((pin) => pin.messageId === messageId);
+  }
+
   getAllPins(): IPin[] {
     return this.getAllValues();
   }

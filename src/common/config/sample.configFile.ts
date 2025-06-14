@@ -1,24 +1,24 @@
 export default {
-  productionMode: true,
+  productionMode: false,
   production: {
     token: "",
     logLevel: 3,
-    prefix: {
-      normal: "!",
-      admin: ".",
-    },
     masterGuildId: "",
-    reactionRoles: {
-      channelId: "",
-      reactionRoles: [
-        {
-          name: "",
-          description: "",
-          colorHex: "",
-          roleId: "",
-          emojiId: "",
-        },
-      ],
+    prefix: {
+      normal: "",
+      admin: "",
+    },
+    customCommandListChannelId: "",
+    imageKit: {
+      publicKey: "",
+      privateKey: "",
+      urlEndpoint: "",
+      redirectUrl: "",
+      proxyUrl: "",
+    },
+    imgur: {
+      clientId: "",
+      clientSecret: "",
     },
     vistorReactRole: {
       memberRoleId: "",
@@ -26,18 +26,10 @@ export default {
       visitorEmojiId: "",
       rolesChannelId: "",
     },
-    joinLeaveMessageChannelId: "",
-    userLogChannelId: "",
-    customCommandListChannelId: "",
-    imageKit: {
-      publicKey: "",
-      privateKey: "",
-      urlEndpoint: "",
-      redirectUrl: "",
-    },
-    imgur: {
-      clientId: "",
-      clientSecret: "",
+    bagReactionRole: {
+      roleId: "",
+      emojiId: "",
+      channelId: "",
     },
     gameDayPosts: {
       channelId: "",
@@ -45,48 +37,39 @@ export default {
         preseason: "",
         regularSeason: "",
         postseason: "",
-        seasons: [
-          {
-            name: "",
-            startingYear: 0,
-            endingYear: 0,
-            tagId: "",
-          },
-        ],
+        seasons: [],
       },
     },
-    voiceStatsChannels: [
-      {
-        name: "",
-        channelId: "",
-      },
-    ],
+    joinLeaveMessageChannelId: "",
+    userLogChannelId: "",
+    voiceStatsChannels: [],
     commandTempChannelId: "",
     bluesky: {
       username: "",
       password: "",
+      listId: "",
       channelId: "",
     },
   },
   nonProduction: {
     token: "",
     logLevel: 3,
-    prefix: {
-      normal: "!",
-      admin: ".",
-    },
     masterGuildId: "",
-    reactionRoles: {
-      channelId: "",
-      reactionRoles: [
-        {
-          name: "",
-          description: "",
-          colorHex: "",
-          roleId: "",
-          emojiId: "",
-        },
-      ],
+    prefix: {
+      normal: "",
+      admin: "",
+    },
+    customCommandListChannelId: "",
+    imageKit: {
+      publicKey: "",
+      privateKey: "",
+      urlEndpoint: "",
+      redirectUrl: "",
+      proxyUrl: "",
+    },
+    imgur: {
+      clientId: "",
+      clientSecret: "",
     },
     vistorReactRole: {
       memberRoleId: "",
@@ -94,18 +77,10 @@ export default {
       visitorEmojiId: "",
       rolesChannelId: "",
     },
-    joinLeaveMessageChannelId: "",
-    userLogChannelId: "",
-    customCommandListChannelId: "",
-    imageKit: {
-      publicKey: "",
-      privateKey: "",
-      urlEndpoint: "",
-      redirectUrl: "",
-    },
-    imgur: {
-      clientId: "",
-      clientSecret: "",
+    bagReactionRole: {
+      roleId: "",
+      emojiId: "",
+      channelId: "",
     },
     gameDayPosts: {
       channelId: "",
@@ -113,26 +88,17 @@ export default {
         preseason: "",
         regularSeason: "",
         postseason: "",
-        seasons: [
-          {
-            name: "",
-            startingYear: 0,
-            endingYear: 0,
-            tagId: "",
-          },
-        ],
+        seasons: [],
       },
     },
-    voiceStatsChannels: [
-      {
-        name: "",
-        channelId: "",
-      },
-    ],
+    joinLeaveMessageChannelId: "",
+    userLogChannelId: "",
+    voiceStatsChannels: [],
     commandTempChannelId: "",
     bluesky: {
       username: "",
       password: "",
+      listId: "",
       channelId: "",
     },
   },

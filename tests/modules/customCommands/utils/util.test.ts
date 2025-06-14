@@ -14,7 +14,7 @@ describe("createCommandListMessages", () => {
     expect(result.length).toBe(1);
     expect(result[0]).toContain("**Custom Commands (5 commands)**");
     commands.forEach((cmd) => {
-      expect(result[0]).toContain(`!${cmd.name}`);
+      expect(result[0]).toContain(`${Config.getConfig().prefix.normal}${cmd.name}`);
     });
   });
 

@@ -19,14 +19,39 @@ export async function getPinEmbed(pin: IPin): Promise<EmbedBuilder | undefined> 
 
   embed.setTimestamp(message.createdAt);
 
-  embed.setDescription(`${message.content}
-    [Jump to Message](${message.url})`);
+  let content = message.content;
+  if (content.length > 2048) {
+    content = content.substring(0, 2040) + "\n...";
+  }
 
-  if (message.attachments.size > 0) {
-    const firstAttachment = message.attachments.first();
-    if (firstAttachment) {
-      embed.setImage(firstAttachment.url);
+  if (message.embeds.length > 0) {
+    const firstEmbed = message.embeds[0];
+    const embedData = firstEmbed.data;
+
+    if (embedData.thumbnail && embedData.thumbnail.url) {
+      embed.setImage(embedData.thumbnail.url);
+      content = "";
     }
+  } else if (message.attachments.size > 0) {
+    const attachment = message.attachments.first()!;
+    if (attachment.contentType?.startsWith("image")) {
+      embed.setImage(attachment.url);
+      content = "";
+    } else if (attachment.contentType?.startsWith("video")) {
+      content = attachment.url;
+    }
+  }
+
+  if (content.length > 0) {
+    embed.setDescription(`Channel: ${message.channel.url}
+      
+      ${content}
+  
+      [Jump to Message](${message.url})`);
+  } else {
+    embed.setDescription(`Channel: ${message.channel.url}
+      
+      [Jump to Message](${message.url})`);
   }
 
   return embed;

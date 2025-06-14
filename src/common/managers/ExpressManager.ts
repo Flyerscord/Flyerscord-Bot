@@ -9,9 +9,9 @@ export default class ExpressManager {
 
   private constructor() {
     this.app = express();
-    this.port = process.env.PORT || 3000;
+    this.port = process.env.PORT || "3000";
 
-    this.app.listen(this.port, () => {
+    this.app.listen(parseInt(this.port), () => {
       Stumper.info(`Express server is running on port ${this.port}`, "common:ExpressManager:ExpressManager");
     });
   }

@@ -20,16 +20,15 @@ export default {
       clientId: "",
       clientSecret: "",
     },
+    reactionRoles: {
+      channelId: "",
+      reactionRoles: [],
+    },
     vistorReactRole: {
       memberRoleId: "",
       visitorRoleId: "",
       visitorEmojiId: "",
       rolesChannelId: "",
-    },
-    bagReactionRole: {
-      roleId: "",
-      emojiId: "",
-      channelId: "",
     },
     gameDayPosts: {
       channelId: "",
@@ -50,6 +49,7 @@ export default {
       listId: "",
       channelId: "",
     },
+    pinsChannelId: "",
   },
   nonProduction: {
     token: "",
@@ -71,16 +71,15 @@ export default {
       clientId: "",
       clientSecret: "",
     },
+    reactionRoles: {
+      channelId: "",
+      reactionRoles: [],
+    },
     vistorReactRole: {
       memberRoleId: "",
       visitorRoleId: "",
       visitorEmojiId: "",
       rolesChannelId: "",
-    },
-    bagReactionRole: {
-      roleId: "",
-      emojiId: "",
-      channelId: "",
     },
     gameDayPosts: {
       channelId: "",
@@ -101,5 +100,6 @@ export default {
       listId: "",
       channelId: "",
     },
+    pinsChannelId: "",
   },
 };

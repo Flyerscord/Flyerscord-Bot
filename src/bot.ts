@@ -102,6 +102,7 @@ import JoinLeaveModule from "./modules/joinLeave/JoinLeaveModule";
 import LevelsModule from "./modules/levels/LevelsModule";
 import MiscModule from "./modules/misc/MiscModule";
 import NHLModule from "./modules/nhl/NHLModule";
+import PinsModule from "./modules/pins/PinsModule";
 import PlayerEmojisModule from "./modules/playerEmojis/PlayerEmojisModule";
 import ReactionRoleModule from "./modules/reactionRole/ReactionRoleModule";
 import StatsVoiceChannelModule from "./modules/statsVoiceChannel/StatsVoiceChannelModule";
@@ -141,20 +142,21 @@ async function startUp(): Promise<void> {
     await moduleManager.addModule(new ImageProxyModule());
   }
 
-  await moduleManager.addModule(new AdminModule());
-  await moduleManager.addModule(new CustomCommandsModule());
-  await moduleManager.addModule(new DaysUntilModule());
-  await moduleManager.addModule(new GameDayPostsModule());
-  await moduleManager.addModule(new JoinLeaveModule());
-  await moduleManager.addModule(new LevelsModule());
-  await moduleManager.addModule(new MiscModule());
-  await moduleManager.addModule(new NHLModule());
-  await moduleManager.addModule(new PlayerEmojisModule());
-  await moduleManager.addModule(new ReactionRoleModule());
-  await moduleManager.addModule(new StatsVoiceChannelModule());
-  await moduleManager.addModule(new UserManagementModule());
-  await moduleManager.addModule(new VisitorRoleModule());
-  await moduleManager.addModule(new BlueSkyModule());
+  // await moduleManager.addModule(new AdminModule());
+  // await moduleManager.addModule(new CustomCommandsModule());
+  // await moduleManager.addModule(new DaysUntilModule());
+  // await moduleManager.addModule(new GameDayPostsModule());
+  // await moduleManager.addModule(new JoinLeaveModule());
+  // await moduleManager.addModule(new LevelsModule());
+  // await moduleManager.addModule(new MiscModule());
+  // await moduleManager.addModule(new NHLModule());
+  await moduleManager.addModule(new PinsModule());
+  // await moduleManager.addModule(new PlayerEmojisModule());
+  // await moduleManager.addModule(new ReactionRoleModule());
+  // await moduleManager.addModule(new StatsVoiceChannelModule());
+  // await moduleManager.addModule(new UserManagementModule());
+  // await moduleManager.addModule(new VisitorRoleModule());
+  // await moduleManager.addModule(new BlueSkyModule());
 
   // Must be enabled last
   await moduleManager.addModule(new RegisterCommandsModule());

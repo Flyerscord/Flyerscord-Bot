@@ -18,6 +18,7 @@ interface ICommonConfig {
   voiceStatsChannels: IVoiceStatsConfig[];
   commandTempChannelId: string;
   bluesky: IBlueSkyConfig;
+  pinsChannelId: string;
 }
 
 interface IPrefixConfig {

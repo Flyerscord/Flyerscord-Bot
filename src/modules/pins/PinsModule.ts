@@ -1,21 +1,19 @@
 import ContextMenuCommand from "../../common/models/ContextMenuCommand";
-import ModalMenu from "../../common/models/ModalMenu";
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
-import UserManagementDB from "./providers/UserManagement.Database";
+import PinsDB from "./providers/Pins.Database";
 
-export default class UserManagementModule extends Module {
+export default class PinsModule extends Module {
   constructor() {
-    super("UserManagement");
+    super("Pins");
   }
 
   protected async setup(): Promise<void> {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
     await this.readInCommands<ContextMenuCommand>(__dirname, "context");
-    await this.readInCommands<ModalMenu>(__dirname, "modal");
   }
 
   protected async cleanup(): Promise<void> {
-    UserManagementDB.getInstance().close();
+    PinsDB.getInstance().close();
   }
 }

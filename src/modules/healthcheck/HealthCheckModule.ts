@@ -21,4 +21,8 @@ export default class HealthCheckModule extends Module {
       }
     });
   }
+
+  protected async cleanup(): Promise<void> {
+    // Nothing to cleanup
+  }
 }

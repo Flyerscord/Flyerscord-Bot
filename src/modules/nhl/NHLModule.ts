@@ -9,4 +9,8 @@ export default class NHLModule extends Module {
   protected async setup(): Promise<void> {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
   }
+
+  protected async cleanup(): Promise<void> {
+    // Nothing to cleanup
+  }
 }

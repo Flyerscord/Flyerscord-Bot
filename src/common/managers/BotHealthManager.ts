@@ -11,10 +11,7 @@ export default class BotHealthManager {
   }
 
   static getInstance(): BotHealthManager {
-    if (!BotHealthManager.instance) {
-      BotHealthManager.instance = new BotHealthManager();
-    }
-    return BotHealthManager.instance;
+    return this.instance || (this.instance = new this());
   }
 
   isHealthy(): boolean {

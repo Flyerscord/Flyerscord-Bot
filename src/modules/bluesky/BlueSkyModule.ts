@@ -1,6 +1,8 @@
 import Module from "../../common/models/Module";
 import SlashCommand from "../../common/models/SlashCommand";
 import onAutocomplete from "./listeners/onAutocomplete";
+import AccountHistoryDB from "./providers/AccountHistory.Database";
+import BlueSkyDB from "./providers/BlueSky.Database";
 import CheckForNewPostsTask from "./tasks/CheckForNewPostsTask";
 import BlueSky from "./utils/BlueSky";
 
@@ -17,6 +19,11 @@ export default class BlueSkyModule extends Module {
 
     this.registerListeners();
     this.registerSchedules();
+  }
+
+  protected async cleanup(): Promise<void> {
+    AccountHistoryDB.getInstance().close();
+    BlueSkyDB.getInstance().close();
   }
 
   private registerSchedules(): void {

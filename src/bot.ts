@@ -85,12 +85,16 @@ ContextMenuCommandManager.getInstance();
 ModalMenuManager.getInstance();
 
 /* -------------------------------------------------------------------------- */
+/*                            Import Module Manager                           */
+/* -------------------------------------------------------------------------- */
+import ModuleManager from "./common/managers/ModuleManager";
+
+/* -------------------------------------------------------------------------- */
 /*                               Import Modules                               */
 /* -------------------------------------------------------------------------- */
 import HealthCheckModule from "./modules/healthcheck/HealthCheckModule";
 import ImageProxyModule from "./modules/imageProxy/ImageProxyModule";
 import AdminModule from "./modules/admin/AdminModule";
-import BagReactionRoleModule from "./modules/bagReactionRole/BagReactionRoleModule";
 import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule";
 import DaysUntilModule from "./modules/daysUntil/DaysUntilModule";
 import GameDayPostsModule from "./modules/gamedayPosts/GameDayPostsModule";
@@ -98,7 +102,9 @@ import JoinLeaveModule from "./modules/joinLeave/JoinLeaveModule";
 import LevelsModule from "./modules/levels/LevelsModule";
 import MiscModule from "./modules/misc/MiscModule";
 import NHLModule from "./modules/nhl/NHLModule";
+import PinsModule from "./modules/pins/PinsModule";
 import PlayerEmojisModule from "./modules/playerEmojis/PlayerEmojisModule";
+import ReactionRoleModule from "./modules/reactionRole/ReactionRoleModule";
 import StatsVoiceChannelModule from "./modules/statsVoiceChannel/StatsVoiceChannelModule";
 import UserManagementModule from "./modules/userManagement/UserManagementModule";
 import VisitorRoleModule from "./modules/visitorRole/VisitorRoleModule";
@@ -123,35 +129,37 @@ import CombinedTeamInfoCache from "./common/cache/CombinedTeamInfoCache";
 startUp();
 
 async function startUp(): Promise<void> {
+  const moduleManager = ModuleManager.getInstance();
   // Initialize and update the caches
   await CombinedTeamInfoCache.getInstance().forceUpdate();
 
   // Enable all modules before starting the bot
   // Health check must be enabled first followed by the image proxy
-  await new HealthCheckModule().enable();
+  await moduleManager.addModule(new HealthCheckModule());
 
   // Only enable the image proxy in production
   if (Config.isProductionMode()) {
-    await new ImageProxyModule().enable();
+    await moduleManager.addModule(new ImageProxyModule());
   }
 
-  await new AdminModule().enable();
-  await new BagReactionRoleModule().enable();
-  await new CustomCommandsModule().enable();
-  await new DaysUntilModule().enable();
-  await new GameDayPostsModule().enable();
-  await new JoinLeaveModule().enable();
-  await new LevelsModule().enable();
-  await new MiscModule().enable();
-  await new NHLModule().enable();
-  await new PlayerEmojisModule().enable();
-  await new StatsVoiceChannelModule().enable();
-  await new UserManagementModule().enable();
-  await new VisitorRoleModule().enable();
-  await new BlueSkyModule().enable();
+  await moduleManager.addModule(new AdminModule());
+  await moduleManager.addModule(new CustomCommandsModule());
+  await moduleManager.addModule(new DaysUntilModule());
+  await moduleManager.addModule(new GameDayPostsModule());
+  await moduleManager.addModule(new JoinLeaveModule());
+  await moduleManager.addModule(new LevelsModule());
+  await moduleManager.addModule(new MiscModule());
+  await moduleManager.addModule(new NHLModule());
+  await moduleManager.addModule(new PinsModule());
+  await moduleManager.addModule(new PlayerEmojisModule());
+  await moduleManager.addModule(new ReactionRoleModule());
+  await moduleManager.addModule(new StatsVoiceChannelModule());
+  await moduleManager.addModule(new UserManagementModule());
+  await moduleManager.addModule(new VisitorRoleModule());
+  await moduleManager.addModule(new BlueSkyModule());
 
   // Must be enabled last
-  await new RegisterCommandsModule().enable();
+  await moduleManager.addModule(new RegisterCommandsModule());
 
   /* -------------------------------------------------------------------------- */
   /*                      Register Our Other Event Handlers                     */

@@ -10,14 +10,15 @@ interface ICommonConfig {
   customCommandListChannelId: string;
   imageKit: IImageKitConfig;
   imgur: IImgurConfig;
+  reactionRoles: IReactionRolesConfig;
   vistorReactRole: IVistorReactConfig;
-  bagReactionRole: IReactionRoleConfig;
   gameDayPosts: IGameDayPostsConfig;
   joinLeaveMessageChannelId: string;
   userLogChannelId: string;
   voiceStatsChannels: IVoiceStatsConfig[];
   commandTempChannelId: string;
   bluesky: IBlueSkyConfig;
+  pinsChannelId: string;
 }
 
 interface IPrefixConfig {
@@ -69,10 +70,18 @@ interface IVoiceStatsConfig {
   channelId: string;
 }
 
-interface IReactionRoleConfig {
+interface IReactionRolesConfig {
+  channelId: string;
+  reactionRoles: IReactionRoleConfig[];
+}
+
+export interface IReactionRoleConfig {
+  name: string;
+  description: string;
+  colorHex: string;
   roleId: string;
   emojiId: string;
-  channelId: string;
+  messageId?: string;
 }
 
 interface IBlueSkyConfig {

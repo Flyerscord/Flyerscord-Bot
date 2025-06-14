@@ -7,6 +7,7 @@ import * as users from "./users";
 import * as guilds from "./guilds";
 import * as members from "./members";
 import * as forums from "./forums";
+import * as interactions from "./InteractionReplies";
 
 export default {
   messages: messages,
@@ -18,4 +19,5 @@ export default {
   guilds: guilds,
   members: members,
   forums: forums,
+  interactions: interactions,
 };

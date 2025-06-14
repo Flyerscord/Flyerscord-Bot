@@ -14,10 +14,7 @@ export default class ContextMenuCommandManager {
   }
 
   static getInstance(): ContextMenuCommandManager {
-    if (!ContextMenuCommandManager.instance) {
-      ContextMenuCommandManager.instance = new ContextMenuCommandManager();
-    }
-    return ContextMenuCommandManager.instance;
+    return this.instance || (this.instance = new this());
   }
 
   addCommands(commands: ContextMenuCommand[]): void {

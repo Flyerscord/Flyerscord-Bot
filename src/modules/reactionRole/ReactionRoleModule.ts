@@ -1,24 +1,26 @@
-import Module from "../../common/models/Module";
-import onGuildMemberAdd from "./listeners/onGuildMemberAdd";
+import { setMessageIdsFromConfig } from "./utils/utils";
+import onReady from "./listeners/onReady";
 import onMessageReactionAdd from "./listeners/onMessageReactionAdd";
 import onMessageReactionRemove from "./listeners/onMessageReactionRemove";
-import onReady from "./listeners/onReady";
+import Module from "../../common/models/Module";
+import ReactionMessageDB from "./providers/ReactionMessage.Database";
 
-export default class VistorRoleModule extends Module {
+export default class ReactionRoleModule extends Module {
   constructor() {
-    super("VistorRole");
+    super("ReactionRole");
   }
 
   protected async setup(): Promise<void> {
+    setMessageIdsFromConfig();
+
     this.registerListeners();
   }
 
   protected async cleanup(): Promise<void> {
-    // Nothing to cleanup
+    ReactionMessageDB.getInstance().close();
   }
 
   private registerListeners(): void {
-    onGuildMemberAdd();
     onMessageReactionAdd();
     onMessageReactionRemove();
     onReady();

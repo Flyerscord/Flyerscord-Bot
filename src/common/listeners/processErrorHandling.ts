@@ -1,5 +1,5 @@
 import Stumper from "stumper";
-import { closeAllDbConnections } from "../utils/cleanup";
+import ModuleManager from "../managers/ModuleManager";
 
 export default (): void => {
   // Process UnhandledRejection
@@ -12,7 +12,7 @@ export default (): void => {
   process.on("uncaughtException", function (err) {
     Stumper.caughtError(err, "Uncaught Exception");
 
-    closeAllDbConnections();
+    ModuleManager.getInstance().disableAllModules();
 
     process.exit(1);
   });

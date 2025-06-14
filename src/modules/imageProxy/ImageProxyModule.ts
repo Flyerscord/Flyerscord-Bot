@@ -18,4 +18,8 @@ export default class ImageProxyModule extends Module {
       request({ url: imageUrl, headers: { "Content-Type": "image/gif" } }).pipe(res);
     });
   }
+
+  protected async cleanup(): Promise<void> {
+    // Nothing to cleanup
+  }
 }

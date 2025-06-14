@@ -5,6 +5,8 @@ import {
   ChatInputCommandInteraction,
   UserContextMenuCommandInteraction,
   MessageContextMenuCommandInteraction,
+  CommandInteraction,
+  ApplicationCommandType,
 } from "discord.js";
 
 import Stumper from "stumper";
@@ -13,6 +15,11 @@ import { MessageContextMenuCommand, UserContextMenuCommand } from "../models/Con
 
 export default (client: Client): void => {
   client.on("interactionCreate", async (interaction: Interaction) => {
+    if (interaction instanceof CommandInteraction && interaction.replied) {
+      Stumper.error(`Interaction ${interaction.id} is already replied! This should never happen!`, "common:onInteractionCreate:onInteractionCreate");
+      return;
+    }
+
     await onSlashCommand(client, interaction as ChatInputCommandInteraction);
     await onModalSubmit(client, interaction as ModalSubmitInteraction);
     await onUserContextMenuCommand(client, interaction as UserContextMenuCommandInteraction);
@@ -30,10 +37,12 @@ async function onSlashCommand(client: Client, interaction: ChatInputCommandInter
     await command.execute(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onSlashCommand");
-    await interaction.followUp({
-      content: "There was an error while executing this command!",
-      ephemeral: true,
-    });
+    if (!interaction.replied) {
+      await interaction.followUp({
+        content: "There was an error while executing this command!",
+        ephemeral: true,
+      });
+    }
   }
 }
 
@@ -47,34 +56,40 @@ async function onModalSubmit(client: Client, interaction: ModalSubmitInteraction
     await modal.execute(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onModalSubmit");
-    await interaction.reply({ content: "There was an error while executing this modal submit!", ephemeral: true });
+    if (!interaction.replied) {
+      await interaction.followUp({ content: "There was an error while executing this modal submit!", ephemeral: true });
+    }
   }
 }
 
 async function onUserContextMenuCommand(client: Client, interaction: UserContextMenuCommandInteraction): Promise<void> {
-  if (!interaction.isUserContextMenuCommand) return;
+  if (!interaction.isUserContextMenuCommand || interaction.commandType !== ApplicationCommandType.User) return;
 
   const userContextMenu: UserContextMenuCommand | undefined = client.contextMenus.get(interaction.commandName);
   if (!userContextMenu) return;
   try {
-    Stumper.info(`Running context menu command for ${userContextMenu.name}`, "common:onInteractionCreate:onUserContextMenuCommand");
+    Stumper.info(`Running user context menu command for ${userContextMenu.name}`, "common:onInteractionCreate:onUserContextMenuCommand");
     await userContextMenu.execute(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onUserContextMenuCommand");
-    await interaction.reply({ content: "There was an error while executing this user context menu command!", ephemeral: true });
+    if (!interaction.replied) {
+      await interaction.followUp({ content: "There was an error while executing this user context menu command!", ephemeral: true });
+    }
   }
 }
 
 async function onMessageContextMenuCommand(client: Client, interaction: MessageContextMenuCommandInteraction): Promise<void> {
-  if (!interaction.isMessageContextMenuCommand) return;
+  if (!interaction.isMessageContextMenuCommand || interaction.commandType !== ApplicationCommandType.Message) return;
 
   const messageContextMenu: MessageContextMenuCommand | undefined = client.contextMenus.get(interaction.commandName);
   if (!messageContextMenu) return;
   try {
-    Stumper.info(`Running context menu command for ${messageContextMenu.name}`, "common:onInteractionCreate:onMessageContextMenuCommand");
+    Stumper.info(`Running message context menu command for ${messageContextMenu.name}`, "common:onInteractionCreate:onMessageContextMenuCommand");
     await messageContextMenu.execute(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onMessageContextMenuCommand");
-    await interaction.reply({ content: "There was an error while executing this message context menu command!", ephemeral: true });
+    if (!interaction.replied) {
+      await interaction.followUp({ content: "There was an error while executing this message context menu command!", ephemeral: true });
+    }
   }
 }

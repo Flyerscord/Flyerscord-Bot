@@ -18,10 +18,7 @@ export default class CombinedTeamInfoCache extends Cache<ICombinedTeamInfo[]> {
   }
 
   static getInstance(): CombinedTeamInfoCache {
-    if (!CombinedTeamInfoCache.instance) {
-      CombinedTeamInfoCache.instance = new CombinedTeamInfoCache();
-    }
-    return CombinedTeamInfoCache.instance;
+    return this.instance || (this.instance = new this());
   }
 
   protected async updateCache(): Promise<void> {

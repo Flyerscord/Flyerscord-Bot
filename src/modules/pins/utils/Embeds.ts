@@ -21,7 +21,7 @@ export async function getPinEmbed(pin: IPin): Promise<EmbedBuilder | undefined> 
 
   let content = message.content;
   if (content.length > 2048) {
-    content = content.substring(0, 2040) + "\n...";
+    content = content.substring(0, 2030) + "\n\n... See Message for full version";
   }
 
   if (message.embeds.length > 0) {
@@ -38,7 +38,9 @@ export async function getPinEmbed(pin: IPin): Promise<EmbedBuilder | undefined> 
       embed.setImage(attachment.url);
       content = "";
     } else if (attachment.contentType?.startsWith("video")) {
-      content = attachment.url;
+      content = "See message for video";
+    } else {
+      content = "See message for attachment";
     }
   }
 

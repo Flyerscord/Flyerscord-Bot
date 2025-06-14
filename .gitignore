@@ -2,5 +2,7 @@ node_modules
 .vscode
 data
 dist
+dist-tests
 **/config.json
 **/configFile.ts
+coverage

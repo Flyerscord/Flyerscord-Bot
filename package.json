@@ -5,15 +5,18 @@
   "main": "dist/bot.js",
   "scripts": {
     "copy-assets": "npx copyfiles -u 1 src/**/*.png dist/",
-    "build": "npx tsc && npm run copy-assets",
-    "build:no-assets": "npx tsc",
+    "build": "npx tsc -p tsconfig.json && npm run copy-assets",
+    "build:no-assets": "npx tsc -p tsconfig.json",
+    "build:test": "npx tsc -p tsconfig.test.json",
     "start:prod": "node /usr/src/app/src/bot.js",
     "start:dev": "npm run build:no-assets && node dist/bot.js",
     "lint": "npx eslint .",
     "lintfix": "npx eslint . --fix",
     "format": "npx prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "update": "npx npm-check -u",
-    "depcheck": "npx npm-check"
+    "depcheck": "npx npm-check",
+    "test": "npm run build:test && npx jest --no-coverage",
+    "test:coverage": "npm run build:test && npx jest --coverage"
   },
   "repository": {
     "type": "git",

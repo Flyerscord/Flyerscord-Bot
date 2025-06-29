@@ -47,6 +47,9 @@ export default {
   levels: {},
   misc: {},
   nhl: {},
+  pins: {
+    channelId: "",
+  },
   playeremojis: {},
   reactionrole: {
     channelId: "",

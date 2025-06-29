@@ -11,6 +11,7 @@ export type Modules =
   | "Levels"
   | "Misc"
   | "NHL"
+  | "Pins"
   | "PlayerEmojis"
   | "ReactionRole"
   | "RegisterCommands"

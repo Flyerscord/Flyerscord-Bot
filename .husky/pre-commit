@@ -1,1 +1,7 @@
-npm run generate-config && npm run format
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+set -e
+
+npm run generate-config
+npm run format
+git add -u

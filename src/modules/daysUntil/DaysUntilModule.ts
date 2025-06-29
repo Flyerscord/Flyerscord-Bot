@@ -1,6 +1,6 @@
-import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
-import Module from "../../common/models/Module";
-import SlashCommand from "../../common/models/SlashCommand";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
+import Module from "@common/models/Module";
+import SlashCommand from "@common/models/SlashCommand";
 import onAutocomplete from "./listeners/onAutocomplete";
 import DaysUntilDB from "./providers/DaysUtil.Database";
 

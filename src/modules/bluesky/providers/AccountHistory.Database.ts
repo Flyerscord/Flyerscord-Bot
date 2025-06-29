@@ -1,4 +1,4 @@
-import Database from "../../../common/providers/Database";
+import Database from "@common/providers/Database";
 import { HISTORY_ITEM_TYPE, IHistoryItem } from "../interfaces/IHistoryItem";
 
 export default class AccountHistoryDB extends Database {

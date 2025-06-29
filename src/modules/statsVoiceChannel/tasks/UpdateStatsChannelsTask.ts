@@ -1,5 +1,5 @@
 import Stumper from "stumper";
-import Task from "../../../common/models/Task";
+import Task from "@common/models/Task";
 import StatsVoiceChannelsManager from "../utils/StatsVoiceChannelsManager";
 
 export default class UpdateStatsChannelsTask extends Task {

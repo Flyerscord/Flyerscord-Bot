@@ -1,6 +1,6 @@
-import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
-import Module from "../../common/models/Module";
-import SlashCommand from "../../common/models/SlashCommand";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
+import Module from "@common/models/Module";
+import SlashCommand from "@common/models/SlashCommand";
 import TotalMembersStatChannel from "./statChannels/TotalMembersStatChannel";
 import TotalNitroBoostersStatChannel from "./statChannels/TotalNitroBoostersStatChannel";
 import UpdateStatsChannelsTask from "./tasks/UpdateStatsChannelsTask";

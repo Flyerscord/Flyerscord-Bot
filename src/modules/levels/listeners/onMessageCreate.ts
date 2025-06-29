@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 
-import ClientManager from "../../../common/managers/ClientManager";
+import ClientManager from "@common/managers/ClientManager";
 import { addMessage } from "../utils/leveling";
 import ConfigManager from "@common/config/ConfigManager";
 

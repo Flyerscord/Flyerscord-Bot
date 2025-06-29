@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, User } from "discord.js";
 import Stumper from "stumper";
 
-import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import { sendLogMessage } from "../../utils/ChannelLogging";
-import discord from "../../../../common/utils/discord/discord";
+import discord from "@common/utils/discord/discord";
 
 export default class KickSlashCommand extends AdminSlashCommand {
   constructor() {

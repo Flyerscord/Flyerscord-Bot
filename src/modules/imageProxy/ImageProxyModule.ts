@@ -1,7 +1,7 @@
-import ExpressManager from "../../common/managers/ExpressManager";
-import Module from "../../common/models/Module";
+import ExpressManager from "@common/managers/ExpressManager";
+import Module from "@common/models/Module";
 import request from "request";
-import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import ConfigManager from "@common/config/ConfigManager";
 
 export default class ImageProxyModule extends Module<IImageProxyConfig> {

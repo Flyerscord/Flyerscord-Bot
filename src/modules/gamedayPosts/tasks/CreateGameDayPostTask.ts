@@ -1,4 +1,4 @@
-import Task from "../../../common/models/Task";
+import Task from "@common/models/Task";
 import { checkForGameDay } from "../utils/GameChecker";
 
 export default class CreateGameDayPostTask extends Task {

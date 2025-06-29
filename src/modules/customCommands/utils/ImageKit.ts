@@ -2,7 +2,7 @@ import ImageKit from "imagekit";
 import Stumper from "stumper";
 import { UploadResponse } from "imagekit/dist/libs/interfaces/UploadResponse";
 import IKResponse from "imagekit/dist/libs/interfaces/IKResponse";
-import { Singleton } from "../../../common/models/Singleton";
+import { Singleton } from "@common/models/Singleton";
 import ConfigManager from "@common/config/ConfigManager";
 
 export default class MyImageKit extends Singleton {

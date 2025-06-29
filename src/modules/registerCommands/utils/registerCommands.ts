@@ -1,9 +1,9 @@
 import { Client, REST, RESTPostAPIChatInputApplicationCommandsJSONBody, RESTPostAPIContextMenuApplicationCommandsJSONBody, Routes } from "discord.js";
 import Stumper from "stumper";
-import ClientManager from "../../../common/managers/ClientManager";
-import Time from "../../../common/utils/Time";
-import SlashCommandManager from "../../../common/managers/SlashCommandManager";
-import ContextMenuCommandManager from "../../../common/managers/ContextMenuManager";
+import ClientManager from "@common/managers/ClientManager";
+import Time from "@common/utils/Time";
+import SlashCommandManager from "@common/managers/SlashCommandManager";
+import ContextMenuCommandManager from "@common/managers/ContextMenuManager";
 import ConfigManager from "@common/config/ConfigManager";
 
 export async function readAndRegisterCommands(): Promise<void> {

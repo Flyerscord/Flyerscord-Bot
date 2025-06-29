@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import { checkForNewEmojis } from "../../utils/PlayerEmojis";
 
 export default class TriggerPlayerEmojisCommand extends AdminSlashCommand {

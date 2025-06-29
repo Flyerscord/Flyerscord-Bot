@@ -1,4 +1,4 @@
-import Database from "../../../common/providers/Database";
+import Database from "@common/providers/Database";
 
 export default class ReactionMessageDB extends Database {
   constructor() {

@@ -1,6 +1,6 @@
 import { AttachmentBuilder, bold } from "discord.js";
-import ClientManager from "../../../common/managers/ClientManager";
-import discord from "../../../common/utils/discord/discord";
+import ClientManager from "@common/managers/ClientManager";
+import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
 import ConfigManager from "@common/config/ConfigManager";
 

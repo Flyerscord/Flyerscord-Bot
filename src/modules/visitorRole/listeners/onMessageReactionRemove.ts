@@ -1,8 +1,8 @@
 import { MessageReaction, PartialMessageReaction, PartialUser, User } from "discord.js";
 import Stumper from "stumper";
-import ClientManager from "../../../common/managers/ClientManager";
-import GlobalDB from "../../../common/providers/Global.Database";
-import discord from "../../../common/utils/discord/discord";
+import ClientManager from "@common/managers/ClientManager";
+import GlobalDB from "@common/providers/Global.Database";
+import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/config/ConfigManager";
 
 export default (): void => {

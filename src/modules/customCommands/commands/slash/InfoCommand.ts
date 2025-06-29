@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 
-import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
 import ICustomCommand from "../../interfaces/ICustomCommand";
-import discord from "../../../../common/utils/discord/discord";
+import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/config/ConfigManager";
 
 export default class InfoCommand extends AdminSlashCommand {

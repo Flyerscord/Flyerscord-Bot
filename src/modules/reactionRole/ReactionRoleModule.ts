@@ -2,9 +2,9 @@ import { setMessageIdsFromConfig } from "./utils/utils";
 import onReady from "./listeners/onReady";
 import onMessageReactionAdd from "./listeners/onMessageReactionAdd";
 import onMessageReactionRemove from "./listeners/onMessageReactionRemove";
-import Module from "../../common/models/Module";
+import Module from "@common/models/Module";
 import ReactionMessageDB from "./providers/ReactionMessage.Database";
-import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 
 export default class ReactionRoleModule extends Module<IReactionRoleConfig> {
   constructor(config: IKeyedObject) {

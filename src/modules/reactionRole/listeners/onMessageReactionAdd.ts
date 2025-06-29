@@ -1,7 +1,7 @@
 import { MessageReaction, PartialMessageReaction, PartialUser, User } from "discord.js";
 import Stumper from "stumper";
-import ClientManager from "../../../common/managers/ClientManager";
-import discord from "../../../common/utils/discord/discord";
+import ClientManager from "@common/managers/ClientManager";
+import discord from "@common/utils/discord/discord";
 import ReactionMessageDB from "../providers/ReactionMessage.Database";
 import ConfigManager from "@common/config/ConfigManager";
 

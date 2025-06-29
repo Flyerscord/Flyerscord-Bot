@@ -8,10 +8,10 @@ import {
   MessageActionRowComponentBuilder,
 } from "discord.js";
 
-import SlashCommand from "../../../../common/models/SlashCommand";
+import SlashCommand from "@common/models/SlashCommand";
 import LevelsDB from "../../providers/Levels.Database";
 import { IUserLevel } from "../../interfaces/IUserLevel";
-import discord from "../../../../common/utils/discord/discord";
+import discord from "@common/utils/discord/discord";
 import LevelExpDB from "../../providers/LevelExp.Database";
 import { formatExp, getShortenedMessageCount } from "../../utils/leveling";
 import Stumper from "stumper";

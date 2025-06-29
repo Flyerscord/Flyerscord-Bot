@@ -1,6 +1,6 @@
-import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
-import Module from "../../common/models/Module";
-import SlashCommand from "../../common/models/SlashCommand";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
+import Module from "@common/models/Module";
+import SlashCommand from "@common/models/SlashCommand";
 
 export default class AdminModule extends Module<IAdminConfig> {
   constructor(config: IKeyedObject) {

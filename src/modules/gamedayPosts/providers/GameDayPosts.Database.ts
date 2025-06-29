@@ -1,4 +1,4 @@
-import Database from "../../../common/providers/Database";
+import Database from "@common/providers/Database";
 import IGameDayPost from "../interfaces/GameDayPost";
 
 export default class GameDayPostsDB extends Database {

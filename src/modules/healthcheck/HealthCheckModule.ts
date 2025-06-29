@@ -1,9 +1,9 @@
-import Module from "../../common/models/Module";
+import Module from "@common/models/Module";
 
 import IBotHealth from "./interfaces/IBotHealth";
 import { getBotHealth } from "./utils/healthCheck";
-import ExpressManager from "../../common/managers/ExpressManager";
-import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
+import ExpressManager from "@common/managers/ExpressManager";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 
 export default class HealthCheckModule extends Module<IHealthCheckConfig> {
   constructor(config: IKeyedObject) {

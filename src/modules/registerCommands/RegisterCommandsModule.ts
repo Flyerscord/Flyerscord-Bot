@@ -1,6 +1,6 @@
-import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
-import Module from "../../common/models/Module";
-import TextCommand from "../../common/models/TextCommand";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
+import Module from "@common/models/Module";
+import TextCommand from "@common/models/TextCommand";
 
 export default class RegisterCommandsModule extends Module<IRegisterCommandsConfig> {
   constructor(config: IKeyedObject) {

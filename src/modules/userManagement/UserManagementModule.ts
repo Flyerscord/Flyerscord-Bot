@@ -1,8 +1,8 @@
-import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
-import ContextMenuCommand from "../../common/models/ContextMenuCommand";
-import ModalMenu from "../../common/models/ModalMenu";
-import Module from "../../common/models/Module";
-import SlashCommand from "../../common/models/SlashCommand";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
+import ContextMenuCommand from "@common/models/ContextMenuCommand";
+import ModalMenu from "@common/models/ModalMenu";
+import Module from "@common/models/Module";
+import SlashCommand from "@common/models/SlashCommand";
 import UserManagementDB from "./providers/UserManagement.Database";
 
 export default class UserManagementModule extends Module<IUserManagementConfig> {

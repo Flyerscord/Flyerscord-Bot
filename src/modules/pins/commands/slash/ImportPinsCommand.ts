@@ -1,9 +1,9 @@
 import { Channel, ChatInputCommandInteraction, TextChannel } from "discord.js";
-import SlashCommand, { PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import SlashCommand, { PARAM_TYPES } from "@common/models/SlashCommand";
 import PinsDB from "../../providers/Pins.Database";
 import Stumper from "stumper";
 import { getPinEmbed } from "../../utils/Embeds";
-import discord from "../../../../common/utils/discord/discord";
+import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/config/ConfigManager";
 
 export default class ImportPinsCommand extends SlashCommand {

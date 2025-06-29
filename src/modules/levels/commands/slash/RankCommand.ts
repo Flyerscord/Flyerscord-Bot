@@ -1,9 +1,9 @@
 import { AttachmentBuilder, ChatInputCommandInteraction, User } from "discord.js";
-import SlashCommand, { PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import SlashCommand, { PARAM_TYPES } from "@common/models/SlashCommand";
 import LevelsDB from "../../providers/Levels.Database";
 import LevelExpDB from "../../providers/LevelExp.Database";
 import RankImageGenerator from "../../utils/RankImageGenerator";
-import discord from "../../../../common/utils/discord/discord";
+import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
 
 export default class RankCommand extends SlashCommand {

@@ -1,7 +1,7 @@
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import ContextMenuCommand from "../../common/models/ContextMenuCommand";
-import Module from "../../common/models/Module";
-import SlashCommand from "../../common/models/SlashCommand";
+import ContextMenuCommand from "@common/models/ContextMenuCommand";
+import Module from "@common/models/Module";
+import SlashCommand from "@common/models/SlashCommand";
 import PinsDB from "./providers/Pins.Database";
 
 export default class PinsModule extends Module<IPinsConfig> {

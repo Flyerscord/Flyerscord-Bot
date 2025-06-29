@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
 
-import discord from "../../../../common/utils/discord/discord";
-import { sleepSec } from "../../../../common/utils/sleep";
+import discord from "@common/utils/discord/discord";
+import { sleepSec } from "@common/utils/sleep";
 import Stumper from "stumper";
 import MyImageKit from "../../utils/ImageKit";
 import ConfigManager from "@common/config/ConfigManager";

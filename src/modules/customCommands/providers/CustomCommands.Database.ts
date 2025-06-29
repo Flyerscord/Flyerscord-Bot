@@ -1,7 +1,7 @@
 import Stumper from "stumper";
-import Time from "../../../common/utils/Time";
+import Time from "@common/utils/Time";
 
-import Database from "../../../common/providers/Database";
+import Database from "@common/providers/Database";
 import ICustomCommand, { ICustomCommandHistory } from "../interfaces/ICustomCommand";
 import { updateCommandList } from "../utils/util";
 import ImageKit from "../utils/ImageKit";
@@ -10,8 +10,8 @@ import Imgur from "../utils/Imgur";
 import { InvalidImgurUrlException } from "../exceptions/InvalidImgurUrlException";
 import { ErrorUploadingToImageKitException } from "../exceptions/ErrorUploadingToImageKitException";
 import PageNotFoundException from "../exceptions/PageNotFoundException";
-import discord from "../../../common/utils/discord/discord";
-import { sleepMs } from "../../../common/utils/sleep";
+import discord from "@common/utils/discord/discord";
+import { sleepMs } from "@common/utils/sleep";
 import HTMLPageException from "../exceptions/HTMLPageException";
 import ConfigManager from "@common/config/ConfigManager";
 

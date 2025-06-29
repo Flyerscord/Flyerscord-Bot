@@ -1,5 +1,5 @@
-import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
-import Module from "../../common/models/Module";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
+import Module from "@common/models/Module";
 import onGuildMemberAdd from "./listeners/onGuildMemberAdd";
 import onGuildMemberRemove from "./listeners/onGuildMemberRemove";
 

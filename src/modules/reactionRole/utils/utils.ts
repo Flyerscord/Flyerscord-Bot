@@ -1,5 +1,5 @@
 import ReactionMessageDB from "../providers/ReactionMessage.Database";
-import discord from "../../../common/utils/discord/discord";
+import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
 import { EmbedBuilder } from "discord.js";
 import type { IReactionRolesConfig } from "../ReactionRoleModule";

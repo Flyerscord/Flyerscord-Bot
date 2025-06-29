@@ -1,13 +1,13 @@
 import nhlApi from "nhl-api-wrapper-ts";
 import { GAME_TYPE, TEAM_TRI_CODE } from "nhl-api-wrapper-ts/dist/interfaces/Common";
-import Time from "../../../common/utils/Time";
+import Time from "@common/utils/Time";
 import Stumper from "stumper";
 
-import discord from "../../../common/utils/discord/discord";
+import discord from "@common/utils/discord/discord";
 import { GuildForumTag, time, TimestampStyles } from "discord.js";
 import GameDayPostsDB from "../providers/GameDayPosts.Database";
 import { IClubScheduleOutput_games } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubSchedule";
-import CombinedTeamInfoCache from "../../../common/cache/CombinedTeamInfoCache";
+import CombinedTeamInfoCache from "@common/cache/CombinedTeamInfoCache";
 import ConfigManager from "@common/config/ConfigManager";
 
 export async function checkForGameDay(): Promise<void> {

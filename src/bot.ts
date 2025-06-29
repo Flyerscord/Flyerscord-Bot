@@ -7,22 +7,22 @@ Stumper.setConfig({ logLevel: LOG_LEVEL.ALL, useColors: false });
 /* -------------------------------------------------------------------------- */
 /*                        Setup Process Error Handling                        */
 /* -------------------------------------------------------------------------- */
-import processErrorHandling from "./common/listeners/processErrorHandling";
+import processErrorHandling from "@common/listeners/processErrorHandling";
 
 processErrorHandling();
 
 /* -------------------------------------------------------------------------- */
 /*                            Setup SigINT handling                           */
 /* -------------------------------------------------------------------------- */
-import onSigInt from "./common/listeners/onSigInt";
+import onSigInt from "@common/listeners/onSigInt";
 
 onSigInt();
 
 /* -------------------------------------------------------------------------- */
 /*                                Check Config                                */
 /* -------------------------------------------------------------------------- */
-import Config from "./common/config/Config";
-import CommonModule from "./common/CommonModule";
+import Config from "@common/config/Config";
+import CommonModule from "@common/CommonModule";
 
 const config = Config.loadConfig();
 const configManager = ConfigManager.getInstance();
@@ -36,7 +36,7 @@ Stumper.info(`Starting Bot in ${commonConfig.productionMode ? "production" : "no
 /* -------------------------------------------------------------------------- */
 /*                          Initialize Health Manager                         */
 /* -------------------------------------------------------------------------- */
-import BotHealthManager from "./common/managers/BotHealthManager";
+import BotHealthManager from "@common/managers/BotHealthManager";
 BotHealthManager.getInstance();
 
 /* -------------------------------------------------------------------------- */
@@ -59,7 +59,7 @@ const client = new Client({
 /* -------------------------------------------------------------------------- */
 /*                        Setup Discord Error Handling                        */
 /* -------------------------------------------------------------------------- */
-import discordErrorHandling from "./common/listeners/discordErrorHandling";
+import discordErrorHandling from "@common/listeners/discordErrorHandling";
 
 discordErrorHandling(client);
 
@@ -74,11 +74,11 @@ client.contextMenus = new Collection();
 /* -------------------------------------------------------------------------- */
 /*                               Setup Managers                               */
 /* -------------------------------------------------------------------------- */
-import ClientManager from "./common/managers/ClientManager";
-import SlashCommandManager from "./common/managers/SlashCommandManager";
-import TextCommandManager from "./common/managers/TextCommandManager";
-import ContextMenuCommandManager from "./common/managers/ContextMenuManager";
-import ModalMenuManager from "./common/managers/ModalMenuManager";
+import ClientManager from "@common/managers/ClientManager";
+import SlashCommandManager from "@common/managers/SlashCommandManager";
+import TextCommandManager from "@common/managers/TextCommandManager";
+import ContextMenuCommandManager from "@common/managers/ContextMenuManager";
+import ModalMenuManager from "@common/managers/ModalMenuManager";
 
 ClientManager.getInstance(client);
 TextCommandManager.getInstance();
@@ -89,41 +89,41 @@ ModalMenuManager.getInstance();
 /* -------------------------------------------------------------------------- */
 /*                            Import Module Manager                           */
 /* -------------------------------------------------------------------------- */
-import ModuleManager from "./common/managers/ModuleManager";
+import ModuleManager from "@common/managers/ModuleManager";
 
 /* -------------------------------------------------------------------------- */
 /*                               Import Modules                               */
 /* -------------------------------------------------------------------------- */
-import HealthCheckModule from "./modules/healthcheck/HealthCheckModule";
-import ImageProxyModule from "./modules/imageProxy/ImageProxyModule";
-import AdminModule from "./modules/admin/AdminModule";
-import CustomCommandsModule from "./modules/customCommands/CustomCommandsModule";
-import DaysUntilModule from "./modules/daysUntil/DaysUntilModule";
-import GameDayPostsModule from "./modules/gamedayPosts/GameDayPostsModule";
-import JoinLeaveModule from "./modules/joinLeave/JoinLeaveModule";
-import LevelsModule from "./modules/levels/LevelsModule";
-import MiscModule from "./modules/misc/MiscModule";
-import NHLModule from "./modules/nhl/NHLModule";
-import PinsModule from "./modules/pins/PinsModule";
-import PlayerEmojisModule from "./modules/playerEmojis/PlayerEmojisModule";
-import ReactionRoleModule from "./modules/reactionRole/ReactionRoleModule";
-import StatsVoiceChannelModule from "./modules/statsVoiceChannel/StatsVoiceChannelModule";
-import UserManagementModule from "./modules/userManagement/UserManagementModule";
-import VisitorRoleModule from "./modules/visitorRole/VisitorRoleModule";
-import RegisterCommandsModule from "./modules/registerCommands/RegisterCommandsModule";
-import BlueSkyModule from "./modules/bluesky/BlueSkyModule";
+import HealthCheckModule from "@modules/healthcheck/HealthCheckModule";
+import ImageProxyModule from "@modules/imageProxy/ImageProxyModule";
+import AdminModule from "@modules/admin/AdminModule";
+import CustomCommandsModule from "@modules/customCommands/CustomCommandsModule";
+import DaysUntilModule from "@modules/daysUntil/DaysUntilModule";
+import GameDayPostsModule from "@modules/gamedayPosts/GameDayPostsModule";
+import JoinLeaveModule from "@modules/joinLeave/JoinLeaveModule";
+import LevelsModule from "@modules/levels/LevelsModule";
+import MiscModule from "@modules/misc/MiscModule";
+import NHLModule from "@modules/nhl/NHLModule";
+import PinsModule from "@modules/pins/PinsModule";
+import PlayerEmojisModule from "@modules/playerEmojis/PlayerEmojisModule";
+import ReactionRoleModule from "@modules/reactionRole/ReactionRoleModule";
+import StatsVoiceChannelModule from "@modules/statsVoiceChannel/StatsVoiceChannelModule";
+import UserManagementModule from "@modules/userManagement/UserManagementModule";
+import VisitorRoleModule from "@modules/visitorRole/VisitorRoleModule";
+import RegisterCommandsModule from "@modules/registerCommands/RegisterCommandsModule";
+import BlueSkyModule from "@modules/bluesky/BlueSkyModule";
 
 /* -------------------------------------------------------------------------- */
 /*                       Import Our Other Event Handlers                      */
 /* -------------------------------------------------------------------------- */
-import onMessageCreate from "./common/listeners/onMessageCreate";
-import onInteractionCreate from "./common/listeners/onInteractionCreate";
-import onReady from "./common/listeners/onReady";
+import onMessageCreate from "@common/listeners/onMessageCreate";
+import onInteractionCreate from "@common/listeners/onInteractionCreate";
+import onReady from "@common/listeners/onReady";
 
 /* -------------------------------------------------------------------------- */
 /*                                Import Caches                               */
 /* -------------------------------------------------------------------------- */
-import CombinedTeamInfoCache from "./common/cache/CombinedTeamInfoCache";
+import CombinedTeamInfoCache from "@common/cache/CombinedTeamInfoCache";
 import ConfigManager from "@common/config/ConfigManager";
 
 /* -------------------------------------------------------------------------- */

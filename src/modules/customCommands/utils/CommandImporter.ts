@@ -1,5 +1,5 @@
-import { Singleton } from "../../../common/models/Singleton";
-import discord from "../../../common/utils/discord/discord";
+import { Singleton } from "@common/models/Singleton";
+import discord from "@common/utils/discord/discord";
 import { ErrorUploadingToImageKitException } from "../exceptions/ErrorUploadingToImageKitException";
 import { InvalidImgurUrlException } from "../exceptions/InvalidImgurUrlException";
 import PageNotFoundException from "../exceptions/PageNotFoundException";

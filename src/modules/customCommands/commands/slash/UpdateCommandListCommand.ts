@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import { updateCommandList } from "../../utils/util";
 import CustomCommandsDB from "@modules/customCommands/providers/CustomCommands.Database";
 

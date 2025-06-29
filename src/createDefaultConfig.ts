@@ -1,7 +1,7 @@
 import { promises as fs } from "node:fs";
 import process from "node:process";
 import path from "node:path";
-import Module from "./common/models/Module";
+import Module from "@common/models/Module";
 import Stumper, { LOG_LEVEL } from "stumper";
 import prettier from "prettier";
 
@@ -37,7 +37,7 @@ async function getDefaultModuleConfigs(): Promise<IDefaultConfig> {
   const objects = [];
 
   // Get common module config
-  const commonModule = await import("./common/CommonModule");
+  const commonModule = await import("@common/CommonModule");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   objects.push((commonModule.default.getInstance({}) as unknown as Module<any>).getDefaultModuleConfig());
 

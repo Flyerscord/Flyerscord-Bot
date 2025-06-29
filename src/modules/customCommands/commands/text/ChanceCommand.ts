@@ -1,8 +1,8 @@
 import { Message } from "discord.js";
-import TextCommand from "../../../../common/models/TextCommand";
-import { getRandomNumber } from "../../../../common/utils/misc";
-import discord from "../../../../common/utils/discord/discord";
-import { COMMAND_LOCATION } from "../../../../common/interfaces/ITextCommandOptions";
+import TextCommand from "@common/models/TextCommand";
+import { getRandomNumber } from "@common/utils/misc";
+import discord from "@common/utils/discord/discord";
+import { COMMAND_LOCATION } from "@common/interfaces/ITextCommandOptions";
 import ConfigManager from "@common/config/ConfigManager";
 
 export default class ChanceTextCommand extends TextCommand {

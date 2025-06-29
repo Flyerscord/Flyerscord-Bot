@@ -1,4 +1,4 @@
-import { Singleton } from "../../../common/models/Singleton";
+import { Singleton } from "@common/models/Singleton";
 import StatsVoiceChannel from "../models/StatsVoiceChannel";
 
 export default class StatsVoiceChannelsManager extends Singleton {

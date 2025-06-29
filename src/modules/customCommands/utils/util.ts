@@ -1,8 +1,8 @@
-import GlobalDB from "../../../common/providers/Global.Database";
-import discord from "../../../common/utils/discord/discord";
+import GlobalDB from "@common/providers/Global.Database";
+import discord from "@common/utils/discord/discord";
 import ICustomCommand from "../interfaces/ICustomCommand";
-import Time from "../../../common/utils/Time";
-import TextCommandManager from "../../../common/managers/TextCommandManager";
+import Time from "@common/utils/Time";
+import TextCommandManager from "@common/managers/TextCommandManager";
 import { Message } from "discord.js";
 import ConfigManager from "@common/config/ConfigManager";
 

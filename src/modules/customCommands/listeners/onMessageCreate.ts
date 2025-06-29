@@ -2,8 +2,8 @@ import { Message } from "discord.js";
 
 import Stumper from "stumper";
 import CustomCommandsDB from "../providers/CustomCommands.Database";
-import ClientManager from "../../../common/managers/ClientManager";
-import discord from "../../../common/utils/discord/discord";
+import ClientManager from "@common/managers/ClientManager";
+import discord from "@common/utils/discord/discord";
 import CommandImporter from "../utils/CommandImporter";
 import MyImageKit from "../utils/ImageKit";
 import ConfigManager from "@common/config/ConfigManager";

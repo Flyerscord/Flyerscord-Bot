@@ -1,10 +1,10 @@
-import Module from "../../common/models/Module";
-import SlashCommand from "../../common/models/SlashCommand";
+import Module from "@common/models/Module";
+import SlashCommand from "@common/models/SlashCommand";
 import onMessageCreate from "./listeners/onMessageCreate";
 import { calculateLevels } from "./utils/requiredExp";
 import LevelExpDB from "./providers/LevelExp.Database";
 import LevelsDB from "./providers/Levels.Database";
-import { IKeyedObject } from "../../common/interfaces/IKeyedObject";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 
 export default class LevelsModule extends Module<ILevelsConfig> {
   constructor(config: IKeyedObject) {

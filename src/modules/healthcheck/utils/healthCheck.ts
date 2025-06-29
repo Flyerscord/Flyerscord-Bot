@@ -1,5 +1,5 @@
-import BotHealthManager from "../../../common/managers/BotHealthManager";
-import ClientManager from "../../../common/managers/ClientManager";
+import BotHealthManager from "@common/managers/BotHealthManager";
+import ClientManager from "@common/managers/ClientManager";
 import IBotHealth from "../interfaces/IBotHealth";
 
 export function getBotHealth(): IBotHealth {

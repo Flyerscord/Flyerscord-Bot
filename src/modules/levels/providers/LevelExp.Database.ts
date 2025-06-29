@@ -1,5 +1,5 @@
 import Stumper from "stumper";
-import Database from "../../../common/providers/Database";
+import Database from "@common/providers/Database";
 
 export default class LevelExpDB extends Database {
   constructor() {

@@ -1,13 +1,13 @@
 import { ChatInputCommandInteraction, EmbedBuilder, time, TimestampStyles } from "discord.js";
 import nhlApi from "nhl-api-wrapper-ts";
 
-import SlashCommand, { PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import SlashCommand, { PARAM_TYPES } from "@common/models/SlashCommand";
 import { TEAM_TRI_CODE } from "nhl-api-wrapper-ts/dist/interfaces/Common";
 import { IClubScheduleNowOutput } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubScheduleNow";
-import { NHL_EMOJI_GUILD_ID } from "../../../../common/utils/discord/emojis";
-import discord from "../../../../common/utils/discord/discord";
+import { NHL_EMOJI_GUILD_ID } from "@common/utils/discord/emojis";
+import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
-import CombinedTeamInfoCache from "../../../../common/cache/CombinedTeamInfoCache";
+import CombinedTeamInfoCache from "@common/cache/CombinedTeamInfoCache";
 
 export default class ScheduleCommand extends SlashCommand {
   constructor() {

@@ -1,5 +1,5 @@
 import { Interaction } from "discord.js";
-import ClientManager from "../../../common/managers/ClientManager";
+import ClientManager from "@common/managers/ClientManager";
 import { AutocompleteInteraction } from "discord.js";
 import DaysUntilDB from "../providers/DaysUtil.Database";
 import { events, getEventNames } from "../models/DaysUntilEvents";

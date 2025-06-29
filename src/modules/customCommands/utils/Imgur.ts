@@ -1,6 +1,6 @@
 import ImgurClient from "imgur";
 import Stumper from "stumper";
-import { Singleton } from "../../../common/models/Singleton";
+import { Singleton } from "@common/models/Singleton";
 import ConfigManager from "@common/config/ConfigManager";
 
 export default class Imgur extends Singleton {

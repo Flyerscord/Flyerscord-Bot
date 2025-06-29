@@ -1,6 +1,6 @@
 import { EmbedBuilder } from "discord.js";
-import GlobalDB from "../../../common/providers/Global.Database";
-import discord from "../../../common/utils/discord/discord";
+import GlobalDB from "@common/providers/Global.Database";
+import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
 import ConfigManager from "@common/config/ConfigManager";
 

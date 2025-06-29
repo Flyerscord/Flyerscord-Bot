@@ -1,4 +1,4 @@
-import Database from "../../../common/providers/Database";
+import Database from "@common/providers/Database";
 import IDbEvent from "../interfaces/IDbEvent";
 import { events } from "../models/DaysUntilEvents";
 

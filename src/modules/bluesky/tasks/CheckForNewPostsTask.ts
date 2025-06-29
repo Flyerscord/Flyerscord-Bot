@@ -1,8 +1,8 @@
 import Stumper from "stumper";
-import Task from "../../../common/models/Task";
+import Task from "@common/models/Task";
 import BlueSky from "../utils/BlueSky";
 import { IPost } from "../interfaces/IPost";
-import discord from "../../../common/utils/discord/discord";
+import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/config/ConfigManager";
 
 export default class CheckForNewPostsTask extends Task {

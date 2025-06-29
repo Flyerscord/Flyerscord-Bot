@@ -11,13 +11,15 @@ import ContextMenuCommandManager from "../managers/ContextMenuManager";
 import { IModuleConfig } from "../interfaces/IModuleConfig";
 import { Singleton } from "./Singleton";
 import { IKeyedObject } from "../interfaces/IKeyedObject";
+import { Modules } from "../../modules/Modules";
 
 export default abstract class Module<TConfig> extends Singleton {
-  readonly name: string;
+  readonly name: Modules;
   readonly cleanName: string;
   readonly config: TConfig;
+  readonly dependsOn: Modules[];
 
-  protected constructor(name: string, config: IKeyedObject) {
+  protected constructor(name: Modules, config: IKeyedObject, dependsOn: Modules[] = []) {
     super();
     this.name = name;
 
@@ -30,6 +32,8 @@ export default abstract class Module<TConfig> extends Singleton {
       Stumper.error(`Config for module ${this.name} not found, using default! Clean name: ${this.cleanName}`, "common:Module:constructor");
       this.config = this.getDefaultConfig();
     }
+
+    this.dependsOn = dependsOn;
   }
 
   protected abstract setup(): Promise<void>;
@@ -50,6 +54,10 @@ export default abstract class Module<TConfig> extends Singleton {
 
   getDefaultModuleConfig(): IModuleConfig<TConfig> {
     return this.wrapObject(this.cleanName, this.getDefaultConfig());
+  }
+
+  getDependencies(): Modules[] {
+    return this.dependsOn;
   }
 
   protected async readInCommands<T>(dir: string, commandsPath: string): Promise<void> {

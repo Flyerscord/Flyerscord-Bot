@@ -3,7 +3,7 @@ import Stumper from "stumper";
 import ClientManager from "../../../common/managers/ClientManager";
 import discord from "../../../common/utils/discord/discord";
 import ReactionMessageDB from "../providers/ReactionMessage.Database";
-import ReactionRoleModule from "../ReactionRoleModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
@@ -21,7 +21,9 @@ export default (): void => {
       return;
     }
 
-    const reactionRole = ReactionRoleModule.getInstance().config.reactionRoles.find((r) => r.name == reactionName);
+    const reactionRole = ConfigManager.getInstance()
+      .getConfig("ReactionRole")
+      .reactionRoles.find((reactionRole) => reactionRole.name == reactionName);
 
     if (!reactionRole) {
       Stumper.error(`Reaction role not found with name ${reactionName}`, "reactionRole:onMessageReactionAdd");

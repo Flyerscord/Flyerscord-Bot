@@ -4,7 +4,7 @@ import ClientManager from "../../../common/managers/ClientManager";
 import Time from "../../../common/utils/Time";
 import SlashCommandManager from "../../../common/managers/SlashCommandManager";
 import ContextMenuCommandManager from "../../../common/managers/ContextMenuManager";
-import CommonModule from "../../../common/CommonModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export async function readAndRegisterCommands(): Promise<void> {
   const client = ClientManager.getInstance().client;
@@ -24,7 +24,7 @@ async function registerAllCommands(
   client: Client,
   commands: (RESTPostAPIChatInputApplicationCommandsJSONBody | RESTPostAPIContextMenuApplicationCommandsJSONBody)[],
 ): Promise<void> {
-  const config = CommonModule.getInstance().config;
+  const config = ConfigManager.getInstance().getConfig("Common");
   const rest = new REST({ version: "10" }).setToken(config.token);
 
   if (!client.user) {

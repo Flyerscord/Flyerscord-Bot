@@ -1,21 +1,21 @@
-import CustomCommandsDB from "../providers/CustomCommands.Database";
 import GlobalDB from "../../../common/providers/Global.Database";
 import discord from "../../../common/utils/discord/discord";
 import ICustomCommand from "../interfaces/ICustomCommand";
 import Time from "../../../common/utils/Time";
 import TextCommandManager from "../../../common/managers/TextCommandManager";
-import CustomCommandsModule from "../CustomCommandsModule";
 import { Message } from "discord.js";
+import ConfigManager from "@common/config/ConfigManager";
 
-export async function updateCommandList(): Promise<void> {
-  const customCommandsDB = CustomCommandsDB.getInstance();
+export async function updateCommandList(allCommands: ICustomCommand[]): Promise<void> {
   const db = GlobalDB.getInstance();
 
   const commandListMessageIds = db.getCommandListMessageIds();
-  const commandListChannelId = CustomCommandsModule.getInstance().config.customCommandListChannelId;
+
+  const config = ConfigManager.getInstance().getConfig("CustomCommands");
+  const commandListChannelId = config.customCommandListChannelId;
 
   const textCommandManager = TextCommandManager.getInstance();
-  const hardcodedCommands = textCommandManager.getCommands().filter((value) => value.prefix == CustomCommandsModule.getInstance().config.prefix);
+  const hardcodedCommands = textCommandManager.getCommands().filter((value) => value.prefix == config.prefix);
   const hardcodedCommandsCustom: ICustomCommand[] = hardcodedCommands.map((command) => {
     return {
       name: command.command,
@@ -26,7 +26,7 @@ export async function updateCommandList(): Promise<void> {
     };
   });
 
-  let commands = [...hardcodedCommandsCustom, ...customCommandsDB.getAllCommands()];
+  let commands = [...hardcodedCommandsCustom, ...allCommands];
   commands = commands.sort((a, b) => a.name.localeCompare(b.name));
   const commandListMessages = createCommandListMessages(commands);
 
@@ -88,7 +88,7 @@ export async function updateCommandList(): Promise<void> {
 
 export function createCommandListMessages(commands: ICustomCommand[]): string[] {
   let output = `**Custom Commands (${commands.length} commands)**\n`;
-  const prefix = CustomCommandsModule.getInstance().config.prefix;
+  const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
 
   let outputStrings: string[] = [];
 

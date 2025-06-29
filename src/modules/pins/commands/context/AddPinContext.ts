@@ -4,7 +4,7 @@ import PinsDB from "../../providers/Pins.Database";
 import Stumper from "stumper";
 import { getPinEmbed } from "../../utils/Embeds";
 import discord from "../../../../common/utils/discord/discord";
-import PinsModule from "@modules/pins/PinsModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class AddPinContext extends AdminMessageContextMenuCommand {
   constructor() {
@@ -20,7 +20,7 @@ export default class AddPinContext extends AdminMessageContextMenuCommand {
     }
 
     const db = PinsDB.getInstance();
-    const config = PinsModule.getInstance().config;
+    const config = ConfigManager.getInstance().getConfig("Pins");
 
     if (db.getPinByMessageId(message.id)) {
       return await replies.reply("Cannot pin a pinned message!", true);

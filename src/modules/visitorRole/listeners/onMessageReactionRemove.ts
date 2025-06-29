@@ -3,7 +3,7 @@ import Stumper from "stumper";
 import ClientManager from "../../../common/managers/ClientManager";
 import GlobalDB from "../../../common/providers/Global.Database";
 import discord from "../../../common/utils/discord/discord";
-import VisitorRoleModule from "../VisitorRoleModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
@@ -28,9 +28,11 @@ export default (): void => {
       return;
     }
 
-    const visitorRoleId = VisitorRoleModule.getInstance().config.visitorRoleId;
-    const memberRoleId = VisitorRoleModule.getInstance().config.memberRoleId;
-    const visitorEmojiId = VisitorRoleModule.getInstance().config.visitorEmojiId;
+    const config = ConfigManager.getInstance().getConfig("VisitorRole");
+
+    const visitorRoleId = config.visitorRoleId;
+    const memberRoleId = config.memberRoleId;
+    const visitorEmojiId = config.visitorEmojiId;
 
     if (reaction.emoji.id == visitorEmojiId) {
       discord.roles.removeRoleToUser(member, visitorRoleId);

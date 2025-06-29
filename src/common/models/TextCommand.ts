@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import ITextCommandOptions, { COMMAND_LOCATION } from "../interfaces/ITextCommandOptions";
 import Stumper from "stumper";
-import CommonModule from "../CommonModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default abstract class TextCommand {
   readonly prefix: string;
@@ -91,7 +91,7 @@ export default abstract class TextCommand {
 export abstract class AdminTextCommand extends TextCommand {
   constructor(name: string, command: string, options: ITextCommandOptions = {}) {
     options.allowedPermissions = ["Administrator"];
-    super(CommonModule.getInstance().config.adminPrefix, name, command, options);
+    super(ConfigManager.getInstance().getConfig("Common").adminPrefix, name, command, options);
   }
 }
 
@@ -99,7 +99,7 @@ export abstract class AdminDMTextCommand extends TextCommand {
   constructor(name: string, command: string, options: ITextCommandOptions = {}) {
     options.allowedPermissions = ["Administrator"];
     options.allowedLocations = [COMMAND_LOCATION.DM];
-    super(CommonModule.getInstance().config.adminPrefix, name, command, options);
+    super(ConfigManager.getInstance().getConfig("Common").adminPrefix, name, command, options);
   }
 }
 

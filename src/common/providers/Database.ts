@@ -44,6 +44,7 @@ export default abstract class Database extends Singleton {
   }
 
   // Exists because Enmap's ensure() method expects an object as the value
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   protected ensure(key: string, value: any): void {
     if (!this.db.has(key)) {
       this.db.set(key, value);

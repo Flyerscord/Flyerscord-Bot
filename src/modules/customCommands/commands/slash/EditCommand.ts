@@ -5,7 +5,7 @@ import { InvalidImgurUrlException } from "../../exceptions/InvalidImgurUrlExcept
 import { ErrorUploadingToImageKitException } from "../../exceptions/ErrorUploadingToImageKitException";
 import Stumper from "stumper";
 import PageNotFoundException from "../../exceptions/PageNotFoundException";
-import CustomCommandsModule from "../../CustomCommandsModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class EditCommand extends AdminSlashCommand {
   constructor() {
@@ -23,7 +23,7 @@ export default class EditCommand extends AdminSlashCommand {
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     await interaction.deferReply({ ephemeral: true });
 
-    const prefix = CustomCommandsModule.getInstance().config.prefix;
+    const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
 
     const db = CustomCommandsDB.getInstance();
 

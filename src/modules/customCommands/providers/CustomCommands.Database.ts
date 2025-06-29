@@ -13,7 +13,7 @@ import PageNotFoundException from "../exceptions/PageNotFoundException";
 import discord from "../../../common/utils/discord/discord";
 import { sleepMs } from "../../../common/utils/sleep";
 import HTMLPageException from "../exceptions/HTMLPageException";
-import CustomCommandsModule from "../CustomCommandsModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class CustomCommandsDB extends Database {
   constructor() {
@@ -61,7 +61,7 @@ export default class CustomCommandsDB extends Database {
       this.db.set(name, customCommand);
       Stumper.info(`Custom Command created! Command: ${name}  By user: ${userId}`, "common:CustomCommandsDB:addCommandSkippingUpload");
 
-      updateCommandList();
+      updateCommandList(this.getAllCommands());
       return true;
     }
     Stumper.error(`Error adding command: ${name}`, "common:CustomCommandsDB:addCommandSkippingUpload");
@@ -75,7 +75,7 @@ export default class CustomCommandsDB extends Database {
     this.db.delete(name);
     Stumper.info(`Custom Command removed! Command: ${name}  By user: ${userId}`, "common:CustomCommandsDB:deleteCommand");
 
-    updateCommandList();
+    updateCommandList(this.getAllCommands());
     return true;
   }
 
@@ -202,7 +202,7 @@ export default class CustomCommandsDB extends Database {
   }
 
   private async getNewDiscordUrl(url: string): Promise<string | undefined> {
-    const message = await discord.messages.sendMessageToChannel(CustomCommandsModule.getInstance().config.commandTempChannelId, url);
+    const message = await discord.messages.sendMessageToChannel(ConfigManager.getInstance().getConfig("CustomCommands").commandTempChannelId, url);
 
     if (!message) {
       return undefined;

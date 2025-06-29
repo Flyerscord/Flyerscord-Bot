@@ -2,8 +2,7 @@ import { Client, Message } from "discord.js";
 
 import TextCommand from "../models/TextCommand";
 import Stumper from "stumper";
-import CustomCommandsModule from "../../modules/customCommands/CustomCommandsModule";
-import CommonModule from "../CommonModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default (client: Client): void => {
   client.on("messageCreate", async (message: Message) => {
@@ -12,8 +11,9 @@ export default (client: Client): void => {
 };
 
 function checkForNormalTextCommand(message: Message): boolean {
-  const prefix = CustomCommandsModule.getInstance().config.prefix;
-  const adminPrefix = CommonModule.getInstance().config.adminPrefix;
+  const configManager = ConfigManager.getInstance();
+  const prefix = configManager.getConfig("CustomCommands").prefix;
+  const adminPrefix = configManager.getConfig("Common").adminPrefix;
   if (message.author.bot) return false;
   if (!message.channel.isTextBased()) return false;
   if (!message.content.startsWith(prefix) && !message.content.startsWith(adminPrefix)) return false;

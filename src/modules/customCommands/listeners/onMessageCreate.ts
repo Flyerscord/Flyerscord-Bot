@@ -6,7 +6,7 @@ import ClientManager from "../../../common/managers/ClientManager";
 import discord from "../../../common/utils/discord/discord";
 import CommandImporter from "../utils/CommandImporter";
 import MyImageKit from "../utils/ImageKit";
-import CustomCommandsModule from "../CustomCommandsModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default (): void => {
   ClientManager.getInstance().client.on("messageCreate", async (message: Message) => {
@@ -16,7 +16,7 @@ export default (): void => {
 };
 
 async function checkForCustomTextCommand(message: Message): Promise<boolean> {
-  const prefix = CustomCommandsModule.getInstance().config.prefix;
+  const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
   if (message.author.bot) return false;
   if (!message.channel.isTextBased()) return false;
   if (!message.content.startsWith(prefix)) return false;

@@ -1,6 +1,6 @@
+import ConfigManager from "@common/config/ConfigManager";
 import discord from "../../../common/utils/discord/discord";
-import UserManagementModule from "../UserManagementModule";
 
 export function sendLogMessage(message: string): void {
-  discord.messages.sendMessageToChannel(UserManagementModule.getInstance().config.channelId, message);
+  discord.messages.sendMessageToChannel(ConfigManager.getInstance().getConfig("UserManagement").channelId, message);
 }

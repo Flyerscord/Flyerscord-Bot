@@ -26,5 +26,8 @@ jobs:
       - name: Run linting
         run: npm run typecheck
 
+      - name: Run circular deps check
+        run: npm run circular-deps
+
       - name: Run tests
         run: npm run lint

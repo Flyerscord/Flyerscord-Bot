@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
-import CustomCommandsModule from "../../CustomCommandsModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class DeleteCommand extends AdminSlashCommand {
   constructor() {
@@ -15,7 +15,7 @@ export default class DeleteCommand extends AdminSlashCommand {
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     await interaction.deferReply({ ephemeral: true });
 
-    const prefix = CustomCommandsModule.getInstance().config.prefix;
+    const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
 
     const db = CustomCommandsDB.getInstance();
 

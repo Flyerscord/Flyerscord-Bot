@@ -2,7 +2,7 @@ import { MessageContextMenuCommandInteraction } from "discord.js";
 import { AdminMessageContextMenuCommand } from "../../../../common/models/ContextMenuCommand";
 import PinsDB from "../../providers/Pins.Database";
 import discord from "../../../../common/utils/discord/discord";
-import PinsModule from "@modules/pins/PinsModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class RemovePinContext extends AdminMessageContextMenuCommand {
   constructor() {
@@ -18,7 +18,7 @@ export default class RemovePinContext extends AdminMessageContextMenuCommand {
     }
 
     const db = PinsDB.getInstance();
-    const config = PinsModule.getInstance().config;
+    const config = ConfigManager.getInstance().getConfig("Pins");
 
     const pinnedMessagePin = db.getPinByMessageId(message.id);
     const messagePin = db.getPin(message.id);

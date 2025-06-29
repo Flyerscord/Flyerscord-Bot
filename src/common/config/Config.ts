@@ -1,5 +1,3 @@
-import fs from "fs";
-
 import localConfig from "./local.config";
 import defaultConfig from "./defaults.config";
 import Stumper from "stumper";

@@ -1,7 +1,7 @@
 import ImgurClient from "imgur";
 import Stumper from "stumper";
 import { Singleton } from "../../../common/models/Singleton";
-import CustomCommandsModule from "../CustomCommandsModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class Imgur extends Singleton {
   private clientId: string;
@@ -11,8 +11,11 @@ export default class Imgur extends Singleton {
 
   constructor() {
     super();
-    this.clientId = CustomCommandsModule.getInstance().config.imgur.clientId;
-    this.clientSecret = CustomCommandsModule.getInstance().config.imgur.clientSecret;
+
+    const config = ConfigManager.getInstance().getConfig("CustomCommands");
+
+    this.clientId = config.imgur.clientId;
+    this.clientSecret = config.imgur.clientSecret;
 
     this.client = new ImgurClient({ clientId: this.clientId, clientSecret: this.clientSecret });
   }

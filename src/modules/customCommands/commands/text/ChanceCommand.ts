@@ -3,11 +3,11 @@ import TextCommand from "../../../../common/models/TextCommand";
 import { getRandomNumber } from "../../../../common/utils/misc";
 import discord from "../../../../common/utils/discord/discord";
 import { COMMAND_LOCATION } from "../../../../common/interfaces/ITextCommandOptions";
-import CustomCommandsModule from "../../CustomCommandsModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class ChanceTextCommand extends TextCommand {
   constructor() {
-    super(CustomCommandsModule.getInstance().config.prefix, "chance", "chance", { allowedLocations: [COMMAND_LOCATION.GUILD] });
+    super(ConfigManager.getInstance().getConfig("CustomCommands").prefix, "chance", "chance", { allowedLocations: [COMMAND_LOCATION.GUILD] });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

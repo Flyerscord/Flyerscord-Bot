@@ -25,8 +25,10 @@ import Config from "./common/config/Config";
 import CommonModule from "./common/CommonModule";
 
 const config = Config.loadConfig();
+const configManager = ConfigManager.getInstance();
 
-const commonConfig = CommonModule.getInstance(config).config;
+const commonModule = CommonModule.getInstance(config);
+const commonConfig = configManager.getConfig("Common");
 
 Stumper.setConfig({ logLevel: commonConfig.logLevel, timezone: TIMEZONE.LOCAL });
 Stumper.info(`Starting Bot in ${commonConfig.productionMode ? "production" : "non-production"} mode!`, "main:CheckConfig");
@@ -122,6 +124,7 @@ import onReady from "./common/listeners/onReady";
 /*                                Import Caches                               */
 /* -------------------------------------------------------------------------- */
 import CombinedTeamInfoCache from "./common/cache/CombinedTeamInfoCache";
+import ConfigManager from "@common/config/ConfigManager";
 
 /* -------------------------------------------------------------------------- */
 /*                                 Run Startup                                */
@@ -132,6 +135,8 @@ async function startUp(): Promise<void> {
   const moduleManager = ModuleManager.getInstance();
   // Initialize and update the caches
   await CombinedTeamInfoCache.getInstance().forceUpdate();
+
+  await moduleManager.addModule(commonModule);
 
   // Enable all modules before starting the bot
   // Health check must be enabled first followed by the image proxy

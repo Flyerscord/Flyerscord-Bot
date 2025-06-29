@@ -21,7 +21,7 @@
     "prepare": "husky",
     "test": "npm run build:test && npx jest --no-coverage",
     "test:coverage": "npm run build:test && npx jest --coverage",
-    "cirular-deps": "madge --circular --extensions ts src"
+    "circular-deps": "madge --circular --extensions ts src"
   },
   "repository": {
     "type": "git",
@@ -73,5 +73,13 @@
     "ts-jest": "^29.2.6",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
+  },
+  "madge": {
+    "detectiveOptions": {
+      "ts": {
+        "skipAsyncImports": true,
+        "skipTypeImports": true
+      }
+    }
   }
 }

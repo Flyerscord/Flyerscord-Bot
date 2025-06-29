@@ -6,7 +6,7 @@ import { ErrorUploadingToImageKitException } from "../../exceptions/ErrorUploadi
 import Stumper from "stumper";
 import PageNotFoundException from "../../exceptions/PageNotFoundException";
 import HTMLPageException from "../../exceptions/HTMLPageException";
-import CustomCommandsModule from "../../CustomCommandsModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class AddCommand extends AdminSlashCommand {
   constructor() {
@@ -41,7 +41,7 @@ export default class AddCommand extends AdminSlashCommand {
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     await interaction.deferReply({ ephemeral: true });
 
-    const prefix = CustomCommandsModule.getInstance().config.prefix;
+    const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
 
     const db = CustomCommandsDB.getInstance();
 

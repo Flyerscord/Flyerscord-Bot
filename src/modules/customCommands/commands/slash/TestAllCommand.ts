@@ -6,7 +6,7 @@ import discord from "../../../../common/utils/discord/discord";
 import { sleepSec } from "../../../../common/utils/sleep";
 import Stumper from "stumper";
 import MyImageKit from "../../utils/ImageKit";
-import CustomCommandsModule from "../../CustomCommandsModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class TestAllCommand extends AdminSlashCommand {
   constructor() {
@@ -28,7 +28,7 @@ export default class TestAllCommand extends AdminSlashCommand {
         const command = commands[i];
         let text = command.text;
 
-        const prefix = CustomCommandsModule.getInstance().config.prefix;
+        const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
 
         const imageKit = MyImageKit.getInstance();
 

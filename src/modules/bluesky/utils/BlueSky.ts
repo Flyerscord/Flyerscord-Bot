@@ -6,7 +6,7 @@ import BlueSkyDB from "../providers/BlueSky.Database";
 import { AtpAgent, AtUri } from "@atproto/api";
 import { AccountDoesNotExistException } from "../exceptions/AccountDoesNotExistException";
 import { Singleton } from "../../../common/models/Singleton";
-import BlueSkyModule from "../BlueSkyModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class BlueSky extends Singleton {
   private agent: AtpAgent;
@@ -22,8 +22,9 @@ export default class BlueSky extends Singleton {
   }
 
   private async login(): Promise<void> {
-    const username = BlueSkyModule.getInstance().config.username;
-    const password = BlueSkyModule.getInstance().config.password;
+    const config = ConfigManager.getInstance().getConfig("BlueSky");
+    const username = config.username;
+    const password = config.password;
 
     try {
       const resp = await this.agent.login({ identifier: username, password: password });
@@ -134,7 +135,7 @@ export default class BlueSky extends Singleton {
   }
 
   async getListAccounts(): Promise<IBlueSkyAccount[]> {
-    const listUri = await this.createListUri();
+    const listUri = this.createListUri();
 
     const accounts: IBlueSkyAccount[] = [];
     const limit = 100;
@@ -165,7 +166,7 @@ export default class BlueSky extends Singleton {
   }
 
   private createListUri(): string {
-    const listId = BlueSkyModule.getInstance().config.listId;
+    const listId = ConfigManager.getInstance().getConfig("BlueSky").listId;
     return `at://${this.userDid}/app.bsky.graph.list/${listId}`;
   }
 }

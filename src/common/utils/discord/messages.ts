@@ -109,3 +109,27 @@ export async function updateMessageWithEmbed(channelId: string, messageId: strin
   }
   return undefined;
 }
+
+export async function deleteMessage(channelId: string, messageId: string, reason?: string): Promise<Boolean> {
+  try {
+    const message = await getMessage(channelId, messageId);
+    if (message && message.deletable) {
+      await message.delete();
+      if (reason) {
+        Stumper.debug(`Deleted message ${messageId} with reason: ${reason}`, "common:messages:deleteMessage");
+      } else {
+        Stumper.debug(`Deleted message ${messageId}`, "common:messages:deleteMessage");
+      }
+      return true;
+    } else if (message && !message.deletable) {
+      Stumper.error(`Message ${messageId} is not deletable!`, "common:messages:deleteMessage");
+      return false;
+    } else {
+      Stumper.error(`Message ${messageId} not found!`, "common:messages:deleteMessage");
+      return false;
+    }
+  } catch (error) {
+    Stumper.caughtError(error, "common:messages:deleteMessage");
+    return false;
+  }
+}

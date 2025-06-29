@@ -102,6 +102,7 @@ import JoinLeaveModule from "./modules/joinLeave/JoinLeaveModule";
 import LevelsModule from "./modules/levels/LevelsModule";
 import MiscModule from "./modules/misc/MiscModule";
 import NHLModule from "./modules/nhl/NHLModule";
+import PinsModule from "./modules/pins/PinsModule";
 import PlayerEmojisModule from "./modules/playerEmojis/PlayerEmojisModule";
 import ReactionRoleModule from "./modules/reactionRole/ReactionRoleModule";
 import StatsVoiceChannelModule from "./modules/statsVoiceChannel/StatsVoiceChannelModule";
@@ -149,6 +150,7 @@ async function startUp(): Promise<void> {
   await moduleManager.addModule(LevelsModule.getInstance(config));
   await moduleManager.addModule(MiscModule.getInstance(config));
   await moduleManager.addModule(NHLModule.getInstance(config));
+  await moduleManager.addModule(PinsModule.getInstance(config));
   await moduleManager.addModule(PlayerEmojisModule.getInstance(config));
   await moduleManager.addModule(ReactionRoleModule.getInstance(config));
   await moduleManager.addModule(StatsVoiceChannelModule.getInstance(config));

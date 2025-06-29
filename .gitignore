@@ -2,5 +2,8 @@ node_modules
 .vscode/settings.json
 data
 dist
+dist-tests
 **/local.config.ts
-configFile.ts
+**/config.json
+**/configFile.ts
+coverage

@@ -3,7 +3,7 @@ node_modules
 data
 dist
 dist-tests
-**/local.config.ts
+**/local.config*.ts
 **/config.json
 **/configFile.ts
 coverage

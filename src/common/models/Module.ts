@@ -10,11 +10,11 @@ import TextCommandManager from "../managers/TextCommandManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
 import { IModuleConfig } from "../interfaces/IModuleConfig";
 import { Singleton } from "./Singleton";
-import { IKeyedObject } from "../interfaces/IKeyedObject";
+import type { IKeyedObject } from "../interfaces/IKeyedObject";
 import type { Modules } from "../../modules/Modules";
 import ConfigManager from "@common/config/ConfigManager";
 
-export default abstract class Module<TConfig> extends Singleton {
+export default abstract class Module<TConfig extends IKeyedObject> extends Singleton {
   readonly name: Modules;
   readonly cleanName: string;
   readonly dependsOn: Modules[];
@@ -32,7 +32,7 @@ export default abstract class Module<TConfig> extends Singleton {
       configManager.setConfig(this.name, config[this.cleanName]);
     } else {
       Stumper.error(`Config for module ${this.name} not found, using default! Clean name: ${this.cleanName}`, "common:Module:constructor");
-      configManager.setConfig(this.name, this.getDefaultModuleConfig());
+      configManager.setConfig(this.name, this.getDefaultConfig());
     }
 
     this.dependsOn = dependsOn;

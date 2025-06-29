@@ -4,35 +4,31 @@
   "description": "Flyers' Discord Helper Bot",
   "main": "src/bot.ts",
   "scripts": {
-    "copy-assets": "npx copyfiles -u 1 src/**/*.png dist/",
-    "build": "npx tsc -p tsconfig.json && npm run copy-assets",
-    "build:no-assets": "npx tsc -p tsconfig.json",
-    "build:test": "npx tsc -p tsconfig.test.json",
+    "build": "npx tsc -p tsconfig.json --noEmit",
+    "build:test": "npx tsc -p tsconfig.test.json --noEmit",
     "start": "npx tsx src/bot.ts",
-    "start:check": "npm run typecheck && npm start",
     "start:dev": "npx tsx watch src/bot.ts",
-    "typecheck": "npx tsc --noEmit",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint . --fix",
-    "format": "npx prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+    "format": "npx prettier --ignore-path .gitignore --write \"**/*.+(ts|json)\"",
     "update": "npx npm-check -u",
     "depcheck": "npx npm-check",
     "generate-config": "npx tsx src/createDefaultConfig.ts",
     "prepare": "husky",
-    "test": "npm run build:test && npx jest --no-coverage",
-    "test:coverage": "npm run build:test && npx jest --coverage",
+    "test": "npx jest --no-coverage",
+    "test:coverage": "npx jest --coverage",
     "circular-deps": "madge --circular --extensions ts src"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/strenkml/NHL-Helper-Bot.git"
+    "url": "git+https://github.com/Flyerscord/Flyerscord-Bot.git"
   },
   "author": "Matt Strenk",
   "license": "GPLV3",
   "bugs": {
-    "url": "https://github.com/strenkml/NHL-Helper-Bot/issues"
+    "url": "https://github.com/Flyerscord/Flyerscord-Bot/issues"
   },
-  "homepage": "https://github.com/strenkml/NHL-Helper-Bot#readme",
+  "homepage": "https://github.com/Flyerscord/Flyerscord-Bot#readme",
   "dependencies": {
     "@atproto/api": "^0.15.19",
     "@discordjs/builders": "^1.11.2",

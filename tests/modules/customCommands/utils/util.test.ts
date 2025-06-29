@@ -1,8 +1,30 @@
 import ICustomCommand from "@modules/customCommands/interfaces/ICustomCommand";
 import { createCommandListMessages } from "@modules/customCommands/utils/util";
 import "@common/types/discord.js/index.d.ts";
+import CustomCommandsModule from "@modules/customCommands/CustomCommandsModule";
 
 describe("createCommandListMessages", () => {
+  beforeEach(() => {
+    CustomCommandsModule.getInstance({
+      customcommands: {
+        prefix: "!",
+        commandTempChannelId: "",
+        customCommandListChannelId: "",
+        imageKit: {
+          publicKey: "",
+          privateKey: "",
+          urlEndpoint: "",
+          redirectUrl: "",
+          proxyUrl: "",
+        },
+        imgur: {
+          clientId: "",
+          clientSecret: "",
+        },
+      },
+    });
+  });
+
   it("should return a single message if commands fit within 2000 characters", () => {
     const commands = Array.from({ length: 5 }, (_, i) => ({ name: `cmd${i + 1}` })) as ICustomCommand[];
 

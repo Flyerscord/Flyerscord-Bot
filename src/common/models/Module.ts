@@ -69,7 +69,7 @@ export default abstract class Module<TConfig> extends Singleton {
     Stumper.info(`Reading in commands from ${location}`, "common:Module:readInCommands");
 
     for (const file of files) {
-      if (!file.endsWith(".js")) {
+      if (!file.endsWith(".js") && !file.endsWith(".ts")) {
         continue;
       }
 

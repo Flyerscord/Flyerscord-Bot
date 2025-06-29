@@ -1,8 +1,0 @@
-version: "3.3"
-services:
-  encrypt-config:
-    build:
-      context: ../..
-      dockerfile: scripts/encryptConfig/Dockerfile
-    volumes:
-      - ./src/common/config:/config

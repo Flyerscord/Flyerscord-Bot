@@ -7,7 +7,7 @@ import onReady from "./listeners/onReady";
 
 export default class VistorRoleModule extends Module<IVisitorRoleConfig> {
   constructor(config: IKeyedObject) {
-    super("VistorRole", config);
+    super("VisitorRole", config);
   }
 
   protected async setup(): Promise<void> {

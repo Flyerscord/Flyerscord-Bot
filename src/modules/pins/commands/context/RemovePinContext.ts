@@ -2,7 +2,7 @@ import { MessageContextMenuCommandInteraction } from "discord.js";
 import { AdminMessageContextMenuCommand } from "../../../../common/models/ContextMenuCommand";
 import PinsDB from "../../providers/Pins.Database";
 import discord from "../../../../common/utils/discord/discord";
-import Config from "../../../../common/config/Config";
+import PinsModule from "@modules/pins/PinsModule";
 
 export default class RemovePinContext extends AdminMessageContextMenuCommand {
   constructor() {
@@ -18,12 +18,13 @@ export default class RemovePinContext extends AdminMessageContextMenuCommand {
     }
 
     const db = PinsDB.getInstance();
+    const config = PinsModule.getInstance().config;
 
     const pinnedMessagePin = db.getPinByMessageId(message.id);
     const messagePin = db.getPin(message.id);
     const pin = pinnedMessagePin ?? messagePin;
     if (pin && pin.messageId) {
-      const deleted = discord.messages.deleteMessage(Config.getConfig().pinsChannelId, pin.messageId, "Pin removed");
+      const deleted = discord.messages.deleteMessage(config.channelId, pin.messageId, "Pin removed");
       if (!deleted) {
         return await replies.reply("Error removing pin!", true);
       }

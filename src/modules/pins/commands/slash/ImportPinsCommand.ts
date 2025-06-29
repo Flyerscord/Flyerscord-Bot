@@ -4,7 +4,7 @@ import PinsDB from "../../providers/Pins.Database";
 import Stumper from "stumper";
 import { getPinEmbed } from "../../utils/Embeds";
 import discord from "../../../../common/utils/discord/discord";
-import Config from "../../../../common/config/Config";
+import PinsModule from "@modules/pins/PinsModule";
 
 export default class ImportPinsCommand extends SlashCommand {
   constructor() {
@@ -18,13 +18,14 @@ export default class ImportPinsCommand extends SlashCommand {
 
     const channel: Channel = this.getParamValue(interaction, PARAM_TYPES.CHANNEL, "channel");
     const db = PinsDB.getInstance();
+    const config = PinsModule.getInstance().config;
 
     let hasFailures = false;
 
     if (channel && channel instanceof TextChannel) {
       const textChannel = channel as TextChannel;
 
-      if (Config.getConfig().pinsChannelId == textChannel.id) {
+      if (config.channelId == textChannel.id) {
         return await replies.reply("Cannot import pins from the pins channel!", true);
       }
 
@@ -47,7 +48,7 @@ export default class ImportPinsCommand extends SlashCommand {
         const embed = await getPinEmbed(pin);
 
         if (embed) {
-          const pinMessage = await discord.messages.sendEmbedToChannel(Config.getConfig().pinsChannelId, embed);
+          const pinMessage = await discord.messages.sendEmbedToChannel(config.channelId, embed);
           if (pinMessage) {
             db.updateMessageId(message[1].id, pinMessage.id);
           } else {

@@ -38,6 +38,7 @@ export default class BlueSky extends Singleton {
 
   async getUserDid(accountTag: string): Promise<string> {
     try {
+      accountTag = this.sanitizeHandle(accountTag);
       const resp = await this.agent.app.bsky.actor.getProfile({ actor: accountTag });
       return resp.data.did;
     } catch (error) {
@@ -53,7 +54,7 @@ export default class BlueSky extends Singleton {
 
     const lastPost = db.getLastPostTime();
 
-    const listUri = await this.createListUri();
+    const listUri = this.createListUri();
 
     try {
       const response = await this.agent.app.bsky.feed.getListFeed({ list: listUri, limit: 30 });
@@ -168,5 +169,12 @@ export default class BlueSky extends Singleton {
   private createListUri(): string {
     const listId = ConfigManager.getInstance().getConfig("BlueSky").listId;
     return `at://${this.userDid}/app.bsky.graph.list/${listId}`;
+  }
+
+  private sanitizeHandle(input: string): string {
+    return input
+      .trim()
+      .replace(/^@/, "") // Remove leading @
+      .replace(/[\u200B-\u200F\u202A-\u202E\u2060-\u206F]+/g, ""); // Strip invisible unicode
   }
 }

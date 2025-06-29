@@ -6,8 +6,8 @@ export default class GlobalDB extends Database {
 
   constructor() {
     super({ name: "global" });
-    this.db.ensure(this.COMMAND_LIST_MESSAGE_ID_KEY, "");
-    this.db.ensure(this.VISITOR_ROLE_MESSAGE_ID_KEY, "");
+    this.ensure(this.COMMAND_LIST_MESSAGE_ID_KEY, "");
+    this.ensure(this.VISITOR_ROLE_MESSAGE_ID_KEY, "");
   }
 
   /* -------------------------------------------------------------------------- */

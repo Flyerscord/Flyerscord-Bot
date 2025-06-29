@@ -24,7 +24,7 @@ export default class PlayerEmojisModule extends Module<IPlayerEmojisConfig> {
   }
 
   private registerSchedules(): void {
-    new EmojiCheckTask().createScheduledJob();
+    EmojiCheckTask.getInstance().createScheduledJob();
   }
 }
 

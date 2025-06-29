@@ -9,10 +9,8 @@ export default class Config {
   private static config: IKeyedObject;
 
   static loadConfig(): IKeyedObject {
-    const fileExists = this.fileExists();
-
-    if (!fileExists) {
-      Stumper.error("Config file not found", "common:Config:checkConfig");
+    if (!localConfig) {
+      Stumper.error("Config file not found", "common:Config:loadConfig");
       process.exit(1);
     }
 
@@ -21,7 +19,7 @@ export default class Config {
 
     if (emptyFields.length > 0) {
       const errorMessage = `The following fields are empty: ${emptyFields.join(", ")}`;
-      Stumper.error(errorMessage, "common:Config:checkConfig");
+      Stumper.error(errorMessage, "common:Config:loadConfig");
       process.exit(1);
     }
 
@@ -31,10 +29,6 @@ export default class Config {
 
   private static mergeLocalAndDefaults(): IKeyedObject {
     return Object.assign({}, defaultConfig, localConfig);
-  }
-
-  private static fileExists(): boolean {
-    return fs.existsSync(`${__dirname}/configFile.js`);
   }
 
   private static getEmptyFields(obj: IKeyedObject, prefix = ""): string[] {

@@ -13,7 +13,7 @@ export default class DaysUntilDB extends Database {
 
     for (const key of Object.keys(events)) {
       const event = events[key];
-      this.db.ensure(event.dbKey, defaultEvent);
+      this.ensure(event.dbKey, defaultEvent);
     }
   }
 

@@ -29,7 +29,7 @@ export default class StatsVoiceChannelModule extends Module<IStatsVoiceChannelCo
   }
 
   private registerSchedules(): void {
-    new UpdateStatsChannelsTask().createScheduledJob();
+    UpdateStatsChannelsTask.getInstance().createScheduledJob();
   }
 
   private registerStatChannels(): void {

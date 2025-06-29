@@ -34,10 +34,10 @@ export default class GameDayPostsModule extends Module<IGameDayPostsConfig> {
 
   private registerSchedules(): void {
     // Run every day at 12:30 AM
-    new CreateGameDayPostTask().createScheduledJob();
+    CreateGameDayPostTask.getInstance().createScheduledJob();
 
     // Run every day at 4:30 AM
-    new CloseAndLockPostsTask().createScheduledJob();
+    CloseAndLockPostsTask.getInstance().createScheduledJob();
   }
 }
 

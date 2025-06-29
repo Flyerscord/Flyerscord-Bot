@@ -37,7 +37,7 @@ export default class BlueSkyModule extends Module<IBlueSkyConfig> {
   }
 
   private registerSchedules(): void {
-    new CheckForNewPostsTask().createScheduledJob();
+    CheckForNewPostsTask.getInstance().createScheduledJob();
   }
 
   private registerListeners(): void {

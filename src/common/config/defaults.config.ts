@@ -59,7 +59,7 @@ export default {
   usermanagement: {
     channelId: "",
   },
-  vistorrole: {
+  visitorrole: {
     memberRoleId: "",
     visitorRoleId: "",
     visitorEmojiId: "",

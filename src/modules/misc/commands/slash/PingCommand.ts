@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import SlashCommand from "../../../../common/models/SlashCommand";
-import BotHealthManager from "../../../../common/managers/BotHealthManager";
+import SlashCommand from "@common/models/SlashCommand";
+import BotHealthManager from "@common/managers/BotHealthManager";
 
 export default class PingCommand extends SlashCommand {
   constructor() {

@@ -1,13 +1,14 @@
-import Module from "../../common/models/Module";
-import SlashCommand from "../../common/models/SlashCommand";
+import Module from "@common/models/Module";
+import SlashCommand from "@common/models/SlashCommand";
 import onMessageCreate from "./listeners/onMessageCreate";
 import { calculateLevels } from "./utils/requiredExp";
 import LevelExpDB from "./providers/LevelExp.Database";
 import LevelsDB from "./providers/Levels.Database";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 
-export default class LevelsModule extends Module {
-  constructor() {
-    super("Levels");
+export default class LevelsModule extends Module<ILevelsConfig> {
+  constructor(config: IKeyedObject) {
+    super("Levels", config);
   }
 
   protected async setup(): Promise<void> {
@@ -23,7 +24,13 @@ export default class LevelsModule extends Module {
     LevelsDB.getInstance().close();
   }
 
+  protected getDefaultConfig(): ILevelsConfig {
+    return {};
+  }
+
   private registerListeners(): void {
     onMessageCreate();
   }
 }
+
+export interface ILevelsConfig {}

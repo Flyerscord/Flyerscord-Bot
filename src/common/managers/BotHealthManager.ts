@@ -1,17 +1,13 @@
 import Stumper from "stumper";
+import { Singleton } from "../models/Singleton";
 
-export default class BotHealthManager {
-  private static instance: BotHealthManager;
-
+export default class BotHealthManager extends Singleton {
   private healthy: boolean;
 
-  private constructor() {
+  constructor() {
+    super();
     this.healthy = false;
     Stumper.warning("Bot is NOT healthy!", "common:BotHealthManager:setHealthy");
-  }
-
-  static getInstance(): BotHealthManager {
-    return this.instance || (this.instance = new this());
   }
 
   isHealthy(): boolean {

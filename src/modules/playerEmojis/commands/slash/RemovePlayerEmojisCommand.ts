@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import { removeOldEmojis } from "../../utils/PlayerEmojis";
 
 export default class RemovePlayerEmojisCommand extends AdminSlashCommand {

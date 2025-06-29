@@ -1,19 +1,20 @@
-import Config from "../../../common/config/Config";
 import ReactionMessageDB from "../providers/ReactionMessage.Database";
-import { IReactionRoleConfig } from "../../../common/config/IConfig";
-import discord from "../../../common/utils/discord/discord";
+import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
 import { EmbedBuilder } from "discord.js";
+import type { IReactionRolesConfig } from "../ReactionRoleModule";
+import ConfigManager from "@common/config/ConfigManager";
 
 export async function createRoleReactionMessagesIfNeeded(): Promise<void> {
   const db = ReactionMessageDB.getInstance();
+  const config = ConfigManager.getInstance().getConfig("ReactionRole");
 
-  const reactionRoles = Config.getConfig().reactionRoles.reactionRoles;
+  const reactionRoles = config.reactionRoles;
 
   for (const reactionRole of reactionRoles) {
     if (
       !db.hasReactionMessage(reactionRole.name) ||
-      (await discord.messages.getMessage(Config.getConfig().reactionRoles.channelId, db.getReactionMessage(reactionRole.name)!)) == undefined
+      (await discord.messages.getMessage(config.channelId, db.getReactionMessage(reactionRole.name)!)) == undefined
     ) {
       await createRoleReactionMessage(reactionRole);
     } else {
@@ -22,10 +23,10 @@ export async function createRoleReactionMessagesIfNeeded(): Promise<void> {
   }
 }
 
-async function createRoleReactionMessage(reactionRole: IReactionRoleConfig): Promise<void> {
+async function createRoleReactionMessage(reactionRole: IReactionRolesConfig): Promise<void> {
   const db = ReactionMessageDB.getInstance();
   const embed = createEmbed(reactionRole);
-  const message = await discord.messages.sendEmbedToChannel(Config.getConfig().reactionRoles.channelId, embed);
+  const message = await discord.messages.sendEmbedToChannel(ConfigManager.getInstance().getConfig("ReactionRole").channelId, embed);
 
   if (message) {
     db.setReactionMessage(reactionRole.name, message.id);
@@ -37,7 +38,7 @@ async function createRoleReactionMessage(reactionRole: IReactionRoleConfig): Pro
   }
 }
 
-function createEmbed(reactionRole: IReactionRoleConfig): EmbedBuilder {
+function createEmbed(reactionRole: IReactionRolesConfig): EmbedBuilder {
   const embed = new EmbedBuilder();
 
   embed.setTitle(`${reactionRole.name} Role`);
@@ -53,7 +54,7 @@ function createEmbed(reactionRole: IReactionRoleConfig): EmbedBuilder {
 export function setMessageIdsFromConfig(): void {
   const db = ReactionMessageDB.getInstance();
 
-  const reactionRoles = Config.getConfig().reactionRoles.reactionRoles;
+  const reactionRoles = ConfigManager.getInstance().getConfig("ReactionRole").reactionRoles;
   for (const reactionRole of reactionRoles) {
     if (reactionRole.messageId) {
       Stumper.info(`Setting message id for ${reactionRole.name} to ${reactionRole.messageId}`, "reactionRole:utils:setMessageIdsFromConfig");

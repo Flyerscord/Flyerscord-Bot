@@ -1,6 +1,6 @@
 import Stumper from "stumper";
-import discord from "../../../common/utils/discord/discord";
-import Config from "../../../common/config/Config";
+import discord from "@common/utils/discord/discord";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default abstract class StatsVoiceChannel {
   name: string;
@@ -11,7 +11,9 @@ export default abstract class StatsVoiceChannel {
     this.name = name;
     this.prefix = prefix;
 
-    const statChannelConfig = Config.getConfig().voiceStatsChannels.find((statChannel) => statChannel.name == name);
+    const statChannelConfig = ConfigManager.getInstance()
+      .getConfig("StatsVoiceChannel")
+      .channels.find((statChannel) => statChannel.name == name);
     if (statChannelConfig) {
       this.channelId = statChannelConfig.channelId;
     } else {

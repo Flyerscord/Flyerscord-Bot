@@ -1,4 +1,4 @@
-import Task from "../../../common/models/Task";
+import Task from "@common/models/Task";
 import { closeAndLockOldPosts } from "../utils/GameChecker";
 
 export default class CloseAndLockPostsTask extends Task {

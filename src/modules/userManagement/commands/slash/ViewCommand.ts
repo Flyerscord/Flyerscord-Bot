@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, EmbedBuilder, time, TimestampStyles, User } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import UserManagementDB from "../../providers/UserManagement.Database";
 import { IUserInfo } from "../../interfaces/IUserInfo";
-import discord from "../../../../common/utils/discord/discord";
-import Time from "../../../../common/utils/Time";
+import discord from "@common/utils/discord/discord";
+import Time from "@common/utils/Time";
 import Stumper from "stumper";
 
 export default class ViewCommand extends AdminSlashCommand {

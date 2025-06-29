@@ -1,6 +1,6 @@
 import { ITeamRosterNowOutput } from "nhl-api-wrapper-ts/dist/interfaces/roster/TeamRosterNow";
 import PlayerEmojisDB from "../providers/PlayerEmojis.Database";
-import discord from "../../../common/utils/discord/discord";
+import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
 import nhlApi from "nhl-api-wrapper-ts";
 import { TEAM_TRI_CODE } from "nhl-api-wrapper-ts/dist/interfaces/Common";

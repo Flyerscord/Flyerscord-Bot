@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import Config from "../../../../common/config/Config";
-import { AdminSlashCommand } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class ListAllCommandsCommand extends AdminSlashCommand {
   constructor() {
@@ -14,7 +14,9 @@ export default class ListAllCommandsCommand extends AdminSlashCommand {
     const db = CustomCommandsDB.getInstance();
     const commands = db.getAllCommands();
 
-    const outputStrings = commands.map((command) => `${Config.getConfig().prefix.normal}${command.name}: ${command.text}`);
+    const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
+
+    const outputStrings = commands.map((command) => `${prefix}${command.name}: ${command.text}`);
 
     const output = this.wrapTextInCodeblock(outputStrings.join("\n"));
 

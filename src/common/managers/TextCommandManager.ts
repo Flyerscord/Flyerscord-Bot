@@ -1,18 +1,14 @@
 import { Collection } from "discord.js";
 import TextCommand from "../models/TextCommand";
 import Stumper from "stumper";
+import { Singleton } from "../models/Singleton";
 
-export default class TextCommandManager {
-  private static instance: TextCommandManager;
-
+export default class TextCommandManager extends Singleton {
   private commands: Collection<string, TextCommand>;
 
-  private constructor() {
+  constructor() {
+    super();
     this.commands = new Collection();
-  }
-
-  static getInstance(): TextCommandManager {
-    return this.instance || (this.instance = new this());
   }
 
   addCommands(commands: TextCommand[]): void {

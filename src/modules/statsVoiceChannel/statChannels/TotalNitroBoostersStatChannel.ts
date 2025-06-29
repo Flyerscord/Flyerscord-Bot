@@ -1,5 +1,5 @@
 import Stumper from "stumper";
-import discord from "../../../common/utils/discord/discord";
+import discord from "@common/utils/discord/discord";
 import StatsVoiceChannel from "../models/StatsVoiceChannel";
 
 export default class TotalNitroBoostersStatChannel extends StatsVoiceChannel {

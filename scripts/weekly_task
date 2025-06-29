@@ -1,1 +1,0 @@
-0 5 * * 1 root /home/matt/dockers/flyerscord/scripts/backupDBFile.sh flyerscord-discord-prod-bot-1 /home/matt/backups/flyerscord-discord-prod-bot

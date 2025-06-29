@@ -1,0 +1,10 @@
+version: "3.3"
+services:
+  config-generator:
+    build:
+      context: ../..
+      dockerfile: scripts/configGen/Dockerfile
+    volumes:
+      - ./src/common/config:/config
+    environment:
+      - ENVIRONMENT=docker

@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import { AccountAlreadyExistsException } from "../../exceptions/AccountAlreadyExistsException";
 import { AccountDoesNotExistException } from "../../exceptions/AccountDoesNotExistException";
 import Stumper from "stumper";

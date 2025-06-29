@@ -1,16 +1,12 @@
+import { Singleton } from "@common/models/Singleton";
 import StatsVoiceChannel from "../models/StatsVoiceChannel";
 
-export default class StatsVoiceChannelsManager {
-  private static instance: StatsVoiceChannelsManager;
-
+export default class StatsVoiceChannelsManager extends Singleton {
   private statChannels: StatsVoiceChannel[];
 
-  private constructor() {
+  constructor() {
+    super();
     this.statChannels = [];
-  }
-
-  static getInstance(): StatsVoiceChannelsManager {
-    return this.instance || (this.instance = new this());
   }
 
   addStatChannel(statChannel: StatsVoiceChannel): void {

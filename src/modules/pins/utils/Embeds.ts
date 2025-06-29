@@ -1,5 +1,5 @@
 import IPin from "../interfaces/IPin";
-import discord from "../../../common/utils/discord/discord";
+import discord from "@common/utils/discord/discord";
 import { EmbedBuilder } from "discord.js";
 
 export async function getPinEmbed(pin: IPin): Promise<EmbedBuilder | undefined> {

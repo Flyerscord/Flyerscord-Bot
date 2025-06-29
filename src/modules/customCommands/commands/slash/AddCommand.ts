@@ -1,12 +1,12 @@
 import { Attachment, ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
-import Config from "../../../../common/config/Config";
 import { InvalidImgurUrlException } from "../../exceptions/InvalidImgurUrlException";
 import { ErrorUploadingToImageKitException } from "../../exceptions/ErrorUploadingToImageKitException";
 import Stumper from "stumper";
 import PageNotFoundException from "../../exceptions/PageNotFoundException";
 import HTMLPageException from "../../exceptions/HTMLPageException";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class AddCommand extends AdminSlashCommand {
   constructor() {
@@ -41,6 +41,8 @@ export default class AddCommand extends AdminSlashCommand {
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     await interaction.deferReply({ ephemeral: true });
 
+    const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
+
     const db = CustomCommandsDB.getInstance();
 
     let name: string = "";
@@ -62,7 +64,7 @@ export default class AddCommand extends AdminSlashCommand {
     if (name != "" && text != "") {
       if (db.hasCommand(name) || interaction.client.textCommands.hasAny(name)) {
         interaction.editReply({
-          content: `Command ${Config.getConfig().prefix.normal}${name} already exists!`,
+          content: `Command ${prefix}${name} already exists!`,
         });
         return;
       }
@@ -77,28 +79,28 @@ export default class AddCommand extends AdminSlashCommand {
         Stumper.caughtError(error, "customCommands:AddCommand:execute");
         if (error instanceof InvalidImgurUrlException || error instanceof ErrorUploadingToImageKitException) {
           interaction.editReply({
-            content: `Error adding command ${Config.getConfig().prefix.normal}${name}! There was an issue with the url. Try downloading the image and uploading it with the image subcommand. Otherwise contact flyerzrule for help.`,
+            content: `Error adding command ${prefix}${name}! There was an issue with the url. Try downloading the image and uploading it with the image subcommand. Otherwise contact flyerzrule for help.`,
           });
           return;
         } else if (error instanceof PageNotFoundException) {
           interaction.editReply({
-            content: `Error adding command ${Config.getConfig().prefix.normal}${name}! The url returns a 404.`,
+            content: `Error adding command ${prefix}${name}! The url returns a 404.`,
           });
           return;
         } else if (error instanceof HTMLPageException) {
           interaction.editReply({
-            content: `Error adding command ${Config.getConfig().prefix.normal}${name}! The url is a HTML page and not an image. Try downloading the image and uploading it with the image subcommand.`,
+            content: `Error adding command ${prefix}${name}! The url is a HTML page and not an image. Try downloading the image and uploading it with the image subcommand.`,
           });
           return;
         } else {
           interaction.editReply({
-            content: `Error adding command ${Config.getConfig().prefix.normal}${name}!`,
+            content: `Error adding command ${prefix}${name}!`,
           });
           throw error;
         }
       }
       interaction.editReply({
-        content: `Command ${Config.getConfig().prefix.normal}${name} added!`,
+        content: `Command ${prefix}${name} added!`,
       });
     }
   }

@@ -1,14 +1,15 @@
-import Module from "../../common/models/Module";
-import SlashCommand from "../../common/models/SlashCommand";
-import TextCommand from "../../common/models/TextCommand";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
+import Module from "@common/models/Module";
+import SlashCommand from "@common/models/SlashCommand";
+import TextCommand from "@common/models/TextCommand";
 import onAutocomplete from "./listeners/onAutocomplete";
 import onMessageCreate from "./listeners/onMessageCreate";
 import CustomCommandsDB from "./providers/CustomCommands.Database";
 import Imgur from "./utils/ImageKit";
 
-export default class CustomCommandsModule extends Module {
-  constructor() {
-    super("CustomCommands");
+export default class CustomCommandsModule extends Module<ICustomCommandsConfig> {
+  constructor(config: IKeyedObject) {
+    super("CustomCommands", config);
   }
 
   protected async setup(): Promise<void> {
@@ -24,8 +25,48 @@ export default class CustomCommandsModule extends Module {
     CustomCommandsDB.getInstance().close();
   }
 
+  getDefaultConfig(): ICustomCommandsConfig {
+    return {
+      prefix: "!",
+      commandTempChannelId: "",
+      customCommandListChannelId: "",
+      imageKit: {
+        publicKey: "",
+        privateKey: "",
+        urlEndpoint: "",
+        redirectUrl: "",
+        proxyUrl: "",
+      },
+      imgur: {
+        clientId: "",
+        clientSecret: "",
+      },
+    };
+  }
+
   private registerListeners(): void {
     onMessageCreate();
     onAutocomplete();
   }
+}
+
+export interface ICustomCommandsConfig {
+  prefix: string;
+  commandTempChannelId: string;
+  customCommandListChannelId: string;
+  imageKit: ICustomCommandsImageKitConfig;
+  imgur: ICustomCommandsImgurConfig;
+}
+
+interface ICustomCommandsImageKitConfig {
+  publicKey: string;
+  privateKey: string;
+  urlEndpoint: string;
+  redirectUrl: string;
+  proxyUrl: string;
+}
+
+interface ICustomCommandsImgurConfig {
+  clientId: string;
+  clientSecret: string;
 }

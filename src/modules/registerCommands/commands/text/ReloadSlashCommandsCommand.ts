@@ -1,12 +1,14 @@
 import { Message } from "discord.js";
-import { DMTextCommand } from "../../../../common/models/TextCommand";
+import { DMTextCommand } from "@common/models/TextCommand";
 import { readAndRegisterCommands } from "../../utils/registerCommands";
-import discord from "../../../../common/utils/discord/discord";
-import Config from "../../../../common/config/Config";
+import discord from "@common/utils/discord/discord";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class ReloadSlashCommandsCommand extends DMTextCommand {
   constructor() {
-    super(Config.getConfig().prefix.admin, "Reload Slash Commands", "reloadslashcommands", { allowedUsers: ["140656762960347136"] });
+    super(ConfigManager.getInstance().getConfig("Common").adminPrefix, "Reload Slash Commands", "reloadslashcommands", {
+      allowedUsers: ["140656762960347136"],
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

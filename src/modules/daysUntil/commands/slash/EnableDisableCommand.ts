@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import DaysUntilDB from "../../providers/DaysUtil.Database";
 import { events } from "../../models/DaysUntilEvents";
 

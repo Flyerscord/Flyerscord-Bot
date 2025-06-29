@@ -1,11 +1,12 @@
-import Module from "../../common/models/Module";
-import SlashCommand from "../../common/models/SlashCommand";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
+import Module from "@common/models/Module";
+import SlashCommand from "@common/models/SlashCommand";
 import onAutocomplete from "./listeners/onAutocomplete";
 import DaysUntilDB from "./providers/DaysUtil.Database";
 
-export default class DaysUntilModule extends Module {
-  constructor() {
-    super("DaysUntil");
+export default class DaysUntilModule extends Module<IDaysUntilConfig> {
+  constructor(config: IKeyedObject) {
+    super("DaysUntil", config);
   }
 
   protected async setup(): Promise<void> {
@@ -18,7 +19,13 @@ export default class DaysUntilModule extends Module {
     DaysUntilDB.getInstance().close();
   }
 
+  protected getDefaultConfig(): IDaysUntilConfig {
+    return {};
+  }
+
   private registerListeners(): void {
     onAutocomplete();
   }
 }
+
+export interface IDaysUntilConfig {}

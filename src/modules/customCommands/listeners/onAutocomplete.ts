@@ -1,4 +1,4 @@
-import ClientManager from "../../../common/managers/ClientManager";
+import ClientManager from "@common/managers/ClientManager";
 import { AutocompleteInteraction, Interaction } from "discord.js";
 import CustomCommandsDB from "../providers/CustomCommands.Database";
 

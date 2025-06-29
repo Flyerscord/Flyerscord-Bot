@@ -1,20 +1,16 @@
 import { Collection, RESTPostAPIContextMenuApplicationCommandsJSONBody } from "discord.js";
 import ContextMenuCommand from "../models/ContextMenuCommand";
 import Stumper from "stumper";
+import { Singleton } from "../models/Singleton";
 
-export default class ContextMenuCommandManager {
-  private static instance: ContextMenuCommandManager;
-
+export default class ContextMenuCommandManager extends Singleton {
   private commands: Collection<string, ContextMenuCommand>;
   private registrationInfo: RESTPostAPIContextMenuApplicationCommandsJSONBody[];
 
-  private constructor() {
+  constructor() {
+    super();
     this.commands = new Collection();
     this.registrationInfo = [];
-  }
-
-  static getInstance(): ContextMenuCommandManager {
-    return this.instance || (this.instance = new this());
   }
 
   addCommands(commands: ContextMenuCommand[]): void {

@@ -1,4 +1,4 @@
-import ImageGenerator from "../../../common/utils/imageGeneration/ImageGenerator";
+import ImageGenerator from "@common/utils/imageGeneration/ImageGenerator";
 
 export default class RankImageGenerator extends ImageGenerator {
   private readonly messages: number;

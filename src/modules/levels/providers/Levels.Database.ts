@@ -1,17 +1,11 @@
-import Database from "../../../common/providers/Database";
+import Database from "@common/providers/Database";
 import { IUserLevel } from "../interfaces/IUserLevel";
 
 export default class LevelsDB extends Database {
-  private static instance: LevelsDB;
-
-  private constructor() {
+  constructor() {
     super({
       name: "user-levels",
     });
-  }
-
-  static getInstance(): LevelsDB {
-    return this.instance || (this.instance = new this());
   }
 
   hasUser(userId: string): boolean {

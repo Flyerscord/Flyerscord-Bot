@@ -4,7 +4,7 @@ import Task from "./Task";
 export default abstract class Cache<T> extends Task {
   protected cache: T | undefined;
 
-  constructor(name: string, cron: string) {
+  protected constructor(name: string, cron: string) {
     super(name, cron);
   }
 

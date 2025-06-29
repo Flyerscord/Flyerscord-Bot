@@ -1,5 +1,5 @@
 import { ModalSubmitInteraction, TextInputStyle, User } from "discord.js";
-import ModalMenu from "../../../../common/models/ModalMenu";
+import ModalMenu from "@common/models/ModalMenu";
 import { ActionRowBuilder, TextInputBuilder } from "@discordjs/builders";
 import UserManagementDB from "../../providers/UserManagement.Database";
 import { sendLogMessage } from "../../utils/ChannelLogging";

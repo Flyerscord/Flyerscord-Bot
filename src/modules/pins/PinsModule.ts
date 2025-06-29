@@ -1,11 +1,12 @@
-import ContextMenuCommand from "../../common/models/ContextMenuCommand";
-import Module from "../../common/models/Module";
-import SlashCommand from "../../common/models/SlashCommand";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
+import ContextMenuCommand from "@common/models/ContextMenuCommand";
+import Module from "@common/models/Module";
+import SlashCommand from "@common/models/SlashCommand";
 import PinsDB from "./providers/Pins.Database";
 
-export default class PinsModule extends Module {
-  constructor() {
-    super("Pins");
+export default class PinsModule extends Module<IPinsConfig> {
+  constructor(config: IKeyedObject) {
+    super("Pins", config);
   }
 
   protected async setup(): Promise<void> {
@@ -16,4 +17,14 @@ export default class PinsModule extends Module {
   protected async cleanup(): Promise<void> {
     PinsDB.getInstance().close();
   }
+
+  getDefaultConfig(): IPinsConfig {
+    return {
+      channelId: "",
+    };
+  }
+}
+
+export interface IPinsConfig {
+  channelId: string;
 }

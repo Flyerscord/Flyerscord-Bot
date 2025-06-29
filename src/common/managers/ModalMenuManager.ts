@@ -1,18 +1,14 @@
 import { Collection } from "discord.js";
 import ModalMenu from "../models/ModalMenu";
 import Stumper from "stumper";
+import { Singleton } from "../models/Singleton";
 
-export default class ModalMenuManager {
-  private static instance: ModalMenuManager;
-
+export default class ModalMenuManager extends Singleton {
   private commands: Collection<string, ModalMenu>;
 
-  private constructor() {
+  constructor() {
+    super();
     this.commands = new Collection();
-  }
-
-  static getInstance(): ModalMenuManager {
-    return this.instance || (this.instance = new this());
   }
 
   addCommands(commands: ModalMenu[]): void {

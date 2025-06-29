@@ -1,12 +1,12 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
 
-import discord from "../../../../common/utils/discord/discord";
-import Config from "../../../../common/config/Config";
-import { sleepSec } from "../../../../common/utils/sleep";
+import discord from "@common/utils/discord/discord";
+import { sleepSec } from "@common/utils/sleep";
 import Stumper from "stumper";
 import MyImageKit from "../../utils/ImageKit";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class TestAllCommand extends AdminSlashCommand {
   constructor() {
@@ -28,6 +28,8 @@ export default class TestAllCommand extends AdminSlashCommand {
         const command = commands[i];
         let text = command.text;
 
+        const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
+
         const imageKit = MyImageKit.getInstance();
 
         if (imageKit.isImageKitUrl(text)) {
@@ -39,7 +41,7 @@ export default class TestAllCommand extends AdminSlashCommand {
           }
         }
 
-        await discord.messages.sendMessageToChannel(channel.id, `\`${Config.getConfig().prefix.normal}${command.name}\``);
+        await discord.messages.sendMessageToChannel(channel.id, `\`${prefix}${command.name}\``);
         await discord.messages.sendMessageToChannel(channel.id, text);
 
         await sleepSec(1);

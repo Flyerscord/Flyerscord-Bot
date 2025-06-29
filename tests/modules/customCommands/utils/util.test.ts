@@ -1,11 +1,30 @@
 import ICustomCommand from "@modules/customCommands/interfaces/ICustomCommand";
 import { createCommandListMessages } from "@modules/customCommands/utils/util";
-import Config from "@common/config/Config";
-import SampleConfig from "@common/config/sample.configFile";
-
-jest.spyOn(Config, "getConfig").mockImplementation(() => SampleConfig.nonProduction);
+import "@common/types/discord.js/index.d.ts";
+import CustomCommandsModule from "@modules/customCommands/CustomCommandsModule";
 
 describe("createCommandListMessages", () => {
+  beforeEach(() => {
+    CustomCommandsModule.getInstance({
+      customcommands: {
+        prefix: "!",
+        commandTempChannelId: "",
+        customCommandListChannelId: "",
+        imageKit: {
+          publicKey: "",
+          privateKey: "",
+          urlEndpoint: "",
+          redirectUrl: "",
+          proxyUrl: "",
+        },
+        imgur: {
+          clientId: "",
+          clientSecret: "",
+        },
+      },
+    });
+  });
+
   it("should return a single message if commands fit within 2000 characters", () => {
     const commands = Array.from({ length: 5 }, (_, i) => ({ name: `cmd${i + 1}` })) as ICustomCommand[];
 
@@ -14,7 +33,7 @@ describe("createCommandListMessages", () => {
     expect(result.length).toBe(1);
     expect(result[0]).toContain("**Custom Commands (5 commands)**");
     commands.forEach((cmd) => {
-      expect(result[0]).toContain(`${Config.getConfig().prefix.normal}${cmd.name}`);
+      expect(result[0]).toContain(`!${cmd.name}`);
     });
   });
 

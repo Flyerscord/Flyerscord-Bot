@@ -1,10 +1,10 @@
 import { MessageContextMenuCommandInteraction } from "discord.js";
-import { AdminMessageContextMenuCommand } from "../../../../common/models/ContextMenuCommand";
+import { AdminMessageContextMenuCommand } from "@common/models/ContextMenuCommand";
 import PinsDB from "../../providers/Pins.Database";
 import Stumper from "stumper";
 import { getPinEmbed } from "../../utils/Embeds";
-import discord from "../../../../common/utils/discord/discord";
-import Config from "../../../../common/config/Config";
+import discord from "@common/utils/discord/discord";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class AddPinContext extends AdminMessageContextMenuCommand {
   constructor() {
@@ -20,6 +20,7 @@ export default class AddPinContext extends AdminMessageContextMenuCommand {
     }
 
     const db = PinsDB.getInstance();
+    const config = ConfigManager.getInstance().getConfig("Pins");
 
     if (db.getPinByMessageId(message.id)) {
       return await replies.reply("Cannot pin a pinned message!", true);
@@ -37,7 +38,7 @@ export default class AddPinContext extends AdminMessageContextMenuCommand {
       return await replies.reply("Error adding pin!", true);
     }
 
-    const pinMessage = await discord.messages.sendEmbedToChannel(Config.getConfig().pinsChannelId, embed);
+    const pinMessage = await discord.messages.sendEmbedToChannel(config.channelId, embed);
     if (!pinMessage) {
       Stumper.error(`Failed to send message to pins channel!`, "pins:AddPinContext:execute");
       return await replies.reply("Error adding pin!", true);
@@ -45,6 +46,6 @@ export default class AddPinContext extends AdminMessageContextMenuCommand {
 
     db.updateMessageId(message.id, pinMessage.id);
 
-    await replies.reply(`Pin added! Checkout <#${Config.getConfig().pinsChannelId}> to see all pins!`);
+    await replies.reply(`Pin added! Checkout <#${config.channelId}> to see all pins!`);
   }
 }

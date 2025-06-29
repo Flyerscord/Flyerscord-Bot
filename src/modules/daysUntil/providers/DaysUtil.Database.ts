@@ -1,11 +1,9 @@
-import Database from "../../../common/providers/Database";
+import Database from "@common/providers/Database";
 import IDbEvent from "../interfaces/IDbEvent";
 import { events } from "../models/DaysUntilEvents";
 
 export default class DaysUntilDB extends Database {
-  private static instance: DaysUntilDB;
-
-  private constructor() {
+  constructor() {
     super({ name: "days-until" });
 
     const defaultEvent: IDbEvent = {
@@ -15,12 +13,8 @@ export default class DaysUntilDB extends Database {
 
     for (const key of Object.keys(events)) {
       const event = events[key];
-      this.db.ensure(event.dbKey, defaultEvent);
+      this.ensure(event.dbKey, defaultEvent);
     }
-  }
-
-  static getInstance(): DaysUntilDB {
-    return this.instance || (this.instance = new this());
   }
 
   getEvent(dbKey: string): IDbEvent {

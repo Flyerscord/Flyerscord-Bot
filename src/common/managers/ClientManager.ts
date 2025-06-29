@@ -1,18 +1,11 @@
 import { Client } from "discord.js";
+import { Singleton } from "../models/Singleton";
 
-export default class ClientManager {
-  private static instance: ClientManager;
-
+export default class ClientManager extends Singleton {
   client: Client;
 
-  private constructor(client: Client) {
+  constructor(client: Client) {
+    super();
     this.client = client;
-  }
-
-  static getInstance(client?: Client): ClientManager {
-    if (!ClientManager.instance && client) {
-      ClientManager.instance = new ClientManager(client);
-    }
-    return ClientManager.instance;
   }
 }

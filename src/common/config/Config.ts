@@ -1,21 +1,47 @@
-import fs from "fs";
-
-import config from "./configFile";
-import { IConfig } from "./IConfig";
+import localConfig from "./local.config";
+import defaultConfig from "./defaults.config";
+import Stumper from "stumper";
+import { IKeyedObject } from "../interfaces/IKeyedObject";
 
 export default class Config {
-  static fileExists(): boolean {
-    return fs.existsSync(`${__dirname}/configFile.js`);
-  }
+  private static config: IKeyedObject;
 
-  static getConfig(): IConfig {
-    if (config.productionMode) {
-      return config.production;
+  static loadConfig(): IKeyedObject {
+    if (!localConfig) {
+      Stumper.error("Config file not found", "common:Config:loadConfig");
+      process.exit(1);
     }
-    return config.nonProduction;
+
+    const config = this.mergeLocalAndDefaults();
+    const emptyFields = this.getEmptyFields(config);
+
+    if (emptyFields.length > 0) {
+      const errorMessage = `The following fields are empty: ${emptyFields.join(", ")}`;
+      Stumper.error(errorMessage, "common:Config:loadConfig");
+      process.exit(1);
+    }
+
+    this.config = config as IKeyedObject;
+    return this.config;
   }
 
-  static isProductionMode(): boolean {
-    return config.productionMode;
+  private static mergeLocalAndDefaults(): IKeyedObject {
+    return Object.assign({}, defaultConfig, localConfig);
+  }
+
+  private static getEmptyFields(obj: IKeyedObject, prefix = ""): string[] {
+    let emptyFields: string[] = [];
+
+    for (const key in obj) {
+      const fullKey = prefix ? `${prefix}.${key}` : key;
+
+      if (obj[key] === "") {
+        emptyFields.push(fullKey);
+      } else if (typeof obj[key] === "object" && obj[key] !== null) {
+        emptyFields = emptyFields.concat(this.getEmptyFields(obj[key], fullKey));
+      }
+    }
+
+    return emptyFields;
   }
 }

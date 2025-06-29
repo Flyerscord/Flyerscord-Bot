@@ -1,4 +1,4 @@
-import discord from "../../../common/utils/discord/discord";
+import discord from "@common/utils/discord/discord";
 import StatsVoiceChannel from "../models/StatsVoiceChannel";
 import Stumper from "stumper";
 

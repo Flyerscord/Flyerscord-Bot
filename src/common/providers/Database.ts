@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Enmap, { EnmapOptions } from "enmap";
 import Stumper from "stumper";
+import { Singleton } from "../models/Singleton";
 
-export default abstract class Database {
+export default abstract class Database extends Singleton {
   protected db: Enmap;
   protected name: string;
 
-  constructor(protected options: EnmapOptions<any, any>) {
+  protected constructor(protected options: EnmapOptions<any, any>) {
+    super();
     this.db = new Enmap(options);
     this.name = options.name || "Database";
   }
@@ -39,5 +41,13 @@ export default abstract class Database {
   close(): void {
     Stumper.warning(`Closing database: ${this.name}`, "common:Database:close");
     this.db.close();
+  }
+
+  // Exists because Enmap's ensure() method expects an object as the value
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  protected ensure(key: string, value: any): void {
+    if (!this.db.has(key)) {
+      this.db.set(key, value);
+    }
   }
 }

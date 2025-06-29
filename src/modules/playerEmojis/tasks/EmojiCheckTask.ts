@@ -1,4 +1,4 @@
-import Task from "../../../common/models/Task";
+import Task from "@common/models/Task";
 import { checkForNewEmojis } from "../utils/PlayerEmojis";
 
 export default class EmojiCheckTask extends Task {

@@ -1,4 +1,3 @@
-import Config from "../../../common/config/Config";
 import { IPost } from "../interfaces/IPost";
 import Stumper from "stumper";
 import { IBlueSkyAccount } from "../interfaces/IBlueSkyAccount";
@@ -6,28 +5,26 @@ import { AccountNotinListException } from "../exceptions/AccountNotInListExcepti
 import BlueSkyDB from "../providers/BlueSky.Database";
 import { AtpAgent, AtUri } from "@atproto/api";
 import { AccountDoesNotExistException } from "../exceptions/AccountDoesNotExistException";
+import { Singleton } from "@common/models/Singleton";
+import ConfigManager from "@common/config/ConfigManager";
 
-export default class BlueSky {
-  private static instance: BlueSky;
-
+export default class BlueSky extends Singleton {
   private agent: AtpAgent;
 
   private userDid: string;
 
   constructor() {
+    super();
     this.userDid = "";
     this.agent = new AtpAgent({ service: "https://bsky.social" });
 
     this.login();
   }
 
-  static getInstance(): BlueSky {
-    return this.instance || (this.instance = new this());
-  }
-
   private async login(): Promise<void> {
-    const username = Config.getConfig().bluesky.username;
-    const password = Config.getConfig().bluesky.password;
+    const config = ConfigManager.getInstance().getConfig("BlueSky");
+    const username = config.username;
+    const password = config.password;
 
     try {
       const resp = await this.agent.login({ identifier: username, password: password });
@@ -41,6 +38,7 @@ export default class BlueSky {
 
   async getUserDid(accountTag: string): Promise<string> {
     try {
+      accountTag = this.sanitizeHandle(accountTag);
       const resp = await this.agent.app.bsky.actor.getProfile({ actor: accountTag });
       return resp.data.did;
     } catch (error) {
@@ -56,7 +54,7 @@ export default class BlueSky {
 
     const lastPost = db.getLastPostTime();
 
-    const listUri = await this.createListUri();
+    const listUri = this.createListUri();
 
     try {
       const response = await this.agent.app.bsky.feed.getListFeed({ list: listUri, limit: 30 });
@@ -138,7 +136,7 @@ export default class BlueSky {
   }
 
   async getListAccounts(): Promise<IBlueSkyAccount[]> {
-    const listUri = await this.createListUri();
+    const listUri = this.createListUri();
 
     const accounts: IBlueSkyAccount[] = [];
     const limit = 100;
@@ -169,7 +167,14 @@ export default class BlueSky {
   }
 
   private createListUri(): string {
-    const listId = Config.getConfig().bluesky.listId;
+    const listId = ConfigManager.getInstance().getConfig("BlueSky").listId;
     return `at://${this.userDid}/app.bsky.graph.list/${listId}`;
+  }
+
+  private sanitizeHandle(input: string): string {
+    return input
+      .trim()
+      .replace(/^@/, "") // Remove leading @
+      .replace(/[\u200B-\u200F\u202A-\u202E\u2060-\u206F]+/g, ""); // Strip invisible unicode
   }
 }

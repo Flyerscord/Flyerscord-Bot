@@ -7,18 +7,12 @@ import { IFranchisesOutput, IFranchisesOutput_data } from "nhl-api-wrapper-ts/di
 import { ICombinedTeamInfo } from "../interfaces/ICombinedTeamInfo";
 
 export default class CombinedTeamInfoCache extends Cache<ICombinedTeamInfo[]> {
-  private static instance: CombinedTeamInfoCache;
-
   private teamsCache: ITeamsOutput | undefined;
   private franchisesCache: IFranchisesOutput | undefined;
 
-  private constructor() {
+  constructor() {
     // Run every 2 hours
     super("TeamInfoCache", "0 0 */2 * * *");
-  }
-
-  static getInstance(): CombinedTeamInfoCache {
-    return this.instance || (this.instance = new this());
   }
 
   protected async updateCache(): Promise<void> {

@@ -1,9 +1,10 @@
-import Module from "../../common/models/Module";
-import TextCommand from "../../common/models/TextCommand";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
+import Module from "@common/models/Module";
+import TextCommand from "@common/models/TextCommand";
 
-export default class RegisterCommandsModule extends Module {
-  constructor() {
-    super("RegisterCommands");
+export default class RegisterCommandsModule extends Module<IRegisterCommandsConfig> {
+  constructor(config: IKeyedObject) {
+    super("RegisterCommands", config);
   }
 
   protected async setup(): Promise<void> {
@@ -13,4 +14,10 @@ export default class RegisterCommandsModule extends Module {
   protected async cleanup(): Promise<void> {
     // Nothing to cleanup
   }
+
+  protected getDefaultConfig(): IRegisterCommandsConfig {
+    return {};
+  }
 }
+
+export interface IRegisterCommandsConfig {}

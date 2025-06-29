@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import { checkForGameDay, closeAndLockOldPosts } from "../../utils/GameChecker";
 
 export default class TriggerPostCreationCommand extends AdminSlashCommand {

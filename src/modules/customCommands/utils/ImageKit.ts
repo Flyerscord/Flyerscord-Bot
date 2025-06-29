@@ -1,12 +1,11 @@
 import ImageKit from "imagekit";
-import Config from "../../../common/config/Config";
 import Stumper from "stumper";
 import { UploadResponse } from "imagekit/dist/libs/interfaces/UploadResponse";
 import IKResponse from "imagekit/dist/libs/interfaces/IKResponse";
+import { Singleton } from "@common/models/Singleton";
+import ConfigManager from "@common/config/ConfigManager";
 
-export default class MyImageKit {
-  private static instance: MyImageKit;
-
+export default class MyImageKit extends Singleton {
   private client: ImageKit;
 
   private publickey: string;
@@ -14,21 +13,19 @@ export default class MyImageKit {
   private urlEndpoint: string;
   private redirectUrl: string;
 
-  private constructor() {
-    this.publickey = Config.getConfig().imageKit.publicKey;
-    this.privatekey = Config.getConfig().imageKit.privateKey;
-    this.urlEndpoint = Config.getConfig().imageKit.urlEndpoint;
-    this.redirectUrl = Config.getConfig().imageKit.redirectUrl;
+  constructor() {
+    super();
+    const config = ConfigManager.getInstance().getConfig("CustomCommands");
+    this.publickey = config.imageKit.publicKey;
+    this.privatekey = config.imageKit.privateKey;
+    this.urlEndpoint = config.imageKit.urlEndpoint;
+    this.redirectUrl = config.imageKit.redirectUrl;
 
     this.client = new ImageKit({
       publicKey: this.publickey,
       privateKey: this.privatekey,
       urlEndpoint: this.urlEndpoint,
     });
-  }
-
-  static getInstance(): MyImageKit {
-    return this.instance || (this.instance = new this());
   }
 
   async uploadImage(url: string, fileName: string, addedBy: string, command: string): Promise<string | undefined> {
@@ -72,7 +69,7 @@ export default class MyImageKit {
   }
 
   private async getImageIdFromUrl(url: string): Promise<string | undefined> {
-    const imageFilePath = url.replace(Config.getConfig().imageKit.redirectUrl, "");
+    const imageFilePath = url.replace(ConfigManager.getInstance().getConfig("CustomCommands").imageKit.redirectUrl, "");
     const resp = await this.client.listFiles({});
 
     if (resp.$ResponseMetadata.statusCode == 200) {
@@ -91,12 +88,12 @@ export default class MyImageKit {
   }
 
   private getImagePathFromUrl(url: string): string {
-    const imageFilePath = url.replace(Config.getConfig().imageKit.redirectUrl, "");
+    const imageFilePath = url.replace(ConfigManager.getInstance().getConfig("CustomCommands").imageKit.redirectUrl, "");
     return imageFilePath;
   }
 
   isImageKitUrl(text: string): boolean {
-    const endpoint = Config.getConfig().imageKit.redirectUrl;
+    const endpoint = ConfigManager.getInstance().getConfig("CustomCommands").imageKit.redirectUrl;
     const escapedEndpoint = endpoint.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const urlPattern = new RegExp(`^${escapedEndpoint}`);
 
@@ -132,7 +129,7 @@ export default class MyImageKit {
         return undefined;
       }
 
-      return `${Config.getConfig().imageKit.proxyUrl}${imagePath}.gif`;
+      return `${ConfigManager.getInstance().getConfig("CustomCommands").imageKit.proxyUrl}${imagePath}.gif`;
     }
   }
 }

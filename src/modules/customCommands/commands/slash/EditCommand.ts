@@ -1,11 +1,11 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
-import Config from "../../../../common/config/Config";
 import { InvalidImgurUrlException } from "../../exceptions/InvalidImgurUrlException";
 import { ErrorUploadingToImageKitException } from "../../exceptions/ErrorUploadingToImageKitException";
 import Stumper from "stumper";
 import PageNotFoundException from "../../exceptions/PageNotFoundException";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class EditCommand extends AdminSlashCommand {
   constructor() {
@@ -23,6 +23,8 @@ export default class EditCommand extends AdminSlashCommand {
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     await interaction.deferReply({ ephemeral: true });
 
+    const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
+
     const db = CustomCommandsDB.getInstance();
 
     let name: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "name");
@@ -32,7 +34,7 @@ export default class EditCommand extends AdminSlashCommand {
 
     if (!db.hasCommand(name)) {
       interaction.editReply({
-        content: `Command ${Config.getConfig().prefix.normal}${name} does not exist!`,
+        content: `Command ${prefix}${name} does not exist!`,
       });
       return;
     }
@@ -43,23 +45,23 @@ export default class EditCommand extends AdminSlashCommand {
       Stumper.caughtError(error, "customCommands:EditCommand:execute");
       if (error instanceof InvalidImgurUrlException || error instanceof ErrorUploadingToImageKitException) {
         interaction.editReply({
-          content: `Error updating command ${Config.getConfig().prefix.normal}${name}! There was an issue with the url. Contact flyerzrule for help.`,
+          content: `Error updating command ${prefix}${name}! There was an issue with the url. Contact flyerzrule for help.`,
         });
         return;
       } else if (error instanceof PageNotFoundException) {
         interaction.editReply({
-          content: `Error adding command ${Config.getConfig().prefix.normal}${name}! The url returns a 404.`,
+          content: `Error adding command ${prefix}${name}! The url returns a 404.`,
         });
         return;
       } else {
         interaction.editReply({
-          content: `Error adding command ${Config.getConfig().prefix.normal}${name}!`,
+          content: `Error adding command ${prefix}${name}!`,
         });
         throw error;
       }
     }
     interaction.editReply({
-      content: `Command ${Config.getConfig().prefix.normal}${name} updated!`,
+      content: `Command ${prefix}${name} updated!`,
     });
   }
 }

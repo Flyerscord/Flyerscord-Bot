@@ -1,4 +1,3 @@
-version: "3.3"
 services:
   bot:
     build:
@@ -17,13 +16,11 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s
-  autoheal:
-    image: willfarrell/autoheal
-    container_name: autoheal
-    restart: unless-stopped
-    environment:
-      - AUTOHEAL_CONTAINER_LABEL=all
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: 5
+        compress: "true"
 volumes:
   dbData:

@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import SlashCommand, { PARAM_TYPES } from "../../../../common/models/SlashCommand";
+import SlashCommand, { PARAM_TYPES } from "@common/models/SlashCommand";
 import { events } from "../../models/DaysUntilEvents";
 import DaysUntilDB from "../../providers/DaysUtil.Database";
-import Time from "../../../../common/utils/Time";
+import Time from "@common/utils/Time";
 
 export default class DaysUntilCommand extends SlashCommand {
   constructor() {

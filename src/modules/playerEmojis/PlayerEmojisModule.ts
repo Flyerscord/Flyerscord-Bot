@@ -1,11 +1,12 @@
-import Module from "../../common/models/Module";
-import SlashCommand from "../../common/models/SlashCommand";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
+import Module from "@common/models/Module";
+import SlashCommand from "@common/models/SlashCommand";
 import PlayerEmojisDB from "./providers/PlayerEmojis.Database";
 import EmojiCheckTask from "./tasks/EmojiCheckTask";
 
-export default class PlayerEmojisModule extends Module {
-  constructor() {
-    super("PlayerEmojis");
+export default class PlayerEmojisModule extends Module<IPlayerEmojisConfig> {
+  constructor(config: IKeyedObject) {
+    super("PlayerEmojis", config);
   }
 
   protected async setup(): Promise<void> {
@@ -18,7 +19,13 @@ export default class PlayerEmojisModule extends Module {
     PlayerEmojisDB.getInstance().close();
   }
 
+  protected getDefaultConfig(): IPlayerEmojisConfig {
+    return {};
+  }
+
   private registerSchedules(): void {
-    new EmojiCheckTask().createScheduledJob();
+    EmojiCheckTask.getInstance().createScheduledJob();
   }
 }
+
+export interface IPlayerEmojisConfig {}

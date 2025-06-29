@@ -1,7 +1,7 @@
 import Stumper from "stumper";
-import Time from "../../../common/utils/Time";
+import Time from "@common/utils/Time";
 
-import Database from "../../../common/providers/Database";
+import Database from "@common/providers/Database";
 import ICustomCommand, { ICustomCommandHistory } from "../interfaces/ICustomCommand";
 import { updateCommandList } from "../utils/util";
 import ImageKit from "../utils/ImageKit";
@@ -10,20 +10,14 @@ import Imgur from "../utils/Imgur";
 import { InvalidImgurUrlException } from "../exceptions/InvalidImgurUrlException";
 import { ErrorUploadingToImageKitException } from "../exceptions/ErrorUploadingToImageKitException";
 import PageNotFoundException from "../exceptions/PageNotFoundException";
-import Config from "../../../common/config/Config";
-import discord from "../../../common/utils/discord/discord";
-import { sleepMs } from "../../../common/utils/sleep";
+import discord from "@common/utils/discord/discord";
+import { sleepMs } from "@common/utils/sleep";
 import HTMLPageException from "../exceptions/HTMLPageException";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class CustomCommandsDB extends Database {
-  private static instance: CustomCommandsDB;
-
-  private constructor() {
+  constructor() {
     super({ name: "custom-commands" });
-  }
-
-  static getInstance(): CustomCommandsDB {
-    return this.instance || (this.instance = new this());
   }
 
   hasCommand(name: string): boolean {
@@ -67,7 +61,7 @@ export default class CustomCommandsDB extends Database {
       this.db.set(name, customCommand);
       Stumper.info(`Custom Command created! Command: ${name}  By user: ${userId}`, "common:CustomCommandsDB:addCommandSkippingUpload");
 
-      updateCommandList();
+      updateCommandList(this.getAllCommands());
       return true;
     }
     Stumper.error(`Error adding command: ${name}`, "common:CustomCommandsDB:addCommandSkippingUpload");
@@ -81,7 +75,7 @@ export default class CustomCommandsDB extends Database {
     this.db.delete(name);
     Stumper.info(`Custom Command removed! Command: ${name}  By user: ${userId}`, "common:CustomCommandsDB:deleteCommand");
 
-    updateCommandList();
+    updateCommandList(this.getAllCommands());
     return true;
   }
 
@@ -208,7 +202,7 @@ export default class CustomCommandsDB extends Database {
   }
 
   private async getNewDiscordUrl(url: string): Promise<string | undefined> {
-    const message = await discord.messages.sendMessageToChannel(Config.getConfig().commandTempChannelId, url);
+    const message = await discord.messages.sendMessageToChannel(ConfigManager.getInstance().getConfig("CustomCommands").commandTempChannelId, url);
 
     if (!message) {
       return undefined;

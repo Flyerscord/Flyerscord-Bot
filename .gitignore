@@ -1,5 +1,5 @@
 node_modules
-.vscode
+.vscode/settings.json
 data
 dist
 **/local.config.ts

@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug with npx tsx",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["tsx", "src/bot.ts"],
+      "cwd": "${workspaceFolder}",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "console": "integratedTerminal"
+    }
+  ]
+}

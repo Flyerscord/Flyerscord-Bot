@@ -24,7 +24,7 @@ export default class LeaderboardCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply();
+    const replies = await discord.interactions.createReplies(interaction, "levels:LeaderboardCommand:execute");
     const db = LevelsDB.getInstance();
     const users = db.getAllUsersSortedByExp();
     const totalPages = Math.ceil(users.length / this.EMBED_PAGE_SIZE);

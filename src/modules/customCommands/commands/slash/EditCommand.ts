@@ -6,6 +6,7 @@ import { ErrorUploadingToImageKitException } from "../../exceptions/ErrorUploadi
 import Stumper from "stumper";
 import PageNotFoundException from "../../exceptions/PageNotFoundException";
 import ConfigManager from "@common/config/ConfigManager";
+import discord from "@common/utils/discord/discord";
 
 export default class EditCommand extends AdminSlashCommand {
   constructor() {
@@ -21,7 +22,7 @@ export default class EditCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    const replies = await discord.interactions.createReplies(interaction, "customCommands:EditCommand:execute", true);
 
     const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
 
@@ -33,9 +34,7 @@ export default class EditCommand extends AdminSlashCommand {
     name = name.toLowerCase();
 
     if (!db.hasCommand(name)) {
-      interaction.editReply({
-        content: `Command ${prefix}${name} does not exist!`,
-      });
+      replies.reply(`Command ${prefix}${name} does not exist!`);
       return;
     }
 
@@ -44,24 +43,16 @@ export default class EditCommand extends AdminSlashCommand {
     } catch (error) {
       Stumper.caughtError(error, "customCommands:EditCommand:execute");
       if (error instanceof InvalidImgurUrlException || error instanceof ErrorUploadingToImageKitException) {
-        interaction.editReply({
-          content: `Error updating command ${prefix}${name}! There was an issue with the url. Contact flyerzrule for help.`,
-        });
+        replies.reply(`Error updating command ${prefix}${name}! There was an issue with the url. Contact flyerzrule for help.`);
         return;
       } else if (error instanceof PageNotFoundException) {
-        interaction.editReply({
-          content: `Error adding command ${prefix}${name}! The url returns a 404.`,
-        });
+        replies.reply(`Error adding command ${prefix}${name}! The url returns a 404.`);
         return;
       } else {
-        interaction.editReply({
-          content: `Error adding command ${prefix}${name}!`,
-        });
+        replies.reply(`Error adding command ${prefix}${name}!`);
         throw error;
       }
     }
-    interaction.editReply({
-      content: `Command ${prefix}${name} updated!`,
-    });
+    replies.reply(`Command ${prefix}${name} updated!`);
   }
 }

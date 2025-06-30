@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand } from "@common/models/SlashCommand";
 import { checkForGameDay, closeAndLockOldPosts } from "../../utils/GameChecker";
+import discord from "@common/utils/discord/discord";
 
 export default class TriggerPostCreationCommand extends AdminSlashCommand {
   constructor() {
@@ -8,10 +9,10 @@ export default class TriggerPostCreationCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    const replies = await discord.interactions.createReplies(interaction, "gameDayPosts:TriggerPostCreationCommand:execute", true);
 
     await closeAndLockOldPosts();
     await checkForGameDay();
-    interaction.editReply({ content: "Triggered game day post creation process!" });
+    replies.reply("Triggered game day post creation process!");
   }
 }

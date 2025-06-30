@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import DaysUntilDB from "../../providers/DaysUtil.Database";
 import { events } from "../../models/DaysUntilEvents";
+import discord from "@common/utils/discord/discord";
 
 export default class EnableDisableCommand extends AdminSlashCommand {
   constructor() {
@@ -15,7 +16,7 @@ export default class EnableDisableCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    const replies = await discord.interactions.createReplies(interaction, "daysUntil:EnableDisableCommand:execute", true);
 
     const eventName: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "event");
     const setEnabled: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "setenabled");
@@ -28,9 +29,7 @@ export default class EnableDisableCommand extends AdminSlashCommand {
     if (event) {
       db.setEventEnabled(event.dbKey, enable);
 
-      interaction.editReply({
-        content: `Event ${event.name} ${enable ? "enabled" : "disabled"}!`,
-      });
+      replies.reply(`Event ${event.name} ${enable ? "enabled" : "disabled"}!`);
     }
   }
 }

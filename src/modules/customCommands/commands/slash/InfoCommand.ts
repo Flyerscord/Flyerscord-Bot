@@ -16,7 +16,7 @@ export default class InfoCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    const replies = await discord.interactions.createReplies(interaction, "customCommands:InfoCommand:execute", true);
 
     const db = CustomCommandsDB.getInstance();
 
@@ -26,11 +26,9 @@ export default class InfoCommand extends AdminSlashCommand {
 
     if (command) {
       const embed = await createEmbed(command);
-      interaction.editReply({ embeds: [embed] });
+      replies.reply(embed);
     } else {
-      interaction.editReply({
-        content: `A custom comamnd with the name ${commandName} does not exist!`,
-      });
+      replies.reply(`A custom comamnd with the name ${commandName} does not exist!`);
     }
   }
 }

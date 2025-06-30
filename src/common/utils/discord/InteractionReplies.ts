@@ -1,3 +1,4 @@
+import { EmbedBuilder } from "@discordjs/builders";
 import { CommandInteraction } from "discord.js";
 import Stumper from "stumper";
 
@@ -24,7 +25,7 @@ class InteractionReplies {
     }
   }
 
-  async reply(content: string, makeEphemeral: boolean = false): Promise<void> {
+  async reply(content: string | EmbedBuilder, makeEphemeral: boolean = false): Promise<void> {
     if (!this.interaction.deferred) {
       Stumper.error(`Interaction ${this.interaction.id} is not deferred!`, this.source);
       return;
@@ -35,14 +36,24 @@ class InteractionReplies {
       return;
     }
 
+    const isEmbed = content instanceof EmbedBuilder;
+
     const addEphemeral = this.ephemeral || makeEphemeral;
 
     if (addEphemeral) {
-      await this.interaction.followUp({ content: content, ephemeral: true });
+      if (isEmbed) {
+        await this.interaction.followUp({ embeds: [content], ephemeral: true });
+      } else {
+        await this.interaction.followUp({ content: content, ephemeral: true });
+      }
       return;
     }
 
-    await this.interaction.editReply({ content: content });
+    if (isEmbed) {
+      await this.interaction.editReply({ embeds: [content] });
+    } else {
+      await this.interaction.editReply({ content: content });
+    }
   }
 
   isDeferred(): boolean {

@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand } from "@common/models/SlashCommand";
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
 import ConfigManager from "@common/config/ConfigManager";
+import discord from "@common/utils/discord/discord";
 
 export default class ListAllCommandsCommand extends AdminSlashCommand {
   constructor() {
@@ -9,7 +10,7 @@ export default class ListAllCommandsCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    const replies = await discord.interactions.createReplies(interaction, "customCommands:ListAllCommandsCommand:execute", true);
 
     const db = CustomCommandsDB.getInstance();
     const commands = db.getAllCommands();
@@ -20,7 +21,7 @@ export default class ListAllCommandsCommand extends AdminSlashCommand {
 
     const output = this.wrapTextInCodeblock(outputStrings.join("\n"));
 
-    interaction.editReply({ content: output });
+    replies.reply(output);
   }
 
   private wrapTextInCodeblock(text: string): string {

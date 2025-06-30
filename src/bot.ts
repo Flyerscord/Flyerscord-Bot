@@ -144,11 +144,11 @@ async function startUp(): Promise<void> {
 
   // Only enable the image proxy in production
   if (commonConfig.productionMode) {
+    await moduleManager.addModule(CustomCommandsModule.getInstance(config));
     await moduleManager.addModule(ImageProxyModule.getInstance(config));
   }
 
   await moduleManager.addModule(AdminModule.getInstance(config));
-  await moduleManager.addModule(CustomCommandsModule.getInstance(config));
   await moduleManager.addModule(DaysUntilModule.getInstance(config));
   await moduleManager.addModule(GameDayPostsModule.getInstance(config));
   await moduleManager.addModule(JoinLeaveModule.getInstance(config));

@@ -8,5 +8,5 @@ sudo /home/matt/dockers/flyerscord/scripts/cron/backupDBFile.sh flyerscord-disco
 echo "Back up complete!"
 
 echo "Building new image and deploying..."
-make prod
+make bot
 echo "New image built and deployed!"

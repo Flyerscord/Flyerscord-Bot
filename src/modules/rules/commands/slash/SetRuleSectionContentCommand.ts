@@ -4,6 +4,7 @@ import discord from "@common/utils/discord/discord";
 import RulesDB from "@modules/rules/providers/Rules.Database";
 import { createRuleSections, getSectionId } from "@modules/rules/utils/utils";
 import { Attachment, ChatInputCommandInteraction } from "discord.js";
+import RuleSectionContentModal from "../modal/RuleSectionContentModal";
 
 export default class SetRuleSectionContentCommand extends AdminSlashCommand {
   constructor() {
@@ -12,17 +13,16 @@ export default class SetRuleSectionContentCommand extends AdminSlashCommand {
     this.data
       .addSubcommand((subcmd) =>
         subcmd
-          .setName("content")
-          .setDescription("Set the content message for a rule section")
-          .addStringOption((option) => option.setName("name").setDescription("The name of the rule section").setRequired(true).setAutocomplete(true))
-          .addStringOption((option) => option.setName("content").setDescription("The content message").setRequired(true).setMaxLength(2000)),
-      )
-      .addSubcommand((subcmd) =>
-        subcmd
           .setName("header")
           .setDescription("Set the header message for a rule section")
           .addStringOption((option) => option.setName("name").setDescription("The name of the rule section").setRequired(true).setAutocomplete(true))
           .addAttachmentOption((option) => option.setName("header").setDescription("The header image").setRequired(true)),
+      )
+      .addSubcommand((subcmd) =>
+        subcmd
+          .setName("content")
+          .setDescription("Set the content for a rule section. Copy a previous section's content with right click > Copy Text")
+          .addStringOption((option) => option.setName("name").setDescription("The name of the rule section").setRequired(true).setAutocomplete(true)),
       );
   }
 
@@ -48,13 +48,9 @@ export default class SetRuleSectionContentCommand extends AdminSlashCommand {
     }
 
     if (this.isSubCommand(interaction, "content")) {
-      const content: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "content");
+      const contentModal = new RuleSectionContentModal(interaction.user, name);
 
-      await discord.messages.updateMessageWithText(channelId, section.contentMessageId, content);
-
-      db.setSectionContent(id, content);
-
-      await replies.reply(`Updated content for section ${name}!`);
+      await interaction.showModal(contentModal.getModal());
     } else if (this.isSubCommand(interaction, "header")) {
       const header: Attachment = this.getParamValue(interaction, PARAM_TYPES.ATTACHMENT, "header");
 

@@ -23,11 +23,14 @@ jobs:
       - name: Install dependencies
         run: npm install --frozen-lockfile
 
+      - name: Create Config File
+        run: cp src/common/config/defaults.config.ts src/common/config/local.config.ts
+
       - name: Build project
         run: npm run build
 
       - name: Build tests
-        run: npm run build:tests
+        run: npm run build:test
 
       - name: Run linting
         run: npm run lint

@@ -2,7 +2,6 @@ import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import Module from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import TextCommand from "@common/models/TextCommand";
-import onAutocomplete from "./listeners/onAutocomplete";
 import onMessageCreate from "./listeners/onMessageCreate";
 import CustomCommandsDB from "./providers/CustomCommands.Database";
 import Imgur from "./utils/ImageKit";
@@ -46,7 +45,6 @@ export default class CustomCommandsModule extends Module<ICustomCommandsConfig> 
 
   private registerListeners(): void {
     onMessageCreate();
-    onAutocomplete();
   }
 }
 

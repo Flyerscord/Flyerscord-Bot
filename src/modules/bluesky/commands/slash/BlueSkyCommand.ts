@@ -1,5 +1,5 @@
-import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js";
+import { AdminAutocompleteSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import { AccountAlreadyExistsException } from "../../exceptions/AccountAlreadyExistsException";
 import { AccountDoesNotExistException } from "../../exceptions/AccountDoesNotExistException";
 import Stumper from "stumper";
@@ -8,7 +8,7 @@ import BlueSky from "../../utils/BlueSky";
 import { HISTORY_ITEM_TYPE } from "../../interfaces/IHistoryItem";
 import discord from "@common/utils/discord/discord";
 
-export default class BlueSkyCommand extends AdminSlashCommand {
+export default class BlueSkyCommand extends AdminAutocompleteSlashCommand {
   constructor() {
     super("bluesky", "Command for managing the BlueSky followed accounts");
 
@@ -77,5 +77,25 @@ export default class BlueSkyCommand extends AdminSlashCommand {
     } else {
       await replies.reply({ content: "Invalid subcommand!", ephemeral: true });
     }
+  }
+
+  async getAutoCompleteOptions(interaction: AutocompleteInteraction): Promise<string[] | undefined> {
+    const subCommand = this.getSubCommand(interaction);
+    if (subCommand !== "remove") {
+      return undefined;
+    }
+
+    const focusedOptionName = this.getFocusedOptionName(interaction);
+    if (focusedOptionName == "account") {
+      const bk = BlueSky.getInstance();
+      try {
+        const accounts = await bk.getListAccounts();
+
+        return accounts.map((ele) => ele.userHandle);
+      } catch {
+        return undefined;
+      }
+    }
+    return undefined;
   }
 }

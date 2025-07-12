@@ -1,5 +1,5 @@
-import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js";
+import { AdminAutocompleteSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
 import { InvalidImgurUrlException } from "../../exceptions/InvalidImgurUrlException";
 import { ErrorUploadingToImageKitException } from "../../exceptions/ErrorUploadingToImageKitException";
@@ -8,7 +8,7 @@ import PageNotFoundException from "../../exceptions/PageNotFoundException";
 import ConfigManager from "@common/config/ConfigManager";
 import discord from "@common/utils/discord/discord";
 
-export default class EditCommand extends AdminSlashCommand {
+export default class EditCommand extends AdminAutocompleteSlashCommand {
   constructor() {
     super("customedit", "Update a custom command");
 
@@ -54,5 +54,15 @@ export default class EditCommand extends AdminSlashCommand {
       }
     }
     await replies.reply(`Command ${prefix}${name} updated!`);
+  }
+
+  async getAutoCompleteOptions(interaction: AutocompleteInteraction): Promise<string[] | undefined> {
+    const focusedName = this.getFocusedOptionName(interaction);
+
+    if (focusedName == "name") {
+      const db = CustomCommandsDB.getInstance();
+      return db.getAllCommandNames();
+    }
+    return undefined;
   }
 }

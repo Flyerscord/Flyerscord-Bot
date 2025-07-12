@@ -26,14 +26,16 @@ export default class ImportPinsCommand extends SlashCommand {
       const textChannel = channel as TextChannel;
 
       if (config.channelId == textChannel.id) {
-        return await replies.reply("Cannot import pins from the pins channel!", true);
+        await replies.reply({ content: "Cannot import pins from the pins channel!", ephemeral: true });
+        return;
       }
 
       // Gets the pinned messages from the channel sorted oldest to newest
       const pinnedMessages = (await textChannel.messages.fetchPinned()).sort((a, b) => a.createdTimestamp - b.createdTimestamp);
 
       if (pinnedMessages.size == 0) {
-        return await replies.reply("No pinned messages found!", true);
+        await replies.reply({ content: "No pinned messages found!", ephemeral: true });
+        return;
       }
 
       for (const message of pinnedMessages) {
@@ -63,7 +65,8 @@ export default class ImportPinsCommand extends SlashCommand {
     }
 
     if (hasFailures) {
-      return await replies.reply("There were errors importing the pins! Some may have been skipped.");
+      await replies.reply("There were errors importing the pins! Some may have been skipped.");
+      return;
     }
     await replies.reply("Pins imported successfully!");
   }

@@ -1,6 +1,7 @@
 import { Channel, ChatInputCommandInteraction, User } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import CommandImporter from "../../utils/CommandImporter";
+import discord from "@common/utils/discord/discord";
 
 export default class CommandImportCommand extends AdminSlashCommand {
   constructor() {
@@ -21,7 +22,7 @@ export default class CommandImportCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    const replies = await discord.interactions.createReplies(interaction, "customCommands:CommandImportCommand:execute", true);
 
     if (this.isSubCommand(interaction, "start")) {
       const channel: Channel = this.getParamValue(interaction, PARAM_TYPES.CHANNEL, "channel");
@@ -30,14 +31,10 @@ export default class CommandImportCommand extends AdminSlashCommand {
 
       CommandImporter.getInstance().enable(channel.id, interaction.user.id, botUser.id, prefix);
 
-      interaction.editReply({
-        content: "Command import process started! Start running commands!",
-      });
+      await replies.reply("Command import process started! Start running commands!");
     } else if (this.isSubCommand(interaction, "stop")) {
       CommandImporter.getInstance().disable();
-      interaction.editReply({
-        content: "Command import process stopped!",
-      });
+      await replies.reply("Command import process stopped!");
     }
   }
 }

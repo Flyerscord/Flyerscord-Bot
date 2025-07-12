@@ -14,18 +14,14 @@ export default class RoleAllAssignCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    const replies = await discord.interactions.createReplies(interaction, "admin:RoleAllAssignCommand:execute", true);
 
     const role: Role = this.getParamValue(interaction, PARAM_TYPES.ROLE, "role");
     const onlyNoRole: boolean = this.getParamValue(interaction, PARAM_TYPES.BOOLEAN, "onlynonrole") || false;
 
-    await interaction.deferReply({ ephemeral: true });
-
     const members = await discord.members.getMembers();
     if (!members) {
-      interaction.editReply({
-        content: "Error retreiving the guild members",
-      });
+      await replies.reply("Error retreiving the guild members");
       return;
     }
 
@@ -38,13 +34,9 @@ export default class RoleAllAssignCommand extends AdminSlashCommand {
     });
 
     if (onlyNoRole) {
-      interaction.editReply({
-        content: `Adding the following role to users that do not have a role: ${role.name}`,
-      });
+      await replies.reply(`Adding the following role to users that do not have a role: ${role.name}`);
     } else {
-      interaction.editReply({
-        content: `Adding the following role to all users: ${role.name}`,
-      });
+      await replies.reply(`Adding the following role to all users: ${role.name}`);
     }
   }
 }

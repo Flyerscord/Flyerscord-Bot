@@ -1,4 +1,4 @@
-import { TextChannel, EmbedBuilder, Message } from "discord.js";
+import { TextChannel, EmbedBuilder, Message, Attachment } from "discord.js";
 
 import Stumper from "stumper";
 import { AttachmentBuilder } from "discord.js";
@@ -106,6 +106,14 @@ export async function updateMessageWithEmbed(channelId: string, messageId: strin
   const message = await getMessage(channelId, messageId);
   if (message) {
     return message.edit({ embeds: [newEmbed] });
+  }
+  return undefined;
+}
+
+export async function updateMessageReplaceTextWithImage(channelId: string, messageId: string, attachment: Attachment): Promise<Message | undefined> {
+  const message = await getMessage(channelId, messageId);
+  if (message) {
+    return message.edit({ files: [attachment], content: null });
   }
   return undefined;
 }

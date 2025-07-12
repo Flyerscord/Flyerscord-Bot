@@ -1,5 +1,7 @@
 import Module from "@common/models/Module";
 import RulesDB from "./providers/Rules.Database";
+import onAutoComplete from "./listeners/onAutoComplete";
+import SlashCommand from "@common/models/SlashCommand";
 
 export default class RulesModule extends Module<IRulesConfig> {
   constructor(config: IRulesConfig) {
@@ -7,7 +9,9 @@ export default class RulesModule extends Module<IRulesConfig> {
   }
 
   protected async setup(): Promise<void> {
-    // Nothing to setup
+    await this.readInCommands<SlashCommand>(__dirname, "slash");
+
+    this.registerListeners();
   }
 
   protected async cleanup(): Promise<void> {
@@ -17,17 +21,16 @@ export default class RulesModule extends Module<IRulesConfig> {
   getDefaultConfig(): IRulesConfig {
     return {
       channelId: "",
-      sections: [],
+      sections: ["Welcome", "Rules", "Staff", "Roles", "Channels", "Servers"],
     };
+  }
+
+  private registerListeners(): void {
+    onAutoComplete();
   }
 }
 
 export interface IRulesConfig {
   channelId: string;
-  sections: IRulesSectionConfig[];
-}
-
-export interface IRulesSectionConfig {
-  name: string;
-  image: string;
+  sections: string[];
 }

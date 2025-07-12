@@ -4,4 +4,4 @@ set -e
 
 npm run generate-config
 npm run format
-git add -u
+git diff --name-only --cached | xargs git add

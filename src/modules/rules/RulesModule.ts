@@ -2,9 +2,10 @@ import Module from "@common/models/Module";
 import RulesDB from "./providers/Rules.Database";
 import onAutoComplete from "./listeners/onAutoComplete";
 import SlashCommand from "@common/models/SlashCommand";
+import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 
 export default class RulesModule extends Module<IRulesConfig> {
-  constructor(config: IRulesConfig) {
+  constructor(config: IKeyedObject) {
     super("Rules", config);
   }
 

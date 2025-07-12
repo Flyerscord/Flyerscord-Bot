@@ -2,12 +2,12 @@ import ConfigManager from "@common/config/ConfigManager";
 import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import discord from "@common/utils/discord/discord";
 import RulesDB from "@modules/rules/providers/Rules.Database";
-import { getSectionId } from "@modules/rules/utils/utils";
+import { createRuleSections, getSectionId } from "@modules/rules/utils/utils";
 import { Attachment, ChatInputCommandInteraction } from "discord.js";
 
 export default class SetRuleSectionContentCommand extends AdminSlashCommand {
   constructor() {
-    super("ruleset", "Set the content message for a rule section");
+    super("rulesset", "Set the content message for a rule section");
 
     this.data
       .addSubcommand((subcmd) =>
@@ -33,12 +33,18 @@ export default class SetRuleSectionContentCommand extends AdminSlashCommand {
     const id = getSectionId(name);
 
     const db = RulesDB.getInstance();
-    const section = db.getSection(id);
-    const channelId = ConfigManager.getInstance().getConfig("Rules").channelId;
+    let section = db.getSection(id);
+    const config = ConfigManager.getInstance().getConfig("Rules");
+    const channelId = config.channelId;
+    const sectionNames = config.sections;
 
     if (!section) {
-      await replies.reply({ content: "Error finding section!" });
-      return;
+      if (!sectionNames.includes(name)) {
+        await replies.reply({ content: "Error finding section!" });
+        return;
+      }
+      await createRuleSections(true);
+      section = db.getSection(id)!;
     }
 
     if (this.isSubCommand(interaction, "content")) {

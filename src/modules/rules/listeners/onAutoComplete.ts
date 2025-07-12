@@ -12,7 +12,7 @@ export default (): void => {
 };
 
 async function removeCommand(interaction: AutocompleteInteraction): Promise<boolean> {
-  if (interaction.commandName != "ruleset") return false;
+  if (interaction.commandName != "rulesset") return false;
 
   const focusedOption = interaction.options.getFocused(true);
   if (focusedOption) {

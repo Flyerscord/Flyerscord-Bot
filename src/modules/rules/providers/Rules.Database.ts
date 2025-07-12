@@ -1,6 +1,7 @@
 import Database from "@common/providers/Database";
 import { IRuleSection } from "../interfaces/IRuleSection";
 import Stumper from "stumper";
+import IMessageIds from "../interfaces/IMessageIds";
 
 export default class RulesDB extends Database {
   constructor() {
@@ -41,5 +42,44 @@ export default class RulesDB extends Database {
       return;
     }
     this.db.set(id, content, "content");
+  }
+
+  setSectionHeaderId(id: string, headerId: string): void {
+    if (!this.hasSection(id)) {
+      Stumper.error(`Section ${id} not found!`, "rules:RulesDB:setSectionHeaderId");
+      return;
+    }
+    this.db.set(id, headerId, "headerMessageId");
+  }
+
+  setSectionContentId(id: string, contentId: string): void {
+    if (!this.hasSection(id)) {
+      Stumper.error(`Section ${id} not found!`, "rules:RulesDB:setSectionContentId");
+      return;
+    }
+    this.db.set(id, contentId, "contentMessageId");
+  }
+
+  getAllMessageIds(): IMessageIds[] {
+    const messageIds: IMessageIds[] = [];
+    const ids = this.getAllKeys();
+
+    for (const id of ids) {
+      const section = this.getSection(id as string);
+      if (!section) continue;
+
+      messageIds.push({ id: id as string, headerId: section.headerMessageId, contentId: section.contentMessageId });
+    }
+    return messageIds;
+  }
+
+  blankOutAllMessageIds(): void {
+    const ids = this.getAllKeys();
+
+    for (const id of ids) {
+      this.db.set(id, "", "headerMessageId");
+      this.db.set(id, "", "contentMessageId");
+    }
+    Stumper.warning(`Blanked out all message IDs!`, "rules:RulesDB:blankOutAllMessageIds");
   }
 }

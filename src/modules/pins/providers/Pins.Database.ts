@@ -2,8 +2,6 @@ import Database from "@common/providers/Database";
 import IPin from "../interfaces/IPin";
 
 export default class PinsDB extends Database {
-  private static instance: PinsDB;
-
   constructor() {
     super({ name: "pins" });
   }

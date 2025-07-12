@@ -4,9 +4,20 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug with npx tsx",
+      "name": "Debug Bot",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["tsx", "src/bot.ts"],
+      "cwd": "${workspaceFolder}",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Config Generator",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["tsx", "src/createDefaultConfig.ts"],
       "cwd": "${workspaceFolder}",
       "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,

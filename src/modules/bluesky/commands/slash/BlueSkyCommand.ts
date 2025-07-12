@@ -6,6 +6,7 @@ import Stumper from "stumper";
 import AccountHistoryDB from "../../providers/AccountHistory.Database";
 import BlueSky from "../../utils/BlueSky";
 import { HISTORY_ITEM_TYPE } from "../../interfaces/IHistoryItem";
+import discord from "@common/utils/discord/discord";
 
 export default class BlueSkyCommand extends AdminSlashCommand {
   constructor() {
@@ -30,7 +31,7 @@ export default class BlueSkyCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply();
+    const replies = await discord.interactions.createReplies(interaction, "bluesky:BlueSkyCommand:execute");
 
     const historyDb = AccountHistoryDB.getInstance();
     const bk = BlueSky.getInstance();
@@ -40,21 +41,13 @@ export default class BlueSkyCommand extends AdminSlashCommand {
       try {
         await bk.addAccountToList(account);
         historyDb.addHistoryItem(HISTORY_ITEM_TYPE.ADD, account, interaction.user.id);
-        interaction.editReply({
-          content: `Account ${account} added!`,
-        });
+        await replies.reply(`Account ${account} added!`);
         Stumper.info(`Account ${account} added to watched accounts`, "blueSky:BlueSkyCommand:add");
       } catch (error) {
         if (error instanceof AccountAlreadyExistsException) {
-          interaction.followUp({
-            content: `Account ${account} already exists!`,
-            ephemeral: true,
-          });
+          await replies.reply({ content: `Account ${account} already exists!`, ephemeral: true });
         } else {
-          interaction.followUp({
-            content: "Error adding account!",
-            ephemeral: true,
-          });
+          await replies.reply({ content: "Error adding account!", ephemeral: true });
         }
       }
     } else if (this.isSubCommand(interaction, "remove")) {
@@ -62,42 +55,27 @@ export default class BlueSkyCommand extends AdminSlashCommand {
       try {
         await bk.removeAccountFromList(account);
         historyDb.addHistoryItem(HISTORY_ITEM_TYPE.REMOVE, account, interaction.user.id);
-        interaction.editReply({
-          content: `Account ${account} removed!`,
-        });
+        await replies.reply(`Account ${account} removed!`);
         Stumper.info(`Account ${account} removed from watched accounts`, "blueSky:BlueSkyCommand:remove");
       } catch (error) {
         if (error instanceof AccountDoesNotExistException) {
-          interaction.followUp({
-            content: `Account ${account} does not exist!`,
-            ephemeral: true,
-          });
+          await replies.reply({ content: `Account ${account} does not exist!`, ephemeral: true });
         } else {
-          interaction.followUp({
-            content: "Error removing account!",
-            ephemeral: true,
-          });
+          await replies.reply({ content: "Error removing account!", ephemeral: true });
         }
       }
     } else if (this.isSubCommand(interaction, "list")) {
       const accounts = await bk.getListAccounts();
       if (accounts.length == 0) {
-        interaction.editReply({
-          content: "No accounts found!",
-        });
+        await replies.reply("No accounts found!");
       } else {
         const names = accounts.map((ele) => ele.userHandle).join("\n");
         const message = `Current Accounts:\n\`\`\`\n${names}\n\`\`\``;
 
-        interaction.editReply({
-          content: message,
-        });
+        await replies.reply(message);
       }
     } else {
-      interaction.followUp({
-        content: "Invalid subcommand!",
-        ephemeral: true,
-      });
+      await replies.reply({ content: "Invalid subcommand!", ephemeral: true });
     }
   }
 }

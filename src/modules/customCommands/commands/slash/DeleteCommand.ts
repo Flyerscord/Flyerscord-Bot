@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
 import ConfigManager from "@common/config/ConfigManager";
+import discord from "@common/utils/discord/discord";
 
 export default class DeleteCommand extends AdminSlashCommand {
   constructor() {
@@ -13,7 +14,7 @@ export default class DeleteCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    const replies = await discord.interactions.createReplies(interaction, "customCommands:DeleteCommand:execute", true);
 
     const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
 
@@ -24,15 +25,11 @@ export default class DeleteCommand extends AdminSlashCommand {
     name = name.toLowerCase();
 
     if (!db.hasCommand(name)) {
-      interaction.editReply({
-        content: `Command ${prefix}${name} does not exist!`,
-      });
+      await replies.reply(`Command ${prefix}${name} does not exist!`);
       return;
     }
 
     db.removeCommand(name, interaction.user.id);
-    interaction.editReply({
-      content: `Command ${prefix}${name} removed!`,
-    });
+    await replies.reply(`Command ${prefix}${name} removed!`);
   }
 }

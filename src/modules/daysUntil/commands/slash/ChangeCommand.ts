@@ -3,6 +3,7 @@ import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import DaysUntilDB from "../../providers/DaysUtil.Database";
 import { events } from "../../models/DaysUntilEvents";
 import Time from "@common/utils/Time";
+import discord from "@common/utils/discord/discord";
 
 export default class ChangeCommand extends AdminSlashCommand {
   constructor() {
@@ -18,20 +19,20 @@ export default class ChangeCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    const replies = await discord.interactions.createReplies(interaction, "customCommands:ChangeCommand:execute", true);
 
     const dateStr = this.getParamValue(interaction, PARAM_TYPES.STRING, "date");
     const eventKey: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "event");
 
     const event = Object.values(events).find((event) => event.name == eventKey);
     if (!event) {
-      interaction.editReply({ content: "Error finding event!" });
+      await replies.reply("Error finding event!");
       return;
     }
 
     const date = Time.getDateFromString(dateStr);
     if (!date) {
-      interaction.editReply({ content: "Error parsing date!" });
+      await replies.reply("Error parsing date!");
       return;
     }
 
@@ -39,6 +40,6 @@ export default class ChangeCommand extends AdminSlashCommand {
 
     db.setEventDate(event.dbKey, date.getTime());
 
-    interaction.editReply({ content: `Event ${event.name} date set to ${dateStr}!` });
+    await replies.reply(`Event ${event.name} date set to ${dateStr}!`);
   }
 }

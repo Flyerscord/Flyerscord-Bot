@@ -24,6 +24,7 @@ export default class NoteModal extends ModalMenu {
 
   async execute(interaction: ModalSubmitInteraction): Promise<void> {
     await interaction.deferReply({ ephemeral: true });
+
     const note = this.getTextInputValue(interaction, "noteInput");
 
     const db = UserManagementDB.getInstance();

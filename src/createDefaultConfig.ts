@@ -23,8 +23,9 @@ async function getModulesFiles(): Promise<string[]> {
 
   for (const folder of moduleFolders) {
     if (folder.isDirectory()) {
-      const files = await fs.readdir(folder.path, { withFileTypes: true });
-      moduleFiles.push(files.filter((file) => file.isFile())[0].path);
+      const files = await fs.readdir(path.join(folder.parentPath, folder.name), { withFileTypes: true });
+      const file = files.filter((file) => file.isFile())[0];
+      moduleFiles.push(path.join(file.parentPath, file.name));
     }
   }
 

@@ -14,7 +14,8 @@ export default class RemovePinContext extends AdminMessageContextMenuCommand {
 
     const message = interaction.targetMessage;
     if (!message) {
-      return await replies.reply("Error removing pin!", true);
+      await replies.reply({ content: "Error removing pin!", ephemeral: true });
+      return;
     }
 
     const db = PinsDB.getInstance();
@@ -26,14 +27,18 @@ export default class RemovePinContext extends AdminMessageContextMenuCommand {
     if (pin && pin.messageId) {
       const deleted = discord.messages.deleteMessage(config.channelId, pin.messageId, "Pin removed");
       if (!deleted) {
-        return await replies.reply("Error removing pin!", true);
+        await replies.reply({ content: "Error removing pin!", ephemeral: true });
+        return;
       }
       db.deletePin(pin.orignalMessageId);
-      return await replies.reply("Pin removed!", true);
+      await replies.reply({ content: "Pin removed!", ephemeral: true });
+      return;
     } else if (pin && !pin.messageId) {
-      return await replies.reply("The pinned message was never sent! This is a weird case, please report this to flyerzrule!", true);
+      await replies.reply({ content: "The pinned message was never sent! This is a weird case, please report this to flyerzrule!", ephemeral: true });
+      return;
     } else {
-      return await replies.reply("Message is not pinned!", true);
+      await replies.reply({ content: "Message is not pinned!", ephemeral: true });
+      return;
     }
   }
 }

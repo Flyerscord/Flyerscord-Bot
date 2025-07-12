@@ -7,6 +7,7 @@ import Stumper from "stumper";
 import PageNotFoundException from "../../exceptions/PageNotFoundException";
 import HTMLPageException from "../../exceptions/HTMLPageException";
 import ConfigManager from "@common/config/ConfigManager";
+import discord from "@common/utils/discord/discord";
 
 export default class AddCommand extends AdminSlashCommand {
   constructor() {
@@ -39,7 +40,7 @@ export default class AddCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    const replies = await discord.interactions.createReplies(interaction, "customCommands:AddCommand:execute", true);
 
     const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
 
@@ -63,9 +64,7 @@ export default class AddCommand extends AdminSlashCommand {
 
     if (name != "" && text != "") {
       if (db.hasCommand(name) || interaction.client.textCommands.hasAny(name)) {
-        interaction.editReply({
-          content: `Command ${prefix}${name} already exists!`,
-        });
+        await replies.reply(`Command ${prefix}${name} already exists!`);
         return;
       }
 
@@ -78,30 +77,24 @@ export default class AddCommand extends AdminSlashCommand {
       } catch (error) {
         Stumper.caughtError(error, "customCommands:AddCommand:execute");
         if (error instanceof InvalidImgurUrlException || error instanceof ErrorUploadingToImageKitException) {
-          interaction.editReply({
-            content: `Error adding command ${prefix}${name}! There was an issue with the url. Try downloading the image and uploading it with the image subcommand. Otherwise contact flyerzrule for help.`,
-          });
+          await replies.reply(
+            `Error adding command ${prefix}${name}! There was an issue with the url. Try downloading the image and uploading it with the image subcommand. Otherwise contact flyerzrule for help.`,
+          );
           return;
         } else if (error instanceof PageNotFoundException) {
-          interaction.editReply({
-            content: `Error adding command ${prefix}${name}! The url returns a 404.`,
-          });
+          await replies.reply(`Error adding command ${prefix}${name}! The url returns a 404.`);
           return;
         } else if (error instanceof HTMLPageException) {
-          interaction.editReply({
-            content: `Error adding command ${prefix}${name}! The url is a HTML page and not an image. Try downloading the image and uploading it with the image subcommand.`,
-          });
+          await replies.reply(
+            `Error adding command ${prefix}${name}! The url is a HTML page and not an image. Try downloading the image and uploading it with the image subcommand.`,
+          );
           return;
         } else {
-          interaction.editReply({
-            content: `Error adding command ${prefix}${name}!`,
-          });
+          await replies.reply(`Error adding command ${prefix}${name}!`);
           throw error;
         }
       }
-      interaction.editReply({
-        content: `Command ${prefix}${name} added!`,
-      });
+      await replies.reply(`Command ${prefix}${name} added!`);
     }
   }
 }

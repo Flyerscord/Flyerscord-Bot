@@ -26,9 +26,9 @@ export default class InfoCommand extends AdminSlashCommand {
 
     if (command) {
       const embed = await createEmbed(command);
-      replies.reply(embed);
+      await replies.reply({ embeds: [embed] });
     } else {
-      replies.reply(`A custom comamnd with the name ${commandName} does not exist!`);
+      await replies.reply(`A custom comamnd with the name ${commandName} does not exist!`);
     }
   }
 }

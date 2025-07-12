@@ -25,11 +25,11 @@ export default class DeleteCommand extends AdminSlashCommand {
     name = name.toLowerCase();
 
     if (!db.hasCommand(name)) {
-      replies.reply(`Command ${prefix}${name} does not exist!`);
+      await replies.reply(`Command ${prefix}${name} does not exist!`);
       return;
     }
 
     db.removeCommand(name, interaction.user.id);
-    replies.reply(`Command ${prefix}${name} removed!`);
+    await replies.reply(`Command ${prefix}${name} removed!`);
   }
 }

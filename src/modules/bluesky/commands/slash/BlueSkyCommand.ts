@@ -41,13 +41,13 @@ export default class BlueSkyCommand extends AdminSlashCommand {
       try {
         await bk.addAccountToList(account);
         historyDb.addHistoryItem(HISTORY_ITEM_TYPE.ADD, account, interaction.user.id);
-        replies.reply(`Account ${account} added!`);
+        await replies.reply(`Account ${account} added!`);
         Stumper.info(`Account ${account} added to watched accounts`, "blueSky:BlueSkyCommand:add");
       } catch (error) {
         if (error instanceof AccountAlreadyExistsException) {
-          replies.reply(`Account ${account} already exists!`, true);
+          await replies.reply({ content: `Account ${account} already exists!`, ephemeral: true });
         } else {
-          replies.reply("Error adding account!", true);
+          await replies.reply({ content: "Error adding account!", ephemeral: true });
         }
       }
     } else if (this.isSubCommand(interaction, "remove")) {
@@ -55,27 +55,27 @@ export default class BlueSkyCommand extends AdminSlashCommand {
       try {
         await bk.removeAccountFromList(account);
         historyDb.addHistoryItem(HISTORY_ITEM_TYPE.REMOVE, account, interaction.user.id);
-        replies.reply(`Account ${account} removed!`);
+        await replies.reply(`Account ${account} removed!`);
         Stumper.info(`Account ${account} removed from watched accounts`, "blueSky:BlueSkyCommand:remove");
       } catch (error) {
         if (error instanceof AccountDoesNotExistException) {
-          replies.reply(`Account ${account} does not exist!`, true);
+          await replies.reply({ content: `Account ${account} does not exist!`, ephemeral: true });
         } else {
-          replies.reply("Error removing account!", true);
+          await replies.reply({ content: "Error removing account!", ephemeral: true });
         }
       }
     } else if (this.isSubCommand(interaction, "list")) {
       const accounts = await bk.getListAccounts();
       if (accounts.length == 0) {
-        replies.reply("No accounts found!");
+        await replies.reply("No accounts found!");
       } else {
         const names = accounts.map((ele) => ele.userHandle).join("\n");
         const message = `Current Accounts:\n\`\`\`\n${names}\n\`\`\``;
 
-        replies.reply(message);
+        await replies.reply(message);
       }
     } else {
-      replies.reply("Invalid subcommand!", true);
+      await replies.reply({ content: "Invalid subcommand!", ephemeral: true });
     }
   }
 }

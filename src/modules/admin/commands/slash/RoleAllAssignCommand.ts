@@ -21,7 +21,7 @@ export default class RoleAllAssignCommand extends AdminSlashCommand {
 
     const members = await discord.members.getMembers();
     if (!members) {
-      replies.reply("Error retreiving the guild members");
+      await replies.reply("Error retreiving the guild members");
       return;
     }
 
@@ -34,9 +34,9 @@ export default class RoleAllAssignCommand extends AdminSlashCommand {
     });
 
     if (onlyNoRole) {
-      replies.reply(`Adding the following role to users that do not have a role: ${role.name}`);
+      await replies.reply(`Adding the following role to users that do not have a role: ${role.name}`);
     } else {
-      replies.reply(`Adding the following role to all users: ${role.name}`);
+      await replies.reply(`Adding the following role to all users: ${role.name}`);
     }
   }
 }

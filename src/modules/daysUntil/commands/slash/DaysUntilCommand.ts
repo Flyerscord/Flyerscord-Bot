@@ -22,7 +22,7 @@ export default class DaysUntilCommand extends SlashCommand {
     const event = Object.values(events).find((event) => event.name == eventKey);
 
     if (!event) {
-      replies.reply("Error finding event!", true);
+      await replies.reply({ content: "Error finding event!", ephemeral: true });
       return;
     }
 
@@ -40,6 +40,6 @@ export default class DaysUntilCommand extends SlashCommand {
       output = event.exactMessage;
     }
 
-    replies.reply(output);
+    await replies.reply(output);
   }
 }

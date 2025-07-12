@@ -1,5 +1,20 @@
-import { EmbedBuilder } from "@discordjs/builders";
-import { CommandInteraction } from "discord.js";
+import {
+  ActionRowData,
+  APIAttachment,
+  APIMessageTopLevelComponent,
+  Attachment,
+  AttachmentBuilder,
+  AttachmentPayload,
+  BufferResolvable,
+  CommandInteraction,
+  EmbedBuilder,
+  JSONEncodable,
+  Message,
+  MessageActionRowComponentBuilder,
+  MessageActionRowComponentData,
+  TopLevelComponentData,
+} from "discord.js";
+import Stream from "node:stream";
 import Stumper from "stumper";
 
 class InteractionReplies {
@@ -7,10 +22,20 @@ class InteractionReplies {
   private ephemeral: boolean;
   readonly source: string;
 
+  private readonly defaults: Required<IInteractionReplieOptions>;
+
   constructor(interaction: CommandInteraction, source: string, ephemeral: boolean = false) {
     this.interaction = interaction;
     this.ephemeral = ephemeral;
     this.source = source;
+
+    this.defaults = {
+      ephemeral: false,
+      files: [],
+      components: [],
+      content: "",
+      embeds: [],
+    };
   }
 
   async deferReply(): Promise<void> {
@@ -25,7 +50,21 @@ class InteractionReplies {
     }
   }
 
-  async reply(content: string | EmbedBuilder, makeEphemeral: boolean = false): Promise<void> {
+  async reply(content: string | IInteractionReplieOptions = {}): Promise<Message | undefined> {
+    let options: IInteractionReplieOptions;
+    if (typeof content === "string") {
+      options = { content: content };
+    } else {
+      options = content;
+    }
+
+    const opts = this.getDefaultOptions(options);
+
+    if (!this.checkOptions(opts)) {
+      Stumper.error(`Invalid options provided to reply!`, this.source);
+      return;
+    }
+
     if (!this.interaction.deferred) {
       Stumper.error(`Interaction ${this.interaction.id} is not deferred!`, this.source);
       return;
@@ -36,24 +75,19 @@ class InteractionReplies {
       return;
     }
 
-    const isEmbed = content instanceof EmbedBuilder;
-
-    const addEphemeral = this.ephemeral || makeEphemeral;
+    const addEphemeral = this.ephemeral || opts.ephemeral;
 
     if (addEphemeral) {
-      if (isEmbed) {
-        await this.interaction.followUp({ embeds: [content], ephemeral: true });
-      } else {
-        await this.interaction.followUp({ content: content, ephemeral: true });
-      }
-      return;
+      return await this.interaction.followUp({
+        components: opts.components,
+        files: opts.files,
+        embeds: opts.embeds,
+        content: opts.content,
+        ephemeral: true,
+      });
     }
 
-    if (isEmbed) {
-      await this.interaction.editReply({ embeds: [content] });
-    } else {
-      await this.interaction.editReply({ content: content });
-    }
+    return await this.interaction.editReply({ components: opts.components, files: opts.files, embeds: opts.embeds, content: opts.content });
   }
 
   isDeferred(): boolean {
@@ -63,10 +97,40 @@ class InteractionReplies {
   isReplied(): boolean {
     return this.interaction.replied;
   }
+
+  private getDefaultOptions(input: IInteractionReplieOptions): Required<IInteractionReplieOptions> {
+    return {
+      ephemeral: input.ephemeral ?? this.defaults.ephemeral,
+      files: input.files ?? this.defaults.files,
+      components: input.components ?? this.defaults.components,
+      content: input.content ?? this.defaults.content,
+      embeds: input.embeds ?? this.defaults.embeds,
+    };
+  }
+
+  private checkOptions(options: Required<IInteractionReplieOptions>): boolean {
+    if (options.content == "" && options.embeds.length == 0 && options.files.length == 0 && options.components.length == 0) {
+      return false;
+    }
+    return true;
+  }
 }
 
 export async function createReplies(interaction: CommandInteraction, source: string, ephemeral: boolean = false): Promise<InteractionReplies> {
   const replies = new InteractionReplies(interaction, source, ephemeral);
   await replies.deferReply();
   return replies;
+}
+
+export interface IInteractionReplieOptions {
+  content?: string;
+  embeds?: EmbedBuilder[];
+  ephemeral?: boolean;
+  files?: readonly (BufferResolvable | Stream | JSONEncodable<APIAttachment> | Attachment | AttachmentBuilder | AttachmentPayload)[];
+  components?: readonly (
+    | JSONEncodable<APIMessageTopLevelComponent>
+    | TopLevelComponentData
+    | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
+    | APIMessageTopLevelComponent
+  )[];
 }

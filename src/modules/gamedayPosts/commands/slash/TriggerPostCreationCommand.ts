@@ -13,6 +13,6 @@ export default class TriggerPostCreationCommand extends AdminSlashCommand {
 
     await closeAndLockOldPosts();
     await checkForGameDay();
-    replies.reply("Triggered game day post creation process!");
+    await replies.reply("Triggered game day post creation process!");
   }
 }

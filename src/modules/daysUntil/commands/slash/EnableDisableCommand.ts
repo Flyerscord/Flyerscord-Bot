@@ -29,7 +29,7 @@ export default class EnableDisableCommand extends AdminSlashCommand {
     if (event) {
       db.setEventEnabled(event.dbKey, enable);
 
-      replies.reply(`Event ${event.name} ${enable ? "enabled" : "disabled"}!`);
+      await replies.reply(`Event ${event.name} ${enable ? "enabled" : "disabled"}!`);
     }
   }
 }

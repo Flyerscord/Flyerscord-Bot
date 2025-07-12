@@ -8,10 +8,6 @@ export default class PinsDB extends Database {
     super({ name: "pins" });
   }
 
-  static getInstance(): PinsDB {
-    return this.instance || (this.instance = new this());
-  }
-
   addPin(orignalMessageId: string, channelId: string, ogCreatedAt: Date, pinnedBy: string): IPin | undefined {
     if (!this.hasPin(orignalMessageId)) {
       const pin: IPin = {

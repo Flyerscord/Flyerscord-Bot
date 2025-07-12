@@ -16,6 +16,6 @@ export default class UpdateCommandListCommand extends AdminSlashCommand {
 
     updateCommandList(db.getAllCommands());
 
-    replies.reply("Custom Command List Updated!");
+    await replies.reply("Custom Command List Updated!");
   }
 }

@@ -3,6 +3,7 @@ import Stumper from "stumper";
 import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import UserManagementDB from "../../providers/UserManagement.Database";
 import { sendLogMessage } from "../../utils/ChannelLogging";
+import discord from "@common/utils/discord/discord";
 
 export default class WarnUserCommand extends AdminSlashCommand {
   constructor() {
@@ -14,7 +15,7 @@ export default class WarnUserCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    const replies = await discord.interactions.createReplies(interaction, "userManagement:WarnUserCommand:execute", true);
 
     const user: User = this.getParamValue(interaction, PARAM_TYPES.USER, "user");
     const reason: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "reason");
@@ -24,6 +25,6 @@ export default class WarnUserCommand extends AdminSlashCommand {
 
     Stumper.info(`Added warning for user: ${user.username} by user ${interaction.user.username}`, "userManagement:WarnUserCommand:execute");
     sendLogMessage(`Added warning for user: \`${user.username}\` by user \`${interaction.user.username}\` Reason: \`${reason}\``);
-    interaction.editReply(`Added warning for user: ${user.username}!`);
+    await replies.reply(`Added warning for user: ${user.username}!`);
   }
 }

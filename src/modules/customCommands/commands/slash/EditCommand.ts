@@ -34,7 +34,7 @@ export default class EditCommand extends AdminSlashCommand {
     name = name.toLowerCase();
 
     if (!db.hasCommand(name)) {
-      replies.reply(`Command ${prefix}${name} does not exist!`);
+      await replies.reply(`Command ${prefix}${name} does not exist!`);
       return;
     }
 
@@ -43,16 +43,16 @@ export default class EditCommand extends AdminSlashCommand {
     } catch (error) {
       Stumper.caughtError(error, "customCommands:EditCommand:execute");
       if (error instanceof InvalidImgurUrlException || error instanceof ErrorUploadingToImageKitException) {
-        replies.reply(`Error updating command ${prefix}${name}! There was an issue with the url. Contact flyerzrule for help.`);
+        await replies.reply(`Error updating command ${prefix}${name}! There was an issue with the url. Contact flyerzrule for help.`);
         return;
       } else if (error instanceof PageNotFoundException) {
-        replies.reply(`Error adding command ${prefix}${name}! The url returns a 404.`);
+        await replies.reply(`Error adding command ${prefix}${name}! The url returns a 404.`);
         return;
       } else {
-        replies.reply(`Error adding command ${prefix}${name}!`);
+        await replies.reply(`Error adding command ${prefix}${name}!`);
         throw error;
       }
     }
-    replies.reply(`Command ${prefix}${name} updated!`);
+    await replies.reply(`Command ${prefix}${name} updated!`);
   }
 }

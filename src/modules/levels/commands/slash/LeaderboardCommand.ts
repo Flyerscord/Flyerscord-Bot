@@ -46,10 +46,11 @@ export default class LeaderboardCommand extends SlashCommand {
     const row = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(prevButton, nextButton);
 
     // Send the initial message with the first page and buttons
-    const message = await interaction.editReply({
-      embeds: [await this.createEmbedPage(users, currentPage)],
-      components: [row],
-    });
+    const message = await replies.reply({ embeds: [await this.createEmbedPage(users, currentPage)], components: [row] });
+
+    if (!message) {
+      return;
+    }
 
     // Create a collector to handle button interactions
     const collector = message.createMessageComponentCollector({
@@ -82,16 +83,13 @@ export default class LeaderboardCommand extends SlashCommand {
       nextButton.setDisabled(currentPage === totalPages);
 
       // Update the embed and buttons
-      await interaction.editReply({
-        embeds: [await this.createEmbedPage(users, currentPage)],
-        components: [row],
-      });
+      await replies.reply({ embeds: [await this.createEmbedPage(users, currentPage)], components: [row] });
     });
 
     collector.on("end", async () => {
       prevButton.setDisabled(true);
       nextButton.setDisabled(true);
-      await interaction.editReply({ components: [row] });
+      await replies.reply({ components: [row] });
     });
   }
 

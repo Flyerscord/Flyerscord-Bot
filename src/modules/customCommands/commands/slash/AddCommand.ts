@@ -64,7 +64,7 @@ export default class AddCommand extends AdminSlashCommand {
 
     if (name != "" && text != "") {
       if (db.hasCommand(name) || interaction.client.textCommands.hasAny(name)) {
-        replies.reply(`Command ${prefix}${name} already exists!`);
+        await replies.reply(`Command ${prefix}${name} already exists!`);
         return;
       }
 
@@ -77,24 +77,24 @@ export default class AddCommand extends AdminSlashCommand {
       } catch (error) {
         Stumper.caughtError(error, "customCommands:AddCommand:execute");
         if (error instanceof InvalidImgurUrlException || error instanceof ErrorUploadingToImageKitException) {
-          replies.reply(
+          await replies.reply(
             `Error adding command ${prefix}${name}! There was an issue with the url. Try downloading the image and uploading it with the image subcommand. Otherwise contact flyerzrule for help.`,
           );
           return;
         } else if (error instanceof PageNotFoundException) {
-          replies.reply(`Error adding command ${prefix}${name}! The url returns a 404.`);
+          await replies.reply(`Error adding command ${prefix}${name}! The url returns a 404.`);
           return;
         } else if (error instanceof HTMLPageException) {
-          replies.reply(
+          await replies.reply(
             `Error adding command ${prefix}${name}! The url is a HTML page and not an image. Try downloading the image and uploading it with the image subcommand.`,
           );
           return;
         } else {
-          replies.reply(`Error adding command ${prefix}${name}!`);
+          await replies.reply(`Error adding command ${prefix}${name}!`);
           throw error;
         }
       }
-      replies.reply(`Command ${prefix}${name} added!`);
+      await replies.reply(`Command ${prefix}${name} added!`);
     }
   }
 }

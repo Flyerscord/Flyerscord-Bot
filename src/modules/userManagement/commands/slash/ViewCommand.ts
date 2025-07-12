@@ -22,7 +22,7 @@ export default class ViewCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
+    const replies = await discord.interactions.createReplies(interaction, "userManagement:ViewCommand:execute", true);
 
     const user: User = this.getParamValue(interaction, PARAM_TYPES.USER, "user");
     const view: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "view");
@@ -32,9 +32,9 @@ export default class ViewCommand extends AdminSlashCommand {
 
     const embed = await createEmbed(userInfo, view);
     if (embed) {
-      interaction.editReply({ embeds: [embed] });
+      await replies.reply({ embeds: [embed] });
     } else {
-      interaction.editReply("There was an error finding the info for the user!");
+      await replies.reply("There was an error finding the info for the user!");
     }
   }
 }

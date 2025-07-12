@@ -58,7 +58,7 @@ export default {
   registercommands: {},
   rules: {
     channelId: "",
-    sections: [],
+    sections: ["Welcome", "Rules", "Staff", "Roles", "Channels", "Servers"],
   },
   statsvoicechannel: {
     channels: [],

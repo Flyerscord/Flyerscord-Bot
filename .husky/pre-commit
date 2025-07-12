@@ -3,5 +3,7 @@
 set -e
 
 npm run generate-config
+git add src/common/config/defaults.config.ts
+
 npm run format
 git diff --name-only --cached | xargs git add

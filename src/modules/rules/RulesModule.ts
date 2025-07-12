@@ -1,4 +1,5 @@
 import Module from "@common/models/Module";
+import RulesDB from "./providers/Rules.Database";
 
 export default class RulesModule extends Module<IRulesConfig> {
   constructor(config: IRulesConfig) {
@@ -10,7 +11,7 @@ export default class RulesModule extends Module<IRulesConfig> {
   }
 
   protected async cleanup(): Promise<void> {
-    // Nothing to cleanup
+    RulesDB.getInstance().close();
   }
 
   getDefaultConfig(): IRulesConfig {

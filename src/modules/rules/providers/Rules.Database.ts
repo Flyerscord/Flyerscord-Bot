@@ -2,14 +2,8 @@ import Database from "@common/providers/Database";
 import { IRuleSection } from "../interfaces/IRuleSection";
 
 export default class RulesDB extends Database {
-  private static instance: RulesDB;
-
   constructor() {
     super({ name: "rules" });
-  }
-
-  static getInstance(): RulesDB {
-    return this.instance || (this.instance = new this());
   }
 
   addSection(name: string, headerMessageId: string, contentMessageId: string): void {

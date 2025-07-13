@@ -28,8 +28,6 @@ export default class RuleSectionContentModal extends ModalMenu {
   }
 
   async execute(interaction: ModalSubmitInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
-
     const id = getSectionId(this.sectionName);
 
     const db = RulesDB.getInstance();
@@ -39,7 +37,7 @@ export default class RuleSectionContentModal extends ModalMenu {
 
     const section = db.getSection(id);
     if (!section) {
-      await interaction.editReply({ content: "Error finding section!" });
+      await this.replies.reply({ content: "Error finding section!" });
       return;
     }
 
@@ -47,6 +45,6 @@ export default class RuleSectionContentModal extends ModalMenu {
 
     db.setSectionContent(id, content);
 
-    await interaction.editReply(`Updated content for section ${this.sectionName}!`);
+    await this.replies.reply(`Updated content for section ${this.sectionName}!`);
   }
 }

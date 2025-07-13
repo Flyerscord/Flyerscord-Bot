@@ -8,7 +8,7 @@ import RuleSectionContentModal from "../modal/RuleSectionContentModal";
 
 export default class SetRuleSectionContentCommand extends AdminSlashCommand {
   constructor() {
-    super("rulesset", "Set the content message for a rule section");
+    super("rulesset", "Set the content message for a rule section", true);
 
     this.data
       .addSubcommand((subcmd) =>
@@ -27,8 +27,6 @@ export default class SetRuleSectionContentCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const replies = await discord.interactions.createReplies(interaction, "rules:SetRuleSectionContentCommand:execute", true);
-
     const name: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "name");
     const id = getSectionId(name);
 
@@ -40,7 +38,7 @@ export default class SetRuleSectionContentCommand extends AdminSlashCommand {
 
     if (!section) {
       if (!sectionNames.includes(name)) {
-        await replies.reply({ content: "Error finding section!" });
+        await this.replies.reply({ content: "Error finding section!" });
         return;
       }
       await createRuleSections(true);
@@ -58,9 +56,9 @@ export default class SetRuleSectionContentCommand extends AdminSlashCommand {
 
       db.setSectionHeader(id, header.url);
 
-      await replies.reply(`Updated header for section ${name}!`);
+      await this.replies.reply(`Updated header for section ${name}!`);
     } else {
-      await replies.reply({ content: "Invalid subcommand!" });
+      await this.replies.reply({ content: "Invalid subcommand!" });
     }
   }
 }

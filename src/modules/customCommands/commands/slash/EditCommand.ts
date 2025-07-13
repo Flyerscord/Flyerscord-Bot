@@ -9,7 +9,7 @@ import ConfigManager from "@common/config/ConfigManager";
 
 export default class EditCommand extends AdminAutocompleteSlashCommand {
   constructor() {
-    super("customedit", "Update a custom command", true);
+    super("customedit", "Update a custom command", { ephermal: true });
 
     this.data
       .addStringOption((option) =>

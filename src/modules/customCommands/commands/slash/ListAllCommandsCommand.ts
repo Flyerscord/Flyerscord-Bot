@@ -5,7 +5,7 @@ import ConfigManager from "@common/config/ConfigManager";
 
 export default class ListAllCommandsCommand extends AdminSlashCommand {
   constructor() {
-    super("customlistall", "List all custom commands. Mostly for debugging purposes.", true);
+    super("customlistall", "List all custom commands. Mostly for debugging purposes.", { ephermal: true });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

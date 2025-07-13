@@ -4,7 +4,7 @@ import { checkForNewEmojis } from "../../utils/PlayerEmojis";
 
 export default class TriggerPlayerEmojisCommand extends AdminSlashCommand {
   constructor() {
-    super("triggerplayeremojis", "Manually trigger the player emoji process", true);
+    super("triggerplayeremojis", "Manually trigger the player emoji process", { ephermal: true });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

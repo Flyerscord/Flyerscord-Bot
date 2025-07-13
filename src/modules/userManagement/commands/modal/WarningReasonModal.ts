@@ -1,16 +1,14 @@
-import { ModalSubmitInteraction, TextInputStyle, User } from "discord.js";
+import { ModalSubmitInteraction, TextInputStyle } from "discord.js";
 import ModalMenu from "@common/models/ModalMenu";
 import { ActionRowBuilder, TextInputBuilder } from "@discordjs/builders";
 import UserManagementDB from "../../providers/UserManagement.Database";
 import { sendLogMessage } from "../../utils/ChannelLogging";
 import Stumper from "stumper";
+import discord from "@common/utils/discord/discord";
 
 export default class WarningReasonModal extends ModalMenu {
-  targetUser: User;
-
-  constructor(targetUser: User) {
-    super("warningReasonModal", "User Warning Reason");
-    this.targetUser = targetUser;
+  constructor(targetUser: string) {
+    super(`warningReasonModal-${targetUser}`, "User Warning Reason");
 
     const reasonInput = new TextInputBuilder()
       .setCustomId("warningReasonInput")
@@ -23,16 +21,24 @@ export default class WarningReasonModal extends ModalMenu {
   }
 
   async execute(interaction: ModalSubmitInteraction): Promise<void> {
+    const targetUserId = this.getDataFromId(interaction.customId);
+    if (!targetUserId) {
+      await this.replies.reply({ content: "Error getting target user id!" });
+      return;
+    }
+    const targetUser = discord.users.getUser(targetUserId);
+    if (!targetUser) {
+      await this.replies.reply({ content: "Error finding target user!" });
+      return;
+    }
+
     const reason = this.getTextInputValue(interaction, "warningReasonInput");
 
     const db = UserManagementDB.getInstance();
     db.addWarning(interaction.user.id, reason, interaction.user.id);
 
-    Stumper.info(
-      `Added warning for user: ${this.targetUser.username} by user ${interaction.user.username}`,
-      "userManagement:WarningReasonModal:execute",
-    );
-    sendLogMessage(`Added warning for user: ${this.targetUser.username} by user ${interaction.user.username} Reason: ${reason}`);
-    await this.replies.reply(`Added warning for user: ${this.targetUser.username}!`);
+    Stumper.info(`Added warning for user: ${targetUser.username} by user ${interaction.user.username}`, "userManagement:WarningReasonModal:execute");
+    sendLogMessage(`Added warning for user: ${targetUser.username} by user ${interaction.user.username} Reason: ${reason}`);
+    await this.replies.reply(`Added warning for user: ${targetUser.username}!`);
   }
 }

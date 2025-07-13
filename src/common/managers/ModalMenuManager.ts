@@ -17,10 +17,10 @@ export default class ModalMenuManager extends Singleton {
 
   addCommand(command: ModalMenu): void {
     if (this.hasCommand(command)) {
-      Stumper.warning(`ModalMenu ${command.id} already exists`, "common:ModalMenuManager:addCommand");
+      Stumper.warning(`ModalMenu ${command.name} already exists`, "common:ModalMenuManager:addCommand");
       return;
     }
-    this.commands.set(command.id, command);
+    this.commands.set(command.name, command);
   }
 
   getCommands(): Collection<string, ModalMenu> {
@@ -28,6 +28,6 @@ export default class ModalMenuManager extends Singleton {
   }
 
   hasCommand(command: ModalMenu): boolean {
-    return this.commands.has(command.id);
+    return this.commands.has(command.name);
   }
 }

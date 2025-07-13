@@ -10,7 +10,7 @@ import ConfigManager from "@common/config/ConfigManager";
 
 export default class AddCommand extends AdminSlashCommand {
   constructor() {
-    super("customadd", "Add a custom command", true);
+    super("customadd", "Add a custom command", { ephermal: true });
 
     this.data
       .addSubcommand((subcmd) =>

@@ -6,7 +6,7 @@ import { ChatInputCommandInteraction } from "discord.js";
 
 export default class SendAllRulesCommand extends AdminSlashCommand {
   constructor() {
-    super("rulessendall", "Sends all of the rules to the channel", true);
+    super("rulessendall", "Sends all of the rules to the channel", { ephermal: true });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

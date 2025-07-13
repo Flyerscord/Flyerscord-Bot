@@ -4,7 +4,7 @@ import BotHealthManager from "@common/managers/BotHealthManager";
 
 export default class PingCommand extends SlashCommand {
   constructor() {
-    super("ping", "Check if the bot is online and its health", true);
+    super("ping", "Check if the bot is online and its health", { ephermal: true });
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {

@@ -85,7 +85,7 @@ export default abstract class Module<TConfig extends IKeyedObject> extends Singl
       } else if (command instanceof ContextMenuCommand) {
         Stumper.debug(`Read in context menu: ${command.name}`, "common:Module:readInCommands");
       } else if (command instanceof ModalMenu) {
-        Stumper.debug(`Read in modal: ${command.id}`, "common:Module:readInCommands");
+        Stumper.debug(`Read in modal: ${command.name}`, "common:Module:readInCommands");
       }
 
       commands.push(command);

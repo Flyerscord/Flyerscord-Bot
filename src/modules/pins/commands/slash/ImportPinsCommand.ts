@@ -8,7 +8,7 @@ import ConfigManager from "@common/config/ConfigManager";
 
 export default class ImportPinsCommand extends SlashCommand {
   constructor() {
-    super("importpins", "Import pins from a channel", true);
+    super("importpins", "Import pins from a channel", { ephermal: true });
 
     this.data.addChannelOption((option) => option.setName("channel").setDescription("The channel to import pins from").setRequired(true));
   }

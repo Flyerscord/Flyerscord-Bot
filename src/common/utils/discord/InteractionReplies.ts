@@ -71,8 +71,25 @@ export class InteractionReplies {
       return;
     }
 
+    const addEphemeral = this.ephemeral || opts.ephemeral;
+
     if (!this.isDeferred()) {
-      Stumper.error(`Interaction ${this.interaction.id} is not deferred!`, this.source);
+      if (addEphemeral) {
+        this.interaction.reply({
+          components: opts.components,
+          files: opts.files,
+          embeds: opts.embeds,
+          content: opts.content,
+          flags: MessageFlagsBitField.Flags.Ephemeral,
+        });
+      } else {
+        this.interaction.reply({
+          components: opts.components,
+          files: opts.files,
+          embeds: opts.embeds,
+          content: opts.content,
+        });
+      }
       return;
     }
 
@@ -80,8 +97,6 @@ export class InteractionReplies {
       Stumper.error(`Interaction ${this.interaction.id} has already replied!`, this.source);
       return;
     }
-
-    const addEphemeral = this.ephemeral || opts.ephemeral;
 
     if (addEphemeral) {
       return await this.interaction.followUp({

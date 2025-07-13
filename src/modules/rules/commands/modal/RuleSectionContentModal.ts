@@ -3,17 +3,11 @@ import ModalMenu from "@common/models/ModalMenu";
 import discord from "@common/utils/discord/discord";
 import { ActionRowBuilder, TextInputBuilder } from "@discordjs/builders";
 import RulesDB from "@modules/rules/providers/Rules.Database";
-import { getSectionId } from "@modules/rules/utils/utils";
-import { ModalSubmitInteraction, TextInputStyle, User } from "discord.js";
+import { ModalSubmitInteraction, TextInputStyle } from "discord.js";
 
 export default class RuleSectionContentModal extends ModalMenu {
-  targetUser: User;
-  sectionName: string;
-
-  constructor(targetUser: User, sectionName: string) {
-    super("rulesContentModal", "Rules Content");
-    this.targetUser = targetUser;
-    this.sectionName = sectionName;
+  constructor(sectionId: string) {
+    super(`rulesContentModal-${sectionId}`, "Rules Content");
 
     const contentInput = new TextInputBuilder()
       .setCustomId("content")
@@ -28,14 +22,17 @@ export default class RuleSectionContentModal extends ModalMenu {
   }
 
   async execute(interaction: ModalSubmitInteraction): Promise<void> {
-    const id = getSectionId(this.sectionName);
-
+    const sectionId = this.getDataFromId(interaction.customId);
+    if (!sectionId) {
+      await this.replies.reply({ content: "Error getting section id!" });
+      return;
+    }
     const db = RulesDB.getInstance();
     const channelId = ConfigManager.getInstance().getConfig("Rules").channelId;
 
     const content = this.getTextInputValue(interaction, "content");
 
-    const section = db.getSection(id);
+    const section = db.getSection(sectionId);
     if (!section) {
       await this.replies.reply({ content: "Error finding section!" });
       return;
@@ -43,8 +40,8 @@ export default class RuleSectionContentModal extends ModalMenu {
 
     await discord.messages.updateMessageWithText(channelId, section.contentMessageId, content);
 
-    db.setSectionContent(id, content);
+    db.setSectionContent(sectionId, content);
 
-    await this.replies.reply(`Updated content for section ${this.sectionName}!`);
+    await this.replies.reply(`Updated content for section ${sectionId}!`);
   }
 }

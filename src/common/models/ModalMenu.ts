@@ -1,27 +1,21 @@
-import { InteractionReplies } from "@common/utils/discord/InteractionReplies";
 import { ModalBuilder, ModalSubmitInteraction } from "discord.js";
 import Stumper from "stumper";
-import discord from "@common/utils/discord/discord";
+import Command from "./Command";
 
-export default abstract class ModalMenu {
+export default abstract class ModalMenu extends Command {
   readonly data: ModalBuilder;
 
-  readonly id: string;
   readonly title: string;
 
-  replies: InteractionReplies;
-
-  constructor(id: string, title: string) {
-    this.id = id;
+  constructor(name: string, title: string) {
+    super(name, true, true);
     this.title = title;
 
-    this.replies = discord.interactions.createReplies(this.id, true);
-
-    this.data = new ModalBuilder().setCustomId(this.id).setTitle(this.title);
+    this.data = new ModalBuilder().setCustomId(this.name).setTitle(this.title);
   }
 
   async run(interaction: ModalSubmitInteraction): Promise<void> {
-    Stumper.info(`Running modal submit for ${this.id}`, "common:ModalMenu:run");
+    Stumper.info(`Running modal submit for ${this.name.split("-")[0]}`, "common:ModalMenu:run");
     this.replies.setInteraction(interaction);
     await this.replies.deferReply();
     await this.execute(interaction);
@@ -35,5 +29,17 @@ export default abstract class ModalMenu {
 
   protected getTextInputValue(interaction: ModalSubmitInteraction, customId: string): string {
     return interaction.fields.getTextInputValue(customId);
+  }
+
+  getIdWithoutData(id: string): string {
+    return id.split("-")[0];
+  }
+
+  getDataFromId(id: string): string | undefined {
+    const idSplit = id.split("-");
+    if (idSplit.length > 1) {
+      return idSplit[1];
+    }
+    return undefined;
   }
 }

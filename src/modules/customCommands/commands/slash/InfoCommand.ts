@@ -8,7 +8,7 @@ import ConfigManager from "@common/config/ConfigManager";
 
 export default class InfoCommand extends AdminAutocompleteSlashCommand {
   constructor() {
-    super("custominfo", "Returns the info for the specified custom command.", true);
+    super("custominfo", "Returns the info for the specified custom command.", { ephermal: true });
 
     this.data.addStringOption((option) =>
       option.setName("name").setDescription(`The name of the command to get the info for.`).setRequired(true).setAutocomplete(true),

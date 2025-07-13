@@ -8,7 +8,7 @@ import Stumper from "stumper";
 
 export default class ViewCommand extends AdminSlashCommand {
   constructor() {
-    super("userview", "View info for a user", true);
+    super("userview", "View info for a user", { ephermal: true });
 
     this.data
       .addUserOption((option) => option.setName("user").setDescription("The user to ge the info for").setRequired(true))

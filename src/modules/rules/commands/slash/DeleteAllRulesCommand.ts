@@ -7,7 +7,7 @@ import Stumper from "stumper";
 
 export default class DeleteAllRulesCommand extends AdminSlashCommand {
   constructor() {
-    super("ruledeleteall", "Deletes all of the rules from the channel", true);
+    super("ruledeleteall", "Deletes all of the rules from the channel", { ephermal: true });
 
     this.data.addStringOption((option) => option.setName("confirm").setDescription("Enter CONFIRM to confirm").setRequired(true));
   }

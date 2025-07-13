@@ -6,7 +6,7 @@ import { sendLogMessage } from "../../utils/ChannelLogging";
 
 export default class NoteUserCommand extends AdminSlashCommand {
   constructor() {
-    super("usernote", "Add a note to a user", true);
+    super("usernote", "Add a note to a user", { ephermal: true });
 
     this.data
       .addUserOption((option) => option.setName("user").setDescription("The user to add the note to").setRequired(true))

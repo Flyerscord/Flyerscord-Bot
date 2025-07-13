@@ -5,7 +5,7 @@ import CustomCommandsDB from "@modules/customCommands/providers/CustomCommands.D
 
 export default class UpdateCommandListCommand extends AdminSlashCommand {
   constructor() {
-    super("updatecustomlist", "Update the custom commands list", true);
+    super("updatecustomlist", "Update the custom commands list", { ephermal: true });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

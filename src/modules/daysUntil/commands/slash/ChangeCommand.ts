@@ -6,7 +6,7 @@ import Time from "@common/utils/Time";
 
 export default class ChangeCommand extends AdminSlashCommand {
   constructor() {
-    super("daysuntilchange", "Change the event to get the number of days until", true);
+    super("daysuntilchange", "Change the event to get the number of days until", { ephermal: true });
 
     this.data
       .addStringOption((option) =>

@@ -37,20 +37,22 @@ async function onSlashCommand(client: Client, interaction: ChatInputCommandInter
     await command.run(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onSlashCommand");
-    command.replies?.reply({ content: "There was an error while executing this command!", ephemeral: true });
+    command.replies.reply({ content: "There was an error while executing this command!", ephemeral: true });
   }
 }
 
 async function onModalSubmit(client: Client, interaction: ModalSubmitInteraction): Promise<void> {
-  if (!interaction.isModalSubmit()) return;
+  if (!interaction.isModalSubmit() || !(interaction instanceof ModalSubmitInteraction)) return;
 
-  const modal: ModalMenu | undefined = client.modals.get(interaction.customId);
+  const idWithoutData = interaction.customId.split("-")[0];
+
+  const modal: ModalMenu | undefined = client.modals.find((modal: ModalMenu) => modal.name.startsWith(idWithoutData));
   if (!modal) return;
   try {
     await modal.run(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onModalSubmit");
-    modal.replies?.reply({ content: "There was an error while executing this modal submit!", ephemeral: true });
+    modal.replies.reply({ content: "There was an error while executing this modal submit!", ephemeral: true });
   }
 }
 
@@ -63,7 +65,7 @@ async function onUserContextMenuCommand(client: Client, interaction: UserContext
     await userContextMenu.run(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onUserContextMenuCommand");
-    userContextMenu.replies?.reply({ content: "There was an error while executing this user context menu command!", ephemeral: true });
+    userContextMenu.replies.reply({ content: "There was an error while executing this user context menu command!", ephemeral: true });
   }
 }
 
@@ -76,6 +78,6 @@ async function onMessageContextMenuCommand(client: Client, interaction: MessageC
     await messageContextMenu.run(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onMessageContextMenuCommand");
-    messageContextMenu.replies?.reply({ content: "There was an error while executing this message context menu command!", ephemeral: true });
+    messageContextMenu.replies.reply({ content: "There was an error while executing this message context menu command!", ephemeral: true });
   }
 }

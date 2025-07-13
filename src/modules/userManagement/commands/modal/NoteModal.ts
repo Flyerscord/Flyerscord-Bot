@@ -1,16 +1,14 @@
-import { ModalSubmitInteraction, TextInputStyle, User } from "discord.js";
+import { ModalSubmitInteraction, TextInputStyle } from "discord.js";
 import ModalMenu from "@common/models/ModalMenu";
 import { ActionRowBuilder, TextInputBuilder } from "@discordjs/builders";
 import UserManagementDB from "../../providers/UserManagement.Database";
 import { sendLogMessage } from "../../utils/ChannelLogging";
 import Stumper from "stumper";
+import discord from "@common/utils/discord/discord";
 
 export default class NoteModal extends ModalMenu {
-  targetUser: User;
-
-  constructor(targetUser: User) {
-    super("noteModal", "User Note");
-    this.targetUser = targetUser;
+  constructor(targetUser: string) {
+    super(`noteModal-${targetUser}`, "User Note");
 
     const noteInput = new TextInputBuilder()
       .setCustomId("noteInput")
@@ -23,13 +21,23 @@ export default class NoteModal extends ModalMenu {
   }
 
   async execute(interaction: ModalSubmitInteraction): Promise<void> {
+    const targetUserId = this.getDataFromId(interaction.customId);
+    if (!targetUserId) {
+      await this.replies.reply({ content: "Error getting target user id!" });
+      return;
+    }
+    const targetUser = discord.users.getUser(targetUserId);
+    if (!targetUser) {
+      await this.replies.reply({ content: "Error finding target user!" });
+      return;
+    }
     const note = this.getTextInputValue(interaction, "noteInput");
 
     const db = UserManagementDB.getInstance();
-    db.addNote(this.targetUser.id, note, interaction.user.id);
+    db.addNote(targetUser.id, note, interaction.user.id);
 
-    Stumper.info(`Added note for user: ${this.targetUser.username} by user ${interaction.user.username}`, "userManagement:NoteUserCommand:execute");
-    sendLogMessage(`Added note for user: ${this.targetUser.username} by user ${interaction.user.username} Note: ${note}`);
-    await this.replies.reply(`Added note for user: ${this.targetUser.username}!`);
+    Stumper.info(`Added note for user: ${targetUser.username} by user ${interaction.user.username}`, "userManagement:NoteUserCommand:execute");
+    sendLogMessage(`Added note for user: ${targetUser.username} by user ${interaction.user.username} Note: ${note}`);
+    await this.replies.reply(`Added note for user: ${targetUser.username}!`);
   }
 }

@@ -5,7 +5,7 @@ import ConfigManager from "@common/config/ConfigManager";
 
 export default class DeleteCommand extends AdminAutocompleteSlashCommand {
   constructor() {
-    super("customremove", "Remove a custom command", true);
+    super("customremove", "Remove a custom command", { ephermal: true });
 
     this.data.addStringOption((option) =>
       option.setName("name").setDescription(`The name of the command. Case insensitive`).setRequired(true).setAutocomplete(true),

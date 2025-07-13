@@ -6,7 +6,7 @@ import ConfigManager from "@common/config/ConfigManager";
 
 export default class RemovePinContext extends AdminMessageContextMenuCommand {
   constructor() {
-    super("Remove Pin", true);
+    super("Remove Pin", { ephermal: true });
   }
 
   async execute(interaction: MessageContextMenuCommandInteraction): Promise<void> {

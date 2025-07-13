@@ -5,7 +5,7 @@ import Stumper from "stumper";
 
 export default class TriggerStatVoiceChannelUpdateCommand extends AdminSlashCommand {
   constructor() {
-    super("triggerstatvoicechannelupdate", "Manually trigger the stat voice channel update process", true);
+    super("triggerstatvoicechannelupdate", "Manually trigger the stat voice channel update process", { ephermal: true });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

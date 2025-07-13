@@ -55,7 +55,7 @@ function readTextCommands(client: Client): void {
 function readModals(client: Client): void {
   const modalMenus = ModalMenuManager.getInstance().getCommands();
   modalMenus.forEach((command) => {
-    client.modals.set(command.id, command);
+    client.modals.set(command.name, command);
   });
 
   Stumper.success(`Successfully loaded ${client.modals.size} modals!`, "common:onReady:readModals");

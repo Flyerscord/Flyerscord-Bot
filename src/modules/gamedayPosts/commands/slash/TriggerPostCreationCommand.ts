@@ -4,7 +4,7 @@ import { checkForGameDay, closeAndLockOldPosts } from "../../utils/GameChecker";
 
 export default class TriggerPostCreationCommand extends AdminSlashCommand {
   constructor() {
-    super("triggerpostcreation", "Trigger the post creation process", true);
+    super("triggerpostcreation", "Trigger the post creation process", { ephermal: true });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

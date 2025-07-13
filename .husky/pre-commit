@@ -3,6 +3,8 @@
 set -e
 
 npm run generate-config
+git add src/common/config/defaults.config.ts
+
 npm run format
 
 # Add files that were already staged and modified by the formatter to staging

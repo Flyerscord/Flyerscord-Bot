@@ -56,6 +56,10 @@ export default {
     reactionRoles: [],
   },
   registercommands: {},
+  rules: {
+    channelId: "",
+    sections: ["Welcome", "Rules", "Staff", "Roles", "Channels", "Servers"],
+  },
   statsvoicechannel: {
     channels: [],
   },

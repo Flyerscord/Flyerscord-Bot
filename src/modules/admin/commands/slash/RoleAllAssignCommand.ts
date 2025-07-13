@@ -4,7 +4,7 @@ import discord from "@common/utils/discord/discord";
 
 export default class RoleAllAssignCommand extends AdminSlashCommand {
   constructor() {
-    super("roleallassign", "Assign the role to all members of the server");
+    super("roleallassign", "Assign the role to all members of the server", true);
 
     this.data
       .addRoleOption((option) => option.setName("role").setDescription("The role to assign to everyone").setRequired(true))
@@ -14,14 +14,12 @@ export default class RoleAllAssignCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const replies = await discord.interactions.createReplies(interaction, "admin:RoleAllAssignCommand:execute", true);
-
     const role: Role = this.getParamValue(interaction, PARAM_TYPES.ROLE, "role");
     const onlyNoRole: boolean = this.getParamValue(interaction, PARAM_TYPES.BOOLEAN, "onlynonrole") || false;
 
     const members = await discord.members.getMembers();
     if (!members) {
-      await replies.reply("Error retreiving the guild members");
+      await this.replies.reply("Error retreiving the guild members");
       return;
     }
 
@@ -34,9 +32,9 @@ export default class RoleAllAssignCommand extends AdminSlashCommand {
     });
 
     if (onlyNoRole) {
-      await replies.reply(`Adding the following role to users that do not have a role: ${role.name}`);
+      await this.replies.reply(`Adding the following role to users that do not have a role: ${role.name}`);
     } else {
-      await replies.reply(`Adding the following role to all users: ${role.name}`);
+      await this.replies.reply(`Adding the following role to all users: ${role.name}`);
     }
   }
 }

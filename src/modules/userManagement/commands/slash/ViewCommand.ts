@@ -8,7 +8,7 @@ import Stumper from "stumper";
 
 export default class ViewCommand extends AdminSlashCommand {
   constructor() {
-    super("userview", "View info for a user");
+    super("userview", "View info for a user", true);
 
     this.data
       .addUserOption((option) => option.setName("user").setDescription("The user to ge the info for").setRequired(true))
@@ -22,8 +22,6 @@ export default class ViewCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const replies = await discord.interactions.createReplies(interaction, "userManagement:ViewCommand:execute", true);
-
     const user: User = this.getParamValue(interaction, PARAM_TYPES.USER, "user");
     const view: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "view");
 
@@ -32,9 +30,9 @@ export default class ViewCommand extends AdminSlashCommand {
 
     const embed = await createEmbed(userInfo, view);
     if (embed) {
-      await replies.reply({ embeds: [embed] });
+      this.replies.reply({ embeds: [embed] });
     } else {
-      await replies.reply("There was an error finding the info for the user!");
+      this.replies.reply("There was an error finding the info for the user!");
     }
   }
 }

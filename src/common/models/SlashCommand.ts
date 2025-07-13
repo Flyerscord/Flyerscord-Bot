@@ -1,20 +1,45 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import ClientManager from "@common/managers/ClientManager";
+import {
+  AutocompleteFocusedOption,
+  AutocompleteInteraction,
+  ChatInputCommandInteraction,
+  Interaction,
+  InteractionContextType,
+  PermissionsBitField,
+  SlashCommandBuilder,
+} from "discord.js";
+import type { InteractionReplies } from "@common/utils/discord/InteractionReplies";
+import discord from "@common/utils/discord/discord";
+import Stumper from "stumper";
 
 export default abstract class SlashCommand {
   readonly data: SlashCommandBuilder;
 
   readonly name: string;
   readonly description: string;
+  readonly ephemeral: boolean;
 
-  constructor(name: string, description: string) {
+  replies: InteractionReplies;
+
+  constructor(name: string, description: string, ephemeral: boolean = false) {
     this.name = name.toLowerCase();
     this.description = description;
+    this.ephemeral = ephemeral;
 
-    this.data = new SlashCommandBuilder().setName(this.name).setDescription(this.description).setDMPermission(false);
+    this.replies = discord.interactions.createReplies(this.name, this.ephemeral);
+
+    this.data = new SlashCommandBuilder().setName(this.name).setDescription(this.description).setContexts([InteractionContextType.Guild]);
   }
 
-  abstract execute(interaction: ChatInputCommandInteraction): Promise<void>;
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
+    Stumper.info(`Running command: ${this.name} User: ${interaction.user.id}`, "common:SlashCommand:run");
+    this.replies.setInteraction(interaction);
+    await this.replies.deferReply();
+    await this.execute(interaction);
+  }
+
+  protected abstract execute(interaction: ChatInputCommandInteraction): Promise<void>;
 
   protected getParamValue(interaction: ChatInputCommandInteraction, type: PARAM_TYPES, paramName: string): any | null {
     let val: any = undefined;
@@ -60,9 +85,83 @@ export default abstract class SlashCommand {
   }
 }
 
+export abstract class AutocompleteSlashCommand extends SlashCommand {
+  constructor(name: string, description: string, ephemeral: boolean = false) {
+    super(name, description, ephemeral);
+
+    this.registerAutoCompleteListener();
+  }
+
+  /**
+   *
+   * @param interaction: The AutocompleteInteraction
+   * @returns A complete list of all possible options for the autocomplete. The list will be filtered automatically. Undefined if autocomplete is not compatible with the command.
+   */
+  protected abstract getAutoCompleteOptions(interaction: AutocompleteInteraction): Promise<string[] | undefined>;
+
+  private registerAutoCompleteListener(): void {
+    const client = ClientManager.getInstance().client;
+    client.on("interactionCreate", async (interaction: Interaction) => {
+      if (!interaction.isAutocomplete()) return;
+      interaction as AutocompleteInteraction;
+
+      if (interaction.commandName != this.name) return;
+
+      let options = await this.getAutoCompleteOptions(interaction);
+      if (!options) return;
+
+      options = this.filterList(options, this.getFocusedOption(interaction).value);
+
+      await this.sendAutoCompleteOptions(interaction, options);
+    });
+  }
+
+  private async sendAutoCompleteOptions(interaction: AutocompleteInteraction, options: string[]): Promise<void> {
+    if (options.length > 25) {
+      options = options.slice(0, 24);
+    }
+    await interaction.respond(options.map((option) => ({ name: option, value: option })));
+  }
+
+  private filterList(list: string[], value: string): string[] {
+    return list.filter((ele) => ele.toLowerCase().startsWith(value.toLowerCase()));
+  }
+
+  protected getFocusedOptionName(interaction: AutocompleteInteraction): string {
+    return interaction.options.getFocused(true).name;
+  }
+
+  protected getFocusedOption(interaction: AutocompleteInteraction): AutocompleteFocusedOption {
+    return interaction.options.getFocused(true);
+  }
+
+  protected getOptionValue(interaction: AutocompleteInteraction, type: OPTION_TYPES, paramName: string): string | boolean | number | null {
+    switch (type) {
+      case OPTION_TYPES.STRING:
+        return interaction.options.getString(paramName);
+      case OPTION_TYPES.BOOLEAN:
+        return interaction.options.getBoolean(paramName);
+      case OPTION_TYPES.INTEGER:
+        return interaction.options.getInteger(paramName);
+    }
+  }
+
+  protected getSubCommand(interaction: AutocompleteInteraction): string | null {
+    return interaction.options.getSubcommand(false);
+  }
+}
+
 export abstract class AdminSlashCommand extends SlashCommand {
-  constructor(name: string, description: string) {
-    super(name, description);
+  constructor(name: string, description: string, ephemeral: boolean = false) {
+    super(name, description, ephemeral);
+
+    this.data.setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
+  }
+}
+
+export abstract class AdminAutocompleteSlashCommand extends AutocompleteSlashCommand {
+  constructor(name: string, description: string, ephemeral: boolean = false) {
+    super(name, description, ephemeral);
 
     this.data.setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
   }
@@ -77,4 +176,10 @@ export enum PARAM_TYPES {
   USER,
   MEMBER,
   ATTACHMENT,
+}
+
+export enum OPTION_TYPES {
+  STRING,
+  INTEGER,
+  BOOLEAN,
 }

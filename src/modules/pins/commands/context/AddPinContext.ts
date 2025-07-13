@@ -12,11 +12,9 @@ export default class AddPinContext extends AdminMessageContextMenuCommand {
   }
 
   async execute(interaction: MessageContextMenuCommandInteraction): Promise<void> {
-    const replies = await discord.interactions.createReplies(interaction, "pins:AddPinContext:execute");
-
     const message = interaction.targetMessage;
     if (!message) {
-      await replies.reply({ content: "Error adding pin!", ephemeral: true });
+      this.replies.reply({ content: "Error adding pin!", ephemeral: true });
       return;
     }
 
@@ -24,33 +22,33 @@ export default class AddPinContext extends AdminMessageContextMenuCommand {
     const config = ConfigManager.getInstance().getConfig("Pins");
 
     if (db.getPinByMessageId(message.id)) {
-      await replies.reply({ content: "Cannot pin a pinned message!", ephemeral: true });
+      this.replies.reply({ content: "Cannot pin a pinned message!", ephemeral: true });
       return;
     }
 
     const pin = db.addPin(message.id, message.channelId, message.createdAt, interaction.user.id);
     if (!pin) {
       Stumper.error(`Failed to add pin for message ${message.id}. Message is already pinned!`, "pins:AddPinContext:execute");
-      await replies.reply({ content: "Error adding pin! Message is already pinned!", ephemeral: true });
+      this.replies.reply({ content: "Error adding pin! Message is already pinned!", ephemeral: true });
       return;
     }
 
     const embed = await getPinEmbed(pin);
     if (!embed) {
       Stumper.error(`Failed to get embed for pin message!`, "pins:AddPinContext:execute");
-      await replies.reply({ content: "Error adding pin!", ephemeral: true });
+      this.replies.reply({ content: "Error adding pin!", ephemeral: true });
       return;
     }
 
     const pinMessage = await discord.messages.sendEmbedToChannel(config.channelId, embed);
     if (!pinMessage) {
       Stumper.error(`Failed to send message to pins channel!`, "pins:AddPinContext:execute");
-      await replies.reply({ content: "Error adding pin!", ephemeral: true });
+      this.replies.reply({ content: "Error adding pin!", ephemeral: true });
       return;
     }
 
     db.updateMessageId(message.id, pinMessage.id);
 
-    await replies.reply(`Pin added! Checkout <#${config.channelId}> to see all pins!`);
+    this.replies.reply(`Pin added! Checkout <#${config.channelId}> to see all pins!`);
   }
 }

@@ -20,15 +20,13 @@ export default class BanSlashCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const replies = await discord.interactions.createReplies(interaction, "userManagement:BanSlashCommand:execute");
-
     const user: User = this.getParamValue(interaction, PARAM_TYPES.USER, "user");
     const reason: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "reason");
     const deleteMessagesSeconds: number = this.getParamValue(interaction, PARAM_TYPES.INTEGER, "deletemessagestime") || 0;
 
     const member = await discord.members.getMember(user.id);
     if (!member) {
-      await replies.reply({ content: "Error finding member!", ephemeral: true });
+      this.replies.reply({ content: "Error finding member!", ephemeral: true });
       Stumper.error(`Error finding member for user ${user.id}`, "userManagement:BanSlashCommand:execute");
       return;
     }
@@ -48,6 +46,6 @@ export default class BanSlashCommand extends AdminSlashCommand {
       sendLogMessage(`Deleting messages from \`${username}\` for the last \`${deleteMessagesSeconds} seconds.\``);
     }
 
-    await replies.reply(`User ${username} has been banned!`);
+    this.replies.reply(`User ${username} has been banned!`);
   }
 }

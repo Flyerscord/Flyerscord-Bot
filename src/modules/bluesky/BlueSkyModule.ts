@@ -1,7 +1,6 @@
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import Module from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
-import onAutocomplete from "./listeners/onAutocomplete";
 import AccountHistoryDB from "./providers/AccountHistory.Database";
 import BlueSkyDB from "./providers/BlueSky.Database";
 import CheckForNewPostsTask from "./tasks/CheckForNewPostsTask";
@@ -18,7 +17,6 @@ export default class BlueSkyModule extends Module<IBlueSkyConfig> {
     // Login to BlueSky
     BlueSky.getInstance();
 
-    this.registerListeners();
     this.registerSchedules();
   }
 
@@ -38,10 +36,6 @@ export default class BlueSkyModule extends Module<IBlueSkyConfig> {
 
   private registerSchedules(): void {
     CheckForNewPostsTask.getInstance().createScheduledJob();
-  }
-
-  private registerListeners(): void {
-    onAutocomplete();
   }
 }
 

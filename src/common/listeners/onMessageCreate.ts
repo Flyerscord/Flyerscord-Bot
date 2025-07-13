@@ -12,7 +12,7 @@ export default (client: Client): void => {
 
 function checkForNormalTextCommand(message: Message): boolean {
   const configManager = ConfigManager.getInstance();
-  const prefix = configManager.getConfig("CustomCommands").prefix;
+  const prefix = configManager.getConfig("CustomCommands")?.prefix ?? "!";
   const adminPrefix = configManager.getConfig("Common").adminPrefix;
   if (message.author.bot) return false;
   if (!message.channel.isTextBased()) return false;

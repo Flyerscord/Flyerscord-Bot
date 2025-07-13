@@ -56,8 +56,6 @@ export default class StandingsCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const replies = await discord.interactions.createReplies(interaction, "nhl:StandingsCommand:execute");
-
     const res = await nhlApi.teams.standings.getCurrentStandings();
 
     if (res.status == 200) {
@@ -68,29 +66,29 @@ export default class StandingsCommand extends SlashCommand {
         const divStandings = this.getDivisionStandings(standings.standings, division);
 
         const embed = await this.createDivisionEmbed(division, divStandings);
-        await replies.reply({ embeds: [embed] });
+        this.replies.reply({ embeds: [embed] });
       } else if (this.isSubCommand(interaction, "conference")) {
         const conference: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "conference");
 
         const confStandings = this.getConferenceStandings(standings.standings, conference);
 
         const embed = await this.createConferenceEmbed(conference, confStandings);
-        await replies.reply({ embeds: [embed] });
+        this.replies.reply({ embeds: [embed] });
       } else if (this.isSubCommand(interaction, "league")) {
         const leagueStandings = this.getLeagueStandings(standings.standings);
 
         const embeds = await this.createLeagueEmbeds(leagueStandings);
-        await replies.reply({ embeds: embeds });
+        this.replies.reply({ embeds: embeds });
       } else if (this.isSubCommand(interaction, "wildcard")) {
         const conference: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "conference");
 
         const wildcardStandings = this.getConferenceStandings(standings.standings, conference);
 
         const embeds = await this.createWildcardEmbeds(conference, wildcardStandings);
-        await replies.reply({ embeds: embeds });
+        this.replies.reply({ embeds: embeds });
       }
     } else {
-      await replies.reply({ content: "Error fetching the standings!", ephemeral: true });
+      this.replies.reply({ content: "Error fetching the standings!", ephemeral: true });
     }
   }
 

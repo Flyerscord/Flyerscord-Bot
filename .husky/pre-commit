@@ -6,4 +6,11 @@ npm run generate-config
 git add src/common/config/defaults.config.ts
 
 npm run format
-git diff --name-only --cached | xargs git add
+
+# Add files that were already staged and modified by the formatter to staging
+# Dont add files that were deleted
+git diff --name-status --cached | while read status file; do
+  if [ "$status" != "D" ]; then
+    git add "$file"
+  fi
+done

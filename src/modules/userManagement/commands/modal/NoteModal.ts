@@ -23,8 +23,6 @@ export default class NoteModal extends ModalMenu {
   }
 
   async execute(interaction: ModalSubmitInteraction): Promise<void> {
-    await interaction.deferReply({ ephemeral: true });
-
     const note = this.getTextInputValue(interaction, "noteInput");
 
     const db = UserManagementDB.getInstance();
@@ -32,6 +30,6 @@ export default class NoteModal extends ModalMenu {
 
     Stumper.info(`Added note for user: ${this.targetUser.username} by user ${interaction.user.username}`, "userManagement:NoteUserCommand:execute");
     sendLogMessage(`Added note for user: ${this.targetUser.username} by user ${interaction.user.username} Note: ${note}`);
-    interaction.editReply(`Added note for user: ${this.targetUser.username}!`);
+    await this.replies.reply(`Added note for user: ${this.targetUser.username}!`);
   }
 }

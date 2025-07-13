@@ -3,7 +3,6 @@ import SlashCommand, { PARAM_TYPES } from "@common/models/SlashCommand";
 import { events } from "../../models/DaysUntilEvents";
 import DaysUntilDB from "../../providers/DaysUtil.Database";
 import Time from "@common/utils/Time";
-import discord from "@common/utils/discord/discord";
 
 export default class DaysUntilCommand extends SlashCommand {
   constructor() {
@@ -15,14 +14,12 @@ export default class DaysUntilCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const replies = await discord.interactions.createReplies(interaction, "customCommands:InfoCommand:execute");
-
     const eventKey: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "event");
 
     const event = Object.values(events).find((event) => event.name == eventKey);
 
     if (!event) {
-      await replies.reply({ content: "Error finding event!", ephemeral: true });
+      this.replies.reply({ content: "Error finding event!", ephemeral: true });
       return;
     }
 
@@ -40,6 +37,6 @@ export default class DaysUntilCommand extends SlashCommand {
       output = event.exactMessage;
     }
 
-    await replies.reply(output);
+    this.replies.reply(output);
   }
 }

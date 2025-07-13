@@ -1,16 +1,15 @@
-import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js";
+import { AdminAutocompleteSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import CustomCommandsDB from "../../providers/CustomCommands.Database";
 import { InvalidImgurUrlException } from "../../exceptions/InvalidImgurUrlException";
 import { ErrorUploadingToImageKitException } from "../../exceptions/ErrorUploadingToImageKitException";
 import Stumper from "stumper";
 import PageNotFoundException from "../../exceptions/PageNotFoundException";
 import ConfigManager from "@common/config/ConfigManager";
-import discord from "@common/utils/discord/discord";
 
-export default class EditCommand extends AdminSlashCommand {
+export default class EditCommand extends AdminAutocompleteSlashCommand {
   constructor() {
-    super("customedit", "Update a custom command");
+    super("customedit", "Update a custom command", true);
 
     this.data
       .addStringOption((option) =>
@@ -22,8 +21,6 @@ export default class EditCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const replies = await discord.interactions.createReplies(interaction, "customCommands:EditCommand:execute", true);
-
     const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
 
     const db = CustomCommandsDB.getInstance();
@@ -34,7 +31,7 @@ export default class EditCommand extends AdminSlashCommand {
     name = name.toLowerCase();
 
     if (!db.hasCommand(name)) {
-      await replies.reply(`Command ${prefix}${name} does not exist!`);
+      this.replies.reply(`Command ${prefix}${name} does not exist!`);
       return;
     }
 
@@ -43,16 +40,26 @@ export default class EditCommand extends AdminSlashCommand {
     } catch (error) {
       Stumper.caughtError(error, "customCommands:EditCommand:execute");
       if (error instanceof InvalidImgurUrlException || error instanceof ErrorUploadingToImageKitException) {
-        await replies.reply(`Error updating command ${prefix}${name}! There was an issue with the url. Contact flyerzrule for help.`);
+        this.replies.reply(`Error updating command ${prefix}${name}! There was an issue with the url. Contact flyerzrule for help.`);
         return;
       } else if (error instanceof PageNotFoundException) {
-        await replies.reply(`Error adding command ${prefix}${name}! The url returns a 404.`);
+        this.replies.reply(`Error adding command ${prefix}${name}! The url returns a 404.`);
         return;
       } else {
-        await replies.reply(`Error adding command ${prefix}${name}!`);
+        this.replies.reply(`Error adding command ${prefix}${name}!`);
         throw error;
       }
     }
-    await replies.reply(`Command ${prefix}${name} updated!`);
+    this.replies.reply(`Command ${prefix}${name} updated!`);
+  }
+
+  async getAutoCompleteOptions(interaction: AutocompleteInteraction): Promise<string[] | undefined> {
+    const focusedName = this.getFocusedOptionName(interaction);
+
+    if (focusedName == "name") {
+      const db = CustomCommandsDB.getInstance();
+      return db.getAllCommandNames();
+    }
+    return undefined;
   }
 }

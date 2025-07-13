@@ -3,11 +3,10 @@ import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import DaysUntilDB from "../../providers/DaysUtil.Database";
 import { events } from "../../models/DaysUntilEvents";
 import Time from "@common/utils/Time";
-import discord from "@common/utils/discord/discord";
 
 export default class ChangeCommand extends AdminSlashCommand {
   constructor() {
-    super("daysuntilchange", "Change the event to get the number of days until");
+    super("daysuntilchange", "Change the event to get the number of days until", true);
 
     this.data
       .addStringOption((option) =>
@@ -19,20 +18,18 @@ export default class ChangeCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const replies = await discord.interactions.createReplies(interaction, "customCommands:ChangeCommand:execute", true);
-
     const dateStr = this.getParamValue(interaction, PARAM_TYPES.STRING, "date");
     const eventKey: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "event");
 
     const event = Object.values(events).find((event) => event.name == eventKey);
     if (!event) {
-      await replies.reply("Error finding event!");
+      this.replies.reply("Error finding event!");
       return;
     }
 
     const date = Time.getDateFromString(dateStr);
     if (!date) {
-      await replies.reply("Error parsing date!");
+      this.replies.reply("Error parsing date!");
       return;
     }
 
@@ -40,6 +37,6 @@ export default class ChangeCommand extends AdminSlashCommand {
 
     db.setEventDate(event.dbKey, date.getTime());
 
-    await replies.reply(`Event ${event.name} date set to ${dateStr}!`);
+    this.replies.reply(`Event ${event.name} date set to ${dateStr}!`);
   }
 }

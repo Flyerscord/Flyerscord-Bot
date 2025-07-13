@@ -24,7 +24,6 @@ export default class LeaderboardCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const replies = await discord.interactions.createReplies(interaction, "levels:LeaderboardCommand:execute");
     const db = LevelsDB.getInstance();
     const users = db.getAllUsersSortedByExp();
     const totalPages = Math.ceil(users.length / this.EMBED_PAGE_SIZE);
@@ -46,7 +45,7 @@ export default class LeaderboardCommand extends SlashCommand {
     const row = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(prevButton, nextButton);
 
     // Send the initial message with the first page and buttons
-    const message = await replies.reply({ embeds: [await this.createEmbedPage(users, currentPage)], components: [row] });
+    const message = await this.replies.reply({ embeds: [await this.createEmbedPage(users, currentPage)], components: [row] });
 
     if (!message) {
       return;
@@ -83,13 +82,13 @@ export default class LeaderboardCommand extends SlashCommand {
       nextButton.setDisabled(currentPage === totalPages);
 
       // Update the embed and buttons
-      await replies.reply({ embeds: [await this.createEmbedPage(users, currentPage)], components: [row] });
+      this.replies.reply({ embeds: [await this.createEmbedPage(users, currentPage)], components: [row] });
     });
 
     collector.on("end", async () => {
       prevButton.setDisabled(true);
       nextButton.setDisabled(true);
-      await replies.reply({ components: [row] });
+      this.replies.reply({ components: [row] });
     });
   }
 

@@ -19,8 +19,6 @@ export default class ScheduleCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const replies = await discord.interactions.createReplies(interaction, "nhl:ScheduleCommand:execute");
-
     const numberOfGames: number = this.getParamValue(interaction, PARAM_TYPES.INTEGER, "number") || 5;
 
     const scheduleResponse = await nhlApi.teams.schedule.getCurrentTeamSchedule({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
@@ -29,13 +27,13 @@ export default class ScheduleCommand extends SlashCommand {
       const schedule = scheduleResponse.data;
 
       const embed = await this.createEmbed(numberOfGames, schedule);
-      await replies.reply({ embeds: [embed] });
+      this.replies.reply({ embeds: [embed] });
     } else {
       Stumper.error(
         `Error fetching the schedule data from the NHL API! Status code: ${scheduleResponse.status}`,
         "levels:LeaderboardCommand:execute",
       );
-      await replies.reply({ content: "Error fetching the data from the NHL API!", ephemeral: true });
+      this.replies.reply({ content: "Error fetching the data from the NHL API!", ephemeral: true });
     }
   }
 

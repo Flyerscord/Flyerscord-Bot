@@ -14,8 +14,6 @@ export default class TestAllCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const replies = await discord.interactions.createReplies(interaction, "customCommands:TestAllCommand:execute");
-
     const db = CustomCommandsDB.getInstance();
     let commands = db.getAllCommands();
 
@@ -46,9 +44,9 @@ export default class TestAllCommand extends AdminSlashCommand {
 
         await sleepSec(1);
       }
-      await replies.reply("Command test complete");
+      this.replies.reply("Command test complete");
     } else {
-      await replies.reply("Error testing commands");
+      this.replies.reply("Error testing commands");
     }
   }
 }

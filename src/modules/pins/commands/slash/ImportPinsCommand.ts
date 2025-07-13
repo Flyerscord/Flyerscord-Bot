@@ -8,14 +8,12 @@ import ConfigManager from "@common/config/ConfigManager";
 
 export default class ImportPinsCommand extends SlashCommand {
   constructor() {
-    super("importpins", "Import pins from a channel");
+    super("importpins", "Import pins from a channel", true);
 
     this.data.addChannelOption((option) => option.setName("channel").setDescription("The channel to import pins from").setRequired(true));
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const replies = await discord.interactions.createReplies(interaction, "pins:ImportPinsCommand:execute", true);
-
     const channel: Channel = this.getParamValue(interaction, PARAM_TYPES.CHANNEL, "channel");
     const db = PinsDB.getInstance();
     const config = ConfigManager.getInstance().getConfig("Pins");
@@ -26,7 +24,7 @@ export default class ImportPinsCommand extends SlashCommand {
       const textChannel = channel as TextChannel;
 
       if (config.channelId == textChannel.id) {
-        await replies.reply({ content: "Cannot import pins from the pins channel!", ephemeral: true });
+        this.replies.reply({ content: "Cannot import pins from the pins channel!", ephemeral: true });
         return;
       }
 
@@ -34,7 +32,7 @@ export default class ImportPinsCommand extends SlashCommand {
       const pinnedMessages = (await textChannel.messages.fetchPinned()).sort((a, b) => a.createdTimestamp - b.createdTimestamp);
 
       if (pinnedMessages.size == 0) {
-        await replies.reply({ content: "No pinned messages found!", ephemeral: true });
+        this.replies.reply({ content: "No pinned messages found!", ephemeral: true });
         return;
       }
 
@@ -65,9 +63,9 @@ export default class ImportPinsCommand extends SlashCommand {
     }
 
     if (hasFailures) {
-      await replies.reply("There were errors importing the pins! Some may have been skipped.");
+      this.replies.reply("There were errors importing the pins! Some may have been skipped.");
       return;
     }
-    await replies.reply("Pins imported successfully!");
+    this.replies.reply("Pins imported successfully!");
   }
 }

@@ -8,21 +8,37 @@ import {
   PermissionsBitField,
   SlashCommandBuilder,
 } from "discord.js";
+import type { InteractionReplies } from "@common/utils/discord/InteractionReplies";
+import discord from "@common/utils/discord/discord";
+import Stumper from "stumper";
 
 export default abstract class SlashCommand {
   readonly data: SlashCommandBuilder;
 
   readonly name: string;
   readonly description: string;
+  readonly ephemeral: boolean;
 
-  constructor(name: string, description: string) {
+  replies: InteractionReplies;
+
+  constructor(name: string, description: string, ephemeral: boolean = false) {
     this.name = name.toLowerCase();
     this.description = description;
+    this.ephemeral = ephemeral;
+
+    this.replies = discord.interactions.createReplies(this.name, this.ephemeral);
 
     this.data = new SlashCommandBuilder().setName(this.name).setDescription(this.description).setDMPermission(false);
   }
 
-  abstract execute(interaction: ChatInputCommandInteraction): Promise<void>;
+  async run(interaction: ChatInputCommandInteraction): Promise<void> {
+    Stumper.info(`Running command: ${this.name} User: ${interaction.user.id}`, "common:SlashCommand:run");
+    this.replies.setInteraction(interaction);
+    await this.replies.deferReply();
+    await this.execute(interaction);
+  }
+
+  protected abstract execute(interaction: ChatInputCommandInteraction): Promise<void>;
 
   protected getParamValue(interaction: ChatInputCommandInteraction, type: PARAM_TYPES, paramName: string): any | null {
     let val: any = undefined;
@@ -69,8 +85,8 @@ export default abstract class SlashCommand {
 }
 
 export abstract class AutocompleteSlashCommand extends SlashCommand {
-  constructor(name: string, description: string) {
-    super(name, description);
+  constructor(name: string, description: string, ephemeral: boolean = false) {
+    super(name, description, ephemeral);
 
     this.registerAutoCompleteListener();
   }
@@ -135,16 +151,16 @@ export abstract class AutocompleteSlashCommand extends SlashCommand {
 }
 
 export abstract class AdminSlashCommand extends SlashCommand {
-  constructor(name: string, description: string) {
-    super(name, description);
+  constructor(name: string, description: string, ephemeral: boolean = false) {
+    super(name, description, ephemeral);
 
     this.data.setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
   }
 }
 
 export abstract class AdminAutocompleteSlashCommand extends AutocompleteSlashCommand {
-  constructor(name: string, description: string) {
-    super(name, description);
+  constructor(name: string, description: string, ephemeral: boolean = false) {
+    super(name, description, ephemeral);
 
     this.data.setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
   }

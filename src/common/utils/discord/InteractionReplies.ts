@@ -12,19 +12,20 @@ import {
   Message,
   MessageActionRowComponentBuilder,
   MessageActionRowComponentData,
+  ModalSubmitInteraction,
   TopLevelComponentData,
 } from "discord.js";
 import Stream from "node:stream";
 import Stumper from "stumper";
 
-class InteractionReplies {
-  private interaction: CommandInteraction;
+export class InteractionReplies {
+  private interaction?: CommandInteraction | ModalSubmitInteraction;
   private ephemeral: boolean;
-  readonly source: string;
+  private source: string;
 
   private readonly defaults: Required<IInteractionReplieOptions>;
 
-  constructor(interaction: CommandInteraction, source: string, ephemeral: boolean = false) {
+  constructor(interaction: CommandInteraction | ModalSubmitInteraction | undefined, source: string, ephemeral: boolean = false) {
     this.interaction = interaction;
     this.ephemeral = ephemeral;
     this.source = source;
@@ -39,6 +40,8 @@ class InteractionReplies {
   }
 
   async deferReply(): Promise<void> {
+    if (!this.interaction) return;
+
     if (!this.interaction.deferred) {
       if (this.ephemeral) {
         await this.interaction.deferReply({ ephemeral: true });
@@ -51,6 +54,8 @@ class InteractionReplies {
   }
 
   async reply(content: string | IInteractionReplieOptions = {}): Promise<Message | undefined> {
+    if (!this.interaction) return;
+
     let options: IInteractionReplieOptions;
     if (typeof content === "string") {
       options = { content: content };
@@ -65,12 +70,12 @@ class InteractionReplies {
       return;
     }
 
-    if (!this.interaction.deferred) {
+    if (!this.isDeferred()) {
       Stumper.error(`Interaction ${this.interaction.id} is not deferred!`, this.source);
       return;
     }
 
-    if (this.interaction.replied) {
+    if (this.isReplied()) {
       Stumper.error(`Interaction ${this.interaction.id} has already replied!`, this.source);
       return;
     }
@@ -91,11 +96,15 @@ class InteractionReplies {
   }
 
   isDeferred(): boolean {
-    return this.interaction.replied;
+    return this.interaction?.deferred ?? false;
   }
 
   isReplied(): boolean {
-    return this.interaction.replied;
+    return this.interaction?.replied ?? false;
+  }
+
+  setInteraction(interaction: CommandInteraction | ModalSubmitInteraction): void {
+    this.interaction = interaction;
   }
 
   private getDefaultOptions(input: IInteractionReplieOptions): Required<IInteractionReplieOptions> {
@@ -116,10 +125,8 @@ class InteractionReplies {
   }
 }
 
-export async function createReplies(interaction: CommandInteraction, source: string, ephemeral: boolean = false): Promise<InteractionReplies> {
-  const replies = new InteractionReplies(interaction, source, ephemeral);
-  await replies.deferReply();
-  return replies;
+export function createReplies(source: string, ephemeral: boolean = false): InteractionReplies {
+  return new InteractionReplies(undefined, source, ephemeral);
 }
 
 export interface IInteractionReplieOptions {

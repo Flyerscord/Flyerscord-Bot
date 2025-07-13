@@ -8,7 +8,7 @@ import ConfigManager from "@common/config/ConfigManager";
 
 export default class InfoCommand extends AdminAutocompleteSlashCommand {
   constructor() {
-    super("custominfo", "Returns the info for the specified custom command.");
+    super("custominfo", "Returns the info for the specified custom command.", true);
 
     this.data.addStringOption((option) =>
       option.setName("name").setDescription(`The name of the command to get the info for.`).setRequired(true).setAutocomplete(true),
@@ -16,8 +16,6 @@ export default class InfoCommand extends AdminAutocompleteSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const replies = await discord.interactions.createReplies(interaction, "customCommands:InfoCommand:execute", true);
-
     const db = CustomCommandsDB.getInstance();
 
     const commandName: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "name");
@@ -26,9 +24,9 @@ export default class InfoCommand extends AdminAutocompleteSlashCommand {
 
     if (command) {
       const embed = await this.createEmbed(command);
-      await replies.reply({ embeds: [embed] });
+      this.replies.reply({ embeds: [embed] });
     } else {
-      await replies.reply(`A custom comamnd with the name ${commandName} does not exist!`);
+      this.replies.reply(`A custom comamnd with the name ${commandName} does not exist!`);
     }
   }
 

@@ -14,6 +14,7 @@ export default [
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
+        project: './tsconfig.json',
       },
     },
     plugins: {
@@ -26,6 +27,7 @@ export default [
       "@typescript-eslint/explicit-function-return-type": "error",
       "@typescript-eslint/explicit-module-boundary-types": "warn",
       "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-deprecated": "warn",
       "@typescript-eslint/explicit-member-accessibility": [
         "warn",
         {

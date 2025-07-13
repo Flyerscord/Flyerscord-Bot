@@ -12,6 +12,7 @@ import {
   Message,
   MessageActionRowComponentBuilder,
   MessageActionRowComponentData,
+  MessageFlagsBitField,
   ModalSubmitInteraction,
   TopLevelComponentData,
 } from "discord.js";
@@ -44,7 +45,7 @@ export class InteractionReplies {
 
     if (!this.interaction.deferred) {
       if (this.ephemeral) {
-        await this.interaction.deferReply({ ephemeral: true });
+        await this.interaction.deferReply({ flags: MessageFlagsBitField.Flags.Ephemeral });
       } else {
         await this.interaction.deferReply();
       }
@@ -88,7 +89,7 @@ export class InteractionReplies {
         files: opts.files,
         embeds: opts.embeds,
         content: opts.content,
-        ephemeral: true,
+        flags: MessageFlagsBitField.Flags.Ephemeral,
       });
     }
 

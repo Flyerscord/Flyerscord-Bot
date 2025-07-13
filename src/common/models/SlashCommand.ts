@@ -5,6 +5,7 @@ import {
   AutocompleteInteraction,
   ChatInputCommandInteraction,
   Interaction,
+  InteractionContextType,
   PermissionsBitField,
   SlashCommandBuilder,
 } from "discord.js";
@@ -28,7 +29,7 @@ export default abstract class SlashCommand {
 
     this.replies = discord.interactions.createReplies(this.name, this.ephemeral);
 
-    this.data = new SlashCommandBuilder().setName(this.name).setDescription(this.description).setDMPermission(false);
+    this.data = new SlashCommandBuilder().setName(this.name).setDescription(this.description).setContexts([InteractionContextType.Guild]);
   }
 
   async run(interaction: ChatInputCommandInteraction): Promise<void> {

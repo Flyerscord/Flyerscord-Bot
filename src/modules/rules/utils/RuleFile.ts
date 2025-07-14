@@ -5,6 +5,7 @@ import ConfigManager from "@common/config/ConfigManager";
 import Stumper from "stumper";
 import discord from "@common/utils/discord/discord";
 import { IRuleSectionPage } from "../interfaces/IRuleSection";
+import https from "node:https";
 
 export default class RuleFile {
   static getRulesFile(): AttachmentBuilder {
@@ -93,13 +94,18 @@ export default class RuleFile {
     let currentMessageIndex = 0;
     for (const [section, chunks] of contentChunks) {
       const headerContent = rulesDb.getSectionHeader(section);
-      await discord.messages.updateMessageWithText(channelId, messages[currentMessageIndex], headerContent);
+      if (headerContent.startsWith("http")) {
+        const attachment = await this.getImageAttachmentFromUrl(headerContent, section + ".png");
+        await discord.messages.updateMessageReplaceTextWithImage(channelId, messages[currentMessageIndex], attachment);
+      } else {
+        await discord.messages.updateMessageWithText(channelId, messages[currentMessageIndex], headerContent, true);
+      }
       rulesDb.setHeaderMessageId(section, messages[currentMessageIndex]);
       currentMessageIndex++;
 
       const contentPages: IRuleSectionPage[] = [];
       for (const chunk of chunks) {
-        await discord.messages.updateMessageWithText(channelId, messages[currentMessageIndex], chunk);
+        await discord.messages.updateMessageWithText(channelId, messages[currentMessageIndex], chunk, true);
         const contentPage: IRuleSectionPage = { messageId: messages[currentMessageIndex], content: chunk };
         contentPages.push(contentPage);
         currentMessageIndex++;
@@ -134,5 +140,24 @@ export default class RuleFile {
     }
 
     return chunks;
+  }
+
+  static async getImageAttachmentFromUrl(url: string, filename: string): Promise<AttachmentBuilder> {
+    const buffer = await this.downloadImageBuffer(url);
+    return new AttachmentBuilder(buffer, { name: filename });
+  }
+
+  private static downloadImageBuffer(url: string): Promise<Buffer> {
+    return new Promise((resolve, reject) => {
+      https
+        .get(url, (res) => {
+          const chunks: Uint8Array[] = [];
+
+          res.on("data", (chunk) => chunks.push(chunk));
+          res.on("end", () => resolve(Buffer.concat(chunks)));
+          res.on("error", reject);
+        })
+        .on("error", reject);
+    });
   }
 }

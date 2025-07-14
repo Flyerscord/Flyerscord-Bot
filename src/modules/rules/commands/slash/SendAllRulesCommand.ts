@@ -3,6 +3,7 @@ import { AdminSlashCommand } from "@common/models/SlashCommand";
 import discord from "@common/utils/discord/discord";
 import RuleMessagesDB from "@modules/rules/providers/RuleMessages.Database";
 import RulesDB from "@modules/rules/providers/Rules.Database";
+import RuleFile from "@modules/rules/utils/RuleFile";
 import { ChatInputCommandInteraction } from "discord.js";
 import Stumper from "stumper";
 
@@ -38,13 +39,18 @@ export default class SendAllRulesCommand extends AdminSlashCommand {
 
     let currentMessageIndex = 0;
     for (const sectionContent of sectionContents) {
-      await discord.messages.updateMessageWithText(channelId, messages[currentMessageIndex], sectionContent.headerUrl);
+      if (sectionContent.headerUrl.startsWith("http")) {
+        const attachment = await RuleFile.getImageAttachmentFromUrl(sectionContent.headerUrl, sectionContent.name + ".png");
+        await discord.messages.updateMessageReplaceTextWithImage(channelId, messages[currentMessageIndex], attachment);
+      } else {
+        await discord.messages.updateMessageWithText(channelId, messages[currentMessageIndex], sectionContent.headerUrl, true);
+      }
       rulesDb.setHeaderMessageId(sectionContent.name, messages[currentMessageIndex]);
       currentMessageIndex++;
 
       for (let i = 0; i < sectionContent.contentPages.length; i++) {
         const contentPage = sectionContent.contentPages[i];
-        await discord.messages.updateMessageWithText(channelId, messages[currentMessageIndex], contentPage.content);
+        await discord.messages.updateMessageWithText(channelId, messages[currentMessageIndex], contentPage.content, true);
         rulesDb.setContentPageMessageId(sectionContent.name, i, messages[currentMessageIndex]);
         currentMessageIndex++;
       }

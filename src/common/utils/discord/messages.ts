@@ -94,26 +94,46 @@ export async function sendEmbedDMToUser(userId: string, embed: EmbedBuilder): Pr
   return undefined;
 }
 
-export async function updateMessageWithText(channelId: string, messageId: string, newText: string): Promise<Message | undefined> {
+export async function updateMessageWithText(
+  channelId: string,
+  messageId: string,
+  newText: string,
+  removeOtherContent: boolean = false,
+): Promise<Message | undefined> {
   const message = await getMessage(channelId, messageId);
   if (message) {
-    return message.edit(newText);
+    if (removeOtherContent) {
+      return await message.edit({ content: newText, embeds: [], files: [], components: [] });
+    }
+    return await message.edit(newText);
   }
   return undefined;
 }
 
-export async function updateMessageWithEmbed(channelId: string, messageId: string, newEmbed: EmbedBuilder): Promise<Message | undefined> {
+export async function updateMessageWithEmbed(
+  channelId: string,
+  messageId: string,
+  newEmbed: EmbedBuilder,
+  removeOtherContent: boolean = false,
+): Promise<Message | undefined> {
   const message = await getMessage(channelId, messageId);
   if (message) {
-    return message.edit({ embeds: [newEmbed] });
+    if (removeOtherContent) {
+      return await message.edit({ content: null, embeds: [newEmbed], files: [], components: [] });
+    }
+    return await message.edit({ embeds: [newEmbed] });
   }
   return undefined;
 }
 
-export async function updateMessageReplaceTextWithImage(channelId: string, messageId: string, attachment: Attachment): Promise<Message | undefined> {
+export async function updateMessageReplaceTextWithImage(
+  channelId: string,
+  messageId: string,
+  attachment: Attachment | AttachmentBuilder,
+): Promise<Message | undefined> {
   const message = await getMessage(channelId, messageId);
   if (message) {
-    return message.edit({ files: [attachment], content: null });
+    return await message.edit({ files: [attachment], content: null });
   }
   return undefined;
 }

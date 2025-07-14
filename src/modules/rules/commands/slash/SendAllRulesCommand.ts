@@ -1,8 +1,10 @@
 import ConfigManager from "@common/config/ConfigManager";
 import { AdminSlashCommand } from "@common/models/SlashCommand";
+import discord from "@common/utils/discord/discord";
+import RuleMessagesDB from "@modules/rules/providers/RuleMessages.Database";
 import RulesDB from "@modules/rules/providers/Rules.Database";
-import { createRuleSections, getSectionId } from "@modules/rules/utils/utils";
 import { ChatInputCommandInteraction } from "discord.js";
+import Stumper from "stumper";
 
 export default class SendAllRulesCommand extends AdminSlashCommand {
   constructor() {
@@ -11,17 +13,42 @@ export default class SendAllRulesCommand extends AdminSlashCommand {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const config = ConfigManager.getInstance().getConfig("Rules");
+    const messagesDb = RuleMessagesDB.getInstance();
+    const rulesDb = RulesDB.getInstance();
 
-    const sectionNames = config.sections;
+    const channelId = ConfigManager.getInstance().getConfig("Rules").channelId;
 
-    const db = RulesDB.getInstance();
+    let numberOfMessages = 0;
+    const sectionContents = rulesDb.getAllSections();
+    for (const sectionContent of sectionContents) {
+      // Increment for the header message
+      numberOfMessages++;
 
-    const firstSectionId = getSectionId(sectionNames[0]);
-    const firstSection = db.getSection(firstSectionId);
-    // If the first section doesn't exist, create rule sections with default content; otherwise, use the existing content
-    createRuleSections(!firstSection);
+      // Add the content pages
+      numberOfMessages += sectionContent.contentPages.length;
+    }
 
-    await this.replies.reply("Sent all rules to the channel!");
+    const res = await messagesDb.ensureNumberOfMessages(numberOfMessages, true);
+    if (!res) {
+      Stumper.error(`Failed to ensure number of messages!`, "rules:RuleFile:setRulesFile");
+      await this.replies.reply({ content: "Error ensuring number of messages!" });
+      return;
+    }
+    const messages = messagesDb.getMessages();
+
+    let currentMessageIndex = 0;
+    for (const sectionContent of sectionContents) {
+      await discord.messages.updateMessageWithText(channelId, messages[currentMessageIndex], sectionContent.headerUrl);
+      rulesDb.setHeaderMessageId(sectionContent.name, messages[currentMessageIndex]);
+      currentMessageIndex++;
+
+      for (let i = 0; i < sectionContent.contentPages.length; i++) {
+        const contentPage = sectionContent.contentPages[i];
+        await discord.messages.updateMessageWithText(channelId, messages[currentMessageIndex], contentPage.content);
+        rulesDb.setContentPageMessageId(sectionContent.name, i, messages[currentMessageIndex]);
+        currentMessageIndex++;
+      }
+    }
+    await this.replies.reply({ content: "Sent all rules to channel!" });
   }
 }

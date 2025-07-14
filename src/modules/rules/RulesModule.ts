@@ -2,7 +2,6 @@ import Module from "@common/models/Module";
 import RulesDB from "./providers/Rules.Database";
 import SlashCommand from "@common/models/SlashCommand";
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import ModalMenu from "@common/models/ModalMenu";
 
 export default class RulesModule extends Module<IRulesConfig> {
   constructor(config: IKeyedObject) {
@@ -11,7 +10,6 @@ export default class RulesModule extends Module<IRulesConfig> {
 
   protected async setup(): Promise<void> {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
-    await this.readInCommands<ModalMenu>(__dirname, "modal");
   }
 
   protected async cleanup(): Promise<void> {

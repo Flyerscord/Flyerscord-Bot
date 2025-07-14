@@ -1,6 +1,11 @@
 export interface IRuleSection {
+  name: string;
+  headerUrl: string;
   headerMessageId: string;
-  contentMessageId: string;
-  header: string;
+  contentPages: IRuleSectionPage[];
+}
+
+export interface IRuleSectionPage {
+  messageId: string;
   content: string;
 }

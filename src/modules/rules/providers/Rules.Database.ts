@@ -1,85 +1,81 @@
 import Database from "@common/providers/Database";
-import { IRuleSection } from "../interfaces/IRuleSection";
 import Stumper from "stumper";
-import IMessageIds from "../interfaces/IMessageIds";
+import ConfigManager from "@common/config/ConfigManager";
+import { IRuleSection, IRuleSectionPage } from "../interfaces/IRuleSection";
 
 export default class RulesDB extends Database {
   constructor() {
-    super({ name: "rules" });
+    super({ name: "ruleSections" });
+
+    const sections = ConfigManager.getInstance().getConfig("Rules").sections;
+    for (const section of sections) {
+      const sectionInfo: IRuleSection = {
+        name: section,
+        headerUrl: `# ${section}`,
+        headerMessageId: "",
+        contentPages: [],
+      };
+      this.ensure(this.getSectionId(section), sectionInfo);
+    }
   }
 
-  addSection(id: string, headerMessageId: string, contentMessageId: string, header: string, content: string): void {
-    const section: IRuleSection = { headerMessageId: headerMessageId, contentMessageId: contentMessageId, header: header, content: content };
-    this.db.set(id, section);
+  getSection(section: string): IRuleSection {
+    return this.db.get(this.getSectionId(section));
   }
 
-  removeSection(id: string): void {
-    this.db.delete(id);
+  getAllSections(): IRuleSection[] {
+    return this.getAllValues();
   }
 
-  getSection(id: string): IRuleSection | undefined {
+  getSectionHeader(section: string): string {
+    return this.db.get(this.getSectionId(section), "headerUrl");
+  }
+
+  hasSection(section: string): boolean {
+    return this.db.has(this.getSectionId(section));
+  }
+
+  setHeaderUrl(section: string, headerUrl: string): boolean {
+    if (!this.hasSection(section)) {
+      Stumper.error(`Section ${section} does not exist!`, "rules:RulesDB:setHeaderUrl");
+      return false;
+    }
+    this.db.set(this.getSectionId(section), headerUrl, "headerUrl");
+    return true;
+  }
+
+  setHeaderMessageId(section: string, headerMessageId: string): boolean {
+    if (!this.hasSection(section)) {
+      Stumper.error(`Section ${section} does not exist!`, "rules:RulesDB:setHeaderMessageId");
+      return false;
+    }
+    this.db.set(this.getSectionId(section), headerMessageId, "headerMessageId");
+    return true;
+  }
+
+  setContentPages(section: string, contentPages: IRuleSectionPage[]): boolean {
+    if (!this.hasSection(section)) {
+      Stumper.error(`Section ${section} does not exist!`, "rules:RulesDB:setContentPages");
+      return false;
+    }
+    this.db.set(this.getSectionId(section), contentPages, "contentPages");
+    return true;
+  }
+
+  setContentPageMessageId(section: string, index: number, messageId: string): boolean {
+    const id = this.getSectionId(section);
+
     if (!this.hasSection(id)) {
-      return undefined;
+      Stumper.error(`Section ${section} does not exist!`, "rules:RulesDB:setContentPageMessageId");
+      return false;
     }
-    return this.db.get(id);
+    const contentPages = this.db.get(id, "contentPages");
+    contentPages[index].messageId = messageId;
+    this.db.set(id, contentPages, "contentPages");
+    return true;
   }
 
-  hasSection(id: string): boolean {
-    return this.db.has(id);
-  }
-
-  setSectionHeader(id: string, header: string): void {
-    if (!this.hasSection(id)) {
-      Stumper.error(`Section ${id} not found!`, "rules:RulesDB:setSectionHeader");
-      return;
-    }
-    this.db.set(id, header, "header");
-  }
-
-  setSectionContent(id: string, content: string): void {
-    if (!this.hasSection(id)) {
-      Stumper.error(`Section ${id} not found!`, "rules:RulesDB:setSectionContent");
-      return;
-    }
-    this.db.set(id, content, "content");
-  }
-
-  setSectionHeaderId(id: string, headerId: string): void {
-    if (!this.hasSection(id)) {
-      Stumper.error(`Section ${id} not found!`, "rules:RulesDB:setSectionHeaderId");
-      return;
-    }
-    this.db.set(id, headerId, "headerMessageId");
-  }
-
-  setSectionContentId(id: string, contentId: string): void {
-    if (!this.hasSection(id)) {
-      Stumper.error(`Section ${id} not found!`, "rules:RulesDB:setSectionContentId");
-      return;
-    }
-    this.db.set(id, contentId, "contentMessageId");
-  }
-
-  getAllMessageIds(): IMessageIds[] {
-    const messageIds: IMessageIds[] = [];
-    const ids = this.getAllKeys();
-
-    for (const id of ids) {
-      const section = this.getSection(id as string);
-      if (!section) continue;
-
-      messageIds.push({ id: id as string, headerId: section.headerMessageId, contentId: section.contentMessageId });
-    }
-    return messageIds;
-  }
-
-  blankOutAllMessageIds(): void {
-    const ids = this.getAllKeys();
-
-    for (const id of ids) {
-      this.db.set(id, "", "headerMessageId");
-      this.db.set(id, "", "contentMessageId");
-    }
-    Stumper.warning(`Blanked out all message IDs!`, "rules:RulesDB:blankOutAllMessageIds");
+  getSectionId(name: string): string {
+    return name.toLowerCase().replaceAll(" ", "_");
   }
 }

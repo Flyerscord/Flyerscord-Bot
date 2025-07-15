@@ -38,6 +38,10 @@ export default abstract class Database extends Singleton {
     });
   }
 
+  getEntries(): IterableIterator<[string | number, any]> {
+    return this.db.entries();
+  }
+
   close(): void {
     Stumper.warning(`Closing database: ${this.name}`, "common:Database:close");
     this.db.close();

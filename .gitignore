@@ -7,3 +7,4 @@ dist-tests
 **/config.json
 **/configFile.ts
 coverage
+.env

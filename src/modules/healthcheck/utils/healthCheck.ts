@@ -2,6 +2,8 @@ import BotHealthManager from "@common/managers/BotHealthManager";
 import ClientManager from "@common/managers/ClientManager";
 import IBotHealth from "../interfaces/IBotHealth";
 
+import { version } from "@root/package.json";
+
 export function getBotHealth(): IBotHealth {
   const client = ClientManager.getInstance().client;
 
@@ -10,6 +12,7 @@ export function getBotHealth(): IBotHealth {
     return {
       status: "healthy",
       message: "Bot is connected to Discord",
+      version: version,
       uptime: process.uptime(),
       botUptime: client.uptime,
     };
@@ -17,6 +20,7 @@ export function getBotHealth(): IBotHealth {
     return {
       status: "unhealthy",
       message: "Bot is not connected to Discord or did not start up correctly",
+      version: version,
     };
   }
 }

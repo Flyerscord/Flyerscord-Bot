@@ -11,21 +11,9 @@ export default class RuleFile {
   static getRulesFile(): AttachmentBuilder {
     const db = RulesDB.getInstance();
 
-    const sections = db.getAllSections();
+    const text = db.getFullFile();
 
-    if (sections[0].contentPages.length == 0) {
-      return this.getDefaultRulesFile();
-    }
-
-    let contentString = "";
-    for (const section of sections) {
-      const sectionHeader = this.createSectionHeader(section.name);
-      contentString += sectionHeader + "\n";
-      for (const page of section.contentPages) {
-        contentString += page.content + "\n";
-      }
-    }
-    const buffer = Buffer.from(contentString, "utf-8");
+    const buffer = Buffer.from(text, "utf-8");
     return new AttachmentBuilder(buffer, { name: "rules.txt" });
   }
 
@@ -112,6 +100,8 @@ export default class RuleFile {
       }
       rulesDb.setContentPages(section, contentPages);
     }
+
+    rulesDb.setFullFile(text);
     return true;
   }
 
@@ -125,6 +115,17 @@ export default class RuleFile {
     let currentChunk = "";
 
     for (const line of lines) {
+      const trimmedLine = line.trim();
+
+      // If the line is exactly ---BREAK---, force a split
+      if (trimmedLine === "---BREAK---") {
+        if (currentChunk) {
+          chunks.push(currentChunk);
+          currentChunk = "";
+        }
+        continue; // Don't include the ---BREAK--- line itself
+      }
+
       const newLine = (currentChunk ? "\n" : "") + line;
 
       if ((currentChunk + newLine).length > maxLength) {

@@ -30,7 +30,7 @@ export default class UpdateRulesCommand extends AdminSlashCommand {
 
       await this.replies.reply({
         files: [file],
-        content: `Here is the current rules file. Edit it with your text editor and then run \`/rulesupdate set\` to update the rules.\nEach section's header is marked with \`///HEADER_NAME///\`\n\n[Discord Markdown Guide](${markdownLink})`,
+        content: `Here is the current rules file. Edit it with your text editor and then run \`/rulesupdate set\` to update the rules.\nEach section's header is marked with \`///HEADER_NAME///\`\nYou can manually add message breaks with \`---BREAK---\`\n\nFor more information on how to format your rules, see the [Discord Markdown Guide](${markdownLink}).`,
       });
     } else if (this.isSubCommand(interaction, "set")) {
       const file = this.getParamValue(interaction, PARAM_TYPES.ATTACHMENT, "file") as Attachment;

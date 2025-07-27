@@ -8,6 +8,7 @@
     /* Paths and Module Resolution */
     "baseUrl": "./",
     "paths": {
+      "@root/*": ["*"],
       "@common/*": ["src/common/*"],
       "@modules/*": ["src/modules/*"]
     },

@@ -9,6 +9,13 @@ on:
       - master
 
 jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if the version was updated
+        uses: Flyerscord/enforce-version-bump-action@v1.0.0
+        with:
+          base-ref: ${{ github.event.pull_request.base.ref }}
   build:
     runs-on: ubuntu-latest
     steps:

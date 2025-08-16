@@ -60,8 +60,10 @@ const client = new Client({
 /*                        Setup Discord Error Handling                        */
 /* -------------------------------------------------------------------------- */
 import discordErrorHandling from "@common/listeners/discordErrorHandling";
+import discordConnectionHandling from "@common/listeners/discordConnectionHandling";
 
 discordErrorHandling(client);
+discordConnectionHandling(client);
 
 /* -------------------------------------------------------------------------- */
 /*                       Setup Collections for commands                       */

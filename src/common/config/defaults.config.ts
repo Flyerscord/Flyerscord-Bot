@@ -5,6 +5,7 @@ export default {
     logLevel: 3,
     masterGuildId: "",
     adminPrefix: ".",
+    advancedDebug: false,
   },
   admin: {},
   bluesky: {

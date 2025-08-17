@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-set -x
 
 echo "Backing up current DB..."
 sudo /home/matt/dockers/flyerscord/scripts/cron/backupDBFile.sh flyerscord-discord-prod-bot-1 /home/matt/backups/flyerscord-discord-prod-bot

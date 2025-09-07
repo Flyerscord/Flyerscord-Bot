@@ -7,7 +7,12 @@ export default {
     adminPrefix: ".",
     advancedDebug: false,
   },
-  admin: {},
+  admin: {
+    u3berBot: {
+      userId: "",
+      alertChannelId: "",
+    },
+  },
   bluesky: {
     username: "",
     password: "",

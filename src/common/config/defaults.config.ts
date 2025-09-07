@@ -8,7 +8,7 @@ export default {
     advancedDebug: false,
   },
   admin: {
-    u3berBot: {
+    ub3rBot: {
       userId: "",
       alertChannelId: "",
     },

@@ -20,7 +20,7 @@ export default class AdminModule extends Module<IAdminConfig> {
 
   getDefaultConfig(): IAdminConfig {
     return {
-      u3berBot: {
+      ub3rBot: {
         userId: "",
         alertChannelId: "",
       },
@@ -33,10 +33,10 @@ export default class AdminModule extends Module<IAdminConfig> {
 }
 
 export interface IAdminConfig {
-  u3berBot: IUb3erConfig;
+  ub3rBot: IUb3rConfig;
 }
 
-interface IUb3erConfig {
+interface IUb3rConfig {
   userId: string;
   alertChannelId: string;
 }

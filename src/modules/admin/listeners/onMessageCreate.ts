@@ -12,7 +12,7 @@ export default (): void => {
 };
 
 async function checkForQuoteCreation(message: Message): Promise<boolean> {
-  const ub3rBotUserId = ConfigManager.getInstance().getConfig("Admin").u3berBot.userId;
+  const ub3rBotUserId = ConfigManager.getInstance().getConfig("Admin").ub3rBot.userId;
   if (!message.author.bot || message.author.id !== ub3rBotUserId) return false;
 
   const regex = /^New quote added by (.+) as #([0-9]+) \((https:\/\/discordapp.com\/channels\/.+)\)$/;
@@ -36,7 +36,7 @@ async function checkForQuoteCreation(message: Message): Promise<boolean> {
 
   const alertMessage = `New quote #${quoteNumber} added by ${creatorUsername} (${creatorUserId})\nQuoted message: ${quotedMessageLink}\nQuote created message: ${message.url}`;
 
-  const alertChannelId = ConfigManager.getInstance().getConfig("Admin").u3berBot.alertChannelId;
+  const alertChannelId = ConfigManager.getInstance().getConfig("Admin").ub3rBot.alertChannelId;
   await discord.messages.sendMessageToChannel(alertChannelId, alertMessage);
   return true;
 }

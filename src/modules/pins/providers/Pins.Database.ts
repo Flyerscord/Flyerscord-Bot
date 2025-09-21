@@ -1,4 +1,4 @@
-import Database from "@common/providers/Database";
+import { Database } from "enmap-wrapper";
 import IPin from "../interfaces/IPin";
 
 export default class PinsDB extends Database {

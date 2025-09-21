@@ -1,4 +1,4 @@
-import Database from "./Database";
+import { Database } from "enmap-wrapper";
 
 export default class GlobalDB extends Database {
   private readonly COMMAND_LIST_MESSAGE_ID_KEY = "commandListMessageId";

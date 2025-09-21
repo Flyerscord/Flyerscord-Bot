@@ -15,8 +15,8 @@ importers:
         specifier: ^1.11.2
         version: 1.11.3
       '@strenkml/discordjs-utils':
-        specifier: ^2.0.0
-        version: 2.0.0(discord.js@14.22.1)(node-schedule@2.1.1)(stumper@2.1.1)
+        specifier: ^2.1.0
+        version: 2.1.0(discord.js@14.22.1)(node-schedule@2.1.1)(stumper@2.1.1)
       axios:
         specifier: ^1.10.0
         version: 1.12.2
@@ -861,8 +861,8 @@ packages:
   '@sinonjs/fake-timers@13.0.5':
     resolution: {integrity: sha512-36/hTbH2uaWuGVERyC6da9YwGWnzUZXuPro/F2LfsdOsLnCojz/iSH8MxUt/FD2S5XBSVPhmArFUXcpCQ2Hkiw==}
 
-  '@strenkml/discordjs-utils@2.0.0':
-    resolution: {integrity: sha512-Lc4ORhwXh58xljsCTlRrIBENkX4PuTC3NfanhE65SlUlbFyUFl87brkEUunz02lglbMbye2551bodea6g9ZsVw==}
+  '@strenkml/discordjs-utils@2.1.0':
+    resolution: {integrity: sha512-DsRlu/0/0kOqPeJDrEBKY0CMaNI6GOp2/kSkNmwameWMl+0dKPjHpAU/jEl3tb3CzYrhsoayeuzeHWSZG2YfUA==}
     peerDependencies:
       discord.js: ^14.21.0
       node-schedule: ^2.1.1
@@ -4957,7 +4957,7 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 3.0.1
 
-  '@strenkml/discordjs-utils@2.0.0(discord.js@14.22.1)(node-schedule@2.1.1)(stumper@2.1.1)':
+  '@strenkml/discordjs-utils@2.1.0(discord.js@14.22.1)(node-schedule@2.1.1)(stumper@2.1.1)':
     dependencies:
       discord.js: 14.22.1
       stumper: 2.1.1

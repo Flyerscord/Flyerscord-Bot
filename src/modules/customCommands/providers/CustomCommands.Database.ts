@@ -1,7 +1,6 @@
 import Stumper from "stumper";
 import Time from "@common/utils/Time";
 
-import Database from "@common/providers/Database";
 import ICustomCommand, { ICustomCommandHistory } from "../interfaces/ICustomCommand";
 import { updateCommandList } from "../utils/util";
 import ImageKit from "../utils/ImageKit";
@@ -14,6 +13,7 @@ import discord from "@common/utils/discord/discord";
 import { sleepMs } from "@common/utils/sleep";
 import HTMLPageException from "../exceptions/HTMLPageException";
 import ConfigManager from "@common/config/ConfigManager";
+import { Database } from "enmap-wrapper";
 
 export default class CustomCommandsDB extends Database {
   constructor() {

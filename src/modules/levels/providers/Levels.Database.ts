@@ -1,4 +1,4 @@
-import Database from "@common/providers/Database";
+import { Database } from "enmap-wrapper";
 import { IUserLevel } from "../interfaces/IUserLevel";
 
 export default class LevelsDB extends Database {

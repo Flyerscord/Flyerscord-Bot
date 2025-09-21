@@ -1,7 +1,7 @@
-import Database from "@common/providers/Database";
 import Stumper from "stumper";
 import ConfigManager from "@common/config/ConfigManager";
 import { IRuleSection, IRuleSectionPage } from "../interfaces/IRuleSection";
+import { Database } from "enmap-wrapper";
 
 export default class RulesDB extends Database {
   private readonly fullFileKey = "full_file";

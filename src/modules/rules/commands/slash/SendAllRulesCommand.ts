@@ -12,7 +12,6 @@ export default class SendAllRulesCommand extends AdminSlashCommand {
     super("rulessendall", "Sends all of the rules to the channel", { ephermal: true });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     const messagesDb = RuleMessagesDB.getInstance();
     const rulesDb = RulesDB.getInstance();

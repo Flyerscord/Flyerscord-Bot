@@ -8,7 +8,6 @@ export default class ListAllCommandsCommand extends AdminSlashCommand {
     super("customlistall", "List all custom commands. Mostly for debugging purposes.", { ephermal: true });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     const db = CustomCommandsDB.getInstance();
     const commands = db.getAllCommands();

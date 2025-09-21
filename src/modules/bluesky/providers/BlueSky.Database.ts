@@ -1,5 +1,5 @@
+import { Database } from "enmap-wrapper";
 import Stumper from "stumper";
-import Database from "@common/providers/Database";
 
 export default class BlueSkyDB extends Database {
   private readonly lastPostTimeKey = "lastPostTimeId";

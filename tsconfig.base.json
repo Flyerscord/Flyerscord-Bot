@@ -14,7 +14,7 @@
     },
 
     /* Type Declarations */
-    "typeRoots": ["src/common/types", "node_modules/@types"],
+    "typeRoots": ["node_modules/@types"],
     "resolveJsonModule": true,
 
     /* Output */

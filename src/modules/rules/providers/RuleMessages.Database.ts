@@ -1,6 +1,6 @@
 import ConfigManager from "@common/config/ConfigManager";
-import Database from "@common/providers/Database";
 import discord from "@common/utils/discord/discord";
+import { Database } from "enmap-wrapper";
 import Stumper from "stumper";
 
 type Messages = string[];

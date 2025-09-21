@@ -10,7 +10,6 @@ export default class ChanceTextCommand extends TextCommand {
     super(ConfigManager.getInstance().getConfig("CustomCommands").prefix, "chance", "chance", { allowedLocations: [COMMAND_LOCATION.GUILD] });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async execute(message: Message, args: string[]): Promise<void> {
     const options = [
       "https://images.flyerscord.com/chance-answeryes.png",

@@ -1,7 +1,7 @@
 import Stumper from "stumper";
-import Database from "@common/providers/Database";
 import { IUserEvent } from "../interfaces/IUserEvent";
 import { IUserInfo } from "../interfaces/IUserInfo";
+import { Database } from "enmap-wrapper";
 
 export default class UserManagementDB extends Database {
   constructor() {

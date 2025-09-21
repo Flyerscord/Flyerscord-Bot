@@ -7,16 +7,20 @@ Stumper.setConfig({ logLevel: LOG_LEVEL.ALL, useColors: false });
 /* -------------------------------------------------------------------------- */
 /*                        Setup Process Error Handling                        */
 /* -------------------------------------------------------------------------- */
-import processErrorHandling from "@common/listeners/processErrorHandling";
 
-processErrorHandling();
+import { processErrorHandling } from "@strenkml/discordjs-utils";
+processErrorHandling(async (_err: Error) => {
+  ModuleManager.getInstance().disableAllModules();
+});
 
 /* -------------------------------------------------------------------------- */
 /*                            Setup SigINT handling                           */
 /* -------------------------------------------------------------------------- */
-import onSigInt from "@common/listeners/onSigInt";
+import { onSigInt } from "@strenkml/discordjs-utils";
 
-onSigInt();
+onSigInt(async () => {
+  ModuleManager.getInstance().disableAllModules();
+});
 
 /* -------------------------------------------------------------------------- */
 /*                                Check Config                                */
@@ -59,11 +63,12 @@ const client = new Client({
 /* -------------------------------------------------------------------------- */
 /*                        Setup Discord Error Handling                        */
 /* -------------------------------------------------------------------------- */
-import discordErrorHandling from "@common/listeners/discordErrorHandling";
-import discordConnectionHandling from "@common/listeners/discordConnectionHandling";
+import { discordErrorHandling, discordConnectionHandling } from "@strenkml/discordjs-utils";
 
-discordErrorHandling(client);
-discordConnectionHandling(client);
+const advancedDebug = ConfigManager.getInstance().getConfig("Common").advancedDebug;
+
+discordErrorHandling(client, advancedDebug);
+discordConnectionHandling(client, advancedDebug);
 
 /* -------------------------------------------------------------------------- */
 /*                       Setup Collections for commands                       */
@@ -76,11 +81,7 @@ client.contextMenus = new Collection();
 /* -------------------------------------------------------------------------- */
 /*                               Setup Managers                               */
 /* -------------------------------------------------------------------------- */
-import ClientManager from "@common/managers/ClientManager";
-import SlashCommandManager from "@common/managers/SlashCommandManager";
-import TextCommandManager from "@common/managers/TextCommandManager";
-import ContextMenuCommandManager from "@common/managers/ContextMenuManager";
-import ModalMenuManager from "@common/managers/ModalMenuManager";
+import { ClientManager, SlashCommandManager, TextCommandManager, ContextMenuCommandManager, ModalMenuManager } from "@strenkml/discordjs-utils";
 
 ClientManager.getInstance(client);
 TextCommandManager.getInstance();
@@ -120,7 +121,7 @@ import BlueSkyModule from "@modules/bluesky/BlueSkyModule";
 /*                       Import Our Other Event Handlers                      */
 /* -------------------------------------------------------------------------- */
 import onMessageCreate from "@common/listeners/onMessageCreate";
-import onInteractionCreate from "@common/listeners/onInteractionCreate";
+import { onInteractionCreate } from "@strenkml/discordjs-utils";
 import onReady from "@common/listeners/onReady";
 
 /* -------------------------------------------------------------------------- */

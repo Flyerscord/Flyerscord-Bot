@@ -1,5 +1,5 @@
 import { Singleton } from "@common/models/Singleton";
-import { PgTable } from "drizzle-orm/pg-core";
+import { PgTable, pgTable, varchar, jsonb } from "drizzle-orm/pg-core";
 import Stumper from "stumper";
 
 export default class SchemaManager extends Singleton {
@@ -22,5 +22,30 @@ export default class SchemaManager extends Singleton {
 
   getSchema(): Record<string, PgTable> {
     return this.tables;
+  }
+
+  createRawTable(plainName: string): PgTable {
+    return pgTable(`raw_${plainName}`, {
+      id: varchar("id", { length: 32 }).primaryKey(),
+      data: jsonb("data").notNull(),
+    });
+  }
+
+  registerRawTables(tableNames: string[]): boolean {
+    const rawTables: Record<string, PgTable> = {};
+
+    for (const tableName of tableNames) {
+      const rawTableName = `raw_${tableName}`;
+
+      if (this.tables[rawTableName]) {
+        Stumper.error(`Raw table ${rawTableName} already registered!`, "SchemaManager:registerRawTables");
+        return false;
+      }
+
+      rawTables[rawTableName] = this.createRawTable(tableName);
+      Stumper.info(`Generated raw table schema for: ${rawTableName}`, "SchemaManager:registerRawTables");
+    }
+
+    return this.register(rawTables);
   }
 }

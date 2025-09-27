@@ -22,6 +22,10 @@ export default abstract class Database extends Singleton {
     return this.db.count;
   }
 
+  getName(): string {
+    return this.name;
+  }
+
   protected getAllValues(): any[] {
     const arr = Array.from(this.db);
     return arr.map((val) => val[1]);

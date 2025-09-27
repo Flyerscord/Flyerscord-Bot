@@ -5,8 +5,14 @@ export default {
     logLevel: 3,
     masterGuildId: "",
     adminPrefix: ".",
+    advancedDebug: false,
   },
-  admin: {},
+  admin: {
+    ub3rBot: {
+      userId: "",
+      alertChannelId: "",
+    },
+  },
   bluesky: {
     username: "",
     password: "",

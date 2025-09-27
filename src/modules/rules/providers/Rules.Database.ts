@@ -4,6 +4,8 @@ import ConfigManager from "@common/config/ConfigManager";
 import { IRuleSection, IRuleSectionPage } from "../interfaces/IRuleSection";
 
 export default class RulesDB extends Database {
+  private readonly fullFileKey = "full_file";
+
   constructor() {
     super({ name: "ruleSections" });
 
@@ -17,6 +19,8 @@ export default class RulesDB extends Database {
       };
       this.ensure(this.getSectionId(section), sectionInfo);
     }
+
+    this.ensure(this.fullFileKey, "");
   }
 
   getSection(section: string): IRuleSection {
@@ -77,5 +81,13 @@ export default class RulesDB extends Database {
 
   getSectionId(name: string): string {
     return name.toLowerCase().replaceAll(" ", "_");
+  }
+
+  setFullFile(fullFile: string): void {
+    this.db.set(this.fullFileKey, fullFile);
+  }
+
+  getFullFile(): string {
+    return this.db.get(this.fullFileKey);
   }
 }

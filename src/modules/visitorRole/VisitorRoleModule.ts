@@ -4,10 +4,11 @@ import onGuildMemberAdd from "./listeners/onGuildMemberAdd";
 import onMessageReactionAdd from "./listeners/onMessageReactionAdd";
 import onMessageReactionRemove from "./listeners/onMessageReactionRemove";
 import onReady from "./listeners/onReady";
+import schema from "./schema/schema";
 
 export default class VistorRoleModule extends Module<IVisitorRoleConfig> {
   constructor(config: IKeyedObject) {
-    super("VisitorRole", config);
+    super("VisitorRole", config, schema);
   }
 
   protected async setup(): Promise<void> {

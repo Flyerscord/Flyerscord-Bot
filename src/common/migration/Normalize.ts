@@ -1,6 +1,6 @@
 import { PgTable } from "drizzle-orm/pg-core";
 import { getDb, NeonDB } from "../db/db";
-import { count } from "drizzle-orm";
+import { count, eq } from "drizzle-orm";
 import Stumper from "stumper";
 import SchemaManager from "../managers/SchemaManager";
 
@@ -45,6 +45,13 @@ export default abstract class Normalize {
     const rawTable = schemaManager.createRawTable(tableName);
     const data = await this.db.select().from(rawTable);
     return data as IRawData[];
+  }
+
+  protected async getRawTableRow(tableName: string, id: string): Promise<IRawData | undefined> {
+    const schemaManager = SchemaManager.getInstance();
+    const rawTable = schemaManager.createRawTable(tableName);
+    const data = await this.db.select().from(rawTable).where(eq(rawTable.id, id));
+    return data[0] as IRawData;
   }
 
   protected async runMigration(tableName: string, migrateFunc: () => Promise<number>): Promise<void> {

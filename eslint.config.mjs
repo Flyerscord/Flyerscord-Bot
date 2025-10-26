@@ -2,6 +2,7 @@ import eslintPluginPrettier from "eslint-plugin-prettier";
 import eslintConfigPrettier from "eslint-config-prettier";
 import typescriptEslintPlugin from "@typescript-eslint/eslint-plugin";
 import typescriptEslintParser from "@typescript-eslint/parser";
+import drizzleEslintPlugin from "eslint-plugin-drizzle";
 
 export default [
   {
@@ -20,6 +21,7 @@ export default [
     plugins: {
       prettier: eslintPluginPrettier,
       "@typescript-eslint": typescriptEslintPlugin,
+      drizzle: drizzleEslintPlugin,
     },
     rules: {
       // TypeScript rules
@@ -34,6 +36,9 @@ export default [
           accessibility: "no-public",
         },
       ],
+
+      // Drizzle rules
+      ...drizzleEslintPlugin.configs.all.rules,
 
       // Prettier integration
       "prettier/prettier": "error",

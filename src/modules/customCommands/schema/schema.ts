@@ -20,7 +20,14 @@ export const customCommandsHistory = createModuleTable("custom_commands__history
   editedOn: timestamp("edited_on").notNull().defaultNow(),
 });
 
+export const customCommandsState = createModuleTable("custom_commands__state", {
+  key: varchar("key", { length: 255 }).primaryKey(),
+  messageIds: varchar("message_ids").array().notNull().default([]),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export default {
   customCommandsCommands,
   customCommandsHistory,
+  customCommandsState,
 };

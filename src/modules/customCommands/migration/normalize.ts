@@ -1,5 +1,5 @@
 import Normalize from "@root/src/common/migration/Normalize";
-import { customCommandsCommands, customCommandsHistory } from "../schema/schema";
+import { customCommandsCommands, customCommandsHistory, customCommandsState } from "../schema/schema";
 import Stumper from "stumper";
 
 interface IRawCommandRecord {
@@ -23,6 +23,11 @@ interface IRawCustomCommandHistory {
   index: number;
 }
 
+interface IRawGlobalRecord {
+  id: string;
+  data: unknown;
+}
+
 export default class CustomCommandsNormalize extends Normalize {
   constructor() {
     super("CustomCommands");
@@ -30,6 +35,7 @@ export default class CustomCommandsNormalize extends Normalize {
 
   async normalize(): Promise<void> {
     await this.runMigration("raw_custom-commands", this.migrateCommands.bind(this));
+    await this.runMigration("raw_global", this.migrateGlobal.bind(this));
   }
 
   protected async runValidation(): Promise<boolean> {
@@ -58,6 +64,12 @@ export default class CustomCommandsNormalize extends Normalize {
         `Raw history count ${rawHistoryCount} does not match normalized history count ${historyCount}`,
         "CustomCommands:Normalize:validate",
       );
+      return false;
+    }
+
+    const stateCount = await this.getNormalizedTableCount(customCommandsState);
+    if (stateCount !== 1) {
+      Stumper.error(`State count ${stateCount} does not match expected count 1`, "CustomCommands:Normalize:validate");
       return false;
     }
 
@@ -130,5 +142,56 @@ export default class CustomCommandsNormalize extends Normalize {
     }
 
     return migratedCount;
+  }
+
+  private async migrateGlobal(): Promise<number> {
+    const rawGlobal = (await this.getRawTableData("raw_global")) as IRawGlobalRecord[];
+
+    if (rawGlobal.length === 0) {
+      Stumper.warning("No global to migrate", "CustomCommands:Migration:Global");
+      return 0;
+    }
+
+    let migratedCount = 0;
+
+    for (const rawGlobalRecord of rawGlobal) {
+      if (rawGlobalRecord.id !== "commandListMessageId") {
+        Stumper.debug(
+          `Skipping global record: ${rawGlobalRecord.id}. This row is not being moved into this module.`,
+          "CustomCommands:Migration:Global",
+        );
+        continue;
+      }
+
+      if (!this.isStringArray(rawGlobalRecord.data)) {
+        Stumper.error(`Global record ${rawGlobalRecord.id} is not an array of strings`, "CustomCommands:Migration:Global");
+        return migratedCount;
+      }
+
+      try {
+        await this.db
+          .insert(customCommandsState)
+          .values({
+            key: rawGlobalRecord.id,
+            messageIds: rawGlobalRecord.data,
+          })
+          .onConflictDoUpdate({
+            target: customCommandsState.key,
+            set: {
+              messageIds: rawGlobalRecord.data,
+            },
+          });
+        migratedCount++;
+        Stumper.debug(`Migrated global record: ${rawGlobalRecord.id}`, "CustomCommands:Migration:Global");
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        Stumper.error(`Failed to migrate global record ${rawGlobalRecord.id}: ${errorMessage}`, "CustomCommands:Migration:Global");
+      }
+    }
+    return migratedCount;
+  }
+
+  private isStringArray(value: unknown): value is string[] {
+    return Array.isArray(value) && value.every((item) => typeof item === "string");
   }
 }

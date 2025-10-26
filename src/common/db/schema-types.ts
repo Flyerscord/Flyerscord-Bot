@@ -1,4 +1,5 @@
-import { pgTable, PgColumnBuilderBase, pgEnum } from "drizzle-orm/pg-core";
+import { BuildExtraConfigColumns } from "drizzle-orm";
+import { pgTable, PgColumnBuilderBase, pgEnum, PgTableExtraConfigValue } from "drizzle-orm/pg-core";
 
 type SnakeCase<T extends string> = T extends `${infer First}${infer Rest}`
   ? First extends Lowercase<First>
@@ -25,10 +26,14 @@ type ModuleEnumName = `${string}__${SnakeCase<string>}`;
  * ```
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export function createModuleTable<TName extends ModuleTableName, TColumns extends Record<string, PgColumnBuilderBase>>(
+export function createModuleTable<TName extends ModuleTableName, TColumnsMap extends Record<string, PgColumnBuilderBase>>(
   name: TName,
-  columns: TColumns,
+  columns: TColumnsMap,
+  extraConfig?: (self: BuildExtraConfigColumns<TName, TColumnsMap, "pg">) => PgTableExtraConfigValue[],
 ) {
+  if (extraConfig) {
+    return pgTable(name, columns, extraConfig);
+  }
   return pgTable(name, columns);
 }
 

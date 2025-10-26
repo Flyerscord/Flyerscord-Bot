@@ -5,10 +5,11 @@ import AccountHistoryDB from "./providers/AccountHistory.Database";
 import BlueSkyDB from "./providers/BlueSky.Database";
 import CheckForNewPostsTask from "./tasks/CheckForNewPostsTask";
 import BlueSky from "./utils/BlueSky";
+import schema from "./schema/schema";
 
 export default class BlueSkyModule extends Module<IBlueSkyConfig> {
   constructor(config: IKeyedObject) {
-    super("BlueSky", config);
+    super("BlueSky", config, schema);
   }
 
   protected async setup(): Promise<void> {

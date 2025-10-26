@@ -24,9 +24,10 @@ export default class SchemaManager extends Singleton {
     return this.tables;
   }
 
-  createRawTable(plainName: string): PgTable {
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
+  createRawTable(plainName: string) {
     return pgTable(`raw_${plainName}`, {
-      id: varchar("id", { length: 32 }).primaryKey(),
+      id: varchar("id", { length: 255 }).primaryKey(),
       data: jsonb("data").notNull(),
     });
   }

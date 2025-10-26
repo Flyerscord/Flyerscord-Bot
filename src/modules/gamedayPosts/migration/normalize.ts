@@ -31,7 +31,7 @@ export default class GamedayPostsNormalize extends Normalize {
   }
 
   private async migrateGamedayPosts(): Promise<number> {
-    const rawGamedayPosts = (await this.getRawTableData("raw_game-day-posts")) as IRawGamedayPostsRecord[];
+    const rawGamedayPosts = await this.getRawTableData<IRawGamedayPostsRecord>("raw_game-day-posts");
 
     if (rawGamedayPosts.length === 0) {
       Stumper.warning("No gameday posts to migrate", "GamedayPosts:Migration:GamedayPosts");

@@ -1,7 +1,12 @@
 import { createModuleEnum, createModuleTable } from "@root/src/common/db/schema-types";
 import { varchar, text, timestamp, serial } from "drizzle-orm/pg-core";
 
-export const actionTypeEnum = createModuleEnum("bluesky__action_type", ["ADD", "REMOVE"]);
+export enum BlueSkyActionType {
+  ADD = "ADD",
+  REMOVE = "REMOVE",
+}
+
+const actionTypeEnum = createModuleEnum("bluesky__action_type", BlueSkyActionType);
 
 export const blueSkyState = createModuleTable("bluesky__state", {
   key: varchar("key", { length: 255 }).primaryKey(),

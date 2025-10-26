@@ -28,7 +28,7 @@ export default class VisitorRoleNormalize extends Normalize {
   }
 
   protected async migrateState(): Promise<number> {
-    const rawGlobal = (await this.getRawTableData("raw_global")) as IRawGlobalRecord[];
+    const rawGlobal = await this.getRawTableData<IRawGlobalRecord>("raw_global");
 
     if (rawGlobal.length === 0) {
       Stumper.warning("No global to migrate", "VisitorRole:Migration:State");

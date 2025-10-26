@@ -35,7 +35,7 @@ export default class PinsNormalize extends Normalize {
   }
 
   private async migratePins(): Promise<number> {
-    const rawPins = (await this.getRawTableData("raw_pins")) as IRawPinRecord[];
+    const rawPins = await this.getRawTableData<IRawPinRecord>("raw_pins");
 
     if (rawPins.length === 0) {
       Stumper.warning("No pins to migrate", "Pins:Migration:Pins");

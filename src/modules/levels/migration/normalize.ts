@@ -53,13 +53,11 @@ export default class LevelsNormalize extends Normalize {
       return false;
     }
 
-    const rawUserLevelData = await this.getRawTableRow("raw_user-levels", userLevel[0].userId);
-    if (!rawUserLevelData) {
+    const rawUserLevel = await this.getRawTableRow<IRawUserLevelRecord>("raw_user-levels", userLevel[0].userId);
+    if (!rawUserLevel) {
       Stumper.error("No raw user level to validate", "Levels:Migration:validate");
       return false;
     }
-    const rawUserLevel = rawUserLevelData as IRawUserLevelRecord;
-
     const dateInMilliSeconds = userLevel[0].timeOfLastMessage.getTime();
 
     if (rawUserLevel.data.timeOfLastMessage != dateInMilliSeconds) {
@@ -71,7 +69,7 @@ export default class LevelsNormalize extends Normalize {
   }
 
   private async migrateExperience(): Promise<number> {
-    const rawLevelExp = (await this.getRawTableData("raw_level-exp")) as IRawLevelExpRecord[];
+    const rawLevelExp = await this.getRawTableData<IRawLevelExpRecord>("raw_level-exp");
 
     if (rawLevelExp.length === 0) {
       Stumper.warning("No level exp to migrate", "Levels:Migration:LevelExp");
@@ -111,7 +109,7 @@ export default class LevelsNormalize extends Normalize {
   }
 
   private async migrateLevels(): Promise<number> {
-    const rawUserLevels = (await this.getRawTableData("raw_user-levels")) as IRawUserLevelRecord[];
+    const rawUserLevels = await this.getRawTableData<IRawUserLevelRecord>("raw_user-levels");
 
     if (rawUserLevels.length === 0) {
       Stumper.warning("No user levels to migrate", "Levels:Migration:UserLevels");

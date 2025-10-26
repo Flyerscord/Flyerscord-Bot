@@ -26,7 +26,7 @@ export default class ReactionRoleNormalize extends Normalize {
   }
 
   private async migrateReactionRole(): Promise<number> {
-    const rawReactionRoles = (await this.getRawTableData("raw_reaction-message")) as IRawReactionRoleRecord[];
+    const rawReactionRoles = await this.getRawTableData<IRawReactionRoleRecord>("raw_reaction-message");
 
     if (rawReactionRoles.length === 0) {
       return 0;

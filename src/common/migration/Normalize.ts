@@ -9,11 +9,6 @@ export interface IValidateInput {
   normalizedTable: PgTable;
 }
 
-export interface IRawData {
-  id: string;
-  data: unknown;
-}
-
 export default abstract class Normalize {
   protected readonly db: NeonDB;
 
@@ -40,18 +35,18 @@ export default abstract class Normalize {
     return true;
   }
 
-  protected async getRawTableData(tableName: string): Promise<IRawData[]> {
+  protected async getRawTableData<T>(tableName: string): Promise<T[]> {
     const schemaManager = SchemaManager.getInstance();
     const rawTable = schemaManager.createRawTable(tableName);
     const data = await this.db.select().from(rawTable);
-    return data as IRawData[];
+    return data as T[];
   }
 
-  protected async getRawTableRow(tableName: string, id: string): Promise<IRawData | undefined> {
+  protected async getRawTableRow<T>(tableName: string, id: string): Promise<T | undefined> {
     const schemaManager = SchemaManager.getInstance();
     const rawTable = schemaManager.createRawTable(tableName);
     const data = await this.db.select().from(rawTable).where(eq(rawTable.id, id));
-    return data[0] as IRawData;
+    return data[0] as T;
   }
 
   protected async runMigration(tableName: string, migrateFunc: () => Promise<number>): Promise<void> {
@@ -97,5 +92,9 @@ export default abstract class Normalize {
     });
 
     return result;
+  }
+
+  protected isStringArray(value: unknown): value is string[] {
+    return Array.isArray(value) && value.every((item) => typeof item === "string");
   }
 }

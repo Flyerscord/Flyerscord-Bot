@@ -52,7 +52,7 @@ export default class CustomCommandsNormalize extends Normalize {
 
     let rawHistoryCount = 0;
 
-    const rawCommands = (await this.getRawTableData("raw_custom-commands")) as IRawCommandRecord[];
+    const rawCommands = await this.getRawTableData<IRawCommandRecord>("raw_custom-commands");
     for (const rawCommand of rawCommands) {
       rawHistoryCount += rawCommand.data.history.length;
     }
@@ -77,7 +77,7 @@ export default class CustomCommandsNormalize extends Normalize {
   }
 
   private async migrateCommands(): Promise<number> {
-    const rawCommands = (await this.getRawTableData("raw_custom-commands")) as IRawCommandRecord[];
+    const rawCommands = await this.getRawTableData<IRawCommandRecord>("raw_custom-commands");
 
     if (rawCommands.length === 0) {
       Stumper.warning("No commands to migrate", "CustomCommands:Migration:Commands");
@@ -145,7 +145,7 @@ export default class CustomCommandsNormalize extends Normalize {
   }
 
   private async migrateGlobal(): Promise<number> {
-    const rawGlobal = (await this.getRawTableData("raw_global")) as IRawGlobalRecord[];
+    const rawGlobal = await this.getRawTableData<IRawGlobalRecord>("raw_global");
 
     if (rawGlobal.length === 0) {
       Stumper.warning("No global to migrate", "CustomCommands:Migration:Global");
@@ -189,9 +189,5 @@ export default class CustomCommandsNormalize extends Normalize {
       }
     }
     return migratedCount;
-  }
-
-  private isStringArray(value: unknown): value is string[] {
-    return Array.isArray(value) && value.every((item) => typeof item === "string");
   }
 }

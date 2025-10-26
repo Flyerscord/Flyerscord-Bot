@@ -26,7 +26,7 @@ export default class PlayerEmojisNormalize extends Normalize {
   }
 
   private async migratePlayerEmojis(): Promise<number> {
-    const rawPlayerEmojis = (await this.getRawTableData("raw_player-emojis")) as IRawPlayerEmojiRecord[];
+    const rawPlayerEmojis = await this.getRawTableData<IRawPlayerEmojiRecord>("raw_player-emojis");
 
     if (rawPlayerEmojis.length === 0) {
       Stumper.warning("No player emojis to migrate", "PlayerEmojis:Migration:PlayerEmojis");

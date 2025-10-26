@@ -1,4 +1,4 @@
-import { BuildExtraConfigColumns } from "drizzle-orm";
+import { BuildExtraConfigColumns, NonArray } from "drizzle-orm";
 import { pgTable, PgColumnBuilderBase, pgEnum, PgTableExtraConfigValue } from "drizzle-orm/pg-core";
 
 type SnakeCase<T extends string> = T extends `${infer First}${infer Rest}`
@@ -49,7 +49,21 @@ export function createModuleTable<TName extends ModuleTableName, TColumnsMap ext
  * export const actionTypeEnum = createModuleEnum("bluesky__action_type", ["ADD", "REMOVE"] as const);
  * ```
  */
+
+/**
+ * Wrapper around pgEnum that enforces module__enum naming convention.
+ *
+ * @param name - Enum name following the pattern: module__enum_name (snake_case with double underscore)
+ * @param enumObj - TypeScript enum object
+ * @returns PgEnumObject instance
+ *
+ * @example
+ * ```typescript
+ * enum ActionType { ADD = "ADD", REMOVE = "REMOVE" }
+ * export const actionTypeEnum = createModuleEnum("bluesky__action_type", ActionType);
+ * ```
+ */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export function createModuleEnum<TName extends ModuleEnumName, T extends Readonly<[string, ...string[]]>>(name: TName, values: T) {
-  return pgEnum(name, values);
+export function createModuleEnum<TName extends ModuleEnumName, E extends Record<string, string>>(name: TName, enumObj: NonArray<E>) {
+  return pgEnum(name, enumObj);
 }

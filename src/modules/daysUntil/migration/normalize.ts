@@ -31,7 +31,7 @@ export default class DaysUntilNormalize extends Normalize {
   }
 
   private async migrateDaysUntil(): Promise<number> {
-    const rawDaysUntil = (await this.getRawTableData("raw_days-until")) as IRawDaysUntilRecord[];
+    const rawDaysUntil = await this.getRawTableData<IRawDaysUntilRecord>("raw_days-until");
 
     if (rawDaysUntil.length === 0) {
       Stumper.warning("No days until to migrate", "DaysUntil:Migration:DaysUntil");

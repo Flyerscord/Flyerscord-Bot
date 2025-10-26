@@ -98,6 +98,7 @@ export default class CustomCommandsNormalize extends Normalize {
 
         insertedCommandId = result[0]?.id;
         migratedCount++;
+        Stumper.debug(`Migrated command: ${rawCommand.id} = ${rawCommand.data.name}`, "CustomCommands:Migration:Commands");
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         Stumper.error(`Failed to migrate command ${rawCommand.id}: ${errorMessage}`, "CustomCommands:Migration:Commands");
@@ -119,6 +120,7 @@ export default class CustomCommandsNormalize extends Normalize {
               editedBy: rawHistory.editedBy,
               editedOn: rawHistory.editedOn,
             });
+            Stumper.debug(`Migrated history record: ${rawHistory.index}`, "CustomCommands:Migration:History");
           } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
             Stumper.error(`Failed to migrate history record ${rawHistory.index}: ${errorMessage}`, "CustomCommands:Migration:History");

@@ -54,6 +54,8 @@ export default class DaysUntilNormalize extends Normalize {
               enabled: false,
             },
           });
+        migratedCount++;
+        Stumper.debug(`Migrated days until record: ${rawDaysUntilRecord.id}`, "DaysUntil:Migration:DaysUntil");
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         Stumper.error(`Failed to migrate days until record ${rawDaysUntilRecord.id}: ${errorMessage}`, "DaysUntil:Migration:DaysUntil");

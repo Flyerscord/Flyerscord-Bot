@@ -1,17 +1,15 @@
-import { pgTable, varchar, text, timestamp, serial, pgEnum } from "drizzle-orm/pg-core";
+import { createModuleEnum, createModuleTable } from "@root/src/common/db/schema-types";
+import { varchar, text, timestamp, serial } from "drizzle-orm/pg-core";
 
-// Enum for action types
-export const actionTypeEnum = pgEnum("bluesky_action_type", ["ADD", "REMOVE"]);
+export const actionTypeEnum = createModuleEnum("bluesky__action_type", ["ADD", "REMOVE"]);
 
-// Settings table for configuration values like lastPostTime
-export const blueSkySettings = pgTable("bluesky_settings", {
+export const blueSkyState = createModuleTable("bluesky__state", {
   key: varchar("key", { length: 255 }).primaryKey(),
   value: text("value").notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-// Account history table for tracking account additions/removals
-export const blueSkyAccountHistory = pgTable("bluesky_account_history", {
+export const blueSkyAccountHistory = createModuleTable("bluesky__account_history", {
   id: serial("id").primaryKey(),
   account: varchar("account", { length: 255 }).notNull(),
   actionType: actionTypeEnum("action_type").notNull(),
@@ -19,8 +17,7 @@ export const blueSkyAccountHistory = pgTable("bluesky_account_history", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-// Export for schema registration
 export default {
-  blueSkySettings,
+  blueSkyState,
   blueSkyAccountHistory,
 };

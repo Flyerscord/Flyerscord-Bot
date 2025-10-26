@@ -1,4 +1,4 @@
-import { PgTableWithColumns } from "drizzle-orm/pg-core";
+import { PgTable } from "drizzle-orm/pg-core";
 import { getDb, NeonDB } from "../db/db";
 import { count } from "drizzle-orm";
 import Stumper from "stumper";
@@ -6,8 +6,7 @@ import SchemaManager from "../managers/SchemaManager";
 
 export interface IValidateInput {
   rawTableName: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  normalizedTable: PgTableWithColumns<any>;
+  normalizedTable: PgTable;
 }
 
 export interface IRawData {
@@ -28,7 +27,18 @@ export default abstract class Normalize {
 
   abstract normalize(): Promise<void>;
 
-  abstract validate(): Promise<boolean>;
+  protected abstract runValidation(): Promise<boolean>;
+
+  async validate(): Promise<boolean> {
+    Stumper.info(`Starting validation for ${this.moduleName}`, "Normalize:validate");
+    const result = await this.runValidation();
+    if (!result) {
+      Stumper.error(`Validation failed for ${this.moduleName}`, "Normalize:validate");
+      return false;
+    }
+    Stumper.success(`Validation passed for ${this.moduleName}`, "Normalize:validate");
+    return true;
+  }
 
   protected async getRawTableData(tableName: string): Promise<IRawData[]> {
     const schemaManager = SchemaManager.getInstance();
@@ -45,19 +55,22 @@ export default abstract class Normalize {
     Stumper.info(`Migrated ${migratedCount} row(s) for ${tableName}`, `${this.moduleName}:Migration:Normalize:${migrateFunc.name}`);
   }
 
+  protected async getNormalizedTableCount(table: PgTable): Promise<number> {
+    return (await this.db.select({ count: count() }).from(table))[0].count;
+  }
+
   protected async getRawTableCount(tableName: string): Promise<number> {
     const schemaManager = SchemaManager.getInstance();
     const rawTable = schemaManager.createRawTable(tableName);
-    const result = await this.db.select({ count: count() }).from(rawTable);
-    return result[0].count;
+    return await this.getNormalizedTableCount(rawTable);
   }
 
   protected async validateCounts(tables: IValidateInput[]): Promise<boolean> {
     const counts = await Promise.all(
       tables.map(async (table) => {
         const rawCount = await this.getRawTableCount(table.rawTableName);
-        const normalizedCount = await this.db.select({ count: count() }).from(table.normalizedTable);
-        return { table, rawCount, normalizedCount: normalizedCount[0].count };
+        const normalizedCount = await this.getNormalizedTableCount(table.normalizedTable);
+        return { table, rawCount, normalizedCount };
       }),
     );
 
@@ -76,12 +89,6 @@ export default abstract class Normalize {
       return false;
     });
 
-    if (result) {
-      Stumper.info(`Module ${this.moduleName} normalization validation: PASSED`, "Normalize:Validation");
-      return true;
-    }
-
-    Stumper.error(`Module ${this.moduleName} normalization validation: FAILED`, "Normalize:Validation");
-    return false;
+    return result;
   }
 }

@@ -1,5 +1,5 @@
 import Stumper from "stumper";
-import { blueSkySettings, blueSkyAccountHistory } from "../schema/schema";
+import { blueSkyState, blueSkyAccountHistory } from "../schema/schema";
 import Normalize from "@common/migration/Normalize";
 
 interface IRawBlueSkyRecord {
@@ -27,11 +27,11 @@ export default class BlueSkyNormalize extends Normalize {
     await this.runMigration("raw_bluesky-history", this.migrateAccountHistory.bind(this));
   }
 
-  async validate(): Promise<boolean> {
+  protected async runValidation(): Promise<boolean> {
     return await this.validateCounts([
       {
         rawTableName: "raw_blue-sky",
-        normalizedTable: blueSkySettings,
+        normalizedTable: blueSkyState,
       },
       {
         rawTableName: "raw_bluesky-history",
@@ -53,10 +53,10 @@ export default class BlueSkyNormalize extends Normalize {
     for (const rawRecord of rawSettings) {
       try {
         await this.db
-          .insert(blueSkySettings)
+          .insert(blueSkyState)
           .values({ key: rawRecord.id, value: rawRecord.data })
           .onConflictDoUpdate({
-            target: blueSkySettings.key,
+            target: blueSkyState.key,
             set: {
               value: rawRecord.data,
               updatedAt: new Date(),

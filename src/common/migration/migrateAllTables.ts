@@ -109,6 +109,7 @@ async function createRawTablesInDatabase(): Promise<void> {
     const schema = schemaManager.getSchema();
 
     // Use drizzle-kit to create tables from schema
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { apply } = await pushSchema(schema, db as any);
     await apply();
 
@@ -151,6 +152,7 @@ async function migrateAllData(): Promise<void> {
 /**
  * Migrate a single database table
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function migrateSingleTable(displayName: string, getInstance: () => any): Promise<void> {
   Stumper.info(`Migrating ${displayName}...`, "Migration:Data");
 

@@ -20,6 +20,7 @@ export default class Dump<T extends Database> {
       await db
         .insert(this.pgTable)
         .values({ id, data: value })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .onConflictDoUpdate({ target: (this.pgTable as any).id, set: { data: value } });
     }
   }

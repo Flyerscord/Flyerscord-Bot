@@ -10,8 +10,7 @@ export default class Fuck2TextCommand extends TextCommand {
     super(ConfigManager.getInstance().getConfig("CustomCommands").prefix, "fuck2", "fuck2", { allowedLocations: [COMMAND_LOCATION.GUILD] });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async execute(message: Message, args: string[]): Promise<void> {
+  async execute(message: Message, _args: string[]): Promise<void> {
     const teams = ["Pens", "Pens", "Rags", "Rags", "Isles", "Bruins", "caps", "Devils"];
     const index = getRandomNumber(0, teams.length - 1);
     const team = teams[index];

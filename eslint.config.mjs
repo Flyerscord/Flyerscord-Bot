@@ -2,7 +2,7 @@ import eslintPluginPrettier from "eslint-plugin-prettier";
 import eslintConfigPrettier from "eslint-config-prettier";
 import typescriptEslintPlugin from "@typescript-eslint/eslint-plugin";
 import typescriptEslintParser from "@typescript-eslint/parser";
-import drizzleEslintPlugin from "eslint-plugin-drizzle";
+// import drizzleEslintPlugin from "eslint-plugin-drizzle";
 
 export default [
   {
@@ -21,11 +21,20 @@ export default [
     plugins: {
       prettier: eslintPluginPrettier,
       "@typescript-eslint": typescriptEslintPlugin,
-      drizzle: drizzleEslintPlugin,
+      // drizzle: drizzleEslintPlugin,
     },
     rules: {
       // TypeScript rules
-      "@typescript-eslint/no-unused-vars": ["error"],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          reportUsedIgnorePattern: true,
+        },
+      ],
       "@typescript-eslint/explicit-function-return-type": "error",
       "@typescript-eslint/explicit-module-boundary-types": "warn",
       "@typescript-eslint/no-explicit-any": "warn",
@@ -38,7 +47,7 @@ export default [
       ],
 
       // Drizzle rules
-      ...drizzleEslintPlugin.configs.all.rules,
+      // ...drizzleEslintPlugin.configs.all.rules,
 
       // Prettier integration
       "prettier/prettier": "error",

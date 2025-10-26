@@ -7,8 +7,7 @@ export default class RemovePlayerEmojisCommand extends AdminSlashCommand {
     super("removeplayeremojis", "Remove all player emojis (May take a while)", { ephermal: true });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+  async execute(_interaction: ChatInputCommandInteraction): Promise<void> {
     await removeOldEmojis();
 
     this.replies.reply("Removed all player emojis!");

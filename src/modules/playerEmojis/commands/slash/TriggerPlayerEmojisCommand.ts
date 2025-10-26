@@ -7,8 +7,7 @@ export default class TriggerPlayerEmojisCommand extends AdminSlashCommand {
     super("triggerplayeremojis", "Manually trigger the player emoji process", { ephermal: true });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+  async execute(_interaction: ChatInputCommandInteraction): Promise<void> {
     await checkForNewEmojis();
 
     this.replies.reply("Triggered player emoji process!");

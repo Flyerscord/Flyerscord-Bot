@@ -8,8 +8,7 @@ export default class UpdateCommandListCommand extends AdminSlashCommand {
     super("updatecustomlist", "Update the custom commands list", { ephermal: true });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+  async execute(_interaction: ChatInputCommandInteraction): Promise<void> {
     const db = CustomCommandsDB.getInstance();
 
     updateCommandList(db.getAllCommands());

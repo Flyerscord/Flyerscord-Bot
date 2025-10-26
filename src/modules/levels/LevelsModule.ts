@@ -5,10 +5,11 @@ import { calculateLevels } from "./utils/requiredExp";
 import LevelExpDB from "./providers/LevelExp.Database";
 import LevelsDB from "./providers/Levels.Database";
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
+import schema from "./schema/schema";
 
 export default class LevelsModule extends Module<ILevelsConfig> {
   constructor(config: IKeyedObject) {
-    super("Levels", config);
+    super("Levels", config, schema);
   }
 
   protected async setup(): Promise<void> {

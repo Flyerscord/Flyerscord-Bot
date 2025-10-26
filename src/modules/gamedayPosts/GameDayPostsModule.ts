@@ -4,10 +4,11 @@ import SlashCommand from "@common/models/SlashCommand";
 import GameDayPostsDB from "./providers/GameDayPosts.Database";
 import CloseAndLockPostsTask from "./tasks/CloseAndLockPostsTask";
 import CreateGameDayPostTask from "./tasks/CreateGameDayPostTask";
+import schema from "./schema/schema";
 
 export default class GameDayPostsModule extends Module<IGameDayPostsConfig> {
   constructor(config: IKeyedObject) {
-    super("GameDayPosts", config);
+    super("GameDayPosts", config, schema);
   }
 
   protected async setup(): Promise<void> {

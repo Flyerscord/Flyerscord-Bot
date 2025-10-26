@@ -3,10 +3,11 @@ import ContextMenuCommand from "@common/models/ContextMenuCommand";
 import Module from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import PinsDB from "./providers/Pins.Database";
+import schema from "./schema/schema";
 
 export default class PinsModule extends Module<IPinsConfig> {
   constructor(config: IKeyedObject) {
-    super("Pins", config);
+    super("Pins", config, schema);
   }
 
   protected async setup(): Promise<void> {

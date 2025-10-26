@@ -5,10 +5,11 @@ import TextCommand from "@common/models/TextCommand";
 import onMessageCreate from "./listeners/onMessageCreate";
 import CustomCommandsDB from "./providers/CustomCommands.Database";
 import Imgur from "./utils/ImageKit";
+import schema from "./schema/schema";
 
 export default class CustomCommandsModule extends Module<ICustomCommandsConfig> {
   constructor(config: IKeyedObject) {
-    super("CustomCommands", config);
+    super("CustomCommands", config, schema);
   }
 
   protected async setup(): Promise<void> {

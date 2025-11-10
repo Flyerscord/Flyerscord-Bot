@@ -1,6 +1,7 @@
 import { PgTable } from "drizzle-orm/pg-core";
 import { getDb, NeonDB } from "../db/db";
 import { count, eq } from "drizzle-orm";
+import { getTableName } from "drizzle-orm";
 import Stumper from "stumper";
 import SchemaManager from "../managers/SchemaManager";
 
@@ -36,15 +37,17 @@ export default abstract class Normalize {
   }
 
   protected async getRawTableData<T>(tableName: string): Promise<T[]> {
+    const strippedTableName = tableName.replace("raw_", "");
     const schemaManager = SchemaManager.getInstance();
-    const rawTable = schemaManager.createRawTable(tableName);
+    const rawTable = schemaManager.createRawTable(strippedTableName);
     const data = await this.db.select().from(rawTable);
     return data as T[];
   }
 
   protected async getRawTableRow<T>(tableName: string, id: string): Promise<T | undefined> {
+    const strippedTableName = tableName.replace("raw_", "");
     const schemaManager = SchemaManager.getInstance();
-    const rawTable = schemaManager.createRawTable(tableName);
+    const rawTable = schemaManager.createRawTable(strippedTableName);
     const data = await this.db.select().from(rawTable).where(eq(rawTable.id, id));
     return data[0] as T;
   }
@@ -62,8 +65,9 @@ export default abstract class Normalize {
   }
 
   protected async getRawTableCount(tableName: string): Promise<number> {
+    const strippedTableName = tableName.replace("raw_", "");
     const schemaManager = SchemaManager.getInstance();
-    const rawTable = schemaManager.createRawTable(tableName);
+    const rawTable = schemaManager.createRawTable(strippedTableName);
     return await this.getNormalizedTableCount(rawTable);
   }
 
@@ -77,17 +81,12 @@ export default abstract class Normalize {
     );
 
     const result = counts.every((count) => {
+      const normalizedTableName = getTableName(count.table.normalizedTable);
       if (count.rawCount === count.normalizedCount) {
-        Stumper.info(
-          `Raw table ${count.table.rawTableName} and normalized table ${count.table.normalizedTable._.name} match`,
-          "Normalize:Validation",
-        );
+        Stumper.info(`Raw table ${count.table.rawTableName} and normalized table ${normalizedTableName} match`, "Normalize:Validation");
         return true;
       }
-      Stumper.error(
-        `Raw table ${count.table.rawTableName} and normalized table ${count.table.normalizedTable._.name} do not match`,
-        "Normalize:Validation",
-      );
+      Stumper.error(`Raw table ${count.table.rawTableName} and normalized table ${normalizedTableName} do not match`, "Normalize:Validation");
       return false;
     });
 

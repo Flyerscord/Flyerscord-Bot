@@ -8,12 +8,13 @@ interface IRawPinRecord {
 }
 
 interface IRawPin {
-  pinnedAt: Date;
+  pinnedAt: string | Date;
   pinnedBy: string;
   channelId: string;
   messageId: string;
-  ogCreatedAt: Date;
-  ogMessageId: string;
+  ogCreatedAt: string | Date;
+  orignalMessageId?: string; // Typo in original data
+  ogMessageId?: string; // Correct spelling
 }
 
 export default class PinsNormalize extends Normalize {
@@ -46,24 +47,38 @@ export default class PinsNormalize extends Normalize {
 
     for (const rawPinRecord of rawPins) {
       try {
+        // Handle the typo in the original data - it's "orignalMessageId" not "ogMessageId"
+        const ogMessageId = rawPinRecord.data.ogMessageId || rawPinRecord.data.orignalMessageId;
+
+        if (!ogMessageId) {
+          Stumper.error(`Pin record ${rawPinRecord.id} is missing ogMessageId/orignalMessageId`, "Pins:Migration:Pins");
+          continue;
+        }
+
+        // Convert string dates to Date objects if needed
+        const ogCreatedAt =
+          typeof rawPinRecord.data.ogCreatedAt === "string" ? new Date(rawPinRecord.data.ogCreatedAt) : rawPinRecord.data.ogCreatedAt;
+
+        const pinnedAt = typeof rawPinRecord.data.pinnedAt === "string" ? new Date(rawPinRecord.data.pinnedAt) : rawPinRecord.data.pinnedAt;
+
         await this.db
           .insert(pinsPins)
           .values({
-            ogCreatedAt: rawPinRecord.data.ogCreatedAt,
+            ogCreatedAt: ogCreatedAt,
             ogChannelId: rawPinRecord.data.channelId,
-            ogMessageId: rawPinRecord.data.ogMessageId,
+            ogMessageId: ogMessageId,
             messageId: rawPinRecord.data.messageId,
             pinnedBy: rawPinRecord.data.pinnedBy,
-            pinnedAt: rawPinRecord.data.pinnedAt,
+            pinnedAt: pinnedAt,
           })
           .onConflictDoUpdate({
             target: pinsPins.ogMessageId,
             set: {
-              ogCreatedAt: rawPinRecord.data.ogCreatedAt,
+              ogCreatedAt: ogCreatedAt,
               ogChannelId: rawPinRecord.data.channelId,
               messageId: rawPinRecord.data.messageId,
               pinnedBy: rawPinRecord.data.pinnedBy,
-              pinnedAt: rawPinRecord.data.pinnedAt,
+              pinnedAt: pinnedAt,
             },
           });
         migratedCount++;

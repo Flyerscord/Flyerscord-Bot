@@ -19,8 +19,13 @@ export default class RulesNormalize extends Normalize {
   }
 
   async normalize(): Promise<void> {
-    await this.runMigration("raw_ruleMessages", this.migrateMessages.bind(this));
-    await this.runMigration("raw_ruleSections", this.migrateSections.bind(this));
+    try {
+      await this.runMigration("raw_ruleMessages", this.migrateMessages.bind(this));
+      await this.runMigration("raw_ruleSections", this.migrateSections.bind(this));
+    } catch (error) {
+      Stumper.caughtError(error, "Rules:Migration:Normalize");
+      throw error;
+    }
   }
 
   protected async runValidation(): Promise<boolean> {
@@ -34,6 +39,11 @@ export default class RulesNormalize extends Normalize {
         continue;
       }
       rawSectionCount++;
+
+      // For the header
+      rawSectionMessagesCount++;
+
+      // For the content
       for (const _page of rawSectionRecord.data.contentPages) {
         rawSectionMessagesCount++;
       }
@@ -90,11 +100,12 @@ export default class RulesNormalize extends Normalize {
     for (const rawMessageRecord of messages) {
       if (rawMessageRecord.id !== "messages") {
         Stumper.debug(`Skipping row: ${rawMessageRecord.id}. This row is not being migrated.`, "Rules:Migration:Messages");
+        continue;
       }
 
-      if (this.isStringArray(rawMessageRecord.data)) {
+      if (!this.isStringArray(rawMessageRecord.data)) {
         Stumper.error(`Message record ${rawMessageRecord.id} is not an array of strings`, "Rules:Migration:Messages");
-        return migratedCount;
+        throw new Error(`Message record ${rawMessageRecord.id} is not an array of strings`);
       }
 
       const messages = rawMessageRecord.data as string[];
@@ -207,31 +218,31 @@ export default class RulesNormalize extends Normalize {
           const errorMessage = error instanceof Error ? error.message : String(error);
           Stumper.error(`Failed to migrate header record ${rawSectionRecord.id}: ${errorMessage}`, "Rules:Migration:Sections");
         }
-      }
 
-      for (const page of rawSectionRecord.data.contentPages) {
-        try {
-          await this.db
-            .insert(rulesSectionMessages)
-            .values({
-              messageId: page.messageId,
-              sectionId: rawSectionRecord.id,
-              type: RulesSectionTypeEnum.CONTENT,
-              content: page.content,
-            })
-            .onConflictDoUpdate({
-              target: rulesSectionMessages.messageId,
-              set: {
+        for (const page of rawSectionRecord.data.contentPages) {
+          try {
+            await this.db
+              .insert(rulesSectionMessages)
+              .values({
+                messageId: page.messageId,
                 sectionId: rawSectionRecord.id,
                 type: RulesSectionTypeEnum.CONTENT,
                 content: page.content,
-              },
-            });
-          migratedCount++;
-          Stumper.debug(`Migrated message record: ${rawSectionRecord.id}`, "Rules:Migration:Sections");
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : String(error);
-          Stumper.error(`Failed to migrate message record ${rawSectionRecord.id}: ${errorMessage}`, "Rules:Migration:Sections");
+              })
+              .onConflictDoUpdate({
+                target: rulesSectionMessages.messageId,
+                set: {
+                  sectionId: rawSectionRecord.id,
+                  type: RulesSectionTypeEnum.CONTENT,
+                  content: page.content,
+                },
+              });
+            migratedCount++;
+            Stumper.debug(`Migrated message record: ${rawSectionRecord.id}`, "Rules:Migration:Sections");
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            Stumper.error(`Failed to migrate message record ${rawSectionRecord.id}: ${errorMessage}`, "Rules:Migration:Sections");
+          }
         }
       }
     }

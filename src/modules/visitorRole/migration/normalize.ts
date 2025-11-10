@@ -43,8 +43,8 @@ export default class VisitorRoleNormalize extends Normalize {
         continue;
       }
 
-      if (typeof rawGlobalRecord.data !== "string") {
-        Stumper.error(`Global record ${rawGlobalRecord.id} is not a string`, "VisitorRole:Migration:State");
+      if (typeof rawGlobalRecord.data !== "number") {
+        Stumper.error(`Global record ${rawGlobalRecord.id} is not a number`, "VisitorRole:Migration:State");
         return migratedCount;
       }
 
@@ -53,12 +53,12 @@ export default class VisitorRoleNormalize extends Normalize {
           .insert(visitorRoleState)
           .values({
             key: rawGlobalRecord.id,
-            value: rawGlobalRecord.data,
+            value: rawGlobalRecord.data.toString(),
           })
           .onConflictDoUpdate({
             target: visitorRoleState.key,
             set: {
-              value: rawGlobalRecord.data,
+              value: rawGlobalRecord.data.toString(),
             },
           });
         migratedCount++;

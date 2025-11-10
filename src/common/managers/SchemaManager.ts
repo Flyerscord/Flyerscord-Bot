@@ -49,4 +49,20 @@ export default class SchemaManager extends Singleton {
 
     return this.register(rawTables);
   }
+
+  removeRawTables(): void {
+    for (const key in this.tables) {
+      if (key.startsWith("raw_")) {
+        delete this.tables[key];
+      }
+    }
+  }
+
+  removeNonRawTables(): void {
+    for (const key in this.tables) {
+      if (!key.startsWith("raw_")) {
+        delete this.tables[key];
+      }
+    }
+  }
 }

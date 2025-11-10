@@ -12,6 +12,7 @@ import ReactionRoleModule from "@root/src/modules/reactionRole/ReactionRoleModul
 import RulesModule from "@root/src/modules/rules/RulesModule";
 import UserManagementModule from "@root/src/modules/userManagement/UserManagementModule";
 import Stumper, { LOG_LEVEL } from "stumper";
+import SchemaManager from "../managers/SchemaManager";
 
 async function main(): Promise<void> {
   Stumper.setConfig({ logLevel: LOG_LEVEL.ALL });
@@ -30,6 +31,9 @@ async function main(): Promise<void> {
   await moduleManager.addModule(RulesModule.getInstance(config), false);
   await moduleManager.addModule(UserManagementModule.getInstance(config), false);
   await moduleManager.addModule(BlueSkyModule.getInstance(config), false);
+
+  const schemaManager = SchemaManager.getInstance();
+  schemaManager.removeNonRawTables();
 
   // await migrateSelectedTables(["BlueSky"]);
   await migrateAllTables();

@@ -12,15 +12,15 @@ import ReactionRoleModule from "@root/src/modules/reactionRole/ReactionRoleModul
 import RulesModule from "@root/src/modules/rules/RulesModule";
 import UserManagementModule from "@root/src/modules/userManagement/UserManagementModule";
 
-import BlueSkyNormalize from "@root/src/modules/bluesky/migration/normalize";
-import DaysUntilNormalize from "@root/src/modules/daysUntil/migration/normalize";
-import GameDayPostsNormalize from "@root/src/modules/gamedayPosts/migration/normalize";
-import LevelsNormalize from "@root/src/modules/levels/migration/normalize";
-import PinsNormalize from "@root/src/modules/pins/migration/normalize";
-import PlayerEmojisNormalize from "@root/src/modules/playerEmojis/migration/normalize";
-import ReactionRoleNormalize from "@root/src/modules/reactionRole/migration/normalize";
-import RulesNormalize from "@root/src/modules/rules/migration/normalize";
-import VisitorRoleNormalize from "@root/src/modules/visitorRole/migration/normalize";
+import BlueSkyNormalize from "@root/src/modules/bluesky/db/migration/normalize";
+import DaysUntilNormalize from "@root/src/modules/daysUntil/db/migration/normalize";
+import GameDayPostsNormalize from "@root/src/modules/gamedayPosts/db/migration/normalize";
+import LevelsNormalize from "@root/src/modules/levels/db/migration/normalize";
+import PinsNormalize from "@root/src/modules/pins/db/migration/normalize";
+import PlayerEmojisNormalize from "@root/src/modules/playerEmojis/db/migration/normalize";
+import ReactionRoleNormalize from "@root/src/modules/reactionRole/db/migration/normalize";
+import RulesNormalize from "@root/src/modules/rules/db/migration/normalize";
+import VisitorRoleNormalize from "@root/src/modules/visitorRole/db/migration/normalize";
 import { getDb } from "../db/db";
 import SchemaManager from "../managers/SchemaManager";
 import { pushSchema } from "drizzle-kit/api";

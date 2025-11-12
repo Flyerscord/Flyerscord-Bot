@@ -1,5 +1,5 @@
 import Normalize from "@root/src/common/migration/Normalize";
-import { playerEmojisEmojis } from "../schema/schema";
+import { playerEmojisEmojis } from "../schema";
 import Stumper from "stumper";
 
 interface IRawPlayerEmojiRecord {

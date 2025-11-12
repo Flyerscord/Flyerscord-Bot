@@ -1,5 +1,5 @@
 import Stumper from "stumper";
-import { blueSkyState, blueSkyAccountHistory, BlueSkyActionType } from "../schema/schema";
+import { blueSkyState, blueSkyAccountHistory, BlueSkyActionType } from "../schema";
 import Normalize from "@common/migration/Normalize";
 
 interface IRawBlueSkyRecord {

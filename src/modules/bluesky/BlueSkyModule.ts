@@ -5,7 +5,7 @@ import AccountHistoryDB from "./providers/AccountHistory.Database";
 import BlueSkyDB from "./providers/BlueSky.Database";
 import CheckForNewPostsTask from "./tasks/CheckForNewPostsTask";
 import BlueSky from "./utils/BlueSky";
-import schema from "./schema/schema";
+import schema from "./db/schema";
 
 export default class BlueSkyModule extends Module<IBlueSkyConfig> {
   constructor(config: IKeyedObject) {

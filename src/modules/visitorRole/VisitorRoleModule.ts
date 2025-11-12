@@ -4,7 +4,7 @@ import onGuildMemberAdd from "./listeners/onGuildMemberAdd";
 import onMessageReactionAdd from "./listeners/onMessageReactionAdd";
 import onMessageReactionRemove from "./listeners/onMessageReactionRemove";
 import onReady from "./listeners/onReady";
-import schema from "./schema/schema";
+import schema from "./db/schema";
 
 export default class VistorRoleModule extends Module<IVisitorRoleConfig> {
   constructor(config: IKeyedObject) {

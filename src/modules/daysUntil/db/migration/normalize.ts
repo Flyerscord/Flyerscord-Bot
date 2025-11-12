@@ -1,6 +1,6 @@
 import Normalize from "@root/src/common/migration/Normalize";
 import Stumper from "stumper";
-import { daysUntilDates } from "../schema/schema";
+import { daysUntilDates } from "../schema";
 
 interface IRawDaysUntilRecord {
   id: string;

@@ -1,5 +1,5 @@
 import Normalize from "@root/src/common/migration/Normalize";
-import { visitorRoleState } from "../schema/schema";
+import { visitorRoleState } from "../schema";
 import Stumper from "stumper";
 
 interface IRawGlobalRecord {

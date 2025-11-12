@@ -5,7 +5,7 @@ import onMessageReactionRemove from "./listeners/onMessageReactionRemove";
 import Module from "@common/models/Module";
 import ReactionMessageDB from "./providers/ReactionMessage.Database";
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import schema from "./schema/schema";
+import schema from "./db/schema";
 
 export default class ReactionRoleModule extends Module<IReactionRoleConfig> {
   constructor(config: IKeyedObject) {

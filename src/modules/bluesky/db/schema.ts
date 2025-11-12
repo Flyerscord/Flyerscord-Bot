@@ -25,5 +25,4 @@ export const blueSkyAccountHistory = createModuleTable("bluesky__account_history
 export default {
   blueSkyState,
   blueSkyAccountHistory,
-  actionTypeEnum,
 };

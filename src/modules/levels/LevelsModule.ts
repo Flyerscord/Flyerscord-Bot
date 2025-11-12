@@ -5,7 +5,7 @@ import { calculateLevels } from "./utils/requiredExp";
 import LevelExpDB from "./providers/LevelExp.Database";
 import LevelsDB from "./providers/Levels.Database";
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import schema from "./schema/schema";
+import schema from "./db/schema";
 
 export default class LevelsModule extends Module<ILevelsConfig> {
   constructor(config: IKeyedObject) {

@@ -1,5 +1,5 @@
 import Normalize from "@root/src/common/migration/Normalize";
-import { reactionRoleMessages } from "../schema/schema";
+import { reactionRoleMessages } from "../schema";
 import Stumper from "stumper";
 
 interface IRawReactionRoleRecord {

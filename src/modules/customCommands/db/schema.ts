@@ -1,7 +1,7 @@
 import { createModuleTable } from "@root/src/common/db/schema-types";
 import { serial, integer, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
-export const customCommandsCommands = createModuleTable("custom_commands__commands", {
+export const customCommandsCommands = createModuleTable("customcommands__commands", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull().unique(),
   text: text("text").notNull(),
@@ -9,7 +9,7 @@ export const customCommandsCommands = createModuleTable("custom_commands__comman
   createdOn: timestamp("created_on").notNull().defaultNow(),
 });
 
-export const customCommandsHistory = createModuleTable("custom_commands__history", {
+export const customCommandsHistory = createModuleTable("customcommands__history", {
   id: serial("id").primaryKey(),
   commandId: integer("command_id")
     .references(() => customCommandsCommands.id)
@@ -20,7 +20,7 @@ export const customCommandsHistory = createModuleTable("custom_commands__history
   editedOn: timestamp("edited_on").notNull().defaultNow(),
 });
 
-export const customCommandsState = createModuleTable("custom_commands__state", {
+export const customCommandsState = createModuleTable("customcommands__state", {
   key: varchar("key", { length: 255 }).primaryKey(),
   messageIds: varchar("message_ids").array().notNull().default([]),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),

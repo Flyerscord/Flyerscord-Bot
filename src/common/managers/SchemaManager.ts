@@ -1,15 +1,16 @@
 import { Singleton } from "@common/models/Singleton";
-import { PgTable, pgTable, varchar, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, varchar, jsonb } from "drizzle-orm/pg-core";
 import Stumper from "stumper";
+import { TableEnumRecord } from "../db/schema-types";
 
 export default class SchemaManager extends Singleton {
-  private tables: Record<string, PgTable> = {};
+  private tables: TableEnumRecord = {};
 
   constructor() {
     super();
   }
 
-  register(tables: Record<string, PgTable>): boolean {
+  register(tables: TableEnumRecord): boolean {
     for (const [key, table] of Object.entries(tables)) {
       if (this.tables[key]) {
         Stumper.error(`Table ${key} already registered!`, "SchemaManager:register");
@@ -20,7 +21,7 @@ export default class SchemaManager extends Singleton {
     return true;
   }
 
-  getSchema(): Record<string, PgTable> {
+  getSchema(): TableEnumRecord {
     return this.tables;
   }
 
@@ -33,7 +34,7 @@ export default class SchemaManager extends Singleton {
   }
 
   registerRawTables(tableNames: string[]): boolean {
-    const rawTables: Record<string, PgTable> = {};
+    const rawTables: TableEnumRecord = {};
 
     for (const tableName of tableNames) {
       const rawTableName = `raw_${tableName}`;

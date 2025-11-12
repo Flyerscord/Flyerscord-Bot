@@ -3,7 +3,7 @@ import Module from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import PlayerEmojisDB from "./providers/PlayerEmojis.Database";
 import EmojiCheckTask from "./tasks/EmojiCheckTask";
-import schema from "./schema/schema";
+import schema from "./db/schema";
 
 export default class PlayerEmojisModule extends Module<IPlayerEmojisConfig> {
   constructor(config: IKeyedObject) {

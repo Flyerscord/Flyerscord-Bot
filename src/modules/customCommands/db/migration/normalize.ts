@@ -1,5 +1,5 @@
 import Normalize from "@root/src/common/migration/Normalize";
-import { customCommandsCommands, customCommandsHistory, customCommandsState } from "../schema/schema";
+import { customCommandsCommands, customCommandsHistory, customCommandsState } from "../schema";
 import Stumper from "stumper";
 
 interface IRawCommandRecord {

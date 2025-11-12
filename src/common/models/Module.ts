@@ -11,9 +11,9 @@ import ContextMenuCommandManager from "../managers/ContextMenuManager";
 import { Singleton } from "./Singleton";
 import type { IKeyedObject } from "../interfaces/IKeyedObject";
 import type { Modules } from "../../modules/Modules";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "../config/ConfigManager";
 import SchemaManager from "../managers/SchemaManager";
-import { PgTable } from "drizzle-orm/pg-core";
+import { TableEnumRecord } from "../db/schema-types";
 
 export interface IModuleConfig<TConfig> {
   [key: string]: TConfig;
@@ -24,7 +24,7 @@ export default abstract class Module<TConfig extends IKeyedObject> extends Singl
   readonly cleanName: string;
   readonly dependsOn: Modules[];
 
-  protected constructor(name: Modules, config: IKeyedObject, schemas: Record<string, PgTable> = {}, dependsOn: Modules[] = []) {
+  protected constructor(name: Modules, config: IKeyedObject, schemas: TableEnumRecord = {}, dependsOn: Modules[] = []) {
     super();
     this.name = name;
 

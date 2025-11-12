@@ -2,7 +2,7 @@ import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import Module from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import DaysUntilDB from "./providers/DaysUtil.Database";
-import schema from "./schema/schema";
+import schema from "./db/schema";
 
 export default class DaysUntilModule extends Module<IDaysUntilConfig> {
   constructor(config: IKeyedObject) {

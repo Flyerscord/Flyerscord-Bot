@@ -54,5 +54,4 @@ export default {
   rulesMessages,
   rulesSectionMessages,
   rulesState,
-  rulesSectionType,
 };

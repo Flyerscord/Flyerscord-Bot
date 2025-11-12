@@ -5,7 +5,7 @@ import TextCommand from "@common/models/TextCommand";
 import onMessageCreate from "./listeners/onMessageCreate";
 import CustomCommandsDB from "./providers/CustomCommands.Database";
 import Imgur from "./utils/ImageKit";
-import schema from "./schema/schema";
+import schema from "./db/schema";
 
 export default class CustomCommandsModule extends Module<ICustomCommandsConfig> {
   constructor(config: IKeyedObject) {

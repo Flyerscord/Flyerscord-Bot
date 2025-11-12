@@ -2,7 +2,7 @@ import Module from "@common/models/Module";
 import RulesDB from "./providers/Rules.Database";
 import SlashCommand from "@common/models/SlashCommand";
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import schema from "./schema/schema";
+import schema from "./db/schema";
 
 export default class RulesModule extends Module<IRulesConfig> {
   constructor(config: IKeyedObject) {

@@ -9,7 +9,7 @@ export enum AuditLogSeverity {
 
 const severityEnum = createModuleEnum("common__audit_log_severity_type", AuditLogSeverity);
 
-export const AuditLog = createModuleTable(
+export const auditLog = createModuleTable(
   "common__audit_log",
   {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -32,5 +32,5 @@ export const AuditLog = createModuleTable(
 );
 
 export default {
-  AuditLog,
+  auditLog,
 };

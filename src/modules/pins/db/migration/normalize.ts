@@ -1,6 +1,8 @@
 import Normalize from "@root/src/common/migration/Normalize";
-import { pinsPins } from "../schema/schema";
 import Stumper from "stumper";
+import { auditLog } from "@root/src/common/db/schema";
+import { PinsActionType } from "../ModuleDatabase";
+import { pinsPins } from "../schema";
 
 interface IRawPinRecord {
   id: string;
@@ -81,6 +83,15 @@ export default class PinsNormalize extends Normalize {
               pinnedAt: pinnedAt,
             },
           });
+
+        // Add the pin add to the audit log
+        await this.db.insert(auditLog).values({
+          timestamp: pinnedAt,
+          moduleName: "Pins",
+          action: PinsActionType.ADD,
+          userId: rawPinRecord.data.pinnedBy,
+        });
+
         migratedCount++;
         Stumper.debug(`Migrated pin record: ${rawPinRecord.id}`, "Pins:Migration:Pins");
       } catch (error) {

@@ -35,3 +35,7 @@ export const auditLog = createModuleTable(
 export default {
   auditLog,
 };
+
+export type AuditLog = typeof auditLog.$inferSelect;
+
+export type NewAuditLog = Omit<typeof auditLog.$inferInsert, "id">;

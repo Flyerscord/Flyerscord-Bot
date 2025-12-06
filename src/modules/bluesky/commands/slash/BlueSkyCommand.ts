@@ -3,9 +3,8 @@ import { AdminAutocompleteSlashCommand, PARAM_TYPES } from "@common/models/Slash
 import { AccountAlreadyExistsException } from "../../exceptions/AccountAlreadyExistsException";
 import { AccountDoesNotExistException } from "../../exceptions/AccountDoesNotExistException";
 import Stumper from "stumper";
-import AccountHistoryDB from "../../providers/AccountHistory.Database";
 import BlueSky from "../../utils/BlueSky";
-import { HISTORY_ITEM_TYPE } from "../../interfaces/IHistoryItem";
+import BlueSkyModuleDatabase, { BlueSkyActionType } from "../../db/ModuleDatabase";
 
 export default class BlueSkyCommand extends AdminAutocompleteSlashCommand {
   constructor() {
@@ -30,14 +29,14 @@ export default class BlueSkyCommand extends AdminAutocompleteSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const historyDb = AccountHistoryDB.getInstance();
+    const db = new BlueSkyModuleDatabase();
     const bk = BlueSky.getInstance();
 
     if (this.isSubCommand(interaction, "add")) {
       const account: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "account");
       try {
         await bk.addAccountToList(account);
-        historyDb.addHistoryItem(HISTORY_ITEM_TYPE.ADD, account, interaction.user.id);
+        await db.addAuditLog(BlueSkyActionType.ADD, interaction.user.id, { account: account });
         this.replies.reply(`Account ${account} added!`);
         Stumper.info(`Account ${account} added to watched accounts`, "blueSky:BlueSkyCommand:add");
       } catch (error) {
@@ -51,7 +50,7 @@ export default class BlueSkyCommand extends AdminAutocompleteSlashCommand {
       const account: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "account");
       try {
         await bk.removeAccountFromList(account);
-        historyDb.addHistoryItem(HISTORY_ITEM_TYPE.REMOVE, account, interaction.user.id);
+        await db.addAuditLog(BlueSkyActionType.REMOVE, interaction.user.id, { account: account });
         this.replies.reply(`Account ${account} removed!`);
         Stumper.info(`Account ${account} removed from watched accounts`, "blueSky:BlueSkyCommand:remove");
       } catch (error) {

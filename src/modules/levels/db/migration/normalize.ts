@@ -1,6 +1,6 @@
 import Normalize from "@root/src/common/migration/Normalize";
 import Stumper from "stumper";
-import { levelsLevels, levelsLevelsExperience } from "../schema/schema";
+import { levelsLevels, levelsLevelsExperience } from "../schema";
 
 interface IRawLevelExpRecord {
   id: string;

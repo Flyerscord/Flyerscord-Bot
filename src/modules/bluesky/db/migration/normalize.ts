@@ -1,7 +1,7 @@
 import Stumper from "stumper";
 import { blueSkyState } from "../schema";
 import Normalize from "@common/migration/Normalize";
-import { BlueSkyActionType } from "../ModuleDatabase";
+import { BlueSkyActionType, IAuditLogInfo } from "../ModuleDatabase";
 import { auditLog } from "@common/db/schema";
 
 interface IRawBlueSkyRecord {
@@ -64,16 +64,29 @@ export default class BlueSkyNormalize extends Normalize {
 
     for (const rawRecord of rawSettings) {
       try {
-        await this.db
-          .insert(blueSkyState)
-          .values({ key: rawRecord.id, value: rawRecord.data })
-          .onConflictDoUpdate({
-            target: blueSkyState.key,
-            set: {
-              value: rawRecord.data,
-              updatedAt: new Date(),
-            },
-          });
+        if (rawRecord.id === "lastPostTimeId") {
+          await this.db
+            .insert(blueSkyState)
+            .values({ key: rawRecord.id, date: new Date(rawRecord.data) })
+            .onConflictDoUpdate({
+              target: blueSkyState.key,
+              set: {
+                date: new Date(rawRecord.data),
+                updatedAt: new Date(),
+              },
+            });
+        } else {
+          await this.db
+            .insert(blueSkyState)
+            .values({ key: rawRecord.id, value: rawRecord.data })
+            .onConflictDoUpdate({
+              target: blueSkyState.key,
+              set: {
+                value: rawRecord.data,
+                updatedAt: new Date(),
+              },
+            });
+        }
         migratedCount++;
         Stumper.debug(`Migrated setting: ${rawRecord.id} = ${rawRecord.data}`, "BlueSky:Migration:Settings");
       } catch (error) {
@@ -97,11 +110,16 @@ export default class BlueSkyNormalize extends Normalize {
 
     for (const rawRecord of rawHistory) {
       try {
+        const auditLogInfo: IAuditLogInfo = {
+          account: rawRecord.data.account,
+        };
+
         await this.db.insert(auditLog).values({
           timestamp: new Date(rawRecord.data.date),
           moduleName: "BlueSky",
           action: rawRecord.data.type,
           userId: rawRecord.data.authorId,
+          details: auditLogInfo,
         });
         migratedCount++;
       } catch (error) {

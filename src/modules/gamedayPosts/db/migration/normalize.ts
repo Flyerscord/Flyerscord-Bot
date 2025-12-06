@@ -1,5 +1,5 @@
 import Normalize from "@root/src/common/migration/Normalize";
-import { gamedayPostsPosts } from "../schema/schema";
+import { gamedayPostsPosts } from "../schema";
 import Stumper from "stumper";
 
 interface IRawGamedayPostsRecord {
@@ -14,7 +14,7 @@ interface IRawGamedayPosts {
 
 export default class GamedayPostsNormalize extends Normalize {
   constructor() {
-    super("GamedayPosts");
+    super("GameDayPosts");
   }
 
   async normalize(): Promise<void> {

@@ -3,7 +3,8 @@ import { varchar, text, timestamp } from "drizzle-orm/pg-core";
 
 export const blueSkyState = createModuleTable("bluesky__state", {
   key: varchar("key", { length: 255 }).primaryKey(),
-  value: text("value").notNull(),
+  date: timestamp("date"),
+  value: text("value"),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 

@@ -1,7 +1,7 @@
 import Normalize from "@root/src/common/migration/Normalize";
-import { IRuleSection } from "../interfaces/IRuleSection";
+import { IRuleSection } from "../../interfaces/IRuleSection";
 import Stumper from "stumper";
-import { rulesMessages, rulesSectionMessages, rulesSections, RulesSectionTypeEnum, rulesState } from "../schema/schema";
+import { rulesMessages, rulesSectionMessages, rulesSections, RulesSectionTypeEnum, rulesState } from "../schema";
 
 interface IRuleMessagesRecord {
   id: string;

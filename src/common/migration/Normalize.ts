@@ -4,6 +4,8 @@ import { count, eq } from "drizzle-orm";
 import { getTableName } from "drizzle-orm";
 import Stumper from "stumper";
 import SchemaManager from "../managers/SchemaManager";
+import { Modules } from "@modules/Modules";
+import { auditLog } from "../db/schema";
 
 export interface IValidateInput {
   rawTableName: string;
@@ -13,9 +15,9 @@ export interface IValidateInput {
 export default abstract class Normalize {
   protected readonly db: NeonDB;
 
-  protected readonly moduleName: string;
+  protected readonly moduleName: Modules;
 
-  constructor(moduleName: string) {
+  constructor(moduleName: Modules) {
     this.moduleName = moduleName;
 
     this.db = getDb(false);
@@ -95,5 +97,9 @@ export default abstract class Normalize {
 
   protected isStringArray(value: unknown): value is string[] {
     return Array.isArray(value) && value.every((item) => typeof item === "string");
+  }
+
+  protected async getCountAuditLogs(): Promise<number> {
+    return (await this.db.select({ count: count() }).from(auditLog).where(eq(auditLog.moduleName, this.moduleName)))[0].count;
   }
 }

@@ -1,5 +1,6 @@
 import { index, jsonb, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { createModuleEnum, createModuleTable } from "./schema-types";
+import type { Modules } from "@modules/Modules";
 
 export enum AuditLogSeverity {
   INFO = "INFO",
@@ -14,7 +15,7 @@ export const auditLog = createModuleTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
     timestamp: timestamp("timestamp", { withTimezone: true }).notNull().defaultNow(),
-    moduleName: text("module_name").notNull(),
+    moduleName: text("module_name").notNull().$type<Modules>(),
     action: text("action").notNull(),
     userId: text("user_id"),
     details: jsonb("details"),

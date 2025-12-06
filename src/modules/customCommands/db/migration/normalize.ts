@@ -1,6 +1,8 @@
-import Normalize from "@root/src/common/migration/Normalize";
-import { customCommandsCommands, customCommandsHistory, customCommandsState } from "../schema";
+import Normalize from "@common/migration/Normalize";
+import { customCommandsCommands, customCommandsState } from "../schema";
 import Stumper from "stumper";
+import { auditLog } from "@common/db/schema";
+import { CustomCommandsActionType, IAuditLogInfo } from "../ModuleDatabase";
 
 interface IRawCommandRecord {
   id: string;
@@ -54,16 +56,16 @@ export default class CustomCommandsNormalize extends Normalize {
 
     const rawCommands = await this.getRawTableData<IRawCommandRecord>("raw_custom-commands");
     for (const rawCommand of rawCommands) {
+      // Increment for the command add
+      rawHistoryCount++;
+      // Add the edit ammount to the history count
       rawHistoryCount += rawCommand.data.history.length;
     }
 
-    const historyCount = await this.getNormalizedTableCount(customCommandsHistory);
+    const historyCount = await this.getCountAuditLogs();
 
     if (rawHistoryCount !== historyCount) {
-      Stumper.error(
-        `Raw history count ${rawHistoryCount} does not match normalized history count ${historyCount}`,
-        "CustomCommands:Normalize:validate",
-      );
+      Stumper.error(`Raw history count ${rawHistoryCount} does not match audit log count ${historyCount}`, "CustomCommands:Normalize:validate");
       return false;
     }
 
@@ -109,6 +111,23 @@ export default class CustomCommandsNormalize extends Normalize {
           .returning({ id: customCommandsCommands.id });
 
         insertedCommandId = result[0]?.id;
+
+        // Add the command add to the audit log
+        const auditLogInfo: IAuditLogInfo = {
+          oldText: "",
+          newText: rawCommand.data.text,
+          commandName: rawCommand.data.name,
+          commandId: insertedCommandId,
+        };
+
+        await this.db.insert(auditLog).values({
+          timestamp: rawCommand.data.createdOn,
+          moduleName: "CustomCommands",
+          action: CustomCommandsActionType.ADD,
+          userId: rawCommand.data.createdBy,
+          details: auditLogInfo,
+        });
+
         migratedCount++;
         Stumper.debug(`Migrated command: ${rawCommand.id} = ${rawCommand.data.name}`, "CustomCommands:Migration:Commands");
       } catch (error) {
@@ -125,13 +144,21 @@ export default class CustomCommandsNormalize extends Normalize {
       if (rawCommand.data.history.length > 0) {
         for (const rawHistory of rawCommand.data.history) {
           try {
-            await this.db.insert(customCommandsHistory).values({
-              commandId: insertedCommandId,
+            const auditLogInfo: IAuditLogInfo = {
               oldText: rawHistory.oldText,
               newText: rawHistory.newText,
-              editedBy: rawHistory.editedBy,
-              editedOn: rawHistory.editedOn,
+              commandName: rawCommand.data.name,
+              commandId: insertedCommandId,
+            };
+
+            await this.db.insert(auditLog).values({
+              timestamp: rawHistory.editedOn,
+              moduleName: "CustomCommands",
+              action: CustomCommandsActionType.EDIT,
+              userId: rawHistory.editedBy,
+              details: auditLogInfo,
             });
+
             Stumper.debug(`Migrated history record: ${rawHistory.index}`, "CustomCommands:Migration:History");
           } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);

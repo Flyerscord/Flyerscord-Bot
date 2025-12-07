@@ -9,3 +9,5 @@ export const gamedayPostsPosts = createModuleTable("gamedayposts__posts", {
 export default {
   gamedayPostsPosts,
 };
+
+export type GameDayPost = typeof gamedayPostsPosts.$inferSelect;

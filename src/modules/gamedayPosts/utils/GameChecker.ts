@@ -5,14 +5,14 @@ import Stumper from "stumper";
 
 import discord from "@common/utils/discord/discord";
 import { GuildForumTag, time, TimestampStyles } from "discord.js";
-import GameDayPostsDB from "../providers/GameDayPosts.Database";
 import { IClubScheduleOutput_games } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubSchedule";
 import CombinedTeamInfoCache from "@common/cache/CombinedTeamInfoCache";
 import ConfigManager from "@common/config/ConfigManager";
+import GameDayPostsDB from "../db/GameDayPostsDB";
 
 export async function checkForGameDay(): Promise<void> {
   const res = await nhlApi.teams.schedule.getCurrentTeamSchedule({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
-  const db = GameDayPostsDB.getInstance();
+  const db = new GameDayPostsDB();
   const config = ConfigManager.getInstance().getConfig("GameDayPosts");
 
   if (res.status == 200) {
@@ -20,7 +20,7 @@ export async function checkForGameDay(): Promise<void> {
 
     if (game) {
       // Don't create a post if one already exists
-      if (db.hasPostByGameId(game.id)) {
+      if (await db.hasPostByGameId(game.id)) {
         Stumper.info(`Game ${game.id} already has a post`, "gameDayPosts:GameChecker:checkForGameDay");
         return;
       }
@@ -68,7 +68,7 @@ export async function checkForGameDay(): Promise<void> {
         if (post) {
           post.setArchived(false);
           Stumper.info(`Created post for game: ${game.id}`, "gameDayPosts:GameChecker:checkForGameDay");
-          db.addPost(game.id, post.id);
+          await db.addPost(game.id, post.id);
         }
       }
     }
@@ -76,8 +76,8 @@ export async function checkForGameDay(): Promise<void> {
 }
 
 export async function closeAndLockOldPosts(): Promise<void> {
-  const db = GameDayPostsDB.getInstance();
-  const gameDayPosts = db.getAllPost();
+  const db = new GameDayPostsDB();
+  const gameDayPosts = await db.getAllPost();
   const config = ConfigManager.getInstance().getConfig("GameDayPosts");
 
   for (const post of gameDayPosts) {

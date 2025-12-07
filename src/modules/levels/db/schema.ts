@@ -18,3 +18,7 @@ export default {
   levelsLevelsExperience,
   levelsLevels,
 };
+
+export type LevelsUser = typeof levelsLevels.$inferSelect;
+
+export type NewLevelsUser = typeof levelsLevels.$inferInsert;

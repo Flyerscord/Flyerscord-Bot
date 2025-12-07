@@ -1,11 +1,10 @@
 import { bold, Message, userMention } from "discord.js";
-import LevelsDB from "../providers/Levels.Database";
 import Time from "@common/utils/Time";
-import LevelExpDB from "../providers/LevelExp.Database";
 import { getRandomNumber } from "@common/utils/misc";
 import axios from "axios";
 import { JSDOM } from "jsdom";
 import Stumper from "stumper";
+import LevelsDB from "../db/LevelsDB";
 
 // Get a whole number between 15 and 25 (inclusive)
 function getExpAmount(): number {
@@ -14,21 +13,20 @@ function getExpAmount(): number {
 
 export async function addMessage(message: Message): Promise<void> {
   const MESSAGE_THRESHOLD = 1 * 60 * 1000;
-  const db = LevelsDB.getInstance();
+  const db = new LevelsDB();
   const userId = message.author.id;
 
-  db.addNewUser(userId);
-  const userLevel = db.getUser(userId)!;
+  const userLevel = await db.addNewUser(userId);
   Stumper.debug(
-    `Time since last message: ${Time.timeSince(userLevel.timeOfLastMessage)} true? ${Time.timeSince(userLevel.timeOfLastMessage) >= MESSAGE_THRESHOLD}`,
+    `Time since last message: ${Time.timeSince(userLevel.timeOfLastMessage.getTime())} true? ${Time.timeSince(userLevel.timeOfLastMessage.getTime()) >= MESSAGE_THRESHOLD}`,
     "levels:Levels:addMessage",
   );
 
-  if (Time.timeSince(userLevel.timeOfLastMessage) >= MESSAGE_THRESHOLD) {
+  if (Time.timeSince(userLevel.timeOfLastMessage.getTime()) >= MESSAGE_THRESHOLD) {
     userLevel.messageCount++;
-    userLevel.timeOfLastMessage = Time.getCurrentTime().getTime();
-    userLevel.totalExp += getExpAmount();
-    if (checkForLevelUp(userLevel.currentLevel, userLevel.totalExp)) {
+    userLevel.timeOfLastMessage = Time.getCurrentTime();
+    userLevel.totalExperience += getExpAmount();
+    if (await checkForLevelUp(userLevel.currentLevel, userLevel.totalExperience)) {
       userLevel.currentLevel++;
       await sendLevelUpMessage(message, userId, userLevel.currentLevel);
     }
@@ -36,9 +34,9 @@ export async function addMessage(message: Message): Promise<void> {
   }
 }
 
-function checkForLevelUp(currentLevel: number, exp: number): boolean {
-  const db = LevelExpDB.getInstance();
-  const expToNextLevel = db.getExpUntilNextLevel(currentLevel, exp);
+async function checkForLevelUp(currentLevel: number, exp: number): Promise<boolean> {
+  const db = new LevelsDB();
+  const expToNextLevel = await db.getExpUntilNextLevel(currentLevel, exp);
   return expToNextLevel <= 0;
 }
 

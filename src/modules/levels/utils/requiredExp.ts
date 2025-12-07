@@ -1,12 +1,12 @@
 import Stumper from "stumper";
-import LevelExpDB from "../providers/LevelExp.Database";
+import LevelsDB from "../db/LevelsDB";
 
-export function calculateLevels(levelsToCalc: number): void {
-  const db = LevelExpDB.getInstance();
+export async function calculateLevels(levelsToCalc: number): Promise<void> {
+  const db = new LevelsDB();
 
-  if (db.getNumOfKeys() != levelsToCalc) {
+  if ((await db.getNumberOfCalculatedLevels()) != levelsToCalc) {
     Stumper.warning(`Regenerating table of ${levelsToCalc} levels!`, "levels:requiredExp:calculateLevels");
-    db.wipe();
+    await db.deleteAllLevels();
 
     let currentTotal = 0;
     for (let i = 0; i < levelsToCalc; i++) {

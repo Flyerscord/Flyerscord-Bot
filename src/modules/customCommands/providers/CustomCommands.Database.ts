@@ -3,7 +3,6 @@ import Time from "@common/utils/Time";
 
 import Database from "@common/providers/Database";
 import ICustomCommand, { ICustomCommandHistory } from "../interfaces/ICustomCommand";
-import { updateCommandList } from "../utils/util";
 import ImageKit from "../utils/ImageKit";
 import axios from "axios";
 import Imgur from "../utils/Imgur";
@@ -61,7 +60,7 @@ export default class CustomCommandsDB extends Database {
       this.db.set(name, customCommand);
       Stumper.info(`Custom Command created! Command: ${name}  By user: ${userId}`, "common:CustomCommandsDB:addCommandSkippingUpload");
 
-      updateCommandList(this.getAllCommands());
+      // updateCommandList(this.getAllCommands());
       return true;
     }
     Stumper.error(`Error adding command: ${name}`, "common:CustomCommandsDB:addCommandSkippingUpload");
@@ -75,7 +74,7 @@ export default class CustomCommandsDB extends Database {
     this.db.delete(name);
     Stumper.info(`Custom Command removed! Command: ${name}  By user: ${userId}`, "common:CustomCommandsDB:deleteCommand");
 
-    updateCommandList(this.getAllCommands());
+    // updateCommandList(this.getAllCommands());
     return true;
   }
 

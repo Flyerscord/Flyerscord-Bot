@@ -4,7 +4,7 @@ import { AccountAlreadyExistsException } from "../../exceptions/AccountAlreadyEx
 import { AccountDoesNotExistException } from "../../exceptions/AccountDoesNotExistException";
 import Stumper from "stumper";
 import BlueSky from "../../utils/BlueSky";
-import BlueSkyModuleDatabase, { BlueSkyActionType } from "../../db/ModuleDatabase";
+import BlueSkyDB, { BlueSkyActionType } from "../../db/BlueSkyDB";
 
 export default class BlueSkyCommand extends AdminAutocompleteSlashCommand {
   constructor() {
@@ -29,7 +29,7 @@ export default class BlueSkyCommand extends AdminAutocompleteSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const db = new BlueSkyModuleDatabase();
+    const db = new BlueSkyDB();
     const bk = BlueSky.getInstance();
 
     if (this.isSubCommand(interaction, "add")) {

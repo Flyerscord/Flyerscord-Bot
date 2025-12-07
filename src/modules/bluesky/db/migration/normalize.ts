@@ -1,7 +1,7 @@
 import Stumper from "stumper";
 import { blueSkyState } from "../schema";
 import Normalize from "@common/migration/Normalize";
-import { BlueSkyActionType, IAuditLogInfo } from "../ModuleDatabase";
+import { BlueSkyActionType, IAuditLogInfo } from "../BlueSkyDB";
 import { auditLog } from "@common/db/schema";
 
 interface IRawBlueSkyRecord {

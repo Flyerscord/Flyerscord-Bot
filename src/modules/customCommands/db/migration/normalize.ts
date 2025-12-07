@@ -2,7 +2,7 @@ import Normalize from "@common/migration/Normalize";
 import { customCommandsCommands, customCommandsState } from "../schema";
 import Stumper from "stumper";
 import { auditLog } from "@common/db/schema";
-import { CustomCommandsActionType, IAuditLogInfo } from "../ModuleDatabase";
+import { CustomCommandsActionType, IAuditLogInfo } from "../CustomCommandsDB";
 
 interface IRawCommandRecord {
   id: string;

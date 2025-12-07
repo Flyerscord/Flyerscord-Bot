@@ -1,8 +1,6 @@
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import Module from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
-import AccountHistoryDB from "./providers/AccountHistory.Database";
-import BlueSkyDB from "./providers/BlueSky.Database";
 import CheckForNewPostsTask from "./tasks/CheckForNewPostsTask";
 import BlueSky from "./utils/BlueSky";
 import schema from "./db/schema";
@@ -21,10 +19,7 @@ export default class BlueSkyModule extends Module<IBlueSkyConfig> {
     this.registerSchedules();
   }
 
-  protected async cleanup(): Promise<void> {
-    AccountHistoryDB.getInstance().close();
-    BlueSkyDB.getInstance().close();
-  }
+  protected async cleanup(): Promise<void> {}
 
   protected getDefaultConfig(): IBlueSkyConfig {
     return {

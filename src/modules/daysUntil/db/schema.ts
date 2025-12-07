@@ -11,3 +11,5 @@ export const daysUntilDates = createModuleTable("daysuntil__dates", {
 export default {
   daysUntilDates,
 };
+
+export type DaysUntilDate = Omit<typeof daysUntilDates.$inferSelect, "id">;

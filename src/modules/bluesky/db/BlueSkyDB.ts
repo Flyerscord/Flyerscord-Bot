@@ -11,7 +11,7 @@ export enum BlueSkyActionType {
   REMOVE = "REMOVE",
 }
 
-export default class BlueSkyModuleDatabase extends ModuleDatabase {
+export default class BlueSkyDB extends ModuleDatabase {
   constructor() {
     super("BlueSky");
   }

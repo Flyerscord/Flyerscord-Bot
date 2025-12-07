@@ -1,28 +1,26 @@
-import GlobalDB from "@common/providers/Global.Database";
 import discord from "@common/utils/discord/discord";
-import ICustomCommand from "../interfaces/ICustomCommand";
-import Time from "@common/utils/Time";
 import TextCommandManager from "@common/managers/TextCommandManager";
 import { Message } from "discord.js";
 import ConfigManager from "@common/config/ConfigManager";
+import { CustomCommand } from "../db/schema";
+import CustomCommandsDB from "../db/CustomCommandsDB";
 
-export async function updateCommandList(allCommands: ICustomCommand[]): Promise<void> {
-  const db = GlobalDB.getInstance();
+export async function updateCommandList(allCommands: CustomCommand[]): Promise<void> {
+  const db = new CustomCommandsDB();
 
-  const commandListMessageIds = db.getCommandListMessageIds();
+  const commandListMessageIds = await db.getCommandListMessageIds();
 
   const config = ConfigManager.getInstance().getConfig("CustomCommands");
   const commandListChannelId = config.customCommandListChannelId;
 
   const textCommandManager = TextCommandManager.getInstance();
   const hardcodedCommands = textCommandManager.getCommands().filter((value) => value.prefix == config.prefix);
-  const hardcodedCommandsCustom: ICustomCommand[] = hardcodedCommands.map((command) => {
+  const hardcodedCommandsCustom: Omit<CustomCommand, "id">[] = hardcodedCommands.map((command) => {
     return {
-      name: command.command,
-      text: "",
+      name: command.name,
+      text: command.command,
       createdBy: "System",
-      createdOn: Time.getCurrentTime(),
-      history: [],
+      createdOn: new Date(),
     };
   });
 
@@ -86,7 +84,7 @@ export async function updateCommandList(allCommands: ICustomCommand[]): Promise<
   }
 }
 
-export function createCommandListMessages(commands: ICustomCommand[]): string[] {
+export function createCommandListMessages(commands: Omit<CustomCommand, "id">[]): string[] {
   let output = `**Custom Commands (${commands.length} commands)**\n`;
   const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
 

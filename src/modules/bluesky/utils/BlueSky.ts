@@ -6,7 +6,7 @@ import { AtpAgent, AtUri } from "@atproto/api";
 import { AccountDoesNotExistException } from "../exceptions/AccountDoesNotExistException";
 import { Singleton } from "@common/models/Singleton";
 import ConfigManager from "@common/config/ConfigManager";
-import BlueSkyModuleDatabase from "../db/ModuleDatabase";
+import BlueSkyDB from "../db/BlueSkyDB";
 
 export default class BlueSky extends Singleton {
   private agent: AtpAgent;
@@ -50,7 +50,7 @@ export default class BlueSky extends Singleton {
   async checkForNewPosts(): Promise<IPost[]> {
     const postDatas: IPost[] = [];
 
-    const db = new BlueSkyModuleDatabase();
+    const db = new BlueSkyDB();
 
     const lastPost = await db.getLastPostTime();
 

@@ -33,14 +33,7 @@ export default class CustomCommandsDB extends ModuleDatabase {
   }
 
   async hasCommand(name: string): Promise<boolean> {
-    return (
-      (
-        await this.db
-          .select({ one: sql<number>`1` })
-          .from(customCommandsCommands)
-          .where(eq(customCommandsCommands.name, name))
-      ).length > 0
-    );
+    return this.select1(customCommandsCommands, eq(customCommandsCommands.name, name));
   }
 
   async getCommand(name: string): Promise<CustomCommand | undefined> {

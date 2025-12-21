@@ -1,6 +1,6 @@
 import { ModuleDatabase } from "@common/models/ModuleDatabase";
 import { Pin, pinsPins } from "./schema";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 export enum PinsActionType {
   ADD = "ADD",
@@ -41,14 +41,7 @@ export default class PinsDB extends ModuleDatabase {
   }
 
   async hasPin(ogMessageId: string): Promise<boolean> {
-    return (
-      (
-        await this.db
-          .select({ one: sql<number>`1` })
-          .from(pinsPins)
-          .where(eq(pinsPins.ogMessageId, ogMessageId))
-      ).length > 0
-    );
+    return this.select1(pinsPins, eq(pinsPins.ogMessageId, ogMessageId));
   }
 
   async deletePin(ogMessageId: string): Promise<boolean> {

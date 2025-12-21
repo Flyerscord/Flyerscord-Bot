@@ -1,6 +1,6 @@
 import { ModuleDatabase } from "@root/src/common/models/ModuleDatabase";
 import { Emoji, playerEmojisEmojis } from "./schema";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 export default class PlayerEmojisDB extends ModuleDatabase {
   constructor() {
@@ -22,14 +22,7 @@ export default class PlayerEmojisDB extends ModuleDatabase {
   }
 
   async hasPlayer(playerId: number): Promise<boolean> {
-    return (
-      (
-        await this.db
-          .select({ one: sql<number>`1` })
-          .from(playerEmojisEmojis)
-          .where(eq(playerEmojisEmojis.playerId, playerId))
-      ).length > 0
-    );
+    return this.select1(playerEmojisEmojis, eq(playerEmojisEmojis.playerId, playerId));
   }
 
   async clearPlayers(): Promise<void> {

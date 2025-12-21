@@ -1,6 +1,6 @@
 import { ModuleDatabase } from "@common/models/ModuleDatabase";
 import { GameDayPost, gamedayPostsPosts } from "./schema";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 export default class GameDayPostsDB extends ModuleDatabase {
   constructor() {
@@ -20,25 +20,11 @@ export default class GameDayPostsDB extends ModuleDatabase {
   }
 
   async hasPostByGameId(gameId: number): Promise<boolean> {
-    return (
-      (
-        await this.db
-          .select({ one: sql<number>`1` })
-          .from(gamedayPostsPosts)
-          .where(eq(gamedayPostsPosts.gameId, gameId))
-      ).length > 0
-    );
+    return this.select1(gamedayPostsPosts, eq(gamedayPostsPosts.gameId, gameId));
   }
 
   async hasPostByPostId(postId: string): Promise<boolean> {
-    return (
-      (
-        await this.db
-          .select({ one: sql<number>`1` })
-          .from(gamedayPostsPosts)
-          .where(eq(gamedayPostsPosts.channelId, postId))
-      ).length > 0
-    );
+    return this.select1(gamedayPostsPosts, eq(gamedayPostsPosts.channelId, postId));
   }
 
   async getPostByGameId(gameId: number): Promise<GameDayPost | undefined> {

@@ -68,14 +68,7 @@ export default class LevelsDB extends ModuleDatabase {
   // Levels
 
   async hasUser(userId: string): Promise<boolean> {
-    return (
-      (
-        await this.db
-          .select({ one: sql<number>`1` })
-          .from(levelsLevels)
-          .where(eq(levelsLevels.userId, userId))
-      ).length > 0
-    );
+    return this.select1(levelsLevels, eq(levelsLevels.userId, userId));
   }
 
   async getUser(userId: string): Promise<LevelsUser | undefined> {

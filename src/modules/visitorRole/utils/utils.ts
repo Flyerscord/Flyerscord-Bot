@@ -1,12 +1,12 @@
 import { EmbedBuilder } from "discord.js";
-import GlobalDB from "@common/providers/Global.Database";
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
 import ConfigManager from "@common/config/ConfigManager";
+import VisitorRoleDB from "../db/VisitorRoleDB";
 
 export async function createVisitorRoleMessageIfNeeded(): Promise<void> {
-  const db = GlobalDB.getInstance();
-  const visitorMessageId = db.getVisitorRoleMessageId();
+  const db = new VisitorRoleDB();
+  const visitorMessageId = await db.getVisitorRoleMessageId();
 
   const config = ConfigManager.getInstance().getConfig("VisitorRole");
 
@@ -18,7 +18,7 @@ export async function createVisitorRoleMessageIfNeeded(): Promise<void> {
 
     const message = await discord.messages.sendEmbedToChannel(rolesChannelId, embed);
     if (message) {
-      db.setVisitorRoleMessageId(message.id);
+      await db.setVisitorRoleMessageId(message.id);
       await discord.reactions.reactToMessageWithEmoji(message, visitorEmojiId);
       Stumper.info(`Created visitor role message with id: ${message.id}`, "visitorRole:utils:createVisitorRoleMessageIfNeeded");
     } else {

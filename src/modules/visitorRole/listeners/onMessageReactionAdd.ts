@@ -1,23 +1,23 @@
 import { MessageReaction, PartialMessageReaction, PartialUser, User } from "discord.js";
 import Stumper from "stumper";
 import ClientManager from "@common/managers/ClientManager";
-import GlobalDB from "@common/providers/Global.Database";
 import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/config/ConfigManager";
+import VisitorRoleDB from "../db/VisitorRoleDB";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("messageReactionAdd", async (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) => {
     if (user.bot) return;
 
-    const db = GlobalDB.getInstance();
+    const db = new VisitorRoleDB();
 
-    const vistorMessageId = db.getVisitorRoleMessageId();
+    const vistorMessageId = await db.getVisitorRoleMessageId();
     if (vistorMessageId == "") {
       return;
     }
 
-    if (db.getVisitorRoleMessageId() != reaction.message.id) {
+    if ((await db.getVisitorRoleMessageId()) != reaction.message.id) {
       return;
     }
 

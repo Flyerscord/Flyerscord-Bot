@@ -19,7 +19,7 @@ export default class UpdateRulesCommand extends AdminSlashCommand {
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     if (this.isSubCommand(interaction, "get")) {
-      const file = RuleFile.getRulesFile();
+      const file = await RuleFile.getRulesFile();
 
       if (!file) {
         await this.replies.reply({ content: "Error getting rules file!" });

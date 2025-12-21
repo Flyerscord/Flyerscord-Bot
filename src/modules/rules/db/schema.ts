@@ -55,3 +55,25 @@ export default {
   rulesSectionMessages,
   rulesState,
 };
+
+// Database row types (inferred from schema)
+export type RulesSection = typeof rulesSections.$inferSelect;
+export type RulesMessage = typeof rulesMessages.$inferSelect;
+export type RulesSectionMessage = typeof rulesSectionMessages.$inferSelect;
+export type RulesStateEntry = typeof rulesState.$inferSelect;
+
+// DTO types - maintain compatibility with IRuleSection interface
+// Why: Commands expect contentPages as an array, but DB stores content concatenated
+// The RulesDB class transforms between these representations
+export interface RuleSectionDTO {
+  name: string;
+  friendlyName: string;
+  headerUrl: string;
+  headerMessageId: string | null;
+  contentPages: RuleContentPageDTO[];
+}
+
+export interface RuleContentPageDTO {
+  messageId: string;
+  content: string;
+}

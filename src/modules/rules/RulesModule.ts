@@ -1,8 +1,9 @@
 import Module from "@common/models/Module";
-import RulesDB from "./providers/Rules.Database";
+import RulesDB from "./db/RulesDB";
 import SlashCommand from "@common/models/SlashCommand";
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import schema from "./db/schema";
+import ConfigManager from "@common/config/ConfigManager";
 
 export default class RulesModule extends Module<IRulesConfig> {
   constructor(config: IKeyedObject) {
@@ -10,11 +11,19 @@ export default class RulesModule extends Module<IRulesConfig> {
   }
 
   protected async setup(): Promise<void> {
+    // Initialize sections in database
+    const db = new RulesDB();
+    const rulesConfig = ConfigManager.getInstance().getConfig("Rules");
+
+    for (const section of rulesConfig.sections) {
+      await db.ensureSectionExists(section, section);
+    }
+
     await this.readInCommands<SlashCommand>(__dirname, "slash");
   }
 
   protected async cleanup(): Promise<void> {
-    await RulesDB.getInstance().close();
+    // No cleanup needed - database connections are pooled
   }
 
   getDefaultConfig(): IRulesConfig {

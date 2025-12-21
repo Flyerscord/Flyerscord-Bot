@@ -1,17 +1,16 @@
 import { AttachmentBuilder, Attachment } from "discord.js";
-import RulesDB from "../providers/Rules.Database";
-import RuleMessagesDB from "../providers/RuleMessages.Database";
+import RulesDB from "../db/RulesDB";
 import ConfigManager from "@common/config/ConfigManager";
 import Stumper from "stumper";
 import discord from "@common/utils/discord/discord";
-import { IRuleSectionPage } from "../interfaces/IRuleSection";
+import { RuleContentPageDTO } from "../db/schema";
 import https from "node:https";
 
 export default class RuleFile {
-  static getRulesFile(): AttachmentBuilder {
-    const db = RulesDB.getInstance();
+  static async getRulesFile(): Promise<AttachmentBuilder> {
+    const db = new RulesDB();
 
-    const text = db.getFullFile();
+    const text = await db.getFullFile();
 
     const buffer = Buffer.from(text, "utf-8");
     return new AttachmentBuilder(buffer, { name: "rules.txt" });
@@ -33,8 +32,7 @@ export default class RuleFile {
   static async setRulesFile(attachment: Attachment): Promise<boolean> {
     const MAX_MESSAGE_LENGTH = 2000;
 
-    const rulesDb = RulesDB.getInstance();
-    const messagesDb = RuleMessagesDB.getInstance();
+    const db = new RulesDB();
 
     const config = ConfigManager.getInstance().getConfig("Rules");
     const sections = config.sections;
@@ -72,36 +70,36 @@ export default class RuleFile {
       numberOfMessages += sectionContentChunks.length;
     }
 
-    const res = await messagesDb.ensureNumberOfMessages(numberOfMessages);
+    const res = await db.ensureNumberOfMessages(numberOfMessages, false, channelId);
     if (!res) {
       Stumper.error(`Failed to ensure number of messages!`, "rules:RuleFile:setRulesFile");
       return false;
     }
 
-    const messages = messagesDb.getMessages();
+    const messages = await db.getMessages();
     let currentMessageIndex = 0;
     for (const [section, chunks] of contentChunks) {
-      const headerContent = rulesDb.getSectionHeader(section);
+      const headerContent = (await db.getSectionHeader(section)) || `# ${section}`;
       if (headerContent.startsWith("http")) {
         const attachment = await this.getImageAttachmentFromUrl(headerContent, section + ".png");
         await discord.messages.updateMessageReplaceTextWithImage(channelId, messages[currentMessageIndex], attachment);
       } else {
         await discord.messages.updateMessageWithText(channelId, messages[currentMessageIndex], headerContent, true);
       }
-      rulesDb.setHeaderMessageId(section, messages[currentMessageIndex]);
+      await db.setHeaderMessageId(section, messages[currentMessageIndex]);
       currentMessageIndex++;
 
-      const contentPages: IRuleSectionPage[] = [];
+      const contentPages: RuleContentPageDTO[] = [];
       for (const chunk of chunks) {
         await discord.messages.updateMessageWithText(channelId, messages[currentMessageIndex], chunk, true);
-        const contentPage: IRuleSectionPage = { messageId: messages[currentMessageIndex], content: chunk };
+        const contentPage: RuleContentPageDTO = { messageId: messages[currentMessageIndex], content: chunk };
         contentPages.push(contentPage);
         currentMessageIndex++;
       }
-      rulesDb.setContentPages(section, contentPages);
+      await db.setContentPages(section, contentPages);
     }
 
-    rulesDb.setFullFile(text);
+    await db.setFullFile(text);
     return true;
   }
 

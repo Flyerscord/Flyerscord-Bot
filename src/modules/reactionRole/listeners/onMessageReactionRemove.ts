@@ -2,19 +2,19 @@ import { MessageReaction, PartialMessageReaction, PartialUser, User } from "disc
 import Stumper from "stumper";
 import ClientManager from "@common/managers/ClientManager";
 import discord from "@common/utils/discord/discord";
-import ReactionMessageDB from "../providers/ReactionMessage.Database";
 import ConfigManager from "@common/config/ConfigManager";
+import ReactionRoleDB from "../db/ReactionRoleDB";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("messageReactionRemove", async (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) => {
     if (user.bot) return;
 
-    const db = ReactionMessageDB.getInstance();
+    const db = new ReactionRoleDB();
 
     const messageId = reaction.message.id;
 
-    const reactionName = db.getNameByMessageId(messageId);
+    const reactionName = await db.getNameByMessageId(messageId);
 
     // Check if the message is a reaction role message
     if (!reactionName) {

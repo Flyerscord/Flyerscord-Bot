@@ -3,7 +3,6 @@ import onReady from "./listeners/onReady";
 import onMessageReactionAdd from "./listeners/onMessageReactionAdd";
 import onMessageReactionRemove from "./listeners/onMessageReactionRemove";
 import Module from "@common/models/Module";
-import ReactionMessageDB from "./providers/ReactionMessage.Database";
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import schema from "./db/schema";
 
@@ -13,14 +12,12 @@ export default class ReactionRoleModule extends Module<IReactionRoleConfig> {
   }
 
   protected async setup(): Promise<void> {
-    setMessageIdsFromConfig();
+    await setMessageIdsFromConfig();
 
     this.registerListeners();
   }
 
-  protected async cleanup(): Promise<void> {
-    await ReactionMessageDB.getInstance().close();
-  }
+  protected async cleanup(): Promise<void> {}
 
   protected getDefaultConfig(): IReactionRoleConfig {
     return {

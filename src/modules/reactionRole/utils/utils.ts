@@ -1,12 +1,12 @@
-import ReactionMessageDB from "../providers/ReactionMessage.Database";
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
 import { EmbedBuilder } from "discord.js";
 import type { IReactionRolesConfig } from "../ReactionRoleModule";
 import ConfigManager from "@common/config/ConfigManager";
+import ReactionRoleDB from "../db/ReactionRoleDB";
 
 export async function createRoleReactionMessagesIfNeeded(): Promise<void> {
-  const db = ReactionMessageDB.getInstance();
+  const db = new ReactionRoleDB();
   const config = ConfigManager.getInstance().getConfig("ReactionRole");
 
   const reactionRoles = config.reactionRoles;
@@ -14,7 +14,7 @@ export async function createRoleReactionMessagesIfNeeded(): Promise<void> {
   for (const reactionRole of reactionRoles) {
     if (
       !db.hasReactionMessage(reactionRole.name) ||
-      (await discord.messages.getMessage(config.channelId, db.getReactionMessage(reactionRole.name)!)) == undefined
+      (await discord.messages.getMessage(config.channelId, (await db.getReactionMessage(reactionRole.name))!)) == undefined
     ) {
       await createRoleReactionMessage(reactionRole);
     } else {
@@ -24,12 +24,12 @@ export async function createRoleReactionMessagesIfNeeded(): Promise<void> {
 }
 
 async function createRoleReactionMessage(reactionRole: IReactionRolesConfig): Promise<void> {
-  const db = ReactionMessageDB.getInstance();
+  const db = new ReactionRoleDB();
   const embed = createEmbed(reactionRole);
   const message = await discord.messages.sendEmbedToChannel(ConfigManager.getInstance().getConfig("ReactionRole").channelId, embed);
 
   if (message) {
-    db.setReactionMessage(reactionRole.name, message.id);
+    await db.setReactionMessage(reactionRole.name, message.id);
 
     await discord.reactions.reactToMessageWithEmoji(message, reactionRole.emojiId);
     Stumper.info(`Created reaction role message with id: ${message.id}`, "reactionRole:utils:createRoleReactionMessage");
@@ -51,14 +51,14 @@ function createEmbed(reactionRole: IReactionRolesConfig): EmbedBuilder {
   return embed;
 }
 
-export function setMessageIdsFromConfig(): void {
-  const db = ReactionMessageDB.getInstance();
+export async function setMessageIdsFromConfig(): Promise<void> {
+  const db = new ReactionRoleDB();
 
   const reactionRoles = ConfigManager.getInstance().getConfig("ReactionRole").reactionRoles;
   for (const reactionRole of reactionRoles) {
     if (reactionRole.messageId) {
       Stumper.info(`Setting message id for ${reactionRole.name} to ${reactionRole.messageId}`, "reactionRole:utils:setMessageIdsFromConfig");
-      db.setReactionMessage(reactionRole.name, reactionRole.messageId);
+      await db.setReactionMessage(reactionRole.name, reactionRole.messageId);
     }
   }
 }

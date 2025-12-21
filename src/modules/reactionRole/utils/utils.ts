@@ -31,7 +31,7 @@ async function createRoleReactionMessage(reactionRole: IReactionRolesConfig): Pr
   if (message) {
     db.setReactionMessage(reactionRole.name, message.id);
 
-    discord.reactions.reactToMessageWithEmoji(message, reactionRole.emojiId);
+    await discord.reactions.reactToMessageWithEmoji(message, reactionRole.emojiId);
     Stumper.info(`Created reaction role message with id: ${message.id}`, "reactionRole:utils:createRoleReactionMessage");
   } else {
     Stumper.error("Error creating reaction role message!", "reactionRole:utils:createRoleReactionMessage");

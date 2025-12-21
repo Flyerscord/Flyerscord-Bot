@@ -26,7 +26,7 @@ export default class EnableDisableCommand extends AdminAutocompleteSlashCommand 
     if (event) {
       await db.setEventEnabled(event.dbKey, enable);
 
-      this.replies.reply(`Event ${event.name} ${enable ? "enabled" : "disabled"}!`);
+      await this.replies.reply(`Event ${event.name} ${enable ? "enabled" : "disabled"}!`);
     }
   }
 

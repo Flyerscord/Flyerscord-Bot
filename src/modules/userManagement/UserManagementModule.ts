@@ -17,7 +17,7 @@ export default class UserManagementModule extends Module<IUserManagementConfig> 
   }
 
   protected async cleanup(): Promise<void> {
-    UserManagementDB.getInstance().close();
+    await UserManagementDB.getInstance().close();
   }
 
   protected getDefaultConfig(): IUserManagementConfig {

@@ -23,13 +23,13 @@ export default class ChangeCommand extends AdminSlashCommand {
 
     const event = Object.values(events).find((event) => event.name == eventKey);
     if (!event) {
-      this.replies.reply("Error finding event!");
+      await this.replies.reply("Error finding event!");
       return;
     }
 
     const date = Time.getDateFromString(dateStr);
     if (!date) {
-      this.replies.reply("Error parsing date!");
+      await this.replies.reply("Error parsing date!");
       return;
     }
 
@@ -37,6 +37,6 @@ export default class ChangeCommand extends AdminSlashCommand {
 
     await db.setEventDate(event.dbKey, date);
 
-    this.replies.reply(`Event ${event.name} date set to ${dateStr}!`);
+    await this.replies.reply(`Event ${event.name} date set to ${dateStr}!`);
   }
 }

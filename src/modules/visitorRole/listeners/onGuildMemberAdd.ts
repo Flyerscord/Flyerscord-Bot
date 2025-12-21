@@ -11,7 +11,7 @@ export default (): void => {
     const memberRoleId = ConfigManager.getInstance().getConfig("VisitorRole").memberRoleId;
     if (!member.roles.cache.has(memberRoleId)) {
       Stumper.info(`Adding member role to user: ${member.displayName}`, "visitorRole:onGuildMemberAdd");
-      member.roles.add(memberRoleId);
+      await member.roles.add(memberRoleId);
     }
   });
 };

@@ -81,13 +81,13 @@ export default class LeaderboardCommand extends SlashCommand {
       nextButton.setDisabled(currentPage === totalPages);
 
       // Update the embed and buttons
-      this.replies.reply({ embeds: [await this.createEmbedPage(users, currentPage)], components: [row] });
+      await this.replies.reply({ embeds: [await this.createEmbedPage(users, currentPage)], components: [row] });
     });
 
     collector.on("end", async () => {
       prevButton.setDisabled(true);
       nextButton.setDisabled(true);
-      this.replies.reply({ components: [row] });
+      await this.replies.reply({ components: [row] });
     });
   }
 

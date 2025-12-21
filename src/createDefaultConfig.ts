@@ -83,4 +83,4 @@ async function main(): Promise<void> {
   await writeObjectToTsFile(fileLocation, defaultConfig);
 }
 
-main();
+void main();

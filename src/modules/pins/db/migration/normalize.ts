@@ -1,7 +1,7 @@
 import Normalize from "@root/src/common/migration/Normalize";
 import Stumper from "stumper";
 import { auditLog } from "@root/src/common/db/schema";
-import { PinsActionType } from "../ModuleDatabase";
+import { PinsActionType } from "../PinsDB";
 import { pinsPins } from "../schema";
 
 interface IRawPinRecord {

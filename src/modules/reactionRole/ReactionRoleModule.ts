@@ -19,7 +19,7 @@ export default class ReactionRoleModule extends Module<IReactionRoleConfig> {
   }
 
   protected async cleanup(): Promise<void> {
-    ReactionMessageDB.getInstance().close();
+    await ReactionMessageDB.getInstance().close();
   }
 
   protected getDefaultConfig(): IReactionRoleConfig {

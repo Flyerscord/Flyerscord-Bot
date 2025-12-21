@@ -30,14 +30,14 @@ export async function getAvailableTags(forumChannelId: string): Promise<GuildFor
 export async function setLockPost(forumChannelId: string, postChannelId: string, locked: boolean): Promise<void> {
   const postChannel = await getForumPostChannel(forumChannelId, postChannelId);
   if (postChannel) {
-    postChannel.setLocked(locked);
+    await postChannel.setLocked(locked);
   }
 }
 
 export async function setClosedPost(forumChannelId: string, postChannelId: string, closed: boolean): Promise<void> {
   const postChannel = await getForumPostChannel(forumChannelId, postChannelId);
   if (postChannel) {
-    postChannel.setArchived(closed);
+    await postChannel.setArchived(closed);
   }
 }
 

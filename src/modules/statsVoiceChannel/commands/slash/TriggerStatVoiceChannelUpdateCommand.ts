@@ -17,6 +17,6 @@ export default class TriggerStatVoiceChannelUpdateCommand extends AdminSlashComm
     }
 
     Stumper.info(`Updated ${statChannels.length} stats channels`, "statsVoiceChannel:TriggerStatVoiceChannelUpdateCommand:execute");
-    this.replies.reply("Triggered stat voice channel update process!");
+    await this.replies.reply("Triggered stat voice channel update process!");
   }
 }

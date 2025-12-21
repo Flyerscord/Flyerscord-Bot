@@ -66,7 +66,7 @@ export async function checkForGameDay(): Promise<void> {
         );
 
         if (post) {
-          post.setArchived(false);
+          await post.setArchived(false);
           Stumper.info(`Created post for game: ${game.id}`, "gameDayPosts:GameChecker:checkForGameDay");
           await db.addPost(game.id, post.id);
         }
@@ -88,8 +88,8 @@ export async function closeAndLockOldPosts(): Promise<void> {
 
       if (!Time.isSameDay(new Date(), new Date(gameInfo.startTimeUTC))) {
         Stumper.info(`Closing and locking post for game ${post.gameId}`, "gameDayPosts:GameChecker:checkForGameDay");
-        discord.forums.setLockPost(config.channelId, post.channelId, true);
-        discord.forums.setClosedPost(config.channelId, post.channelId, true);
+        await discord.forums.setLockPost(config.channelId, post.channelId, true);
+        await discord.forums.setClosedPost(config.channelId, post.channelId, true);
       }
     }
   }

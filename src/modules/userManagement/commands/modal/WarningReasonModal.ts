@@ -38,7 +38,7 @@ export default class WarningReasonModal extends ModalMenu {
     db.addWarning(interaction.user.id, reason, interaction.user.id);
 
     Stumper.info(`Added warning for user: ${targetUser.username} by user ${interaction.user.username}`, "userManagement:WarningReasonModal:execute");
-    sendLogMessage(`Added warning for user: ${targetUser.username} by user ${interaction.user.username} Reason: ${reason}`);
+    await sendLogMessage(`Added warning for user: ${targetUser.username} by user ${interaction.user.username} Reason: ${reason}`);
     await this.replies.reply(`Added warning for user: ${targetUser.username}!`);
   }
 }

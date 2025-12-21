@@ -13,7 +13,7 @@ export default class GameDayPostsModule extends Module<IGameDayPostsConfig> {
   protected async setup(): Promise<void> {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
 
-    this.registerSchedules();
+    await this.registerSchedules();
   }
 
   protected async cleanup(): Promise<void> {}
@@ -30,12 +30,12 @@ export default class GameDayPostsModule extends Module<IGameDayPostsConfig> {
     };
   }
 
-  private registerSchedules(): void {
+  private async registerSchedules(): Promise<void> {
     // Run every day at 12:30 AM
-    CreateGameDayPostTask.getInstance().createScheduledJob();
+    await CreateGameDayPostTask.getInstance().createScheduledJob();
 
     // Run every day at 4:30 AM
-    CloseAndLockPostsTask.getInstance().createScheduledJob();
+    await CloseAndLockPostsTask.getInstance().createScheduledJob();
   }
 }
 

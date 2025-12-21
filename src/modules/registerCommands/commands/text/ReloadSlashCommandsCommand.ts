@@ -13,6 +13,6 @@ export default class ReloadSlashCommandsCommand extends DMTextCommand {
 
   async execute(message: Message, _args: string[]): Promise<void> {
     await readAndRegisterCommands();
-    discord.messages.sendMesssageDMToUser(message.author.id, "Successfully reloaded slash commands!");
+    await discord.messages.sendMesssageDMToUser(message.author.id, "Successfully reloaded slash commands!");
   }
 }

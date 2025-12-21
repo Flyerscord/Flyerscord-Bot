@@ -23,11 +23,11 @@ export default class RoleAllAssignCommand extends AdminSlashCommand {
       return;
     }
 
-    members.forEach((member) => {
+    members.forEach(async (member) => {
       if (onlyNoRole && discord.roles.userHasAnyRole(member)) {
-        discord.roles.addRoleToUser(member, role.id);
+        await discord.roles.addRoleToUser(member, role.id);
       } else if (!onlyNoRole) {
-        discord.roles.addRoleToUser(member, role.id);
+        await discord.roles.addRoleToUser(member, role.id);
       }
     });
 

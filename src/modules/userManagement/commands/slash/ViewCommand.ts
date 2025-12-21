@@ -30,9 +30,9 @@ export default class ViewCommand extends AdminSlashCommand {
 
     const embed = await createEmbed(userInfo, view);
     if (embed) {
-      this.replies.reply({ embeds: [embed] });
+      await this.replies.reply({ embeds: [embed] });
     } else {
-      this.replies.reply("There was an error finding the info for the user!");
+      await this.replies.reply("There was an error finding the info for the user!");
     }
   }
 }

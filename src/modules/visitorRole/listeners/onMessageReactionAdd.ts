@@ -34,8 +34,8 @@ export default (): void => {
     const visitorEmojiId = config.visitorEmojiId;
 
     if (reaction.emoji.id == visitorEmojiId) {
-      discord.roles.removeRoleToUser(member, memberRoleId);
-      discord.roles.addRoleToUser(member, visitorRoleId);
+      await discord.roles.removeRoleToUser(member, memberRoleId);
+      await discord.roles.addRoleToUser(member, visitorRoleId);
       Stumper.debug(`Reaction added to message ${reaction.message.id} by user ${user.id}`, "visitorRole:onMessageReactionAdd");
     }
   });

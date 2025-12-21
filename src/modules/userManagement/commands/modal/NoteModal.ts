@@ -37,7 +37,7 @@ export default class NoteModal extends ModalMenu {
     db.addNote(targetUser.id, note, interaction.user.id);
 
     Stumper.info(`Added note for user: ${targetUser.username} by user ${interaction.user.username}`, "userManagement:NoteUserCommand:execute");
-    sendLogMessage(`Added note for user: ${targetUser.username} by user ${interaction.user.username} Note: ${note}`);
+    await sendLogMessage(`Added note for user: ${targetUser.username} by user ${interaction.user.username} Note: ${note}`);
     await this.replies.reply(`Added note for user: ${targetUser.username}!`);
   }
 }

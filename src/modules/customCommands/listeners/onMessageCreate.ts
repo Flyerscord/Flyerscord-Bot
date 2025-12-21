@@ -41,7 +41,7 @@ async function checkForCustomTextCommand(message: Message): Promise<boolean> {
     }
 
     Stumper.info(`Executing custom command ${customCommand.name}.`, "customCommands:onMessageCreate:checkForCustomTextCommand");
-    discord.messages.sendMessageToChannel(message.channel.id, text);
+    await discord.messages.sendMessageToChannel(message.channel.id, text);
     return true;
   } else if (message.client.textCommands.hasAny(command)) {
     // Command is a hardcoded text command and will be caught by the normal text command check

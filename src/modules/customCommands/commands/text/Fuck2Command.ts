@@ -22,6 +22,6 @@ export default class Fuck2TextCommand extends TextCommand {
       outStr = `Fuck the ${team}!`;
     }
 
-    discord.messages.sendMessageToChannel(message.channel.id, outStr);
+    await discord.messages.sendMessageToChannel(message.channel.id, outStr);
   }
 }

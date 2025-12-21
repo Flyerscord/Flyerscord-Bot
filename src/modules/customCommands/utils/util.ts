@@ -45,13 +45,13 @@ export async function updateCommandList(allCommands: CustomCommand[]): Promise<v
     for (const message of existingCommandMessages) {
       await message.delete();
     }
-    db.removeAllCommandListMessageIds();
+    await db.removeAllCommandListMessageIds();
 
     // The command list message does not exist and need to be made
     for (const commandListMessage of commandListMessages) {
       const message = await discord.messages.sendMessageToChannel(commandListChannelId, commandListMessage);
       if (message) {
-        db.addCommandListMessageId(message.id);
+        await db.addCommandListMessageId(message.id);
       }
     }
   } else {
@@ -59,26 +59,26 @@ export async function updateCommandList(allCommands: CustomCommand[]): Promise<v
       for (const message of existingCommandMessages) {
         await message.delete();
       }
-      db.removeAllCommandListMessageIds();
+      await db.removeAllCommandListMessageIds();
 
       for (let i = 0; i < commandListMessages.length; i++) {
         const message = await discord.messages.sendMessageToChannel(commandListChannelId, commandListMessages[i]);
         if (message) {
-          db.addCommandListMessageId(message.id);
+          await db.addCommandListMessageId(message.id);
         }
       }
     } else if (commandListMessages.length < existingCommandMessages.length) {
       for (let i = 0; i < existingCommandMessages.length; i++) {
         if (i >= commandListMessages.length) {
           await existingCommandMessages[i].delete();
-          db.removeCommandListMessageId(existingCommandMessages[i].id);
+          await db.removeCommandListMessageId(existingCommandMessages[i].id);
         } else {
-          existingCommandMessages[i].edit(commandListMessages[i]);
+          await existingCommandMessages[i].edit(commandListMessages[i]);
         }
       }
     } else {
       for (let i = 0; i < existingCommandMessages.length; i++) {
-        existingCommandMessages[i].edit(commandListMessages[i]);
+        await existingCommandMessages[i].edit(commandListMessages[i]);
       }
     }
   }

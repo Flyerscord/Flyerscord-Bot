@@ -24,9 +24,9 @@ export default class InfoCommand extends AdminAutocompleteSlashCommand {
 
     if (command) {
       const embed = await this.createEmbed(command);
-      this.replies.reply({ embeds: [embed] });
+      await this.replies.reply({ embeds: [embed] });
     } else {
-      this.replies.reply(`A custom comamnd with the name ${commandName} does not exist!`);
+      await this.replies.reply(`A custom comamnd with the name ${commandName} does not exist!`);
     }
   }
 

@@ -30,10 +30,10 @@ export default class ResetUserCommand extends AdminSlashCommand {
       );
 
       await db.resetUser(user.id);
-      this.replies.reply(`Resetting exp for username: ${user.username} id: ${user.id}`);
+      await this.replies.reply(`Resetting exp for username: ${user.username} id: ${user.id}`);
       return;
     }
 
-    this.replies.reply("Error resetting user!");
+    await this.replies.reply("Error resetting user!");
   }
 }

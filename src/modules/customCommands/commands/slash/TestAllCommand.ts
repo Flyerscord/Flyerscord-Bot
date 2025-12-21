@@ -44,9 +44,9 @@ export default class TestAllCommand extends AdminSlashCommand {
 
         await sleepSec(1);
       }
-      this.replies.reply("Command test complete");
+      await this.replies.reply("Command test complete");
     } else {
-      this.replies.reply("Error testing commands");
+      await this.replies.reply("Error testing commands");
     }
   }
 }

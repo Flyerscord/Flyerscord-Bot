@@ -11,6 +11,6 @@ export default (): void => {
     if (message.channel.isDMBased()) return;
     if (message.guild?.id != ConfigManager.getInstance().getConfig("Common").masterGuildId) return;
 
-    addMessage(message);
+    await addMessage(message);
   });
 };

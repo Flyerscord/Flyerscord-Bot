@@ -37,13 +37,13 @@ export default class BlueSkyCommand extends AdminAutocompleteSlashCommand {
       try {
         await bk.addAccountToList(account);
         await db.addAuditLog(BlueSkyActionType.ADD, interaction.user.id, { account: account });
-        this.replies.reply(`Account ${account} added!`);
+        await this.replies.reply(`Account ${account} added!`);
         Stumper.info(`Account ${account} added to watched accounts`, "blueSky:BlueSkyCommand:add");
       } catch (error) {
         if (error instanceof AccountAlreadyExistsException) {
-          this.replies.reply({ content: `Account ${account} already exists!`, ephemeral: true });
+          await this.replies.reply({ content: `Account ${account} already exists!`, ephemeral: true });
         } else {
-          this.replies.reply({ content: "Error adding account!", ephemeral: true });
+          await this.replies.reply({ content: "Error adding account!", ephemeral: true });
         }
       }
     } else if (this.isSubCommand(interaction, "remove")) {
@@ -51,27 +51,27 @@ export default class BlueSkyCommand extends AdminAutocompleteSlashCommand {
       try {
         await bk.removeAccountFromList(account);
         await db.addAuditLog(BlueSkyActionType.REMOVE, interaction.user.id, { account: account });
-        this.replies.reply(`Account ${account} removed!`);
+        await this.replies.reply(`Account ${account} removed!`);
         Stumper.info(`Account ${account} removed from watched accounts`, "blueSky:BlueSkyCommand:remove");
       } catch (error) {
         if (error instanceof AccountDoesNotExistException) {
-          this.replies.reply({ content: `Account ${account} does not exist!`, ephemeral: true });
+          await this.replies.reply({ content: `Account ${account} does not exist!`, ephemeral: true });
         } else {
-          this.replies.reply({ content: "Error removing account!", ephemeral: true });
+          await this.replies.reply({ content: "Error removing account!", ephemeral: true });
         }
       }
     } else if (this.isSubCommand(interaction, "list")) {
       const accounts = await bk.getListAccounts();
       if (accounts.length == 0) {
-        this.replies.reply("No accounts found!");
+        await this.replies.reply("No accounts found!");
       } else {
         const names = accounts.map((ele) => ele.userHandle).join("\n");
         const message = `Current Accounts:\n\`\`\`\n${names}\n\`\`\``;
 
-        this.replies.reply(message);
+        await this.replies.reply(message);
       }
     } else {
-      this.replies.reply({ content: "Invalid subcommand!", ephemeral: true });
+      await this.replies.reply({ content: "Invalid subcommand!", ephemeral: true });
     }
   }
 

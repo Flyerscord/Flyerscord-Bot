@@ -21,6 +21,6 @@ export default class ChanceTextCommand extends TextCommand {
     const index = getRandomNumber(0, options.length - 1);
     const option = options[index];
 
-    discord.messages.sendMessageToChannel(message.channel.id, option);
+    await discord.messages.sendMessageToChannel(message.channel.id, option);
   }
 }

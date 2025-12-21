@@ -25,7 +25,7 @@ export default class AxiosWrapper {
     });
   }
 
-  setAccessJwt(accessJwt: string, refreshToken: string, refreshTokenCallback?: (refreshToken: string) => Promise<ITokens>): void {
+  async setAccessJwt(accessJwt: string, refreshToken: string, refreshTokenCallback?: (refreshToken: string) => Promise<ITokens>): Promise<void> {
     this.accessJwt = accessJwt;
     this.refreshToken = refreshToken;
     if (refreshTokenCallback) {
@@ -33,7 +33,7 @@ export default class AxiosWrapper {
     }
     this.axiosInstance.defaults.headers.Authorization = `Bearer ${this.accessJwt}`;
 
-    this.scheduleTokenRefresh();
+    await this.scheduleTokenRefresh();
   }
 
   async post<T>(endpoint: string, data: Record<string, any>): Promise<T> {
@@ -62,7 +62,7 @@ export default class AxiosWrapper {
     if (this.refreshTokenCallback !== undefined) {
       try {
         const resp = await this.refreshTokenCallback(this.refreshToken);
-        this.setAccessJwt(resp.accessToken, resp.refreshToken);
+        await this.setAccessJwt(resp.accessToken, resp.refreshToken);
       } catch (error) {
         Stumper.caughtError(error, `common:AxiosWrapper(${this.name}):refreshJwt`);
       }

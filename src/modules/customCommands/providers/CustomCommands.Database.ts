@@ -210,25 +210,25 @@ export default class CustomCommandsDB extends Database {
     await sleepMs(100);
 
     if (message.embeds.length == 0) {
-      message.delete();
+      await message.delete();
       return undefined;
     }
 
     const newUrl = message.embeds[0].data.thumbnail?.url;
 
     if (!newUrl || newUrl == url) {
-      message.delete();
+      await message.delete();
       return undefined;
     }
 
     const newValid = await this.isUrlValid(newUrl);
 
     if (!newValid) {
-      message.delete();
+      await message.delete();
       return undefined;
     }
 
-    message.delete();
+    await message.delete();
     return newUrl;
   }
 }

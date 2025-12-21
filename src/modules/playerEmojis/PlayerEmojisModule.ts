@@ -17,7 +17,7 @@ export default class PlayerEmojisModule extends Module<IPlayerEmojisConfig> {
   }
 
   protected async cleanup(): Promise<void> {
-    PlayerEmojisDB.getInstance().close();
+    await PlayerEmojisDB.getInstance().close();
   }
 
   protected getDefaultConfig(): IPlayerEmojisConfig {

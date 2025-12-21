@@ -18,7 +18,7 @@ export default class ListAllCommandsCommand extends AdminSlashCommand {
 
     const output = this.wrapTextInCodeblock(outputStrings.join("\n"));
 
-    this.replies.reply(output);
+    await this.replies.reply(output);
   }
 
   private wrapTextInCodeblock(text: string): string {

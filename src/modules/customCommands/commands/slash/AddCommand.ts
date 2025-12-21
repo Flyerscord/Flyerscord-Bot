@@ -61,7 +61,7 @@ export default class AddCommand extends AdminSlashCommand {
 
     if (name != "" && text != "") {
       if (db.hasCommand(name) || interaction.client.textCommands.hasAny(name)) {
-        this.replies.reply(`Command ${prefix}${name} already exists!`);
+        await this.replies.reply(`Command ${prefix}${name} already exists!`);
         return;
       }
 
@@ -74,24 +74,24 @@ export default class AddCommand extends AdminSlashCommand {
       } catch (error) {
         Stumper.caughtError(error, "customCommands:AddCommand:execute");
         if (error instanceof InvalidImgurUrlException || error instanceof ErrorUploadingToImageKitException) {
-          this.replies.reply(
+          await this.replies.reply(
             `Error adding command ${prefix}${name}! There was an issue with the url. Try downloading the image and uploading it with the image subcommand. Otherwise contact flyerzrule for help.`,
           );
           return;
         } else if (error instanceof PageNotFoundException) {
-          this.replies.reply(`Error adding command ${prefix}${name}! The url returns a 404.`);
+          await this.replies.reply(`Error adding command ${prefix}${name}! The url returns a 404.`);
           return;
         } else if (error instanceof HTMLPageException) {
-          this.replies.reply(
+          await this.replies.reply(
             `Error adding command ${prefix}${name}! The url is a HTML page and not an image. Try downloading the image and uploading it with the image subcommand.`,
           );
           return;
         } else {
-          this.replies.reply(`Error adding command ${prefix}${name}!`);
+          await this.replies.reply(`Error adding command ${prefix}${name}!`);
           throw error;
         }
       }
-      this.replies.reply(`Command ${prefix}${name} added!`);
+      await this.replies.reply(`Command ${prefix}${name} added!`);
     }
   }
 }

@@ -14,7 +14,7 @@ export default class RulesModule extends Module<IRulesConfig> {
   }
 
   protected async cleanup(): Promise<void> {
-    RulesDB.getInstance().close();
+    await RulesDB.getInstance().close();
   }
 
   getDefaultConfig(): IRulesConfig {

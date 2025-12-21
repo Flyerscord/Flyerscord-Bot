@@ -10,6 +10,6 @@ export default class RemovePlayerEmojisCommand extends AdminSlashCommand {
   async execute(_interaction: ChatInputCommandInteraction): Promise<void> {
     await removeOldEmojis();
 
-    this.replies.reply("Removed all player emojis!");
+    await this.replies.reply("Removed all player emojis!");
   }
 }

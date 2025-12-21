@@ -22,12 +22,12 @@ export default class DeleteCommand extends AdminAutocompleteSlashCommand {
     name = name.toLowerCase();
 
     if (!db.hasCommand(name)) {
-      this.replies.reply(`Command ${prefix}${name} does not exist!`);
+      await this.replies.reply(`Command ${prefix}${name} does not exist!`);
       return;
     }
 
     db.removeCommand(name, interaction.user.id);
-    this.replies.reply(`Command ${prefix}${name} removed!`);
+    await this.replies.reply(`Command ${prefix}${name} removed!`);
   }
 
   async getAutoCompleteOptions(interaction: AutocompleteInteraction): Promise<string[] | undefined> {

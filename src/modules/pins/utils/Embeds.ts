@@ -1,11 +1,11 @@
-import IPin from "../interfaces/IPin";
 import discord from "@common/utils/discord/discord";
 import { EmbedBuilder } from "discord.js";
+import { Pin } from "../db/schema";
 
-export async function getPinEmbed(pin: IPin): Promise<EmbedBuilder | undefined> {
+export async function getPinEmbed(pin: Pin): Promise<EmbedBuilder | undefined> {
   const embed = new EmbedBuilder();
 
-  const message = await discord.messages.getMessage(pin.channelId, pin.orignalMessageId);
+  const message = await discord.messages.getMessage(pin.ogChannelId, pin.ogMessageId);
   if (message == null) {
     return undefined;
   }
@@ -46,13 +46,13 @@ export async function getPinEmbed(pin: IPin): Promise<EmbedBuilder | undefined> 
 
   if (content.length > 0) {
     embed.setDescription(`Channel: ${message.channel.url}
-      
+
       ${content}
-  
+
       [Jump to Message](${message.url})`);
   } else {
     embed.setDescription(`Channel: ${message.channel.url}
-      
+
       [Jump to Message](${message.url})`);
   }
 

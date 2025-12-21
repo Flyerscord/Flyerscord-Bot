@@ -30,7 +30,7 @@ export async function addMessage(message: Message): Promise<void> {
       userLevel.currentLevel++;
       await sendLevelUpMessage(message, userId, userLevel.currentLevel);
     }
-    db.updateUser(userId, userLevel);
+    await db.updateUser(userId, userLevel);
   }
 }
 
@@ -47,7 +47,7 @@ async function sendLevelUpMessage(message: Message, userId: string, currentLevel
   const messages = [rankupMessage, pNumMessage];
 
   if (message.channel.isSendable()) {
-    message.channel.send(messages.join("\n\n"));
+    await message.channel.send(messages.join("\n\n"));
   }
 }
 

@@ -31,10 +31,10 @@ export async function sendStringReplytoMessage(messageObj: Message, message: str
 export async function sendEmbedReplytoMessage(messageObj: Message, embed: EmbedBuilder, mentionUser = false): Promise<void> {
   if (mentionUser) {
     Stumper.debug(`Sending embed reply with mention to message: ${messageObj.id}`, "common:messages:sendEmbedReplytoMessage");
-    messageObj.reply({ embeds: [embed] });
+    await messageObj.reply({ embeds: [embed] });
   } else {
     Stumper.debug(`Sending embed reply to message: ${messageObj.id}`, "common:messages:sendEmbedReplytoMessage");
-    (messageObj.channel as TextChannel).send({ embeds: [embed] });
+    await (messageObj.channel as TextChannel).send({ embeds: [embed] });
   }
 }
 

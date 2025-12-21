@@ -6,11 +6,11 @@ import ConfigManager from "@common/config/ConfigManager";
 
 export default (client: Client): void => {
   client.on("messageCreate", async (message: Message) => {
-    if (checkForNormalTextCommand(message)) return;
+    if (await checkForNormalTextCommand(message)) return;
   });
 };
 
-function checkForNormalTextCommand(message: Message): boolean {
+async function checkForNormalTextCommand(message: Message): Promise<boolean> {
   const configManager = ConfigManager.getInstance();
   const prefix = configManager.getConfig("CustomCommands")?.prefix ?? "!";
   const adminPrefix = configManager.getConfig("Common").adminPrefix;
@@ -26,7 +26,7 @@ function checkForNormalTextCommand(message: Message): boolean {
   try {
     if (textCmd) {
       Stumper.info(`Command ${command} called by user ${message.author.username}!`, "common:onMessageCreate:checkForNormalTextCommand");
-      textCmd.run(message, args);
+      await textCmd.run(message, args);
       return true;
     } else {
       Stumper.debug(`Command ${command} not found!`, "common:onMessageCreate:checkForNormalTextCommand");

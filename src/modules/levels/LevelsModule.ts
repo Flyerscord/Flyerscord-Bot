@@ -15,7 +15,7 @@ export default class LevelsModule extends Module<ILevelsConfig> {
 
     this.registerListeners();
 
-    calculateLevels(1000);
+    await calculateLevels(1000);
   }
 
   protected async cleanup(): Promise<void> {}

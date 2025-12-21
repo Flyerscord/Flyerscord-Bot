@@ -31,7 +31,7 @@ export default class EditCommand extends AdminAutocompleteSlashCommand {
     name = name.toLowerCase();
 
     if (!db.hasCommand(name)) {
-      this.replies.reply(`Command ${prefix}${name} does not exist!`);
+      await this.replies.reply(`Command ${prefix}${name} does not exist!`);
       return;
     }
 
@@ -40,17 +40,17 @@ export default class EditCommand extends AdminAutocompleteSlashCommand {
     } catch (error) {
       Stumper.caughtError(error, "customCommands:EditCommand:execute");
       if (error instanceof InvalidImgurUrlException || error instanceof ErrorUploadingToImageKitException) {
-        this.replies.reply(`Error updating command ${prefix}${name}! There was an issue with the url. Contact flyerzrule for help.`);
+        await this.replies.reply(`Error updating command ${prefix}${name}! There was an issue with the url. Contact flyerzrule for help.`);
         return;
       } else if (error instanceof PageNotFoundException) {
-        this.replies.reply(`Error adding command ${prefix}${name}! The url returns a 404.`);
+        await this.replies.reply(`Error adding command ${prefix}${name}! The url returns a 404.`);
         return;
       } else {
-        this.replies.reply(`Error adding command ${prefix}${name}!`);
+        await this.replies.reply(`Error adding command ${prefix}${name}!`);
         throw error;
       }
     }
-    this.replies.reply(`Command ${prefix}${name} updated!`);
+    await this.replies.reply(`Command ${prefix}${name} updated!`);
   }
 
   async getAutoCompleteOptions(interaction: AutocompleteInteraction): Promise<string[] | undefined> {

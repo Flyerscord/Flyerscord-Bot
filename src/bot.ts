@@ -132,7 +132,7 @@ import ConfigManager from "@common/config/ConfigManager";
 /* -------------------------------------------------------------------------- */
 /*                                 Run Startup                                */
 /* -------------------------------------------------------------------------- */
-startUp();
+void startUp();
 
 async function startUp(): Promise<void> {
   const moduleManager = ModuleManager.getInstance();
@@ -180,5 +180,5 @@ async function startUp(): Promise<void> {
   /* -------------------------------------------------------------------------- */
   /*                                Log into bot                                */
   /* -------------------------------------------------------------------------- */
-  client.login(commonConfig.token);
+  await client.login(commonConfig.token);
 }

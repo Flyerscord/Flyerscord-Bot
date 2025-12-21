@@ -21,7 +21,7 @@ export default class NoteUserCommand extends AdminSlashCommand {
     db.addNote(user.id, note, interaction.user.id);
 
     Stumper.info(`Added note for user: ${user.username} by user ${interaction.user.username}`, "userManagement:NoteUserCommand:execute");
-    sendLogMessage(`Added note for user: \`${user.username}\` by user \`${interaction.user.username}\` Note: \`${note}\``);
-    this.replies.reply(`Added note for user: ${user.username}!`);
+    await sendLogMessage(`Added note for user: \`${user.username}\` by user \`${interaction.user.username}\` Note: \`${note}\``);
+    await this.replies.reply(`Added note for user: ${user.username}!`);
   }
 }

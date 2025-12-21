@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand } from "@common/models/SlashCommand";
 import { updateCommandList } from "../../utils/util";
-import CustomCommandsDB from "@modules/customCommands/providers/CustomCommands.Database";
+import CustomCommandsDB from "../../db/CustomCommandsDB";
 
 export default class UpdateCommandListCommand extends AdminSlashCommand {
   constructor() {
@@ -9,10 +9,10 @@ export default class UpdateCommandListCommand extends AdminSlashCommand {
   }
 
   async execute(_interaction: ChatInputCommandInteraction): Promise<void> {
-    const db = CustomCommandsDB.getInstance();
+    const db = new CustomCommandsDB();
 
-    updateCommandList(db.getAllCommands());
+    await updateCommandList(await db.getAllCommands());
 
-    this.replies.reply("Custom Command List Updated!");
+    await this.replies.reply("Custom Command List Updated!");
   }
 }

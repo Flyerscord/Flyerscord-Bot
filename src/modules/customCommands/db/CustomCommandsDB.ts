@@ -89,7 +89,7 @@ export default class CustomCommandsDB extends ModuleDatabase {
 
       Stumper.info(`Custom Command created! Command: ${name}  By user: ${userId}`, "customCommands:CustomCommandsDB:addCommandSkippingUpload");
 
-      updateCommandList(await this.getAllCommands());
+      await updateCommandList(await this.getAllCommands());
       return true;
     }
     Stumper.error(`Error adding command: ${name}`, "customCommands:CustomCommandsDB:addCommandSkippingUpload");
@@ -107,7 +107,7 @@ export default class CustomCommandsDB extends ModuleDatabase {
 
     await this.addDeleteAuditLog(name, oldCommand.text, userId, oldCommand.id);
 
-    updateCommandList(await this.getAllCommands());
+    await updateCommandList(await this.getAllCommands());
     return true;
   }
 
@@ -131,7 +131,7 @@ export default class CustomCommandsDB extends ModuleDatabase {
 
       await this.addEditAuditLog(name, oldCommand.text, text, userId, oldCommand.id);
 
-      updateCommandList(await this.getAllCommands());
+      await updateCommandList(await this.getAllCommands());
 
       return true;
     }
@@ -228,25 +228,25 @@ export default class CustomCommandsDB extends ModuleDatabase {
     await sleepMs(100);
 
     if (message.embeds.length == 0) {
-      message.delete();
+      await message.delete();
       return undefined;
     }
 
     const newUrl = message.embeds[0].data.thumbnail?.url;
 
     if (!newUrl || newUrl == url) {
-      message.delete();
+      await message.delete();
       return undefined;
     }
 
     const newValid = await this.isUrlValid(newUrl);
 
     if (!newValid) {
-      message.delete();
+      await message.delete();
       return undefined;
     }
 
-    message.delete();
+    await message.delete();
     return newUrl;
   }
 

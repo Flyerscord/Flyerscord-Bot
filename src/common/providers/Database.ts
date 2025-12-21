@@ -46,9 +46,9 @@ export default abstract class Database extends Singleton {
     return this.db.entries();
   }
 
-  close(): void {
+  async close(): Promise<void> {
     Stumper.warning(`Closing database: ${this.name}`, "common:Database:close");
-    this.db.close();
+    await this.db.close();
   }
 
   // Exists because Enmap's ensure() method expects an object as the value

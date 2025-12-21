@@ -18,7 +18,7 @@ export default class BlueSky extends Singleton {
     this.userDid = "";
     this.agent = new AtpAgent({ service: "https://bsky.social" });
 
-    this.login();
+    void this.login();
   }
 
   private async login(): Promise<void> {
@@ -88,7 +88,7 @@ export default class BlueSky extends Singleton {
         }
         if (newPosts.length > 0) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          db.updateLastPostTime(new Date((newPosts[newPosts.length - 1].post.record as any).createdAt));
+          await db.updateLastPostTime(new Date((newPosts[newPosts.length - 1].post.record as any).createdAt));
         }
       }
     } catch (error) {

@@ -28,10 +28,10 @@ export default class CommandImportCommand extends AdminSlashCommand {
 
       CommandImporter.getInstance().enable(channel.id, interaction.user.id, botUser.id, prefix);
 
-      this.replies.reply("Command import process started! Start running commands!");
+      await this.replies.reply("Command import process started! Start running commands!");
     } else if (this.isSubCommand(interaction, "stop")) {
       CommandImporter.getInstance().disable();
-      this.replies.reply("Command import process stopped!");
+      await this.replies.reply("Command import process stopped!");
     }
   }
 }

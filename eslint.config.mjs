@@ -45,6 +45,7 @@ export default [
           accessibility: "no-public",
         },
       ],
+      "@typescript-eslint/no-floating-promises": "error",
 
       // Drizzle rules
       // ...drizzleEslintPlugin.configs.all.rules,

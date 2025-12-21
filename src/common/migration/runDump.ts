@@ -39,4 +39,4 @@ async function main(): Promise<void> {
   await migrateAllTables();
 }
 
-main();
+void main();

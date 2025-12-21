@@ -12,7 +12,7 @@ export async function calculateLevels(levelsToCalc: number): Promise<void> {
     for (let i = 0; i < levelsToCalc; i++) {
       const expNeeded = expNeededForNextLevel(i);
       currentTotal += expNeeded;
-      db.addLevel(i + 1, currentTotal);
+      await db.addLevel(i + 1, currentTotal);
     }
   } else {
     Stumper.debug(`Skipping the generation of the table of levels`, "levels:requiredExp:calculateLevels");

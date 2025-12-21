@@ -15,6 +15,6 @@ export default class AddNoteAdminUserContext extends AdminUserContextMenuCommand
       await interaction.showModal(warningModal.getModal());
       return;
     }
-    this.replies.reply("Error adding warning!");
+    await this.replies.reply("Error adding warning!");
   }
 }

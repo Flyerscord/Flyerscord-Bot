@@ -21,7 +21,7 @@ export default class KickSlashCommand extends AdminSlashCommand {
     const member = await discord.members.getMember(user.id);
 
     if (!member) {
-      this.replies.reply({ content: "Error finding member!", ephemeral: true });
+      await this.replies.reply({ content: "Error finding member!", ephemeral: true });
       Stumper.error(`Error finding member for user ${user.id}`, "userManagement:KickSlashCommand:execute");
       return;
     }
@@ -32,10 +32,10 @@ export default class KickSlashCommand extends AdminSlashCommand {
       `User ${member.displayName || member.user.username} (id: ${member.user.id}) has been kicked by ${interaction.user.username}! Reason: ${reason}`,
       "userManagement:KickSlashCommand:execute",
     );
-    sendLogMessage(
+    await sendLogMessage(
       `User \`${member.displayName || member.user.username}\` has been kicked by \`${interaction.user.username}\`! Reason: \`${reason}\``,
     );
 
-    this.replies.reply(`User ${member.displayName || member.user.username} has been kicked!`);
+    await this.replies.reply(`User ${member.displayName || member.user.username} has been kicked!`);
   }
 }

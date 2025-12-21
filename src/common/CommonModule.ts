@@ -12,7 +12,7 @@ export default class CommonModule extends Module<ICommonConfig> {
   }
 
   protected async cleanup(): Promise<void> {
-    GlobalDB.getInstance().close();
+    await GlobalDB.getInstance().close();
   }
 
   protected getDefaultConfig(): ICommonConfig {

@@ -26,7 +26,7 @@ export default class BanSlashCommand extends AdminSlashCommand {
 
     const member = await discord.members.getMember(user.id);
     if (!member) {
-      this.replies.reply({ content: "Error finding member!", ephemeral: true });
+      await this.replies.reply({ content: "Error finding member!", ephemeral: true });
       Stumper.error(`Error finding member for user ${user.id}`, "userManagement:BanSlashCommand:execute");
       return;
     }
@@ -39,13 +39,13 @@ export default class BanSlashCommand extends AdminSlashCommand {
       `User ${username} (id: ${member.user.id}) has been banned by ${interaction.user.username}!`,
       "userManagement:BanSlashCommand:execute",
     );
-    sendLogMessage(`User \`${username}\` has been banned by \`${interaction.user.username}\`! Reason: \`${reason}\``);
+    await sendLogMessage(`User \`${username}\` has been banned by \`${interaction.user.username}\`! Reason: \`${reason}\``);
 
     if (deleteMessagesSeconds > 0) {
       Stumper.warning(`Deleting messages from ${username} for the last ${deleteMessagesSeconds} seconds.`, "userManagement:BanSlashCommand:execute");
-      sendLogMessage(`Deleting messages from \`${username}\` for the last \`${deleteMessagesSeconds} seconds.\``);
+      await sendLogMessage(`Deleting messages from \`${username}\` for the last \`${deleteMessagesSeconds} seconds.\``);
     }
 
-    this.replies.reply(`User ${username} has been banned!`);
+    await this.replies.reply(`User ${username} has been banned!`);
   }
 }

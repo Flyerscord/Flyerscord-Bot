@@ -1,7 +1,6 @@
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import Module from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
-import PlayerEmojisDB from "./providers/PlayerEmojis.Database";
 import EmojiCheckTask from "./tasks/EmojiCheckTask";
 import schema from "./db/schema";
 
@@ -16,9 +15,7 @@ export default class PlayerEmojisModule extends Module<IPlayerEmojisConfig> {
     this.registerSchedules();
   }
 
-  protected async cleanup(): Promise<void> {
-    await PlayerEmojisDB.getInstance().close();
-  }
+  protected async cleanup(): Promise<void> {}
 
   protected getDefaultConfig(): IPlayerEmojisConfig {
     return {};

@@ -1,7 +1,7 @@
 import { Modules } from "@modules/Modules";
 import { getDb, NeonDB } from "../db/db";
 import { PgTable } from "drizzle-orm/pg-core";
-import { count, eq, and } from "drizzle-orm";
+import { count, eq, and, sql } from "drizzle-orm";
 import { AuditLog, auditLog, NewAuditLog } from "../db/schema";
 
 export abstract class ModuleDatabase {
@@ -140,5 +140,13 @@ export abstract class ModuleDatabase {
    */
   async getAuditLog(id: string): Promise<AuditLog | undefined> {
     return (await this.db.select().from(auditLog).where(eq(auditLog.id, id)).limit(1))[0];
+  }
+
+  /**
+   * Truncates a table
+   * @param table - The table to truncate
+   */
+  protected async truncateTable(table: PgTable): Promise<void> {
+    await this.db.execute(sql`TRUNCATE TABLE ${table} RESTART IDENTITY CASCADE`);
   }
 }

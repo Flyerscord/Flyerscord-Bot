@@ -15,7 +15,7 @@ export default class LevelsDB extends ModuleDatabase {
   }
 
   async deleteAllLevels(): Promise<void> {
-    await this.db.execute(sql`TRUNCATE TABLE ${levelsLevelsExperience} RESTART IDENTITY CASCADE`);
+    await this.truncateTable(levelsLevelsExperience);
   }
 
   async addLevel(level: number, expRequired: number): Promise<void> {

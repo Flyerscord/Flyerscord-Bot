@@ -10,3 +10,5 @@ export const playerEmojisEmojis = createModuleTable("playeremojis__emojis", {
 export default {
   playerEmojisEmojis,
 };
+
+export type Emoji = typeof playerEmojisEmojis.$inferSelect;

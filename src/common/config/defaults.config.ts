@@ -69,9 +69,6 @@ export default {
   statsvoicechannel: {
     channels: [],
   },
-  usermanagement: {
-    channelId: "",
-  },
   visitorrole: {
     memberRoleId: "",
     visitorRoleId: "",

@@ -10,7 +10,6 @@ import PinsModule from "@root/src/modules/pins/PinsModule";
 import PlayerEmojisModule from "@root/src/modules/playerEmojis/PlayerEmojisModule";
 import ReactionRoleModule from "@root/src/modules/reactionRole/ReactionRoleModule";
 import RulesModule from "@root/src/modules/rules/RulesModule";
-import UserManagementModule from "@root/src/modules/userManagement/UserManagementModule";
 
 import BlueSkyNormalize from "@root/src/modules/bluesky/db/migration/normalize";
 import DaysUntilNormalize from "@root/src/modules/daysUntil/db/migration/normalize";
@@ -36,7 +35,6 @@ import PlayerEmojisDB from "@root/src/modules/playerEmojis/providers/PlayerEmoji
 import ReactionMessageDB from "@root/src/modules/reactionRole/providers/ReactionMessage.Database";
 import RuleMessagesDB from "@root/src/modules/rules/providers/RuleMessages.Database";
 import RulesDB from "@root/src/modules/rules/providers/Rules.Database";
-import UserManagementDB from "@root/src/modules/userManagement/providers/UserManagement.Database";
 import Database from "../providers/Database";
 import GlobalDB from "../providers/Global.Database";
 import VisitorRoleModule from "@root/src/modules/visitorRole/VisitorRoleModule";
@@ -64,7 +62,6 @@ async function main(): Promise<void> {
     { displayName: "ReactionMessage", instance: () => ReactionMessageDB.getInstance() },
     { displayName: "RuleMessages", instance: () => RuleMessagesDB.getInstance() },
     { displayName: "Rules", instance: () => RulesDB.getInstance() },
-    { displayName: "UserManagement", instance: () => UserManagementDB.getInstance() },
   ];
 
   await moduleManager.addModule(CustomCommandsModule.getInstance(config), false);
@@ -76,7 +73,6 @@ async function main(): Promise<void> {
   await moduleManager.addModule(PlayerEmojisModule.getInstance(config), false);
   await moduleManager.addModule(ReactionRoleModule.getInstance(config), false);
   await moduleManager.addModule(RulesModule.getInstance(config), false);
-  await moduleManager.addModule(UserManagementModule.getInstance(config), false);
   await moduleManager.addModule(BlueSkyModule.getInstance(config), false);
   await moduleManager.addModule(VisitorRoleModule.getInstance(config), false);
 

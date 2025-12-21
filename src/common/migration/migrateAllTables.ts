@@ -18,7 +18,6 @@ import PlayerEmojisDB from "@modules/playerEmojis/providers/PlayerEmojis.Databas
 import ReactionMessageDB from "@modules/reactionRole/providers/ReactionMessage.Database";
 import RuleMessagesDB from "@modules/rules/providers/RuleMessages.Database";
 import RulesDB from "@modules/rules/providers/Rules.Database";
-import UserManagementDB from "@modules/userManagement/providers/UserManagement.Database";
 import Database from "../providers/Database";
 
 /**
@@ -44,7 +43,6 @@ const DATABASE_CONFIGS: { displayName: string; instance: () => Database }[] = [
   { displayName: "ReactionMessage", instance: () => ReactionMessageDB.getInstance() },
   { displayName: "RuleMessages", instance: () => RuleMessagesDB.getInstance() },
   { displayName: "Rules", instance: () => RulesDB.getInstance() },
-  { displayName: "UserManagement", instance: () => UserManagementDB.getInstance() },
 ];
 
 /**

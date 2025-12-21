@@ -10,7 +10,6 @@ import PinsModule from "@root/src/modules/pins/PinsModule";
 import PlayerEmojisModule from "@root/src/modules/playerEmojis/PlayerEmojisModule";
 import ReactionRoleModule from "@root/src/modules/reactionRole/ReactionRoleModule";
 import RulesModule from "@root/src/modules/rules/RulesModule";
-import UserManagementModule from "@root/src/modules/userManagement/UserManagementModule";
 import Stumper, { LOG_LEVEL } from "stumper";
 import SchemaManager from "../managers/SchemaManager";
 
@@ -29,7 +28,6 @@ async function main(): Promise<void> {
   await moduleManager.addModule(PlayerEmojisModule.getInstance(config), false);
   await moduleManager.addModule(ReactionRoleModule.getInstance(config), false);
   await moduleManager.addModule(RulesModule.getInstance(config), false);
-  await moduleManager.addModule(UserManagementModule.getInstance(config), false);
   await moduleManager.addModule(BlueSkyModule.getInstance(config), false);
 
   const schemaManager = SchemaManager.getInstance();

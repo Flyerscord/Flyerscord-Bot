@@ -1,5 +1,5 @@
 import { BuildExtraConfigColumns, NonArray } from "drizzle-orm";
-import { pgTable, PgColumnBuilderBase, pgEnum, PgTableExtraConfigValue, PgTable } from "drizzle-orm/pg-core";
+import { pgTable, PgColumnBuilderBase, pgEnum, PgTableExtraConfigValue, PgTable, PgEnumObject } from "drizzle-orm/pg-core";
 import { Modules } from "@modules/Modules";
 
 type SnakeCase<T extends string> = T extends `${infer First}${infer Rest}`
@@ -11,7 +11,8 @@ type SnakeCase<T extends string> = T extends `${infer First}${infer Rest}`
 type ModuleTableName = `${Lowercase<Modules>}__${SnakeCase<string>}`;
 type ModuleEnumName = `${Lowercase<Modules>}__${SnakeCase<string>}_type`;
 
-export type TableEnumRecord = Record<string, PgTable>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type TableEnumRecord = Record<string, PgTable | PgEnumObject<any>>;
 
 /**
  * Wrapper around pgTable that enforces module__table naming convention.

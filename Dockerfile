@@ -18,8 +18,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /usr/src/app
 
-COPY . .
-
 COPY --from=dependencies /usr/src/app/node_modules ./node_modules
+
+COPY . .
 
 CMD ["npm", "start"]

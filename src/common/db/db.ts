@@ -1,13 +1,13 @@
 import SchemaManager from "@common/managers/SchemaManager";
 import { neon, NeonQueryFunction } from "@neondatabase/serverless";
 import { drizzle, NeonHttpDatabase } from "drizzle-orm/neon-http";
-import { PgTable, TableConfig } from "drizzle-orm/pg-core";
 import dotenv from "dotenv";
+import { TableEnumRecord } from "./schema-types";
 
 // Get dotenv variables
 dotenv.config();
 
-export type NeonDB = NeonHttpDatabase<Record<string, PgTable<TableConfig>>> & {
+export type NeonDB = NeonHttpDatabase<TableEnumRecord> & {
   $client: NeonQueryFunction<false, false>;
 };
 

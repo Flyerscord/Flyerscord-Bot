@@ -2,7 +2,6 @@ import { ModuleDatabase } from "@common/models/ModuleDatabase";
 import { CustomCommand, customCommandsCommands, customCommandsState } from "./schema";
 import { eq, sql } from "drizzle-orm";
 import Stumper from "stumper";
-import { updateCommandList } from "../utils/util";
 import PageNotFoundException from "../exceptions/PageNotFoundException";
 import { InvalidImgurUrlException } from "../exceptions/InvalidImgurUrlException";
 import { ErrorUploadingToImageKitException } from "../exceptions/ErrorUploadingToImageKitException";
@@ -13,6 +12,8 @@ import HTMLPageException from "../exceptions/HTMLPageException";
 import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/config/ConfigManager";
 import { sleepMs } from "@common/utils/sleep";
+import TextCommandManager from "@root/src/common/managers/TextCommandManager";
+import { Message } from "discord.js";
 
 export interface IAuditLogInfo {
   oldText: string;
@@ -82,7 +83,7 @@ export default class CustomCommandsDB extends ModuleDatabase {
 
       Stumper.info(`Custom Command created! Command: ${name}  By user: ${userId}`, "customCommands:CustomCommandsDB:addCommandSkippingUpload");
 
-      await updateCommandList(await this.getAllCommands());
+      await this.updateCommandList(await this.getAllCommands());
       return true;
     }
     Stumper.error(`Error adding command: ${name}`, "customCommands:CustomCommandsDB:addCommandSkippingUpload");
@@ -100,7 +101,7 @@ export default class CustomCommandsDB extends ModuleDatabase {
 
     await this.addDeleteAuditLog(name, oldCommand.text, userId, oldCommand.id);
 
-    await updateCommandList(await this.getAllCommands());
+    await this.updateCommandList(await this.getAllCommands());
     return true;
   }
 
@@ -124,7 +125,7 @@ export default class CustomCommandsDB extends ModuleDatabase {
 
       await this.addEditAuditLog(name, oldCommand.text, text, userId, oldCommand.id);
 
-      await updateCommandList(await this.getAllCommands());
+      await this.updateCommandList(await this.getAllCommands());
 
       return true;
     }
@@ -313,5 +314,110 @@ export default class CustomCommandsDB extends ModuleDatabase {
       .update(customCommandsState)
       .set({ messageIds: sql`array_remove(${customCommandsState.messageIds}, ${messageId})` })
       .where(eq(customCommandsState.key, "commandListMessageId"));
+  }
+
+  async updateCommandList(allCommands: CustomCommand[]): Promise<void> {
+    const db = new CustomCommandsDB();
+
+    const commandListMessageIds = await db.getCommandListMessageIds();
+
+    const config = ConfigManager.getInstance().getConfig("CustomCommands");
+    const commandListChannelId = config.customCommandListChannelId;
+
+    const textCommandManager = TextCommandManager.getInstance();
+    const hardcodedCommands = textCommandManager.getCommands().filter((value) => value.prefix == config.prefix);
+    const hardcodedCommandsCustom: Omit<CustomCommand, "id">[] = hardcodedCommands.map((command) => {
+      return {
+        name: command.name,
+        text: command.command,
+        createdBy: "System",
+        createdOn: new Date(),
+      };
+    });
+
+    let commands = [...hardcodedCommandsCustom, ...allCommands];
+    commands = commands.sort((a, b) => a.name.localeCompare(b.name));
+    const commandListMessages = this.createCommandListMessages(commands);
+
+    // Check on status of all command list messages
+    let allCommandListMessagesExist = commandListMessageIds.length > 0;
+    let existingCommandMessages: Message[] = [];
+    for (const commandListMessageId of commandListMessageIds) {
+      const message = await discord.messages.getMessage(commandListChannelId, commandListMessageId);
+      if (!message) {
+        allCommandListMessagesExist = false;
+      } else {
+        existingCommandMessages.push(message);
+      }
+    }
+
+    if (!allCommandListMessagesExist) {
+      // Delete all existing command list messages, if any
+      for (const message of existingCommandMessages) {
+        await message.delete();
+      }
+      await db.removeAllCommandListMessageIds();
+
+      // The command list message does not exist and need to be made
+      for (const commandListMessage of commandListMessages) {
+        const message = await discord.messages.sendMessageToChannel(commandListChannelId, commandListMessage);
+        if (message) {
+          await db.addCommandListMessageId(message.id);
+        }
+      }
+    } else {
+      if (commandListMessages.length > existingCommandMessages.length) {
+        for (const message of existingCommandMessages) {
+          await message.delete();
+        }
+        await db.removeAllCommandListMessageIds();
+
+        for (let i = 0; i < commandListMessages.length; i++) {
+          const message = await discord.messages.sendMessageToChannel(commandListChannelId, commandListMessages[i]);
+          if (message) {
+            await db.addCommandListMessageId(message.id);
+          }
+        }
+      } else if (commandListMessages.length < existingCommandMessages.length) {
+        for (let i = 0; i < existingCommandMessages.length; i++) {
+          if (i >= commandListMessages.length) {
+            await existingCommandMessages[i].delete();
+            await db.removeCommandListMessageId(existingCommandMessages[i].id);
+          } else {
+            await existingCommandMessages[i].edit(commandListMessages[i]);
+          }
+        }
+      } else {
+        for (let i = 0; i < existingCommandMessages.length; i++) {
+          await existingCommandMessages[i].edit(commandListMessages[i]);
+        }
+      }
+    }
+  }
+
+  createCommandListMessages(commands: Omit<CustomCommand, "id">[]): string[] {
+    let output = `**Custom Commands (${commands.length} commands)**\n`;
+    const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
+
+    let outputStrings: string[] = [];
+
+    let textLength = output.length;
+
+    for (let i = 0; i < commands.length; i++) {
+      const command = commands[i];
+      const commandText = `${prefix}${command.name}\n`;
+
+      if (textLength + commandText.length > 2000) {
+        outputStrings.push(output);
+        output = "";
+        textLength = 0;
+      }
+
+      output += commandText;
+      textLength += commandText.length;
+    }
+
+    outputStrings.push(output);
+    return outputStrings;
   }
 }

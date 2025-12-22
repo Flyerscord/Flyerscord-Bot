@@ -33,6 +33,7 @@ export const auditLog = createModuleTable(
 );
 
 export default {
+  severityEnum,
   auditLog,
 };
 

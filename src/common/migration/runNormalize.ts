@@ -38,6 +38,7 @@ import RulesDB from "@root/src/modules/rules/providers/Rules.Database";
 import Database from "../providers/Database";
 import GlobalDB from "../providers/Global.Database";
 import VisitorRoleModule from "@root/src/modules/visitorRole/VisitorRoleModule";
+import CommonModule from "../CommonModule";
 
 async function main(): Promise<void> {
   const startTime = Date.now();
@@ -64,6 +65,7 @@ async function main(): Promise<void> {
     { displayName: "Rules", instance: () => RulesDB.getInstance() },
   ];
 
+  await moduleManager.addModule(CommonModule.getInstance(config), false);
   await moduleManager.addModule(CustomCommandsModule.getInstance(config), false);
 
   await moduleManager.addModule(DaysUntilModule.getInstance(config), false);
@@ -108,7 +110,7 @@ async function main(): Promise<void> {
     Stumper.info("Successfully created tables in database", "Migration:Schema");
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    Stumper.error(`Failed to create tables: ${errorMessage}`, "Migration:Schema");
+    Stumper.caughtError(error, "Migration:Schema");
     throw new Error(`Failed to create tables in database: ${errorMessage}`);
   }
 

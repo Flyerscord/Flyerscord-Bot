@@ -35,10 +35,7 @@ export const rulesSectionMessages = createModuleTable(
   (table) => [
     check(
       "type_constraint",
-      sql`
-      (${table.type} = 'HEADER' AND ${table.url} IS NOT NULL AND ${table.content} IS NULL) OR
-      (${table.type} = 'CONTENT' AND ${table.content} IS NOT NULL AND ${table.url} IS NULL)
-    `,
+      sql`(${table.type} = 'HEADER'::rules__section_type AND ${table.url} IS NOT NULL AND ${table.content} IS NULL) OR (${table.type} = 'CONTENT'::rules__section_type AND ${table.content} IS NOT NULL AND ${table.url} IS NULL)`,
     ),
   ],
 );
@@ -50,6 +47,7 @@ export const rulesState = createModuleTable("rules__state", {
 });
 
 export default {
+  rulesSectionType,
   rulesSections,
   rulesMessages,
   rulesSectionMessages,

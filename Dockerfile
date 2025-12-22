@@ -1,4 +1,4 @@
-FROM node:18-alpine as dependencies
+FROM node:18 as dependencies
 
 WORKDIR /usr/src/app
 

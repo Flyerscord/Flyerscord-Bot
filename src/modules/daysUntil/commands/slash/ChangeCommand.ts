@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
-import DaysUntilDB from "../../providers/DaysUtil.Database";
 import { events } from "../../models/DaysUntilEvents";
 import Time from "@common/utils/Time";
+import DaysUntilDB from "../../db/DaysUntilDB";
 
 export default class ChangeCommand extends AdminSlashCommand {
   constructor() {
@@ -23,20 +23,20 @@ export default class ChangeCommand extends AdminSlashCommand {
 
     const event = Object.values(events).find((event) => event.name == eventKey);
     if (!event) {
-      this.replies.reply("Error finding event!");
+      await this.replies.reply("Error finding event!");
       return;
     }
 
     const date = Time.getDateFromString(dateStr);
     if (!date) {
-      this.replies.reply("Error parsing date!");
+      await this.replies.reply("Error parsing date!");
       return;
     }
 
-    const db = DaysUntilDB.getInstance();
+    const db = new DaysUntilDB();
 
-    db.setEventDate(event.dbKey, date.getTime());
+    await db.setEventDate(event.dbKey, date);
 
-    this.replies.reply(`Event ${event.name} date set to ${dateStr}!`);
+    await this.replies.reply(`Event ${event.name} date set to ${dateStr}!`);
   }
 }

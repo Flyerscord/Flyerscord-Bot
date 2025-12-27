@@ -3,9 +3,8 @@ import { AdminAutocompleteSlashCommand, PARAM_TYPES } from "@common/models/Slash
 import { AccountAlreadyExistsException } from "../../exceptions/AccountAlreadyExistsException";
 import { AccountDoesNotExistException } from "../../exceptions/AccountDoesNotExistException";
 import Stumper from "stumper";
-import AccountHistoryDB from "../../providers/AccountHistory.Database";
 import BlueSky from "../../utils/BlueSky";
-import { HISTORY_ITEM_TYPE } from "../../interfaces/IHistoryItem";
+import BlueSkyDB, { BlueSkyActionType } from "../../db/BlueSkyDB";
 
 export default class BlueSkyCommand extends AdminAutocompleteSlashCommand {
   constructor() {
@@ -30,49 +29,49 @@ export default class BlueSkyCommand extends AdminAutocompleteSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const historyDb = AccountHistoryDB.getInstance();
+    const db = new BlueSkyDB();
     const bk = BlueSky.getInstance();
 
     if (this.isSubCommand(interaction, "add")) {
       const account: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "account");
       try {
         await bk.addAccountToList(account);
-        historyDb.addHistoryItem(HISTORY_ITEM_TYPE.ADD, account, interaction.user.id);
-        this.replies.reply(`Account ${account} added!`);
+        await db.addAuditLog(BlueSkyActionType.ADD, interaction.user.id, { account: account });
+        await this.replies.reply(`Account ${account} added!`);
         Stumper.info(`Account ${account} added to watched accounts`, "blueSky:BlueSkyCommand:add");
       } catch (error) {
         if (error instanceof AccountAlreadyExistsException) {
-          this.replies.reply({ content: `Account ${account} already exists!`, ephemeral: true });
+          await this.replies.reply({ content: `Account ${account} already exists!`, ephemeral: true });
         } else {
-          this.replies.reply({ content: "Error adding account!", ephemeral: true });
+          await this.replies.reply({ content: "Error adding account!", ephemeral: true });
         }
       }
     } else if (this.isSubCommand(interaction, "remove")) {
       const account: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "account");
       try {
         await bk.removeAccountFromList(account);
-        historyDb.addHistoryItem(HISTORY_ITEM_TYPE.REMOVE, account, interaction.user.id);
-        this.replies.reply(`Account ${account} removed!`);
+        await db.addAuditLog(BlueSkyActionType.REMOVE, interaction.user.id, { account: account });
+        await this.replies.reply(`Account ${account} removed!`);
         Stumper.info(`Account ${account} removed from watched accounts`, "blueSky:BlueSkyCommand:remove");
       } catch (error) {
         if (error instanceof AccountDoesNotExistException) {
-          this.replies.reply({ content: `Account ${account} does not exist!`, ephemeral: true });
+          await this.replies.reply({ content: `Account ${account} does not exist!`, ephemeral: true });
         } else {
-          this.replies.reply({ content: "Error removing account!", ephemeral: true });
+          await this.replies.reply({ content: "Error removing account!", ephemeral: true });
         }
       }
     } else if (this.isSubCommand(interaction, "list")) {
       const accounts = await bk.getListAccounts();
       if (accounts.length == 0) {
-        this.replies.reply("No accounts found!");
+        await this.replies.reply("No accounts found!");
       } else {
         const names = accounts.map((ele) => ele.userHandle).join("\n");
         const message = `Current Accounts:\n\`\`\`\n${names}\n\`\`\``;
 
-        this.replies.reply(message);
+        await this.replies.reply(message);
       }
     } else {
-      this.replies.reply({ content: "Invalid subcommand!", ephemeral: true });
+      await this.replies.reply({ content: "Invalid subcommand!", ephemeral: true });
     }
   }
 

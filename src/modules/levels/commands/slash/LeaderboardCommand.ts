@@ -9,12 +9,11 @@ import {
 } from "discord.js";
 
 import SlashCommand from "@common/models/SlashCommand";
-import LevelsDB from "../../providers/Levels.Database";
-import { IUserLevel } from "../../interfaces/IUserLevel";
 import discord from "@common/utils/discord/discord";
-import LevelExpDB from "../../providers/LevelExp.Database";
 import { formatExp, getShortenedMessageCount } from "../../utils/leveling";
 import Stumper from "stumper";
+import LevelsDB from "../../db/LevelsDB";
+import { LevelsUser } from "../../db/schema";
 
 export default class LeaderboardCommand extends SlashCommand {
   private readonly EMBED_PAGE_SIZE = 25;
@@ -24,8 +23,8 @@ export default class LeaderboardCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const db = LevelsDB.getInstance();
-    const users = db.getAllUsersSortedByExp();
+    const db = new LevelsDB();
+    const users = await db.getAllUsersSortedByExp();
     const totalPages = Math.ceil(users.length / this.EMBED_PAGE_SIZE);
 
     let currentPage = 1;
@@ -82,19 +81,19 @@ export default class LeaderboardCommand extends SlashCommand {
       nextButton.setDisabled(currentPage === totalPages);
 
       // Update the embed and buttons
-      this.replies.reply({ embeds: [await this.createEmbedPage(users, currentPage)], components: [row] });
+      await this.replies.reply({ embeds: [await this.createEmbedPage(users, currentPage)], components: [row] });
     });
 
     collector.on("end", async () => {
       prevButton.setDisabled(true);
       nextButton.setDisabled(true);
-      this.replies.reply({ components: [row] });
+      await this.replies.reply({ components: [row] });
     });
   }
 
-  private async createEmbedPage(data: IUserLevel[], pageNumber: number): Promise<EmbedBuilder> {
+  private async createEmbedPage(data: LevelsUser[], pageNumber: number): Promise<EmbedBuilder> {
     const embed = new EmbedBuilder();
-    const levelExpDB = LevelExpDB.getInstance();
+    const db = new LevelsDB();
 
     embed.setTitle("User Leaderboard");
     embed.setFooter({ text: `Page ${pageNumber} of ${Math.ceil(data.length / this.EMBED_PAGE_SIZE)}` });
@@ -116,7 +115,7 @@ export default class LeaderboardCommand extends SlashCommand {
 
       embed.addFields({
         name: `${i + 1}) ${username}`,
-        value: `**Level:** ${user.currentLevel} | **Total Messages:** ${getShortenedMessageCount(user.messageCount)} | **Total Exp:** ${formatExp(user.totalExp)} | **Exp to next level:** ${formatExp(levelExpDB.getLevelExp(user.currentLevel + 1) - user.totalExp)}`,
+        value: `**Level:** ${user.currentLevel} | **Total Messages:** ${getShortenedMessageCount(user.messageCount)} | **Total Exp:** ${formatExp(user.totalExperience)} | **Exp to next level:** ${formatExp((await db.getLevelExp(user.currentLevel + 1)) - user.totalExperience)}`,
       });
     }
 

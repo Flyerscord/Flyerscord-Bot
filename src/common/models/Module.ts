@@ -8,18 +8,23 @@ import SlashCommandManager from "../managers/SlashCommandManager";
 import ModalMenuManager from "../managers/ModalMenuManager";
 import TextCommandManager from "../managers/TextCommandManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
-import { IModuleConfig } from "../interfaces/IModuleConfig";
 import { Singleton } from "./Singleton";
 import type { IKeyedObject } from "../interfaces/IKeyedObject";
 import type { Modules } from "../../modules/Modules";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "../config/ConfigManager";
+import SchemaManager from "../managers/SchemaManager";
+import { TableEnumRecord } from "../db/schema-types";
+
+export interface IModuleConfig<TConfig> {
+  [key: string]: TConfig;
+}
 
 export default abstract class Module<TConfig extends IKeyedObject> extends Singleton {
   readonly name: Modules;
   readonly cleanName: string;
   readonly dependsOn: Modules[];
 
-  protected constructor(name: Modules, config: IKeyedObject, dependsOn: Modules[] = []) {
+  protected constructor(name: Modules, config: IKeyedObject, schemas: TableEnumRecord = {}, dependsOn: Modules[] = []) {
     super();
     this.name = name;
 
@@ -36,6 +41,8 @@ export default abstract class Module<TConfig extends IKeyedObject> extends Singl
     }
 
     this.dependsOn = dependsOn;
+
+    SchemaManager.getInstance().register(schemas);
   }
 
   protected abstract setup(): Promise<void>;

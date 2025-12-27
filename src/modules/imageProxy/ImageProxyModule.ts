@@ -6,7 +6,7 @@ import ConfigManager from "@common/config/ConfigManager";
 
 export default class ImageProxyModule extends Module<IImageProxyConfig> {
   constructor(config: IKeyedObject) {
-    super("ImageProxy", config, ["CustomCommands"]);
+    super("ImageProxy", config, {}, ["CustomCommands"]);
   }
 
   protected async setup(): Promise<void> {

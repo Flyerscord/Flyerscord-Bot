@@ -11,9 +11,8 @@ export default class ReloadSlashCommandsCommand extends DMTextCommand {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async execute(message: Message, args: string[]): Promise<void> {
+  async execute(message: Message, _args: string[]): Promise<void> {
     await readAndRegisterCommands();
-    discord.messages.sendMesssageDMToUser(message.author.id, "Successfully reloaded slash commands!");
+    await discord.messages.sendMesssageDMToUser(message.author.id, "Successfully reloaded slash commands!");
   }
 }

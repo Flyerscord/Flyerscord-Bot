@@ -12,7 +12,7 @@ export default class StatsVoiceChannelModule extends Module<IStatsVoiceChannelCo
   }
 
   protected async setup(): Promise<void> {
-    this.readInCommands<SlashCommand>(__dirname, "slash");
+    await this.readInCommands<SlashCommand>(__dirname, "slash");
 
     this.registerStatChannels();
     this.registerSchedules();

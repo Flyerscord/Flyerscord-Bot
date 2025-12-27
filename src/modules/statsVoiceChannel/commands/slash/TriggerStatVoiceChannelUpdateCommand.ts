@@ -8,8 +8,7 @@ export default class TriggerStatVoiceChannelUpdateCommand extends AdminSlashComm
     super("triggerstatvoicechannelupdate", "Manually trigger the stat voice channel update process", { ephermal: true });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+  async execute(_interaction: ChatInputCommandInteraction): Promise<void> {
     const statsVoiceChannelsManager = StatsVoiceChannelsManager.getInstance();
     const statChannels = statsVoiceChannelsManager.getStatChannels();
 
@@ -18,6 +17,6 @@ export default class TriggerStatVoiceChannelUpdateCommand extends AdminSlashComm
     }
 
     Stumper.info(`Updated ${statChannels.length} stats channels`, "statsVoiceChannel:TriggerStatVoiceChannelUpdateCommand:execute");
-    this.replies.reply("Triggered stat voice channel update process!");
+    await this.replies.reply("Triggered stat voice channel update process!");
   }
 }

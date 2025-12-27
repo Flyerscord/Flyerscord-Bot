@@ -15,7 +15,6 @@ import type { IPlayerEmojisConfig } from "./playerEmojis/PlayerEmojisModule";
 import type { IReactionRoleConfig } from "./reactionRole/ReactionRoleModule";
 import type { IRegisterCommandsConfig } from "./registerCommands/RegisterCommandsModule";
 import type { IStatsVoiceChannelConfig } from "./statsVoiceChannel/StatsVoiceChannelModule";
-import type { IUserManagementConfig } from "./userManagement/UserManagementModule";
 import type { IVisitorRoleConfig } from "./visitorRole/VisitorRoleModule";
 import { IRulesConfig } from "./rules/RulesModule";
 
@@ -38,7 +37,6 @@ export type Modules =
   | "RegisterCommands"
   | "Rules"
   | "StatsVoiceChannel"
-  | "UserManagement"
   | "VisitorRole";
 
 export type ModuleConfigMap = {
@@ -60,6 +58,5 @@ export type ModuleConfigMap = {
   RegisterCommands: IRegisterCommandsConfig;
   Rules: IRulesConfig;
   StatsVoiceChannel: IStatsVoiceChannelConfig;
-  UserManagement: IUserManagementConfig;
   VisitorRole: IVisitorRoleConfig;
 };

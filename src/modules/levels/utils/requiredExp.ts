@@ -1,18 +1,18 @@
 import Stumper from "stumper";
-import LevelExpDB from "../providers/LevelExp.Database";
+import LevelsDB from "../db/LevelsDB";
 
-export function calculateLevels(levelsToCalc: number): void {
-  const db = LevelExpDB.getInstance();
+export async function calculateLevels(levelsToCalc: number): Promise<void> {
+  const db = new LevelsDB();
 
-  if (db.getNumOfKeys() != levelsToCalc) {
+  if ((await db.getNumberOfCalculatedLevels()) != levelsToCalc) {
     Stumper.warning(`Regenerating table of ${levelsToCalc} levels!`, "levels:requiredExp:calculateLevels");
-    db.wipe();
+    await db.deleteAllLevels();
 
     let currentTotal = 0;
     for (let i = 0; i < levelsToCalc; i++) {
       const expNeeded = expNeededForNextLevel(i);
       currentTotal += expNeeded;
-      db.addLevel(i + 1, currentTotal);
+      await db.addLevel(i + 1, currentTotal);
     }
   } else {
     Stumper.debug(`Skipping the generation of the table of levels`, "levels:requiredExp:calculateLevels");

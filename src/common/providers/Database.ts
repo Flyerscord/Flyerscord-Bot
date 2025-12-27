@@ -22,6 +22,10 @@ export default abstract class Database extends Singleton {
     return this.db.count;
   }
 
+  getName(): string {
+    return this.name;
+  }
+
   protected getAllValues(): any[] {
     const arr = Array.from(this.db);
     return arr.map((val) => val[1]);
@@ -38,9 +42,13 @@ export default abstract class Database extends Singleton {
     });
   }
 
-  close(): void {
+  getEntries(): IterableIterator<[string | number, any]> {
+    return this.db.entries();
+  }
+
+  async close(): Promise<void> {
     Stumper.warning(`Closing database: ${this.name}`, "common:Database:close");
-    this.db.close();
+    await this.db.close();
   }
 
   // Exists because Enmap's ensure() method expects an object as the value

@@ -1,6 +1,6 @@
 {
   "name": "flyerscord-helper",
-  "version": "2.1.7",
+  "version": "3.0.0",
   "description": "Flyers' Discord Helper Bot",
   "main": "src/bot.ts",
   "scripts": {
@@ -18,7 +18,11 @@
     "prepare": "husky",
     "test": "jest --no-coverage",
     "test:coverage": "jest --coverage",
-    "circular-deps": "madge --circular --extensions ts src"
+    "circular-deps": "madge --circular --extensions ts src",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "repository": {
     "type": "git",
@@ -33,9 +37,12 @@
   "dependencies": {
     "@atproto/api": "^0.15.19",
     "@discordjs/builders": "^1.11.2",
+    "@neondatabase/serverless": "^0.10.4",
     "axios": "^1.10.0",
     "canvas": "^2.11.2",
     "discord.js": "^14.21.0",
+    "dotenv": "^17.2.0",
+    "drizzle-orm": "^0.44.3",
     "enmap": "^5.9.10",
     "express": "^4.21.1",
     "imagekit": "^5.2.0",
@@ -58,8 +65,10 @@
     "@typescript-eslint/eslint-plugin": "^8.35.0",
     "@typescript-eslint/parser": "^8.35.0",
     "copyfiles": "^2.4.1",
+    "drizzle-kit": "^0.31.4",
     "eslint": "^9.30.0",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-drizzle": "^0.2.3",
     "eslint-plugin-prettier": "^5.5.1",
     "husky": "^9.1.7",
     "jest": "^30.1.3",

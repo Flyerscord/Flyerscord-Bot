@@ -2,11 +2,11 @@ import { IPost } from "../interfaces/IPost";
 import Stumper from "stumper";
 import { IBlueSkyAccount } from "../interfaces/IBlueSkyAccount";
 import { AccountNotinListException } from "../exceptions/AccountNotInListException";
-import BlueSkyDB from "../providers/BlueSky.Database";
 import { AtpAgent, AtUri } from "@atproto/api";
 import { AccountDoesNotExistException } from "../exceptions/AccountDoesNotExistException";
 import { Singleton } from "@common/models/Singleton";
 import ConfigManager from "@common/config/ConfigManager";
+import BlueSkyDB from "../db/BlueSkyDB";
 
 export default class BlueSky extends Singleton {
   private agent: AtpAgent;
@@ -18,7 +18,7 @@ export default class BlueSky extends Singleton {
     this.userDid = "";
     this.agent = new AtpAgent({ service: "https://bsky.social" });
 
-    this.login();
+    void this.login();
   }
 
   private async login(): Promise<void> {
@@ -50,9 +50,9 @@ export default class BlueSky extends Singleton {
   async checkForNewPosts(): Promise<IPost[]> {
     const postDatas: IPost[] = [];
 
-    const db = BlueSkyDB.getInstance();
+    const db = new BlueSkyDB();
 
-    const lastPost = db.getLastPostTime();
+    const lastPost = await db.getLastPostTime();
 
     const listUri = this.createListUri();
 
@@ -65,13 +65,13 @@ export default class BlueSky extends Singleton {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (a, b) => new Date((a.post.record as any).createdAt).getTime() - new Date((b.post.record as any).createdAt).getTime(),
         );
-        if (lastPost == "") {
+        if (!lastPost) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          db.setLastPostTime((sortedPosts[sortedPosts.length - 1].post.record as any).createdAt);
+          await db.updateLastPostTime((sortedPosts[sortedPosts.length - 1].post.record as any).createdAt);
           return [];
         }
 
-        const timeOfLastPost = new Date(lastPost).getTime();
+        const timeOfLastPost = lastPost.getTime();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const newPosts = sortedPosts.filter((post) => new Date((post.post.record as any).createdAt).getTime() > timeOfLastPost);
 
@@ -88,7 +88,7 @@ export default class BlueSky extends Singleton {
         }
         if (newPosts.length > 0) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          db.setLastPostTime((newPosts[newPosts.length - 1].post.record as any).createdAt);
+          await db.updateLastPostTime(new Date((newPosts[newPosts.length - 1].post.record as any).createdAt));
         }
       }
     } catch (error) {

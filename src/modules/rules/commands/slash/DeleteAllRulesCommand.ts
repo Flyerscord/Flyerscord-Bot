@@ -1,5 +1,7 @@
 import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
-import RuleMessagesDB from "@modules/rules/providers/RuleMessages.Database";
+import RulesDB from "@modules/rules/db/RulesDB";
+import ConfigManager from "@common/config/ConfigManager";
+import discord from "@common/utils/discord/discord";
 import { ChatInputCommandInteraction } from "discord.js";
 
 export default class DeleteAllRulesCommand extends AdminSlashCommand {
@@ -13,13 +15,18 @@ export default class DeleteAllRulesCommand extends AdminSlashCommand {
     const confirm: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "confirm");
 
     if (confirm == "CONFIRM") {
-      const db = RuleMessagesDB.getInstance();
+      const db = new RulesDB();
+      const channelId = ConfigManager.getInstance().getConfig("Rules").channelId;
 
-      const res = await db.removeAllMessages();
-      if (!res) {
-        await this.replies.reply({ content: "Error removing all messages!" });
-        return;
+      // Delete from Discord
+      const messages = await db.getMessages();
+      for (const msgId of messages) {
+        await discord.messages.deleteMessage(channelId, msgId);
       }
+
+      // Delete from database
+      await db.removeAllMessages();
+
       await this.replies.reply({ content: "Deleted all messages!" });
     }
   }

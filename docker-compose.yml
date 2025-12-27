@@ -6,6 +6,7 @@ services:
     restart: unless-stopped
     environment:
       - PORT=3000
+      - DATABASE_URL_POOLED=REPLACE_WITH_DB_URL
     ports:
       - 3000:3000
     volumes:

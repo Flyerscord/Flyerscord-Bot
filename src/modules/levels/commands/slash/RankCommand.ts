@@ -1,10 +1,9 @@
 import { AttachmentBuilder, ChatInputCommandInteraction, User } from "discord.js";
 import SlashCommand, { PARAM_TYPES } from "@common/models/SlashCommand";
-import LevelsDB from "../../providers/Levels.Database";
-import LevelExpDB from "../../providers/LevelExp.Database";
 import RankImageGenerator from "../../utils/RankImageGenerator";
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
+import LevelsDB from "../../db/LevelsDB";
 
 export default class RankCommand extends SlashCommand {
   constructor() {
@@ -25,7 +24,7 @@ export default class RankCommand extends SlashCommand {
 
     const member = await discord.members.getMember(user.id);
     if (!member) {
-      this.replies.reply({ content: "Error finding member!", ephemeral: true });
+      await this.replies.reply({ content: "Error finding member!", ephemeral: true });
       Stumper.error(`Error finding member for user ${user.id}`, "levels:RankCommand:createEmbed");
       return;
     }
@@ -33,13 +32,12 @@ export default class RankCommand extends SlashCommand {
     const profilePictureUrl = member.displayAvatarURL() || user.displayAvatarURL();
     const username = member.displayName || user.username;
 
-    const db = LevelsDB.getInstance();
-    const levelExpDB = LevelExpDB.getInstance();
-    const userLevel = db.getUser(user.id);
-    const rank = db.getUserRank(user.id) + 1;
+    const db = new LevelsDB();
+    const userLevel = await db.getUser(user.id);
+    const rank = (await db.getUserRank(user.id)) + 1;
 
     if (rank == -1) {
-      this.replies.reply({ content: "Error finding rank! You may need to send a message first!", ephemeral: true });
+      await this.replies.reply({ content: "Error finding rank! You may need to send a message first!", ephemeral: true });
       Stumper.error(`Error finding rank for user ${user.id}`, "levels:RankCommand:createEmbed");
       return;
     }
@@ -47,8 +45,8 @@ export default class RankCommand extends SlashCommand {
     if (userLevel) {
       const rankImageGenerator = new RankImageGenerator(
         userLevel.messageCount,
-        userLevel.totalExp,
-        levelExpDB.getLevelExp(userLevel.currentLevel + 1),
+        userLevel.totalExperience,
+        await db.getLevelExp(userLevel.currentLevel + 1),
         userLevel.currentLevel,
         rank,
         username,
@@ -63,9 +61,9 @@ export default class RankCommand extends SlashCommand {
       }
 
       const attachment = new AttachmentBuilder(imageBuffer, { name: "rank.png" });
-      this.replies.reply({ files: [attachment] });
+      await this.replies.reply({ files: [attachment] });
       return;
     }
-    this.replies.reply({ content: "You need to send a message before you can use this command!", ephemeral: true });
+    await this.replies.reply({ content: "You need to send a message before you can use this command!", ephemeral: true });
   }
 }

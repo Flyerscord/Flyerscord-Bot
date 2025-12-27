@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import SlashCommand, { PARAM_TYPES } from "@common/models/SlashCommand";
 import { events } from "../../models/DaysUntilEvents";
-import DaysUntilDB from "../../providers/DaysUtil.Database";
 import Time from "@common/utils/Time";
+import DaysUntilDB from "../../db/DaysUntilDB";
 
 export default class DaysUntilCommand extends SlashCommand {
   constructor() {
@@ -19,14 +19,17 @@ export default class DaysUntilCommand extends SlashCommand {
     const event = Object.values(events).find((event) => event.name == eventKey);
 
     if (!event) {
-      this.replies.reply({ content: "Error finding event!", ephemeral: true });
+      await this.replies.reply({ content: "Error finding event!", ephemeral: true });
       return;
     }
 
-    const db = DaysUntilDB.getInstance();
-    const eventData = db.getEvent(event.dbKey);
+    const db = new DaysUntilDB();
+    const eventData = await db.getEvent(event.dbKey);
 
-    const timeUntil = Time.timeUntil(eventData.date);
+    let timeUntil = -1;
+    if (eventData.date) {
+      timeUntil = Time.timeUntil(eventData.date.getTime());
+    }
 
     let output = "";
     if (timeUntil > 0) {
@@ -37,6 +40,6 @@ export default class DaysUntilCommand extends SlashCommand {
       output = event.exactMessage;
     }
 
-    this.replies.reply(output);
+    await this.replies.reply(output);
   }
 }

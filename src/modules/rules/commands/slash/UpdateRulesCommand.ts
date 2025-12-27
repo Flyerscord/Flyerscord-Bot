@@ -19,10 +19,10 @@ export default class UpdateRulesCommand extends AdminSlashCommand {
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     if (this.isSubCommand(interaction, "get")) {
-      const file = RuleFile.getRulesFile();
+      const file = await RuleFile.getRulesFile();
 
       if (!file) {
-        this.replies.reply({ content: "Error getting rules file!" });
+        await this.replies.reply({ content: "Error getting rules file!" });
         return;
       }
 
@@ -36,13 +36,13 @@ export default class UpdateRulesCommand extends AdminSlashCommand {
       const file = this.getParamValue(interaction, PARAM_TYPES.ATTACHMENT, "file") as Attachment;
 
       if (!file.name.endsWith(".txt")) {
-        this.replies.reply({ content: "Error: File must be a .txt file!" });
+        await this.replies.reply({ content: "Error: File must be a .txt file!" });
         return;
       }
 
       const res = await RuleFile.setRulesFile(file);
       if (!res) {
-        this.replies.reply({ content: "Error setting rules file!" });
+        await this.replies.reply({ content: "Error setting rules file!" });
         return;
       }
 

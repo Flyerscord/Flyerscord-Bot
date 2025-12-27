@@ -49,6 +49,16 @@ jobs:
       - name: Run linting
         run: pnpm run lint
 
+      - name: Check DB migrations
+        run: |
+          pnpm run db:generate
+          if [ -n "$(git status --porcelain drizzle/migrations/)" ]; then
+            echo "Error: Database schema changes detected but migrations not generated!"
+            echo "Please run 'pnpm run db:generate' and commit the migration files."
+            git status drizzle/migrations/
+            exit 1
+          fi
+
       - name: Run circular deps check
         run: pnpm run circular-deps
 

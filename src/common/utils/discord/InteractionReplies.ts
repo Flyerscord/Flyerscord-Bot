@@ -75,7 +75,7 @@ export class InteractionReplies {
 
     if (!this.isDeferred()) {
       if (addEphemeral) {
-        this.interaction.reply({
+        await this.interaction.reply({
           components: opts.components,
           files: opts.files,
           embeds: opts.embeds,
@@ -83,7 +83,7 @@ export class InteractionReplies {
           flags: MessageFlagsBitField.Flags.Ephemeral,
         });
       } else {
-        this.interaction.reply({
+        await this.interaction.reply({
           components: opts.components,
           files: opts.files,
           embeds: opts.embeds,

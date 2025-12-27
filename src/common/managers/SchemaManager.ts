@@ -1,0 +1,69 @@
+import { Singleton } from "@common/models/Singleton";
+import { pgTable, varchar, jsonb } from "drizzle-orm/pg-core";
+import Stumper from "stumper";
+import { TableEnumRecord } from "../db/schema-types";
+
+export default class SchemaManager extends Singleton {
+  private tables: TableEnumRecord = {};
+
+  constructor() {
+    super();
+  }
+
+  register(tables: TableEnumRecord): boolean {
+    for (const [key, table] of Object.entries(tables)) {
+      if (this.tables[key]) {
+        Stumper.error(`Table ${key} already registered!`, "SchemaManager:register");
+        return false;
+      }
+      this.tables[key] = table;
+    }
+    return true;
+  }
+
+  getSchema(): TableEnumRecord {
+    return this.tables;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
+  createRawTable(plainName: string) {
+    return pgTable(`raw_${plainName}`, {
+      id: varchar("id", { length: 255 }).primaryKey(),
+      data: jsonb("data").notNull(),
+    });
+  }
+
+  registerRawTables(tableNames: string[]): boolean {
+    const rawTables: TableEnumRecord = {};
+
+    for (const tableName of tableNames) {
+      const rawTableName = `raw_${tableName}`;
+
+      if (this.tables[rawTableName]) {
+        Stumper.error(`Raw table ${rawTableName} already registered!`, "SchemaManager:registerRawTables");
+        return false;
+      }
+
+      rawTables[rawTableName] = this.createRawTable(tableName);
+      Stumper.info(`Generated raw table schema for: ${rawTableName}`, "SchemaManager:registerRawTables");
+    }
+
+    return this.register(rawTables);
+  }
+
+  removeRawTables(): void {
+    for (const key in this.tables) {
+      if (key.startsWith("raw_")) {
+        delete this.tables[key];
+      }
+    }
+  }
+
+  removeNonRawTables(): void {
+    for (const key in this.tables) {
+      if (!key.startsWith("raw_")) {
+        delete this.tables[key];
+      }
+    }
+  }
+}

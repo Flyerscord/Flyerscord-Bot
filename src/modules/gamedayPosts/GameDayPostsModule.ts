@@ -1,24 +1,22 @@
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import Module from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
-import GameDayPostsDB from "./providers/GameDayPosts.Database";
 import CloseAndLockPostsTask from "./tasks/CloseAndLockPostsTask";
 import CreateGameDayPostTask from "./tasks/CreateGameDayPostTask";
+import schema from "./db/schema";
 
 export default class GameDayPostsModule extends Module<IGameDayPostsConfig> {
   constructor(config: IKeyedObject) {
-    super("GameDayPosts", config);
+    super("GameDayPosts", config, schema);
   }
 
   protected async setup(): Promise<void> {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
 
-    this.registerSchedules();
+    await this.registerSchedules();
   }
 
-  protected async cleanup(): Promise<void> {
-    GameDayPostsDB.getInstance().close();
-  }
+  protected async cleanup(): Promise<void> {}
 
   protected getDefaultConfig(): IGameDayPostsConfig {
     return {
@@ -32,12 +30,12 @@ export default class GameDayPostsModule extends Module<IGameDayPostsConfig> {
     };
   }
 
-  private registerSchedules(): void {
+  private async registerSchedules(): Promise<void> {
     // Run every day at 12:30 AM
-    CreateGameDayPostTask.getInstance().createScheduledJob();
+    await CreateGameDayPostTask.getInstance().createScheduledJob();
 
     // Run every day at 4:30 AM
-    CloseAndLockPostsTask.getInstance().createScheduledJob();
+    await CloseAndLockPostsTask.getInstance().createScheduledJob();
   }
 }
 

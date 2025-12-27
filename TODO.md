@@ -1,5 +1,13 @@
-# After release
+# Migration
 
-- Add live game info back
-- Add ability to move levels to a different user
-  - For if someone wants to make a new discord account
+- Clear out the database in development
+- Retest the dump script
+- Retest the normalize script
+- Run the bot against the development database
+- Test the basic functionality of the bot
+- Bring down the production bot
+- Backup the database
+- Dump the database
+- Nomralize the database
+- Run the bot against the production database
+- Do a quick sanity check of the bot

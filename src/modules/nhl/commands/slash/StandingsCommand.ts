@@ -66,29 +66,29 @@ export default class StandingsCommand extends SlashCommand {
         const divStandings = this.getDivisionStandings(standings.standings, division);
 
         const embed = await this.createDivisionEmbed(division, divStandings);
-        this.replies.reply({ embeds: [embed] });
+        await this.replies.reply({ embeds: [embed] });
       } else if (this.isSubCommand(interaction, "conference")) {
         const conference: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "conference");
 
         const confStandings = this.getConferenceStandings(standings.standings, conference);
 
         const embed = await this.createConferenceEmbed(conference, confStandings);
-        this.replies.reply({ embeds: [embed] });
+        await this.replies.reply({ embeds: [embed] });
       } else if (this.isSubCommand(interaction, "league")) {
         const leagueStandings = this.getLeagueStandings(standings.standings);
 
         const embeds = await this.createLeagueEmbeds(leagueStandings);
-        this.replies.reply({ embeds: embeds });
+        await this.replies.reply({ embeds: embeds });
       } else if (this.isSubCommand(interaction, "wildcard")) {
         const conference: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "conference");
 
         const wildcardStandings = this.getConferenceStandings(standings.standings, conference);
 
         const embeds = await this.createWildcardEmbeds(conference, wildcardStandings);
-        this.replies.reply({ embeds: embeds });
+        await this.replies.reply({ embeds: embeds });
       }
     } else {
-      this.replies.reply({ content: "Error fetching the standings!", ephemeral: true });
+      await this.replies.reply({ content: "Error fetching the standings!", ephemeral: true });
     }
   }
 

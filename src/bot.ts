@@ -111,7 +111,6 @@ import PlayerEmojisModule from "@modules/playerEmojis/PlayerEmojisModule";
 import ReactionRoleModule from "@modules/reactionRole/ReactionRoleModule";
 import RulesModule from "@modules/rules/RulesModule";
 import StatsVoiceChannelModule from "@modules/statsVoiceChannel/StatsVoiceChannelModule";
-// import UserManagementModule from "@modules/userManagement/UserManagementModule";
 import VisitorRoleModule from "@modules/visitorRole/VisitorRoleModule";
 import RegisterCommandsModule from "@modules/registerCommands/RegisterCommandsModule";
 import BlueSkyModule from "@modules/bluesky/BlueSkyModule";
@@ -132,7 +131,7 @@ import ConfigManager from "@common/config/ConfigManager";
 /* -------------------------------------------------------------------------- */
 /*                                 Run Startup                                */
 /* -------------------------------------------------------------------------- */
-startUp();
+void startUp();
 
 async function startUp(): Promise<void> {
   const moduleManager = ModuleManager.getInstance();
@@ -163,7 +162,6 @@ async function startUp(): Promise<void> {
   await moduleManager.addModule(ReactionRoleModule.getInstance(config));
   await moduleManager.addModule(RulesModule.getInstance(config));
   await moduleManager.addModule(StatsVoiceChannelModule.getInstance(config));
-  // await moduleManager.addModule(UserManagementModule.getInstance(config));
   await moduleManager.addModule(VisitorRoleModule.getInstance(config));
   await moduleManager.addModule(BlueSkyModule.getInstance(config));
 
@@ -180,5 +178,5 @@ async function startUp(): Promise<void> {
   /* -------------------------------------------------------------------------- */
   /*                                Log into bot                                */
   /* -------------------------------------------------------------------------- */
-  client.login(commonConfig.token);
+  await client.login(commonConfig.token);
 }

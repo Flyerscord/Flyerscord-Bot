@@ -1,7 +1,7 @@
 import { AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js";
 import { AdminAutocompleteSlashCommand, OPTION_TYPES, PARAM_TYPES } from "@common/models/SlashCommand";
-import DaysUntilDB from "../../providers/DaysUtil.Database";
 import { events, getEventNames } from "../../models/DaysUntilEvents";
+import DaysUntilDB from "../../db/DaysUntilDB";
 
 export default class EnableDisableCommand extends AdminAutocompleteSlashCommand {
   constructor() {
@@ -20,19 +20,19 @@ export default class EnableDisableCommand extends AdminAutocompleteSlashCommand 
 
     const enable: boolean = setEnabled.toLowerCase() == "enable";
 
-    const db = DaysUntilDB.getInstance();
+    const db = new DaysUntilDB();
 
     const event = Object.values(events).find((event) => event.name == eventName);
     if (event) {
-      db.setEventEnabled(event.dbKey, enable);
+      await db.setEventEnabled(event.dbKey, enable);
 
-      this.replies.reply(`Event ${event.name} ${enable ? "enabled" : "disabled"}!`);
+      await this.replies.reply(`Event ${event.name} ${enable ? "enabled" : "disabled"}!`);
     }
   }
 
   async getAutoCompleteOptions(interaction: AutocompleteInteraction): Promise<string[] | undefined> {
     const focusedName = this.getFocusedOptionName(interaction);
-    const db = DaysUntilDB.getInstance();
+    const db = new DaysUntilDB();
 
     if (focusedName == "event") {
       return getEventNames();
@@ -43,7 +43,7 @@ export default class EnableDisableCommand extends AdminAutocompleteSlashCommand 
 
       const event = Object.values(events).find((event) => event.name == eventName);
       if (event) {
-        const enabled = db.getEvent(event.dbKey).enabled;
+        const enabled = (await db.getEvent(event.dbKey)).enabled;
         return [`${enabled ? "Disable" : "Enable"}`];
       }
     }

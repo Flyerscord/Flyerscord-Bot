@@ -1,12 +1,12 @@
 import { ITeamRosterNowOutput } from "nhl-api-wrapper-ts/dist/interfaces/roster/TeamRosterNow";
-import PlayerEmojisDB from "../providers/PlayerEmojis.Database";
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
 import nhlApi from "nhl-api-wrapper-ts";
 import { TEAM_TRI_CODE } from "nhl-api-wrapper-ts/dist/interfaces/Common";
+import PlayerEmojisDB from "../db/PlayerEmojisDB";
 
 export async function checkForNewEmojis(): Promise<void> {
-  const db = PlayerEmojisDB.getInstance();
+  const db = new PlayerEmojisDB();
   const rosterRes = await nhlApi.teams.roster.getCurrentTeamRoster({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
 
   if (rosterRes.status == 200) {
@@ -24,7 +24,7 @@ export async function checkForNewEmojis(): Promise<void> {
 
       const emoji = await discord.emojis.addEmoji({ name: playerName, url: player.headshot });
       if (emoji) {
-        db.addPlayer(player.id, emoji.id);
+        await db.addPlayer(player.id, emoji.id);
       }
     }
 
@@ -33,7 +33,7 @@ export async function checkForNewEmojis(): Promise<void> {
 
       const emoji = await discord.emojis.addEmoji({ name: playerName, url: player.headshot });
       if (emoji) {
-        db.addPlayer(player.id, emoji.id);
+        await db.addPlayer(player.id, emoji.id);
       }
     }
 
@@ -42,29 +42,29 @@ export async function checkForNewEmojis(): Promise<void> {
 
       const emoji = await discord.emojis.addEmoji({ name: playerName, url: player.headshot });
       if (emoji) {
-        db.addPlayer(player.id, emoji.id);
+        await db.addPlayer(player.id, emoji.id);
       }
     }
   }
 }
 
 export async function removeOldEmojis(): Promise<void> {
-  const db = PlayerEmojisDB.getInstance();
+  const db = new PlayerEmojisDB();
 
-  const oldEmojiIds = db.getAllPlayers();
+  const oldEmojiIds = await db.getAllPlayers();
 
   for (const emojiId of oldEmojiIds) {
-    await discord.emojis.deleteEmoji(emojiId, "Deleting old player emoji");
+    await discord.emojis.deleteEmoji(emojiId.emojiId, "Deleting old player emoji");
   }
-  db.clearPlayers();
+  await db.clearPlayers();
 }
 
-function checkForNewPlayers(roster: ITeamRosterNowOutput): boolean {
-  const db = PlayerEmojisDB.getInstance();
+async function checkForNewPlayers(roster: ITeamRosterNowOutput): Promise<boolean> {
+  const db = new PlayerEmojisDB();
 
   // Check if the roster has the same number of players as the db
   const rosterPlayerCount = roster.forwards.length + roster.defensemen.length + roster.goalies.length;
-  if (rosterPlayerCount != db.getAllPlayers().length) {
+  if (rosterPlayerCount != (await db.getAllPlayers()).length) {
     return true;
   }
 
@@ -72,7 +72,7 @@ function checkForNewPlayers(roster: ITeamRosterNowOutput): boolean {
   const defensePlayerIds = roster.defensemen.map((player) => player.id);
   const goaliePlayerIds = roster.goalies.map((player) => player.id);
   const rosterPlayerIds = forwardPlayerIds.concat(defensePlayerIds).concat(goaliePlayerIds);
-  const dbPlayerIds = db.getAllPlayersIds();
+  const dbPlayerIds = await db.getAllPlayersIds();
 
   // Check if any of the players in the roster are not in the db
   rosterPlayerIds.forEach((playerId) => {

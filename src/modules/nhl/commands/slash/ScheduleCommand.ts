@@ -27,13 +27,13 @@ export default class ScheduleCommand extends SlashCommand {
       const schedule = scheduleResponse.data;
 
       const embed = await this.createEmbed(numberOfGames, schedule);
-      this.replies.reply({ embeds: [embed] });
+      await this.replies.reply({ embeds: [embed] });
     } else {
       Stumper.error(
         `Error fetching the schedule data from the NHL API! Status code: ${scheduleResponse.status}`,
         "levels:LeaderboardCommand:execute",
       );
-      this.replies.reply({ content: "Error fetching the data from the NHL API!", ephemeral: true });
+      await this.replies.reply({ content: "Error fetching the data from the NHL API!", ephemeral: true });
     }
   }
 

@@ -10,13 +10,13 @@ import fs from "fs";
 import ConfigManager from "@common/config/ConfigManager";
 
 export default (client: Client): void => {
-  client.on("ready", async () => {
+  client.on("clientReady", async () => {
     await readSlashCommands(client);
     await readContextMenus(client);
     readTextCommands(client);
     readModals(client);
 
-    setupBot(client);
+    await setupBot(client);
 
     const healthManager = BotHealthManager.getInstance();
     healthManager.setHealthy(true);
@@ -24,7 +24,7 @@ export default (client: Client): void => {
   });
 };
 
-function setupBot(client: Client): void {
+async function setupBot(client: Client): Promise<void> {
   const configManager = ConfigManager.getInstance();
   if (configManager.getConfig("Common").productionMode) {
     Stumper.info("Setting bot presence", "common:onReady:setupBot");
@@ -32,14 +32,14 @@ function setupBot(client: Client): void {
 
     Stumper.info("Setting bot avatar", "common:onReady:setupBot");
     const avatar = fs.readFileSync(`${__dirname}/../assets/botAvatar.png`);
-    client.user?.setAvatar(avatar);
+    await client.user?.setAvatar(avatar);
 
     Stumper.info("Setting bot banner", "common:onReady:setupBot");
     const banner = fs.readFileSync(`${__dirname}/../assets/botBanner.png`);
-    client.user?.setBanner(banner);
+    await client.user?.setBanner(banner);
 
     Stumper.info("Setting bot username", "common:onReady:setupBot");
-    client.user?.setUsername("Gritty");
+    await client.user?.setUsername("Gritty");
   }
 }
 

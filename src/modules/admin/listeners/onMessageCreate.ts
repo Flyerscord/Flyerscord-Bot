@@ -12,8 +12,13 @@ export default (): void => {
 };
 
 async function checkForQuoteCreation(message: Message): Promise<boolean> {
-  const ub3rBotUserId = ConfigManager.getInstance().getConfig("Admin").ub3rBot.userId;
-  if (!message.author.bot || message.author.id !== ub3rBotUserId) return false;
+  let ub3rBotUserId: string | undefined;
+  try {
+    ub3rBotUserId = ConfigManager.getInstance().getConfig("Admin").ub3rBot.userId;
+  } catch (_error: unknown) {
+    Stumper.warning("ub3rbot user id not set!", "checkForQuoteCreation");
+  }
+  if (!ub3rBotUserId || !message.author.bot || message.author.id !== ub3rBotUserId) return false;
 
   const regex = /^New quote added by (.+) as #([0-9]+) \((https:\/\/discordapp.com\/channels\/.+)\)$/;
   const match = regex.exec(message.content);

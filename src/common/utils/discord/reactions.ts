@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
 
-export function reactToMessageWithEmoji(message: Message, emoji: string): void {
-  message.react(emoji);
+export async function reactToMessageWithEmoji(message: Message, emoji: string): Promise<void> {
+  await message.react(emoji);
 }

@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, User } from "discord.js";
 import Stumper from "stumper";
 import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
-import LevelsDB from "../../providers/Levels.Database";
+import LevelsDB from "../../db/LevelsDB";
 
 export default class ResetUserCommand extends AdminSlashCommand {
   constructor() {
@@ -21,7 +21,7 @@ export default class ResetUserCommand extends AdminSlashCommand {
     const confirmation: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "confirm");
     const user: User = this.getParamValue(interaction, PARAM_TYPES.USER, "user");
 
-    const db = LevelsDB.getInstance();
+    const db = new LevelsDB();
 
     if (confirmation == "CONFIRM") {
       Stumper.warning(
@@ -29,11 +29,11 @@ export default class ResetUserCommand extends AdminSlashCommand {
         "levels:ResetUserCommand:execute",
       );
 
-      db.resetUser(user.id);
-      this.replies.reply(`Resetting exp for username: ${user.username} id: ${user.id}`);
+      await db.resetUser(user.id);
+      await this.replies.reply(`Resetting exp for username: ${user.username} id: ${user.id}`);
       return;
     }
 
-    this.replies.reply("Error resetting user!");
+    await this.replies.reply("Error resetting user!");
   }
 }

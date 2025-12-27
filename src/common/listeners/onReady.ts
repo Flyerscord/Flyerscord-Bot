@@ -10,7 +10,7 @@ import fs from "fs";
 import ConfigManager from "@common/config/ConfigManager";
 
 export default (client: Client): void => {
-  client.on("ready", async () => {
+  client.on("clientReady", async () => {
     await readSlashCommands(client);
     await readContextMenus(client);
     readTextCommands(client);

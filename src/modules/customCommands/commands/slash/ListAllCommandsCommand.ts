@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand } from "@common/models/SlashCommand";
-import CustomCommandsDB from "../../providers/CustomCommands.Database";
 import ConfigManager from "@common/config/ConfigManager";
+import CustomCommandsDB from "../../db/CustomCommandsDB";
 
 export default class ListAllCommandsCommand extends AdminSlashCommand {
   constructor() {
@@ -9,8 +9,8 @@ export default class ListAllCommandsCommand extends AdminSlashCommand {
   }
 
   async execute(_interaction: ChatInputCommandInteraction): Promise<void> {
-    const db = CustomCommandsDB.getInstance();
-    const commands = db.getAllCommands();
+    const db = new CustomCommandsDB();
+    const commands = await db.getAllCommands();
 
     const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
 

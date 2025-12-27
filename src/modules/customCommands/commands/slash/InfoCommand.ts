@@ -1,10 +1,10 @@
 import { AutocompleteInteraction, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 
 import { AdminAutocompleteSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
-import CustomCommandsDB from "../../providers/CustomCommands.Database";
-import ICustomCommand from "../../interfaces/ICustomCommand";
 import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/config/ConfigManager";
+import CustomCommandsDB from "../../db/CustomCommandsDB";
+import { CustomCommand } from "../../db/schema";
 
 export default class InfoCommand extends AdminAutocompleteSlashCommand {
   constructor() {
@@ -16,11 +16,11 @@ export default class InfoCommand extends AdminAutocompleteSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const db = CustomCommandsDB.getInstance();
+    const db = new CustomCommandsDB();
 
     const commandName: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "name");
 
-    const command = db.getCommand(commandName);
+    const command = await db.getCommand(commandName);
 
     if (command) {
       const embed = await this.createEmbed(command);
@@ -34,13 +34,13 @@ export default class InfoCommand extends AdminAutocompleteSlashCommand {
     const focusedName = this.getFocusedOptionName(interaction);
 
     if (focusedName == "name") {
-      const db = CustomCommandsDB.getInstance();
-      return db.getAllCommandNames();
+      const db = new CustomCommandsDB();
+      return await db.getAllCommandNames();
     }
     return undefined;
   }
 
-  private async createEmbed(command: ICustomCommand): Promise<EmbedBuilder> {
+  private async createEmbed(command: CustomCommand): Promise<EmbedBuilder> {
     const embed = new EmbedBuilder();
     const member = await discord.members.getMember(command.createdBy);
     const username = member ? member.displayName || member.user.username : command.createdBy;
@@ -52,22 +52,6 @@ export default class InfoCommand extends AdminAutocompleteSlashCommand {
     embed.setTimestamp(command.createdOn);
     embed.setColor("Yellow");
     embed.addFields({ name: "Text", value: command.text });
-
-    let history = command.history;
-    const maxItemsToDisplay = 24;
-    if (history.length > maxItemsToDisplay) {
-      history = history.slice(-maxItemsToDisplay);
-      embed.setFooter({ text: `Command history truncated to latest ${maxItemsToDisplay} entries` });
-    }
-
-    for (let i = history.length - 1; i >= 0; i--) {
-      const historyItem = history[i];
-
-      embed.addFields({
-        name: `Edit ${historyItem.index + 1}`,
-        value: `**Old**: ${historyItem.oldText}  **New**: ${historyItem.newText}  **Author**: ${username}  **Date**: ${historyItem.editedOn}`,
-      });
-    }
 
     return embed;
   }

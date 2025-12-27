@@ -1,12 +1,12 @@
 import { Message } from "discord.js";
 
 import Stumper from "stumper";
-import CustomCommandsDB from "../providers/CustomCommands.Database";
 import ClientManager from "@common/managers/ClientManager";
 import discord from "@common/utils/discord/discord";
 import CommandImporter from "../utils/CommandImporter";
 import MyImageKit from "../utils/ImageKit";
 import ConfigManager from "@common/config/ConfigManager";
+import CustomCommandsDB from "../db/CustomCommandsDB";
 
 export default (): void => {
   ClientManager.getInstance().client.on("messageCreate", async (message: Message) => {
@@ -24,8 +24,8 @@ async function checkForCustomTextCommand(message: Message): Promise<boolean> {
   const messageArray = message.content.split(" ");
   const command = messageArray[0].replace(prefix, "").toLowerCase();
 
-  const db = CustomCommandsDB.getInstance();
-  const customCommand = db.getCommand(command);
+  const db = new CustomCommandsDB();
+  const customCommand = await db.getCommand(command);
   if (customCommand) {
     let text = customCommand.text;
 

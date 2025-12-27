@@ -1,12 +1,12 @@
 import { Attachment, ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
-import CustomCommandsDB from "../../providers/CustomCommands.Database";
 import { InvalidImgurUrlException } from "../../exceptions/InvalidImgurUrlException";
 import { ErrorUploadingToImageKitException } from "../../exceptions/ErrorUploadingToImageKitException";
 import Stumper from "stumper";
 import PageNotFoundException from "../../exceptions/PageNotFoundException";
 import HTMLPageException from "../../exceptions/HTMLPageException";
 import ConfigManager from "@common/config/ConfigManager";
+import CustomCommandsDB from "../../db/CustomCommandsDB";
 
 export default class AddCommand extends AdminSlashCommand {
   constructor() {
@@ -41,7 +41,7 @@ export default class AddCommand extends AdminSlashCommand {
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
 
-    const db = CustomCommandsDB.getInstance();
+    const db = new CustomCommandsDB();
 
     let name: string = "";
     let text: string = "";
@@ -60,7 +60,7 @@ export default class AddCommand extends AdminSlashCommand {
     }
 
     if (name != "" && text != "") {
-      if (db.hasCommand(name) || interaction.client.textCommands.hasAny(name)) {
+      if ((await db.hasCommand(name)) || interaction.client.textCommands.hasAny(name)) {
         await this.replies.reply(`Command ${prefix}${name} already exists!`);
         return;
       }

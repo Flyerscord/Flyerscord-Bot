@@ -9,8 +9,6 @@ services:
       - DATABASE_URL_POOLED=REPLACE_WITH_DB_URL
     ports:
       - 3000:3000
-    volumes:
-      - dbData:/usr/src/app/data
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:3000/health || exit 1"]
       interval: 60s
@@ -23,5 +21,3 @@ services:
         max-size: "10m"
         max-file: 5
         compress: "true"
-volumes:
-  dbData:

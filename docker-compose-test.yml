@@ -53,7 +53,7 @@ services:
       - PORT=3000
       - DATABASE_URL_POOLED=postgresql://postgres:flyerscord-dev-db@pgbouncer:5432/flyerscord
     ports:
-      - 3000:3000
+      - 3333:3000
     depends_on:
       postgres:
         condition: service_healthy

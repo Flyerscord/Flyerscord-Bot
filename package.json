@@ -64,7 +64,6 @@
     "@typescript-eslint/parser": "^8.50.1",
     "drizzle-kit": "^0.31.8",
     "eslint": "^9.39.2",
-
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-drizzle": "^0.2.3",
     "eslint-plugin-prettier": "^5.5.1",

@@ -29,18 +29,19 @@ export default class ImportPinsCommand extends SlashCommand {
       }
 
       // Gets the pinned messages from the channel sorted oldest to newest
-      const pinnedMessages = (await textChannel.messages.fetchPinned()).sort((a, b) => a.createdTimestamp - b.createdTimestamp);
+      const pinnedMessagesResponse = await textChannel.messages.fetchPins();
+      const pinnedMessages = pinnedMessagesResponse.items.map((pin) => pin.message).sort((a, b) => a.createdTimestamp - b.createdTimestamp);
 
-      if (pinnedMessages.size == 0) {
+      if (pinnedMessages.length == 0) {
         await this.replies.reply({ content: "No pinned messages found!", ephemeral: true });
         return;
       }
 
       for (const message of pinnedMessages) {
         // Send message to pin channel
-        const pin = await db.addPin(message[1].id, message[1].channelId, message[1].createdAt, interaction.user.id);
+        const pin = await db.addPin(message.id, message.channelId, message.createdAt, interaction.user.id);
         if (!pin) {
-          Stumper.error(`Failed to add pin for message ${message[1].id}. Message is already pinned!`, "pins:ImportPinsCommand:execute");
+          Stumper.error(`Failed to add pin for message ${message.id}. Message is already pinned!`, "pins:ImportPinsCommand:execute");
           hasFailures = true;
           continue;
         }
@@ -50,7 +51,7 @@ export default class ImportPinsCommand extends SlashCommand {
         if (embed) {
           const pinMessage = await discord.messages.sendEmbedToChannel(config.channelId, embed);
           if (pinMessage) {
-            await db.updateMessageId(message[1].id, pinMessage.id);
+            await db.updateMessageId(message.id, pinMessage.id);
           } else {
             Stumper.error(`Failed to send message to pins channel!`, "pins:ImportPinsCommand:execute");
             hasFailures = true;

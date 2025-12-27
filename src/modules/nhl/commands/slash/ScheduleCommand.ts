@@ -70,7 +70,7 @@ export default class ScheduleCommand extends SlashCommand {
           NHL_EMOJI_GUILD_ID,
         );
         embed.addFields({
-          name: `${time(date, TimestampStyles.LongDateTime)}`,
+          name: `${time(date, TimestampStyles.FullDateShortTime)}`,
           value: `${awayTeamEmoji} ${awayTeam.franchise.teamCommonName} @ ${homeTeam.franchise.teamCommonName} ${homeTeamEmoji}`,
         });
       }

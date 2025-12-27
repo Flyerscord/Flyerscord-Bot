@@ -1,6 +1,6 @@
 {
   "name": "flyerscord-helper",
-  "version": "3.0.2",
+  "version": "3.1.0",
   "description": "Flyers' Discord Helper Bot",
   "main": "src/bot.ts",
   "scripts": {
@@ -43,7 +43,6 @@
     "discord.js": "^14.25.1",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
-    "enmap": "^5.9.10",
     "express": "^5.2.1",
     "imagekit": "^6.0.0",
     "imgur": "^2.5.0",
@@ -58,15 +57,14 @@
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/jsdom": "^27.0.0",
-    "@types/lodash": "^4.17.19",
     "@types/node": "^25.0.3",
     "@types/node-schedule": "^2.1.7",
     "@types/request": "^2.48.12",
     "@typescript-eslint/eslint-plugin": "^8.50.1",
     "@typescript-eslint/parser": "^8.50.1",
-    "copyfiles": "^2.4.1",
     "drizzle-kit": "^0.31.8",
     "eslint": "^9.39.2",
+
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-drizzle": "^0.2.3",
     "eslint-plugin-prettier": "^5.5.1",

@@ -1,4 +1,4 @@
-FROM node:18 AS dependencies
+FROM node:24 AS dependencies
 
 WORKDIR /usr/src/app
 
@@ -10,7 +10,7 @@ COPY pnpm-workspace.yaml .
 
 RUN pnpm install --frozen-lockfile
 
-FROM node:18
+FROM node:24
 
 # Set the timezone so that the logs are in the correct timezone
 ENV TZ=America/New_York

@@ -1,12 +1,12 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { AdminSlashCommand } from "@common/models/SlashCommand";
-import CustomCommandsDB from "../../providers/CustomCommands.Database";
 
 import discord from "@common/utils/discord/discord";
 import { sleepSec } from "@common/utils/sleep";
 import Stumper from "stumper";
 import MyImageKit from "../../utils/ImageKit";
 import ConfigManager from "@common/config/ConfigManager";
+import CustomCommandsDB from "../../db/CustomCommandsDB";
 
 export default class TestAllCommand extends AdminSlashCommand {
   constructor() {
@@ -14,8 +14,8 @@ export default class TestAllCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const db = CustomCommandsDB.getInstance();
-    let commands = db.getAllCommands();
+    const db = new CustomCommandsDB();
+    let commands = await db.getAllCommands();
 
     commands = commands.sort((a, b) => a.name.localeCompare(b.name));
 

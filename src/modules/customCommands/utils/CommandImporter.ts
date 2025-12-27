@@ -3,7 +3,7 @@ import discord from "@common/utils/discord/discord";
 import { ErrorUploadingToImageKitException } from "../exceptions/ErrorUploadingToImageKitException";
 import { InvalidImgurUrlException } from "../exceptions/InvalidImgurUrlException";
 import PageNotFoundException from "../exceptions/PageNotFoundException";
-import CustomCommandsDB from "../providers/CustomCommands.Database";
+import CustomCommandsDB from "../db/CustomCommandsDB";
 
 export default class CommandImporter extends Singleton {
   private enabled: boolean;
@@ -82,8 +82,8 @@ export default class CommandImporter extends Singleton {
       return;
     }
 
-    const db = CustomCommandsDB.getInstance();
-    if (db.hasCommand(this.name)) {
+    const db = new CustomCommandsDB();
+    if (await db.hasCommand(this.name)) {
       await discord.messages.sendMessageToChannel(this.channelId, `Command ${this.name} already exists!`);
       return;
     }

@@ -1,11 +1,11 @@
 import { AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js";
 import { AdminAutocompleteSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
-import CustomCommandsDB from "../../providers/CustomCommands.Database";
 import { InvalidImgurUrlException } from "../../exceptions/InvalidImgurUrlException";
 import { ErrorUploadingToImageKitException } from "../../exceptions/ErrorUploadingToImageKitException";
 import Stumper from "stumper";
 import PageNotFoundException from "../../exceptions/PageNotFoundException";
 import ConfigManager from "@common/config/ConfigManager";
+import CustomCommandsDB from "../../db/CustomCommandsDB";
 
 export default class EditCommand extends AdminAutocompleteSlashCommand {
   constructor() {
@@ -23,14 +23,14 @@ export default class EditCommand extends AdminAutocompleteSlashCommand {
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
 
-    const db = CustomCommandsDB.getInstance();
+    const db = new CustomCommandsDB();
 
     let name: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "name");
     const newResponse: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "newresponse");
 
     name = name.toLowerCase();
 
-    if (!db.hasCommand(name)) {
+    if (!(await db.hasCommand(name))) {
       await this.replies.reply(`Command ${prefix}${name} does not exist!`);
       return;
     }
@@ -57,8 +57,8 @@ export default class EditCommand extends AdminAutocompleteSlashCommand {
     const focusedName = this.getFocusedOptionName(interaction);
 
     if (focusedName == "name") {
-      const db = CustomCommandsDB.getInstance();
-      return db.getAllCommandNames();
+      const db = new CustomCommandsDB();
+      return await db.getAllCommandNames();
     }
     return undefined;
   }

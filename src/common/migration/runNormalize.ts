@@ -39,6 +39,7 @@ import Database from "../providers/Database";
 import GlobalDB from "../providers/Global.Database";
 import VisitorRoleModule from "@root/src/modules/visitorRole/VisitorRoleModule";
 import CommonModule from "../CommonModule";
+import CustomCommandsNormalize from "@root/src/modules/customCommands/db/migration/normalize";
 
 async function main(): Promise<void> {
   const startTime = Date.now();
@@ -117,6 +118,7 @@ async function main(): Promise<void> {
   // Create all normalizes
   const normalizes = [
     new BlueSkyNormalize(),
+    new CustomCommandsNormalize(),
     new DaysUntilNormalize(),
     new GameDayPostsNormalize(),
     new LevelsNormalize(),

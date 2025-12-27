@@ -14,13 +14,13 @@ interface IRawCommand {
   text: string;
   history: IRawCustomCommandHistory[];
   createdBy: string;
-  createdOn: Date;
+  createdOn: Date | string;
 }
 
 interface IRawCustomCommandHistory {
   oldText: string;
   newText: string;
-  editedOn: Date;
+  editedOn: Date | string;
   editedBy: string;
   index: number;
 }
@@ -92,20 +92,23 @@ export default class CustomCommandsNormalize extends Normalize {
       let insertedCommandId: number | undefined;
 
       try {
+        // Convert createdOn to Date object if it's not already
+        const createdOn = rawCommand.data.createdOn instanceof Date ? rawCommand.data.createdOn : new Date(rawCommand.data.createdOn);
+
         const result = await this.db
           .insert(customCommandsCommands)
           .values({
             name: rawCommand.data.name,
             text: rawCommand.data.text,
             createdBy: rawCommand.data.createdBy,
-            createdOn: rawCommand.data.createdOn,
+            createdOn: createdOn,
           })
           .onConflictDoUpdate({
             target: customCommandsCommands.name,
             set: {
               text: rawCommand.data.text,
               createdBy: rawCommand.data.createdBy,
-              createdOn: rawCommand.data.createdOn,
+              createdOn: createdOn,
             },
           })
           .returning({ id: customCommandsCommands.id });
@@ -121,7 +124,7 @@ export default class CustomCommandsNormalize extends Normalize {
         };
 
         await this.db.insert(auditLog).values({
-          timestamp: rawCommand.data.createdOn,
+          timestamp: createdOn,
           moduleName: "CustomCommands",
           action: CustomCommandsActionType.ADD,
           userId: rawCommand.data.createdBy,
@@ -131,8 +134,7 @@ export default class CustomCommandsNormalize extends Normalize {
         migratedCount++;
         Stumper.debug(`Migrated command: ${rawCommand.id} = ${rawCommand.data.name}`, "CustomCommands:Migration:Commands");
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        Stumper.error(`Failed to migrate command ${rawCommand.id}: ${errorMessage}`, "CustomCommands:Migration:Commands");
+        Stumper.caughtError(error, "CustomCommands:Migration:Commands");
         continue; // Skip history if command failed
       }
 
@@ -144,6 +146,9 @@ export default class CustomCommandsNormalize extends Normalize {
       if (rawCommand.data.history.length > 0) {
         for (const rawHistory of rawCommand.data.history) {
           try {
+            // Convert editedOn to Date object if it's not already
+            const editedOn = rawHistory.editedOn instanceof Date ? rawHistory.editedOn : new Date(rawHistory.editedOn);
+
             const auditLogInfo: IAuditLogInfo = {
               oldText: rawHistory.oldText,
               newText: rawHistory.newText,
@@ -152,7 +157,7 @@ export default class CustomCommandsNormalize extends Normalize {
             };
 
             await this.db.insert(auditLog).values({
-              timestamp: rawHistory.editedOn,
+              timestamp: editedOn,
               moduleName: "CustomCommands",
               action: CustomCommandsActionType.EDIT,
               userId: rawHistory.editedBy,

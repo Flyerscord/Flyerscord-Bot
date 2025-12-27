@@ -43,7 +43,6 @@
     "discord.js": "^14.21.0",
     "dotenv": "^17.2.0",
     "drizzle-orm": "^0.44.3",
-    "enmap": "^5.9.10",
     "express": "^4.21.1",
     "imagekit": "^5.2.0",
     "imgur": "^2.5.0",

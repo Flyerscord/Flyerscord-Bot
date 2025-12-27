@@ -1,4 +1,4 @@
-FROM node:18 as dependencies
+FROM node:18 AS dependencies
 
 WORKDIR /usr/src/app
 

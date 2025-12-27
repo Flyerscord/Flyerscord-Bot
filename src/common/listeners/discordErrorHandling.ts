@@ -4,11 +4,11 @@ import ConfigManager from "@common/config/ConfigManager";
 
 export default (client: Client): void => {
   client.on("error", (error) => {
-    Stumper.error(`${error.name}: ${error.message}`, "DiscordClientError");
+    Stumper.caughtError(error, "DiscordClientError");
   });
 
   client.on("warn", (warning) => {
-    Stumper.warning(warning, "DiscordClientWarning");
+    Stumper.caughtWarning(warning, "DiscordClientWarning");
   });
 
   client.on("debug", (debug) => {

@@ -12,6 +12,8 @@ RUN pnpm install --frozen-lockfile
 
 FROM node:24
 
+RUN npm install -g pnpm
+
 # Set the timezone so that the logs are in the correct timezone
 ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -22,4 +24,4 @@ COPY --from=dependencies /usr/src/app/node_modules ./node_modules
 
 COPY . .
 
-CMD ["npm", "start"]
+CMD ["pnpm", "start"]

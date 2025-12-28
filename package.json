@@ -49,6 +49,7 @@
     "jsdom": "^27.4.0",
     "nhl-api-wrapper-ts": "^1.0.0",
     "node-schedule": "^2.1.1",
+    "postgres": "^3.4.7",
     "request": "^2.88.2",
     "sharp": "^0.34.5",
     "stumper": "^2.1.1"

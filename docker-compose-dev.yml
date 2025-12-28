@@ -22,32 +22,31 @@ services:
         max-file: 3
         compress: "true"
 
-  pgbouncer:
-    image: bitnami/pgbouncer:latest
-    restart: unless-stopped
-    environment:
-      - POSTGRESQL_HOST=postgres
-      - POSTGRESQL_PORT=5432
-      - POSTGRESQL_USERNAME=postgres
-      - POSTGRESQL_PASSWORD=flyerscord-dev-db
-      - POSTGRESQL_DATABASE=flyerscord
-      - PGBOUNCER_POOL_MODE=transaction
-      - PGBOUNCER_MAX_CLIENT_CONN=100
-      - PGBOUNCER_DEFAULT_POOL_SIZE=20
-      - PGBOUNCER_MIN_POOL_SIZE=5
-      - PGBOUNCER_RESERVE_POOL_SIZE=5
-      - PGBOUNCER_AUTH_TYPE=md5
-    ports:
-      - 6432:6432
-    depends_on:
-      postgres:
-        condition: service_healthy
-    logging:
-      driver: local
-      options:
-        max-size: "10m"
-        max-file: 3
-        compress: "true"
+pgbouncer:
+  image: edoburu/pgbouncer:latest
+  restart: unless-stopped
+  environment:
+    - DATABASE_URL=postgresql://postgres:flyerscord-dev-db@postgres:5432/flyerscord
+    - POOL_MODE=transaction
+    - MAX_CLIENT_CONN=100
+    - DEFAULT_POOL_SIZE=20
+    - MIN_POOL_SIZE=5
+    - RESERVE_POOL_SIZE=5
+    - AUTH_TYPE=scram-sha-256 # PostgreSQL 16 uses scram by default
+    - AUTH_USER=postgres
+    - ADMIN_USERS=postgres
+    - STATS_USERS=postgres
+  ports:
+    - 6432:5432
+  depends_on:
+    postgres:
+      condition: service_healthy
+  logging:
+    driver: local
+    options:
+      max-size: "10m"
+      max-file: 3
+      compress: "true"
 
   migrate:
     build:

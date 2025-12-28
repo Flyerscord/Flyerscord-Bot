@@ -5,7 +5,6 @@ import { drizzle as drizzlePostgres } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import dotenv from "dotenv";
 import { TableEnumRecord } from "./schema-types";
-import Stumper from "stumper";
 
 // Get dotenv variables
 dotenv.config();

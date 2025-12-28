@@ -1,11 +1,11 @@
 import { Modules } from "@modules/Modules";
-import { getDb, NeonDB } from "../db/db";
+import { DB, getDb } from "../db/db";
 import { PgTable } from "drizzle-orm/pg-core";
 import { count, eq, and, sql, SQL } from "drizzle-orm";
 import { AuditLog, auditLog, NewAuditLog } from "../db/schema";
 
 export abstract class ModuleDatabase {
-  protected readonly db: NeonDB;
+  protected readonly db: DB;
   protected readonly moduleName: Modules;
 
   /**
@@ -23,7 +23,8 @@ export abstract class ModuleDatabase {
    * @returns The total count of rows in the table
    */
   async getRowsCount(table: PgTable): Promise<number> {
-    return (await this.db.select({ count: count() }).from(table))[0].count;
+    const result = await this.db.select({ count: count() }).from(table);
+    return result[0]?.count ?? 0;
   }
 
   // Audit Log Methods
@@ -57,7 +58,8 @@ export abstract class ModuleDatabase {
    * @returns The number of audit log entries for this module
    */
   async getCountAuditLogs(): Promise<number> {
-    return (await this.db.select({ count: count() }).from(auditLog).where(eq(auditLog.moduleName, this.moduleName)))[0].count;
+    const result = await this.db.select({ count: count() }).from(auditLog).where(eq(auditLog.moduleName, this.moduleName));
+    return result[0]?.count ?? 0;
   }
 
   /**

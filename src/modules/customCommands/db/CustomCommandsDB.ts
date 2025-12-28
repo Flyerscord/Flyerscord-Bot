@@ -77,7 +77,7 @@ export default class CustomCommandsDB extends ModuleDatabase {
           createdBy: userId,
           createdOn: new Date(),
         })
-        .returning({ id: customCommandsCommands.id });
+        .returning();
 
       await this.addCreateAuditLog(name, text, userId, addedCommand[0].id);
 

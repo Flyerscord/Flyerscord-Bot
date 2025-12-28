@@ -1,5 +1,5 @@
 {
-  "id": "433aabb7-0149-4685-98c9-28c3fbe5bcbf",
+  "id": "f92ea010-a25b-449f-b68b-39a8f371b588",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -682,7 +682,18 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.common__audit_log_severity_type": {
+      "name": "common__audit_log_severity_type",
+      "schema": "public",
+      "values": ["INFO", "WARNING", "ERROR"]
+    },
+    "public.rules__section_type": {
+      "name": "rules__section_type",
+      "schema": "public",
+      "values": ["HEADER", "CONTENT"]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

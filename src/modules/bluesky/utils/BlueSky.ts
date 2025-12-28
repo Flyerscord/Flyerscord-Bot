@@ -67,7 +67,7 @@ export default class BlueSky extends Singleton {
         );
         if (!lastPost) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          await db.updateLastPostTime((sortedPosts[sortedPosts.length - 1].post.record as any).createdAt);
+          await db.updateLastPostTime(new Date((sortedPosts[sortedPosts.length - 1].post.record as any).createdAt));
           return [];
         }
 

@@ -80,6 +80,11 @@ export default class MyImageKit extends Singleton {
         return undefined;
       }
 
+      if (file.type == "folder") {
+        Stumper.error("File is of type folder", "customCommands:ImageKit:getImageIdFromUrl");
+        return undefined;
+      }
+
       return file.fileId;
     } else {
       Stumper.error("Error getting list of images", "customCommands:ImageKit:getImageIdFromUrl");

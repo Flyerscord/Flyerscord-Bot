@@ -25,7 +25,16 @@ export default class BlueSkyDB extends ModuleDatabase {
   }
 
   async updateLastPostTime(newPostTime: Date): Promise<void> {
-    await this.db.update(blueSkyState).set({ date: newPostTime, updatedAt: new Date() }).where(eq(blueSkyState.key, "lastPostTimeId"));
+    await this.db
+      .insert(blueSkyState)
+      .values({ key: "lastPostTimeId", date: newPostTime, updatedAt: new Date() })
+      .onConflictDoUpdate({
+        target: blueSkyState.key,
+        set: {
+          date: newPostTime,
+          updatedAt: new Date(),
+        },
+      });
   }
 
   async getLastPostTime(): Promise<Date | undefined> {

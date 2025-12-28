@@ -1,6 +1,8 @@
 import SchemaManager from "@common/managers/SchemaManager";
 import { neon, NeonQueryFunction } from "@neondatabase/serverless";
-import { drizzle, NeonHttpDatabase } from "drizzle-orm/neon-http";
+import { drizzle as drizzleNeon, NeonHttpDatabase } from "drizzle-orm/neon-http";
+import { drizzle as drizzlePostgres } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import dotenv from "dotenv";
 import { TableEnumRecord } from "./schema-types";
 
@@ -11,21 +13,27 @@ export type NeonDB = NeonHttpDatabase<TableEnumRecord> & {
   $client: NeonQueryFunction<false, false>;
 };
 
-export function getDb(pooled = true): NeonDB {
-  let connectionString;
-  if (pooled) {
-    connectionString = process.env.DATABASE_URL_POOLED || "";
+export type PostgresDB = ReturnType<typeof drizzlePostgres<TableEnumRecord>>;
+
+export type DB = NeonDB | PostgresDB;
+
+export function getDb(): DB {
+  const connectionString = process.env.DATABASE_URL_POOLED;
+
+  if (!connectionString) {
+    throw new Error("DATABASE_URL_POOLED is not set");
+  }
+
+  const schema = SchemaManager.getInstance().getSchema();
+
+  // Detect if using Neon (websocket) or standard PostgreSQL
+  const isNeon = connectionString.includes("neon.tech");
+
+  if (isNeon) {
+    const neonDb = neon(connectionString);
+    return drizzleNeon(neonDb, { schema });
   } else {
-    connectionString = process.env.DATABASE_URL_SINGLE || "";
+    const postgresClient = postgres(connectionString);
+    return drizzlePostgres(postgresClient, { schema });
   }
-
-  if (connectionString === "") {
-    throw new Error("DATABASE_URL_SINGLE or DATABASE_URL_POOLED is not set");
-  }
-
-  const neonDb = neon(connectionString);
-
-  return drizzle(neonDb, {
-    schema: SchemaManager.getInstance().getSchema(),
-  });
 }

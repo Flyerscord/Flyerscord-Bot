@@ -1,3 +1,5 @@
+CREATE TYPE "public"."common__audit_log_severity_type" AS ENUM('INFO', 'WARNING', 'ERROR');--> statement-breakpoint
+CREATE TYPE "public"."rules__section_type" AS ENUM('HEADER', 'CONTENT');--> statement-breakpoint
 CREATE TABLE "common__audit_log" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"timestamp" timestamp with time zone DEFAULT now() NOT NULL,

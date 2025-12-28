@@ -8,7 +8,7 @@ export enum AuditLogSeverity {
   ERROR = "ERROR",
 }
 
-const severityEnum = createModuleEnum("common__audit_log_severity_type", AuditLogSeverity);
+export const severityEnum = createModuleEnum("common__audit_log_severity_type", AuditLogSeverity);
 
 export const auditLog = createModuleTable(
   "common__audit_log",

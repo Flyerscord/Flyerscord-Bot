@@ -4,8 +4,11 @@ bot:
 bot-clean:
 	docker compose -f docker-compose.yml -p flyerscord-discord-prod down --volumes --rmi all
 
-test-bot:
-	docker compose -f docker-compose-test.yml -p flyerscord-discord-test up --build --force-recreate -d
+dev-bot:
+	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up --build --force-recreate -d
 
-test-bot-clean:
-	docker compose -f docker-compose-test.yml -p flyerscord-discord-test down --volumes --rmi all
+dev-bot-clean:
+	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev down --volumes --rmi all
+
+dev-bot-tools:
+	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev --profile tools up --build --force-recreate -d

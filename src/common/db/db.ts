@@ -21,8 +21,6 @@ export type DB = NeonDB | PostgresDB;
 export function getDb(): DB {
   const connectionString = process.env.DATABASE_URL_POOLED;
 
-  Stumper.info(connectionString);
-
   if (!connectionString) {
     throw new Error("DATABASE_URL_POOLED is not set");
   }

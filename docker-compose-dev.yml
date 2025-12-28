@@ -44,6 +44,24 @@ services:
         max-file: 3
         compress: "true"
 
+  setup:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: no
+    command: pnpm run db:push
+    environment:
+      - DATABASE_URL_SINGLE=postgresql://postgres:flyerscord-dev-db@postgres:5432/flyerscord
+    depends_on:
+      postgres:
+        condition: service_healthy
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: 5
+        compress: "true"
+
   bot:
     build:
       context: .
@@ -55,6 +73,8 @@ services:
     ports:
       - 3333:3000
     depends_on:
+      setup:
+        condition: service_completed_successfully
       postgres:
         condition: service_healthy
       pgbouncer:
@@ -70,6 +90,25 @@ services:
       options:
         max-size: "10m"
         max-file: 5
+        compress: "true"
+
+  drizzle-studio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: pnpm run db:studio
+    environment:
+      - DATABASE_URL_SINGLE=postgresql://postgres:flyerscord-dev-db@postgres:5432/flyerscord
+    ports:
+      - 4983:4983
+    depends_on:
+      postgres:
+        condition: service_healthy
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: 3
         compress: "true"
 
 volumes:

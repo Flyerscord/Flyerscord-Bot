@@ -1,4 +1,19 @@
 services:
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: no
+    command: pnpm run db:migrate
+    environment:
+      - DATABASE_URL_SINGLE=${DATABASE_URL_SINGLE}
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: 5
+        compress: "true"
+
   bot:
     build:
       context: .
@@ -6,7 +21,7 @@ services:
     restart: unless-stopped
     environment:
       - PORT=3000
-      - DATABASE_URL_POOLED=REPLACE_WITH_DB_URL
+      - DATABASE_URL_POOLED=${DATABASE_URL_POOLED}
     ports:
       - 3000:3000
     healthcheck:
@@ -21,3 +36,6 @@ services:
         max-size: "10m"
         max-file: 5
         compress: "true"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully

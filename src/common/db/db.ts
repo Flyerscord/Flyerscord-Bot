@@ -11,16 +11,11 @@ export type NeonDB = NeonHttpDatabase<TableEnumRecord> & {
   $client: NeonQueryFunction<false, false>;
 };
 
-export function getDb(pooled = true): NeonDB {
-  let connectionString;
-  if (pooled) {
-    connectionString = process.env.DATABASE_URL_POOLED || "";
-  } else {
-    connectionString = process.env.DATABASE_URL_SINGLE || "";
-  }
+export function getDb(): NeonDB {
+  const connectionString = process.env.DATABASE_URL_POOLED;
 
-  if (connectionString === "") {
-    throw new Error("DATABASE_URL_SINGLE or DATABASE_URL_POOLED is not set");
+  if (!connectionString) {
+    throw new Error("DATABASE_URL_POOLED is not set");
   }
 
   const neonDb = neon(connectionString);

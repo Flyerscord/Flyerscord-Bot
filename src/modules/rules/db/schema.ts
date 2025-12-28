@@ -6,7 +6,7 @@ export enum RulesSectionTypeEnum {
   HEADER = "HEADER",
   CONTENT = "CONTENT",
 }
-const rulesSectionType = createModuleEnum("rules__section_type", RulesSectionTypeEnum);
+export const rulesSectionType = createModuleEnum("rules__section_type", RulesSectionTypeEnum);
 
 export const rulesMessages = createModuleTable("rules__messages", {
   messageId: varchar("message_id", { length: 255 }).primaryKey(),

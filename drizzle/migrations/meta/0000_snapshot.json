@@ -1,5 +1,5 @@
 {
-  "id": "e1d34a85-c1df-475d-a041-70cd0e710637",
+  "id": "f92ea010-a25b-449f-b68b-39a8f371b588",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -210,7 +210,9 @@
         "customcommands__commands_name_unique": {
           "name": "customcommands__commands_name_unique",
           "nullsNotDistinct": false,
-          "columns": ["name"]
+          "columns": [
+            "name"
+          ]
         }
       },
       "policies": {},
@@ -287,7 +289,9 @@
         "daysuntil__dates_name_unique": {
           "name": "daysuntil__dates_name_unique",
           "nullsNotDistinct": false,
-          "columns": ["name"]
+          "columns": [
+            "name"
+          ]
         }
       },
       "policies": {},
@@ -560,8 +564,12 @@
           "name": "rules__section_messages_message_id_rules__messages_message_id_fk",
           "tableFrom": "rules__section_messages",
           "tableTo": "rules__messages",
-          "columnsFrom": ["message_id"],
-          "columnsTo": ["message_id"],
+          "columnsFrom": [
+            "message_id"
+          ],
+          "columnsTo": [
+            "message_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -569,8 +577,12 @@
           "name": "rules__section_messages_section_id_rules__sections_name_fk",
           "tableFrom": "rules__section_messages",
           "tableTo": "rules__sections",
-          "columnsFrom": ["section_id"],
-          "columnsTo": ["name"],
+          "columnsFrom": [
+            "section_id"
+          ],
+          "columnsTo": [
+            "name"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -682,7 +694,25 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.common__audit_log_severity_type": {
+      "name": "common__audit_log_severity_type",
+      "schema": "public",
+      "values": [
+        "INFO",
+        "WARNING",
+        "ERROR"
+      ]
+    },
+    "public.rules__section_type": {
+      "name": "rules__section_type",
+      "schema": "public",
+      "values": [
+        "HEADER",
+        "CONTENT"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

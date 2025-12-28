@@ -14,9 +14,6 @@ importers:
       '@discordjs/builders':
         specifier: ^1.13.1
         version: 1.13.1
-      '@electric-sql/pglite':
-        specifier: ^0.3.14
-        version: 0.3.14
       '@neondatabase/serverless':
         specifier: ^1.0.2
         version: 1.0.2
@@ -4905,7 +4902,8 @@ snapshots:
 
   '@drizzle-team/brocli@0.10.2': {}
 
-  '@electric-sql/pglite@0.3.14': {}
+  '@electric-sql/pglite@0.3.14':
+    optional: true
 
   '@emnapi/core@1.5.0':
     dependencies:

@@ -14,6 +14,9 @@ importers:
       '@discordjs/builders':
         specifier: ^1.13.1
         version: 1.13.1
+      '@electric-sql/pglite':
+        specifier: ^0.3.14
+        version: 0.3.14
       '@neondatabase/serverless':
         specifier: ^1.0.2
         version: 1.0.2
@@ -31,7 +34,7 @@ importers:
         version: 17.2.3
       drizzle-orm:
         specifier: ^0.45.1
-        version: 0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.11.6)(better-sqlite3@9.6.0)(postgres@3.4.7)
+        version: 0.45.1(@electric-sql/pglite@0.3.14)(@neondatabase/serverless@1.0.2)(@types/pg@8.11.6)(better-sqlite3@9.6.0)(postgres@3.4.7)
       express:
         specifier: ^5.2.1
         version: 5.2.1
@@ -396,6 +399,9 @@ packages:
 
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
+
+  '@electric-sql/pglite@0.3.14':
+    resolution: {integrity: sha512-3DB258dhqdsArOI1fIt7cb9RpUOgcDg5hXWVgVHAeqVQ/qxtFy605QKs4gx6mFq3jWsSPqDN8TgSEsqC3OfV9Q==}
 
   '@emnapi/core@1.5.0':
     resolution: {integrity: sha512-sbP8GzB1WDzacS8fgNPpHlp6C9VZe+SJP3F90W9rLemaQj2PzIuTEl1qDOYQf58YIpyjViI24y9aPWCjEzY2cg==}
@@ -4899,6 +4905,8 @@ snapshots:
 
   '@drizzle-team/brocli@0.10.2': {}
 
+  '@electric-sql/pglite@0.3.14': {}
+
   '@emnapi/core@1.5.0':
     dependencies:
       '@emnapi/wasi-threads': 1.1.0
@@ -6601,8 +6609,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.11.6)(better-sqlite3@9.6.0)(postgres@3.4.7):
+  drizzle-orm@0.45.1(@electric-sql/pglite@0.3.14)(@neondatabase/serverless@1.0.2)(@types/pg@8.11.6)(better-sqlite3@9.6.0)(postgres@3.4.7):
     optionalDependencies:
+      '@electric-sql/pglite': 0.3.14
       '@neondatabase/serverless': 1.0.2
       '@types/pg': 8.11.6
       better-sqlite3: 9.6.0

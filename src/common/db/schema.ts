@@ -32,6 +32,8 @@ export const auditLog = createModuleTable(
   ],
 );
 
+export const config = createModuleTable("common__config", {});
+
 export default {
   severityEnum,
   auditLog,

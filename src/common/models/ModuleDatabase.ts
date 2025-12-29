@@ -1,11 +1,11 @@
 import { Modules } from "@modules/Modules";
-import { DB, getDb } from "../db/db";
+import { getDb, PostgresDB } from "../db/db";
 import { PgTable } from "drizzle-orm/pg-core";
 import { count, eq, and, sql, SQL } from "drizzle-orm";
 import { AuditLog, auditLog, NewAuditLog } from "../db/schema";
 
 export abstract class ModuleDatabase {
-  protected readonly db: DB;
+  protected readonly db: PostgresDB;
   protected readonly moduleName: Modules;
 
   /**

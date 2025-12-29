@@ -104,7 +104,7 @@ services:
     environment:
       - DATABASE_URL_SINGLE=postgresql://postgres:flyerscord-dev-db@postgres:5432/flyerscord
     ports:
-      - 4983:4983
+      - 4984:4983
     profiles: ["tools"]
     depends_on:
       postgres:

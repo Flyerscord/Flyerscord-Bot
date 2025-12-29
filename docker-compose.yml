@@ -96,15 +96,14 @@ services:
       pgbouncer:
         condition: service_started
 
-  drizzle-studio:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: pnpm run db:studio
-    environment:
-      - DATABASE_URL_SINGLE=postgresql://postgres:${DB_PASSWORD}@postgres:5432/flyerscord
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: cloudbeaver
+    restart: unless-stopped
+    volumes:
+      - cloudbeaver_data:/opt/cloudbeaver/workspace
     ports:
-      - 4983:4983
+      - 8978:8978
     depends_on:
       postgres:
         condition: service_healthy
@@ -117,3 +116,4 @@ services:
 
 volumes:
   postgres_data:
+  cloudbeaver_data:

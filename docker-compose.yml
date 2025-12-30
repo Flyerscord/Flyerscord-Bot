@@ -3,9 +3,9 @@ services:
     image: postgres:17-alpine
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=flyerscord
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: flyerscord
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -26,16 +26,16 @@ services:
     image: edoburu/pgbouncer:latest
     restart: unless-stopped
     environment:
-      - DATABASE_URL=postgresql://postgres:${DB_PASSWORD}@postgres:5432/flyerscord
-      - POOL_MODE=transaction
-      - MAX_CLIENT_CONN=100
-      - DEFAULT_POOL_SIZE=20
-      - MIN_POOL_SIZE=5
-      - RESERVE_POOL_SIZE=5
-      - AUTH_TYPE=scram-sha-256 # PostgreSQL 16 uses scram by default
-      - AUTH_USER=postgres
-      - ADMIN_USERS=postgres
-      - STATS_USERS=postgres
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD}@postgres:5432/flyerscord
+      POOL_MODE: transaction
+      MAX_CLIENT_CONN: 100
+      DEFAULT_POOL_SIZE: 20
+      MIN_POOL_SIZE: 5
+      RESERVE_POOL_SIZE: 5
+      AUTH_TYPE: scram-sha-256 # PostgreSQL 16 uses scram by default
+      AUTH_USER: postgres
+      ADMIN_USERS: postgres
+      STATS_USERS: postgres
     ports:
       - 6432:5432
     depends_on:
@@ -55,7 +55,7 @@ services:
     restart: no
     command: pnpm run db:migrate
     environment:
-      - DATABASE_URL_SINGLE=postgresql://postgres:${DB_PASSWORD}@postgres:5432/flyerscord
+      DATABASE_URL_SINGLE: postgresql://postgres:${DB_PASSWORD}@postgres:5432/flyerscord
     depends_on:
       postgres:
         condition: service_healthy
@@ -72,8 +72,8 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      - PORT=3000
-      - DATABASE_URL_POOLED=postgresql://postgres:${DB_PASSWORD}@pgbouncer:5432/flyerscord
+      PORT: 3000
+      DATABASE_URL_POOLED: postgresql://postgres:${DB_PASSWORD}@pgbouncer:5432/flyerscord
     ports:
       - 3000:3000
     healthcheck:
@@ -102,10 +102,45 @@ services:
     ports:
       - 5678:8080
     environment:
-      - ADMINER_DEFAULT_SERVER=postgres
+      ADMINER_DEFAULT_SERVER: postgres
     depends_on:
       postgres:
         condition: service_healthy
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: 3
+        compress: "true"
+
+  pgbackups:
+    image: prodrigestivill/postgres-backup-local:17-alpine
+    restart: unless-stopped
+    volumes:
+      - ./backups:/backups
+    user: "1000:1000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: flyerscord
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_EXTRA_OPTS: -Z6 --schema=public --blobs
+      TZ: America/New_York
+      SCHEDULE: "@daily"
+      BACKUP_ON_START: "TRUE"
+      BACKUP_KEEP_DAYS: 7
+      BACKUP_KEEP_WEEKS: 4
+      BACKUP_KEEP_MONTHS: 6
+      HEALTHCHECK_PORT: 8080
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     logging:
       driver: local
       options:

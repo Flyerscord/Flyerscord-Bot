@@ -96,14 +96,13 @@ services:
       pgbouncer:
         condition: service_started
 
-  cloudbeaver:
-    image: dbeaver/cloudbeaver:latest
-    container_name: cloudbeaver
+  adminer:
+    image: adminer:latest
     restart: unless-stopped
-    volumes:
-      - cloudbeaver_data:/opt/cloudbeaver/workspace
     ports:
-      - 8978:8978
+      - 5678:8080
+    environment:
+      - ADMINER_DEFAULT_SERVER=postgres
     depends_on:
       postgres:
         condition: service_healthy
@@ -116,4 +115,3 @@ services:
 
 volumes:
   postgres_data:
-  cloudbeaver_data:

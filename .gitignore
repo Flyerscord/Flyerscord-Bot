@@ -8,3 +8,4 @@ dist-tests
 **/configFile.ts
 coverage
 .env
+backups/

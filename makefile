@@ -7,6 +7,9 @@ bot-clean:
 bot-db:
 	docker compose -f docker-compose.yml -p flyerscord-discord-prod up --build --force-recreate -d adminer
 
+db-backup:
+	docker compose -f docker-compose.yml -p flyerscord-discord-prod exec pgbackups /backup.sh
+
 dev-bot:
 	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up --build --force-recreate -d
 

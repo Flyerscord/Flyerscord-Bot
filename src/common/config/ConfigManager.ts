@@ -15,7 +15,7 @@ export default class ConfigManager extends Singleton {
   }
 
   getConfig(moduleName: Modules): IModuleConfig {
-    return this.db.select().from.
+    // return this.db.select().from
   }
 
   setConfig<M extends Modules>(module: M, config: ModuleConfigMap[M] | IKeyedObject): void {

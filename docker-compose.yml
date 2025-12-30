@@ -74,6 +74,8 @@ services:
     environment:
       PORT: 3000
       DATABASE_URL_POOLED: postgresql://postgres:${DB_PASSWORD}@pgbouncer:5432/flyerscord
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      DISCORD_TOKEN: ${DISCORD_TOKEN}
     ports:
       - 3000:3000
     healthcheck:

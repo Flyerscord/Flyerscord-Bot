@@ -1,4 +1,4 @@
-import { index, jsonb, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { boolean, index, jsonb, primaryKey, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { createModuleEnum, createModuleTable } from "./schema-types";
 import type { Modules } from "@modules/Modules";
 
@@ -32,13 +32,47 @@ export const auditLog = createModuleTable(
   ],
 );
 
-export const config = createModuleTable("common__config", {});
+export type AuditLog = typeof auditLog.$inferSelect;
+
+export type NewAuditLog = Omit<typeof auditLog.$inferInsert, "id">;
+
+export enum ValueType {
+  STRING = "string",
+  NUMBER = "number",
+  BOOLEAN = "boolean",
+  JSON = "json",
+  ENCRYPTED = "encrypted",
+}
+
+export const valueTypeEnum = createModuleEnum("common__value_type_type", ValueType);
+
+export const config = createModuleTable(
+  "common__config",
+  {
+    moduleName: text("module_name").notNull().$type<Modules>(),
+    key: text("key").notNull(),
+    value: text("value"),
+    valueType: valueTypeEnum("value_type").notNull().default(ValueType.STRING),
+    defaultValue: text("default_value").notNull(),
+    description: text("description").notNull(),
+    isSecret: boolean("is_secret").notNull().default(false),
+    requiresRestart: boolean("requires_restart").notNull().default(false),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    primaryKey({
+      columns: [table.moduleName, table.key],
+    }),
+  ],
+);
+
+export type Config = typeof config.$inferSelect;
+
+export type NewConfig = typeof config.$inferInsert;
 
 export default {
   severityEnum,
   auditLog,
+  valueTypeEnum,
+  config,
 };
-
-export type AuditLog = typeof auditLog.$inferSelect;
-
-export type NewAuditLog = Omit<typeof auditLog.$inferInsert, "id">;

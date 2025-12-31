@@ -40,7 +40,7 @@ export enum ValueType {
   STRING = "string",
   NUMBER = "number",
   BOOLEAN = "boolean",
-  JSON = "json",
+  OBJECT = "object",
   ENCRYPTED = "encrypted",
 }
 

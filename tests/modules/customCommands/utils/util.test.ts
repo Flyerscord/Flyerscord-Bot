@@ -2,11 +2,10 @@ import ICustomCommand from "@modules/customCommands/interfaces/ICustomCommand";
 import "@common/types/discord.js/index.d.ts";
 import CustomCommandsModule from "@modules/customCommands/CustomCommandsModule";
 import CustomCommandsDB from "@modules/customCommands/db/CustomCommandsDB";
-import { getDb } from "@common/db/db";
+import Database from "@common/db/db";
 
 // Mock the database
 jest.mock("@common/db/db");
-const mockGetDb = getDb as jest.MockedFunction<typeof getDb>;
 
 describe("createCommandListMessages", () => {
   beforeEach(() => {
@@ -20,7 +19,11 @@ describe("createCommandListMessages", () => {
       execute: jest.fn(),
       $client: jest.fn(),
     };
-    mockGetDb.mockReturnValue(mockDb);
+
+    // Mock the Database singleton's getInstance and getDb methods
+    (Database.getInstance as jest.Mock) = jest.fn().mockReturnValue({
+      getDb: jest.fn().mockReturnValue(mockDb),
+    });
 
     CustomCommandsModule.getInstance({
       customcommands: {

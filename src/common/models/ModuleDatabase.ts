@@ -1,5 +1,5 @@
 import { Modules } from "@modules/Modules";
-import { getDb, PostgresDB } from "../db/db";
+import Database, { PostgresDB } from "../db/db";
 import { PgTable } from "drizzle-orm/pg-core";
 import { count, eq, and, sql, SQL } from "drizzle-orm";
 import { AuditLog, auditLog, NewAuditLog } from "../db/schema";
@@ -14,7 +14,7 @@ export abstract class ModuleDatabase {
    */
   constructor(moduleName: Modules) {
     this.moduleName = moduleName;
-    this.db = getDb();
+    this.db = Database.getInstance().getDb();
   }
 
   /**

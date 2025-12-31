@@ -3,21 +3,51 @@ import { drizzle as drizzlePostgres } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import dotenv from "dotenv";
 import { TableEnumRecord } from "./schema-types";
+import { Singleton } from "../models/Singleton";
+import Stumper from "stumper";
 
 // Get dotenv variables
 dotenv.config();
 
 export type PostgresDB = ReturnType<typeof drizzlePostgres<TableEnumRecord>>;
 
-export function getDb(): PostgresDB {
-  const connectionString = process.env.DATABASE_URL_POOLED;
+export default class Database extends Singleton {
+  private db: PostgresDB | null;
+  private connectionString: string;
+  private client: postgres.Sql<{}>;
 
-  if (!connectionString) {
-    throw new Error("DATABASE_URL_POOLED is not set");
+  private maxConnections = 150;
+
+  constructor() {
+    super();
+
+    if (!process.env.DATABASE_URL_POOLED) {
+      throw new Error("DATABASE_URL_POOLED is not set");
+    }
+    this.connectionString = process.env.DATABASE_URL_POOLED;
+
+    const schema = SchemaManager.getInstance().getSchema();
+
+    this.client = postgres(this.connectionString, {
+      max: this.maxConnections,
+      idle_timeout: 30,
+      connect_timeout: 10,
+      max_lifetime: 60 * 30,
+      onnotice: () => {}, // Suppress notices
+    });
+    this.db = drizzlePostgres(this.client, { schema });
   }
 
-  const schema = SchemaManager.getInstance().getSchema();
+  getDb(): PostgresDB {
+    if (!this.db) {
+      Stumper.error("Database is closed!", "Common::Database::getDb");
+      throw new Error("Database is closed!");
+    }
+    return this.db;
+  }
 
-  const postgresClient = postgres(connectionString);
-  return drizzlePostgres(postgresClient, { schema });
+  async closeDb(): Promise<void> {
+    await this.client.end();
+    this.db = null;
+  }
 }

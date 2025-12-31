@@ -3,4 +3,5 @@
  */
 
 // Mock environment variables for database
-process.env.DATABASE_URL = "mock://database";
+process.env.DATABASE_URL_POOLED = "mock://database";
+process.env.DATABASE_URL_SINGLE = "mock://database";

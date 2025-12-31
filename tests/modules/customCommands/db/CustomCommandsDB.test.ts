@@ -1,11 +1,9 @@
 import CustomCommandsDB from "@modules/customCommands/db/CustomCommandsDB";
-import { getDb } from "@common/db/db";
+import Database from "@common/db/db";
 import CustomCommandsModule from "@modules/customCommands/CustomCommandsModule";
 
-// Mock getDb before any imports that use it
+// Mock the Database singleton
 jest.mock("@common/db/db");
-
-const mockGetDb = getDb as jest.MockedFunction<typeof getDb>;
 
 describe("CustomCommandsDB", () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,7 +40,10 @@ describe("CustomCommandsDB", () => {
       $client: jest.fn(),
     };
 
-    mockGetDb.mockReturnValue(mockDb);
+    // Mock the Database singleton's getInstance and getDb methods
+    (Database.getInstance as jest.Mock) = jest.fn().mockReturnValue({
+      getDb: jest.fn().mockReturnValue(mockDb),
+    });
   });
 
   describe("hasCommand", () => {

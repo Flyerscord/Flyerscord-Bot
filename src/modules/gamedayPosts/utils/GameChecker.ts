@@ -54,7 +54,7 @@ export async function checkForGameDay(): Promise<void> {
         } else if (game.gameType == GAME_TYPE.REGULAR_SEASON) {
           titlePrefix = `Game ${gameNumber}`;
         } else if (game.gameType == GAME_TYPE.POSTSEASON) {
-          // TODO: Implement logic for playoff rounds
+          // TODO: #99 Implement logic for playoff rounds
           titlePrefix = `Postseason ${gameNumber}`;
         }
 
@@ -87,9 +87,13 @@ export async function closeAndLockOldPosts(): Promise<void> {
       const gameInfo = gameInfoResp.data;
 
       if (!Time.isSameDay(new Date(), new Date(gameInfo.startTimeUTC))) {
-        Stumper.info(`Closing and locking post for game ${post.gameId}`, "gameDayPosts:GameChecker:checkForGameDay");
-        await discord.forums.setLockPost(config.channelId, post.channelId, true);
-        await discord.forums.setClosedPost(config.channelId, post.channelId, true);
+        Stumper.info(`Closing and locking post for game ${post.gameId}`, "gameDayPosts:GameChecker:closeAndLockOldPosts");
+        try {
+          await discord.forums.setLockPost(config.channelId, post.channelId, true);
+          await discord.forums.setClosedPost(config.channelId, post.channelId, true);
+        } catch (error) {
+          Stumper.caughtError(error, "gameDayPosts:GameChecker:closeAndLockOldPosts");
+        }
       }
     }
   }

@@ -1,101 +1,16 @@
-/* -------------------------------------------------------------------------- */
-/*                                Setup Stumper                                */
-/* -------------------------------------------------------------------------- */
-import Stumper, { LOG_LEVEL, TIMEZONE } from "stumper";
-Stumper.setConfig({ logLevel: LOG_LEVEL.ALL, useColors: false });
-
-/* -------------------------------------------------------------------------- */
-/*                        Setup Process Error Handling                        */
-/* -------------------------------------------------------------------------- */
-import processErrorHandling from "@common/listeners/processErrorHandling";
-
-processErrorHandling();
-
-/* -------------------------------------------------------------------------- */
-/*                            Setup SigINT handling                           */
-/* -------------------------------------------------------------------------- */
-import onSigInt from "@common/listeners/onSigInt";
-
-onSigInt();
-
-/* -------------------------------------------------------------------------- */
-/*                                Check Config                                */
-/* -------------------------------------------------------------------------- */
-import Config from "@common/config/Config";
-import CommonModule from "@common/CommonModule";
-
-const config = Config.loadConfig();
-const configManager = ConfigManager.getInstance();
-
-const commonModule = CommonModule.getInstance(config);
-const commonConfig = configManager.getConfig("Common");
-
-Stumper.setConfig({ logLevel: commonConfig.logLevel, timezone: TIMEZONE.LOCAL });
-Stumper.info(`Starting Bot in ${commonConfig.productionMode ? "production" : "non-production"} mode!`, "main:CheckConfig");
-
-/* -------------------------------------------------------------------------- */
-/*                          Initialize Health Manager                         */
-/* -------------------------------------------------------------------------- */
-import BotHealthManager from "@common/managers/BotHealthManager";
-BotHealthManager.getInstance();
-
-/* -------------------------------------------------------------------------- */
-/*                            Create Discord Client                           */
-/* -------------------------------------------------------------------------- */
 import { Client, Collection, GatewayIntentBits, Partials } from "discord.js";
+import Stumper, { LOG_LEVEL, TIMEZONE } from "stumper";
 
-const client = new Client({
-  intents: [
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.GuildMessageReactions,
-    GatewayIntentBits.DirectMessages,
-  ],
-  partials: [Partials.Message, Partials.Reaction, Partials.User, Partials.Channel],
-});
-
-/* -------------------------------------------------------------------------- */
-/*                        Setup Discord Error Handling                        */
-/* -------------------------------------------------------------------------- */
+import processErrorHandling from "@common/listeners/processErrorHandling";
+import BotHealthManager from "@common/managers/BotHealthManager";
 import discordErrorHandling from "@common/listeners/discordErrorHandling";
 import discordConnectionHandling from "@common/listeners/discordConnectionHandling";
-
-discordErrorHandling(client);
-discordConnectionHandling(client);
-
-/* -------------------------------------------------------------------------- */
-/*                       Setup Collections for commands                       */
-/* -------------------------------------------------------------------------- */
-client.slashCommands = new Collection();
-client.textCommands = new Collection();
-client.modals = new Collection();
-client.contextMenus = new Collection();
-
-/* -------------------------------------------------------------------------- */
-/*                               Setup Managers                               */
-/* -------------------------------------------------------------------------- */
 import ClientManager from "@common/managers/ClientManager";
 import SlashCommandManager from "@common/managers/SlashCommandManager";
 import TextCommandManager from "@common/managers/TextCommandManager";
 import ContextMenuCommandManager from "@common/managers/ContextMenuManager";
 import ModalMenuManager from "@common/managers/ModalMenuManager";
-
-ClientManager.getInstance(client);
-TextCommandManager.getInstance();
-SlashCommandManager.getInstance();
-ContextMenuCommandManager.getInstance();
-ModalMenuManager.getInstance();
-
-/* -------------------------------------------------------------------------- */
-/*                            Import Module Manager                           */
-/* -------------------------------------------------------------------------- */
 import ModuleManager from "@common/managers/ModuleManager";
-
-/* -------------------------------------------------------------------------- */
-/*                               Import Modules                               */
-/* -------------------------------------------------------------------------- */
 import HealthCheckModule from "@modules/healthcheck/HealthCheckModule";
 import ImageProxyModule from "@modules/imageProxy/ImageProxyModule";
 import AdminModule from "@modules/admin/AdminModule";
@@ -114,31 +29,67 @@ import StatsVoiceChannelModule from "@modules/statsVoiceChannel/StatsVoiceChanne
 import VisitorRoleModule from "@modules/visitorRole/VisitorRoleModule";
 import RegisterCommandsModule from "@modules/registerCommands/RegisterCommandsModule";
 import BlueSkyModule from "@modules/bluesky/BlueSkyModule";
-
-/* -------------------------------------------------------------------------- */
-/*                       Import Our Other Event Handlers                      */
-/* -------------------------------------------------------------------------- */
 import onMessageCreate from "@common/listeners/onMessageCreate";
 import onInteractionCreate from "@common/listeners/onInteractionCreate";
 import onReady from "@common/listeners/onReady";
-
-/* -------------------------------------------------------------------------- */
-/*                                Import Caches                               */
-/* -------------------------------------------------------------------------- */
 import CombinedTeamInfoCache from "@common/cache/CombinedTeamInfoCache";
 import ConfigManager from "@common/config/ConfigManager";
+import CommonModule from "./common/CommonModule";
+import onSigInt from "@common/listeners/onSigInt";
 
-/* -------------------------------------------------------------------------- */
-/*                                 Run Startup                                */
-/* -------------------------------------------------------------------------- */
+Stumper.setConfig({ logLevel: LOG_LEVEL.ALL, useColors: false });
+
+processErrorHandling();
+onSigInt();
+
 void startUp();
 
 async function startUp(): Promise<void> {
   const moduleManager = ModuleManager.getInstance();
+
+  const configManager = ConfigManager.getInstance();
+  await configManager.refreshConfig();
+
+  const commonModule = CommonModule.getInstance();
+  const commonModuleResult = await moduleManager.addModule(commonModule);
+  if (!commonModuleResult) {
+    Stumper.error("Failed to enable Common Module", "main:startUp");
+    return;
+  }
+
+  Stumper.setConfig({ logLevel: configManager.getLoadedConfigByModuleAndKey("Common", "logLevel"), timezone: TIMEZONE.LOCAL });
+  Stumper.info(`Starting Bot in ${commonConfig.productionMode ? "production" : "non-production"} mode!`, "main:CheckConfig");
+
+  BotHealthManager.getInstance();
+
+  const client = new Client({
+    intents: [
+      GatewayIntentBits.MessageContent,
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.GuildMessageReactions,
+      GatewayIntentBits.DirectMessages,
+    ],
+    partials: [Partials.Message, Partials.Reaction, Partials.User, Partials.Channel],
+  });
+
+  discordErrorHandling(client);
+  discordConnectionHandling(client);
+
+  client.slashCommands = new Collection();
+  client.textCommands = new Collection();
+  client.modals = new Collection();
+  client.contextMenus = new Collection();
+
+  ClientManager.getInstance(client);
+  TextCommandManager.getInstance();
+  SlashCommandManager.getInstance();
+  ContextMenuCommandManager.getInstance();
+  ModalMenuManager.getInstance();
+
   // Initialize and update the caches
   await CombinedTeamInfoCache.getInstance().forceUpdate();
-
-  await moduleManager.addModule(commonModule);
 
   // Enable all modules before starting the bot
   // Health check must be enabled first followed by the image proxy

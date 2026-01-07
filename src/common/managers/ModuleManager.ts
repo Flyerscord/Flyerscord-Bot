@@ -12,7 +12,8 @@ export default class ModuleManager extends Singleton {
     this.modules = [];
   }
 
-  async addModule(module: Module<any>, enable: boolean = true): Promise<void> {
+  async addModule(module: Module<any>, enable: boolean = true): Promise<boolean> {
+    let result = true;
     if (enable) {
       const deps = module.getDependencies();
       for (const dep of deps) {
@@ -21,9 +22,10 @@ export default class ModuleManager extends Singleton {
         }
       }
 
-      await module.enable();
+      result = await module.enable();
     }
     this.modules.push(module);
+    return result;
   }
 
   getModules(): Module<any>[] {

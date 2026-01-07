@@ -4,8 +4,12 @@ import SlashCommand from "@common/models/SlashCommand";
 import CheckForNewPostsTask from "./tasks/CheckForNewPostsTask";
 import BlueSky from "./utils/BlueSky";
 import schema from "./db/schema";
+import { IConfigInfoNoModule } from "@root/src/common/config/ConfigManager";
+import { ValueType } from "@root/src/common/db/schema";
 
-export default class BlueSkyModule extends Module<IBlueSkyConfig> {
+export type BlueSkyConfigKeys = "username" | "password" | "channelId" | "listId";
+
+export default class BlueSkyModule extends Module<BlueSkyConfigKeys> {
   constructor(config: IKeyedObject) {
     super("BlueSky", config, schema);
   }
@@ -21,23 +25,42 @@ export default class BlueSkyModule extends Module<IBlueSkyConfig> {
 
   protected async cleanup(): Promise<void> {}
 
-  protected getDefaultConfig(): IBlueSkyConfig {
-    return {
-      username: "",
-      password: "",
-      channelId: "",
-      listId: "",
-    };
-  }
-
   private registerSchedules(): void {
     CheckForNewPostsTask.getInstance().createScheduledJob();
   }
-}
 
-export interface IBlueSkyConfig {
-  username: string;
-  password: string;
-  channelId: string;
-  listId: string;
+  protected setConfigInfo(): IConfigInfoNoModule<BlueSkyConfigKeys>[] {
+    return [
+      {
+        key: "username",
+        description: "BlueSky username",
+        valueType: ValueType.ENCRYPTED,
+        defaultValue: "",
+        isSecret: true,
+        requiresRestart: true,
+      },
+      {
+        key: "password",
+        description: "BlueSky password",
+        valueType: ValueType.ENCRYPTED,
+        defaultValue: "",
+        isSecret: true,
+        requiresRestart: true,
+      },
+      {
+        key: "channelId",
+        description: "Channel that posts will be posted to",
+        valueType: ValueType.STRING,
+        defaultValue: "",
+        requiresRestart: true,
+      },
+      {
+        key: "listId",
+        description: "The BlueSky list Id that will be used to pull posts from",
+        valueType: ValueType.STRING,
+        defaultValue: "",
+        requiresRestart: true,
+      },
+    ];
+  }
 }

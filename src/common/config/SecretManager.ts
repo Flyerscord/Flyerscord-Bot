@@ -1,11 +1,13 @@
 import crypto from "node:crypto";
 import Stumper from "stumper";
+import { Singleton } from "../models/Singleton";
 
-export default class SecretManager {
+export default class SecretManager extends Singleton {
   private algorithm = "aes-256-gcm";
   private key: Buffer;
 
   constructor() {
+    super();
     const keyString = process.env.ENCRYPTION_KEY;
 
     if (!keyString) {

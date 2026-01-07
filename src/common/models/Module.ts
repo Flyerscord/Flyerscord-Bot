@@ -11,34 +11,22 @@ import ContextMenuCommandManager from "../managers/ContextMenuManager";
 import { Singleton } from "./Singleton";
 import type { IKeyedObject } from "../interfaces/IKeyedObject";
 import type { Modules } from "../../modules/Modules";
-import ConfigManager from "../config/ConfigManager";
+import ConfigManager, { IConfigInfoNoModule } from "../config/ConfigManager";
 import SchemaManager from "../managers/SchemaManager";
 import { TableEnumRecord } from "../db/schema-types";
+import SeedManager from "../config/seeding/SeedManager";
 
 export interface IModuleConfig<TConfig> {
   [key: string]: TConfig;
 }
 
-export default abstract class Module<TConfig extends IKeyedObject> extends Singleton {
+export default abstract class Module<TConfigKeys extends string> extends Singleton {
   readonly name: Modules;
-  readonly cleanName: string;
   readonly dependsOn: Modules[];
 
   protected constructor(name: Modules, config: IKeyedObject, schemas: TableEnumRecord = {}, dependsOn: Modules[] = []) {
     super();
     this.name = name;
-
-    this.cleanName = this.doCleanName();
-
-    const configManager = ConfigManager.getInstance();
-
-    // Get the module config from the main config
-    if (this.cleanName in config) {
-      configManager.setConfig(this.name, config[this.cleanName]);
-    } else {
-      Stumper.error(`Config for module ${this.name} not found, using default! Clean name: ${this.cleanName}`, "common:Module:constructor");
-      configManager.setConfig(this.name, this.getDefaultConfig());
-    }
 
     this.dependsOn = dependsOn;
 
@@ -49,20 +37,42 @@ export default abstract class Module<TConfig extends IKeyedObject> extends Singl
 
   protected abstract cleanup(): Promise<void>;
 
-  protected abstract getDefaultConfig(): TConfig;
+  protected abstract setConfigInfo(): IConfigInfoNoModule<TConfigKeys>[];
 
-  async enable(): Promise<void> {
+  private async registerConfigInfo(): Promise<void> {
+    const configManager = ConfigManager.getInstance();
+    const configInfosWithoutModuleName = this.setConfigInfo();
+
+    const configInfos = configInfosWithoutModuleName.map((configInfo) => {
+      return { ...configInfo, moduleName: this.name };
+    });
+
+    for (const configInfo of configInfos) {
+      await configManager.addNewConfig(configInfo);
+    }
+  }
+
+  async enable(): Promise<boolean> {
+    await this.registerConfigInfo();
+
+    const seedManager = SeedManager.getInstance();
+    await seedManager.seedModule(this.name);
+
+    const configManager = ConfigManager.getInstance();
+    if (!configManager.validateModule(this.name)) {
+      Stumper.error(`Module ${this.name} has invalid configs`, "common:Module:enable");
+      return false;
+    }
+
     await this.setup();
     Stumper.success(`${this.name} module enabled!`);
+    return true;
   }
 
-  async disable(): Promise<void> {
+  async disable(): Promise<boolean> {
     await this.cleanup();
     Stumper.success(`${this.name} module disabled!`);
-  }
-
-  getDefaultModuleConfig(): IModuleConfig<TConfig> {
-    return this.wrapObject(this.cleanName, this.getDefaultConfig());
+    return true;
   }
 
   getDependencies(): Modules[] {
@@ -115,14 +125,5 @@ export default abstract class Module<TConfig extends IKeyedObject> extends Singl
         ContextMenuCommandManager.getInstance().addCommands(commands as ContextMenuCommand[]);
       }
     }
-  }
-
-  private wrapObject(key: string, obj: TConfig): IModuleConfig<TConfig> {
-    return { [key]: obj };
-  }
-
-  private doCleanName(): string {
-    let name = this.name.replace(" ", "_");
-    return name.toLowerCase();
   }
 }

@@ -159,6 +159,7 @@ export abstract class ModuleDatabase {
           .select({ one: sql<number>`1` })
           .from(table)
           .where(where)
+          .limit(1)
       ).length > 0
     );
   }

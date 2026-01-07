@@ -48,10 +48,12 @@ describe("CustomCommandsDB", () => {
 
   describe("hasCommand", () => {
     it("should return true when command exists", async () => {
-      // Mock the query chain: select().from().where()
+      // Mock the query chain: select().from().where().limit()
       mockDb.select.mockReturnValue({
         from: jest.fn().mockReturnValue({
-          where: jest.fn().mockResolvedValue([{ one: 1 }]),
+          where: jest.fn().mockReturnValue({
+            limit: jest.fn().mockResolvedValue([{ one: 1 }]),
+          }),
         }),
       });
 
@@ -66,7 +68,9 @@ describe("CustomCommandsDB", () => {
       // Mock the query chain with empty result
       mockDb.select.mockReturnValue({
         from: jest.fn().mockReturnValue({
-          where: jest.fn().mockResolvedValue([]),
+          where: jest.fn().mockReturnValue({
+            limit: jest.fn().mockResolvedValue([]),
+          }),
         }),
       });
 

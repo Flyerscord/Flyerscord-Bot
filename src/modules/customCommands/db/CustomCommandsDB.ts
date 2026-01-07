@@ -54,7 +54,7 @@ export default class CustomCommandsDB extends ModuleDatabase {
   }
 
   async addCommand(name: string, text: string, userId: string): Promise<boolean> {
-    if (await this.hasCommand(name)) {
+    if (!(await this.hasCommand(name))) {
       try {
         text = await this.handleImageUpload(text, userId, name);
       } catch (error) {
@@ -68,7 +68,7 @@ export default class CustomCommandsDB extends ModuleDatabase {
   }
 
   async addCommandSkippingUpload(name: string, text: string, userId: string): Promise<boolean> {
-    if (await this.hasCommand(name)) {
+    if (!(await this.hasCommand(name))) {
       const addedCommand = await this.db
         .insert(customCommandsCommands)
         .values({

@@ -1,10 +1,12 @@
 import ExpressManager from "@common/managers/ExpressManager";
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 import request from "request";
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import ConfigManager from "@root/src/common/managers/ConfigManager";
 
-export default class ImageProxyModule extends Module<IImageProxyConfig> {
+export type ImageProxyConfigKeys = "";
+
+export default class ImageProxyModule extends Module<ImageProxyConfigKeys> {
   constructor(config: IKeyedObject) {
     super("ImageProxy", config, {}, ["CustomCommands"]);
   }
@@ -20,13 +22,9 @@ export default class ImageProxyModule extends Module<IImageProxyConfig> {
     });
   }
 
-  protected async cleanup(): Promise<void> {
-    // Nothing to cleanup
-  }
+  protected async cleanup(): Promise<void> {}
 
-  protected getDefaultConfig(): IImageProxyConfig {
-    return {};
+  protected getConfigSchema(): IModuleConfigSchema<ImageProxyConfigKeys>[] {
+    return [];
   }
 }
-
-export interface IImageProxyConfig {}

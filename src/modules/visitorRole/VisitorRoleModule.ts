@@ -1,12 +1,15 @@
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 import onGuildMemberAdd from "./listeners/onGuildMemberAdd";
 import onMessageReactionAdd from "./listeners/onMessageReactionAdd";
 import onMessageReactionRemove from "./listeners/onMessageReactionRemove";
 import onReady from "./listeners/onReady";
 import schema from "./db/schema";
+import Zod from "@common/utils/ZodWrapper";
 
-export default class VistorRoleModule extends Module<IVisitorRoleConfig> {
+export type VisitorRoleConfigKeys = "memberRoleId" | "visitorRoleId" | "visitorEmojiId" | "rolesChannelId";
+
+export default class VistorRoleModule extends Module<VisitorRoleConfigKeys> {
   constructor(config: IKeyedObject) {
     super("VisitorRole", config, schema);
   }
@@ -15,17 +18,47 @@ export default class VistorRoleModule extends Module<IVisitorRoleConfig> {
     this.registerListeners();
   }
 
-  protected async cleanup(): Promise<void> {
-    // Nothing to cleanup
-  }
+  protected async cleanup(): Promise<void> {}
 
-  protected getDefaultConfig(): IVisitorRoleConfig {
-    return {
-      memberRoleId: "",
-      visitorRoleId: "",
-      visitorEmojiId: "",
-      rolesChannelId: "",
-    };
+  protected getConfigSchema(): IModuleConfigSchema<VisitorRoleConfigKeys>[] {
+    return [
+      {
+        key: "memberRoleId",
+        description: "The role ID of the member role",
+        required: true,
+        secret: false,
+        requiresRestart: true,
+        defaultValue: "",
+        schema: Zod.string(),
+      },
+      {
+        key: "visitorRoleId",
+        description: "The role ID of the visitor role",
+        required: true,
+        secret: false,
+        requiresRestart: true,
+        defaultValue: "",
+        schema: Zod.string(),
+      },
+      {
+        key: "visitorEmojiId",
+        description: "The emoji ID of the visitor emoji",
+        required: true,
+        secret: false,
+        requiresRestart: true,
+        defaultValue: "",
+        schema: Zod.string(),
+      },
+      {
+        key: "rolesChannelId",
+        description: "The channel ID of the roles channel",
+        required: true,
+        secret: false,
+        requiresRestart: true,
+        defaultValue: "",
+        schema: Zod.string(),
+      },
+    ];
   }
 
   private registerListeners(): void {
@@ -34,11 +67,4 @@ export default class VistorRoleModule extends Module<IVisitorRoleConfig> {
     onMessageReactionRemove();
     onReady();
   }
-}
-
-export interface IVisitorRoleConfig {
-  memberRoleId: string;
-  visitorRoleId: string;
-  visitorEmojiId: string;
-  rolesChannelId: string;
 }

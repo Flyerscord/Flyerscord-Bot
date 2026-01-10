@@ -1,8 +1,10 @@
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 
-export default class MiscModule extends Module<IMiscConfig> {
+export type MiscConfigKeys = "";
+
+export default class MiscModule extends Module<MiscConfigKeys> {
   constructor(config: IKeyedObject) {
     super("Misc", config);
   }
@@ -11,13 +13,9 @@ export default class MiscModule extends Module<IMiscConfig> {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
   }
 
-  protected async cleanup(): Promise<void> {
-    // Nothing to cleanup
-  }
+  protected async cleanup(): Promise<void> {}
 
-  protected getDefaultConfig(): IMiscConfig {
-    return {};
+  protected getConfigSchema(): IModuleConfigSchema<MiscConfigKeys>[] {
+    return [];
   }
 }
-
-export interface IMiscConfig {}

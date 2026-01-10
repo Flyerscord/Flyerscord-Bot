@@ -1,11 +1,13 @@
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 
 import IBotHealth from "./interfaces/IBotHealth";
 import { getBotHealth } from "./utils/healthCheck";
 import ExpressManager from "@common/managers/ExpressManager";
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 
-export default class HealthCheckModule extends Module<IHealthCheckConfig> {
+export type HealthCheckConfigKeys = "";
+
+export default class HealthCheckModule extends Module<HealthCheckConfigKeys> {
   constructor(config: IKeyedObject) {
     super("HealthCheck", config);
   }
@@ -27,9 +29,7 @@ export default class HealthCheckModule extends Module<IHealthCheckConfig> {
     // Nothing to cleanup
   }
 
-  protected getDefaultConfig(): IHealthCheckConfig {
-    return {};
+  protected getConfigSchema(): IModuleConfigSchema<HealthCheckConfigKeys>[] {
+    return [];
   }
 }
-
-export interface IHealthCheckConfig {}

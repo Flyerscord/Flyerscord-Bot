@@ -1,8 +1,10 @@
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 
-export default class NHLModule extends Module<INHLConfig> {
+export type NHLConfigKeys = "";
+
+export default class NHLModule extends Module<NHLConfigKeys> {
   constructor(config: IKeyedObject) {
     super("NHL", config);
   }
@@ -11,13 +13,9 @@ export default class NHLModule extends Module<INHLConfig> {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
   }
 
-  protected async cleanup(): Promise<void> {
-    // Nothing to cleanup
-  }
+  protected async cleanup(): Promise<void> {}
 
-  protected getDefaultConfig(): INHLConfig {
-    return {};
+  protected getConfigSchema(): IModuleConfigSchema<NHLConfigKeys>[] {
+    return [];
   }
 }
-
-export interface INHLConfig {}

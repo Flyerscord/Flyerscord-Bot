@@ -1,8 +1,10 @@
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 import TextCommand from "@common/models/TextCommand";
 
-export default class RegisterCommandsModule extends Module<IRegisterCommandsConfig> {
+export type RegisterCommandsConfigKeys = "";
+
+export default class RegisterCommandsModule extends Module<RegisterCommandsConfigKeys> {
   constructor(config: IKeyedObject) {
     super("RegisterCommands", config);
   }
@@ -11,13 +13,9 @@ export default class RegisterCommandsModule extends Module<IRegisterCommandsConf
     await this.readInCommands<TextCommand>(__dirname, "text");
   }
 
-  protected async cleanup(): Promise<void> {
-    // Nothing to cleanup
-  }
+  protected async cleanup(): Promise<void> {}
 
-  protected getDefaultConfig(): IRegisterCommandsConfig {
-    return {};
+  protected getConfigSchema(): IModuleConfigSchema<RegisterCommandsConfigKeys>[] {
+    return [];
   }
 }
-
-export interface IRegisterCommandsConfig {}

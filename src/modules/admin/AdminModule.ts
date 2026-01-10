@@ -1,9 +1,12 @@
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import onMessageCreate from "./listeners/onMessageCreate";
+import Zod from "@common/utils/ZodWrapper";
 
-export default class AdminModule extends Module<IAdminConfig> {
+export type AdminConfigKeys = "ub3rBot.userId" | "ub3rBot.alertChannelId";
+
+export default class AdminModule extends Module<AdminConfigKeys> {
   constructor(config: IKeyedObject) {
     super("Admin", config);
   }
@@ -14,29 +17,32 @@ export default class AdminModule extends Module<IAdminConfig> {
     this.registerListeners();
   }
 
-  protected async cleanup(): Promise<void> {
-    // Nothing to cleanup
-  }
+  protected async cleanup(): Promise<void> {}
 
-  getDefaultConfig(): IAdminConfig {
-    return {
-      ub3rBot: {
-        userId: "",
-        alertChannelId: "",
+  protected getConfigSchema(): IModuleConfigSchema<AdminConfigKeys>[] {
+    return [
+      {
+        key: "ub3rBot.userId",
+        description: "The user ID of the ub3rBot",
+        required: true,
+        secret: false,
+        requiresRestart: false,
+        defaultValue: "",
+        schema: Zod.string(),
       },
-    };
+      {
+        key: "ub3rBot.alertChannelId",
+        description: "The channel ID of the ub3rBot alert channel",
+        required: true,
+        secret: false,
+        requiresRestart: false,
+        defaultValue: "",
+        schema: Zod.string(),
+      },
+    ];
   }
 
   private registerListeners(): void {
     onMessageCreate();
   }
-}
-
-export interface IAdminConfig {
-  ub3rBot: IUb3rConfig;
-}
-
-interface IUb3rConfig {
-  userId: string;
-  alertChannelId: string;
 }

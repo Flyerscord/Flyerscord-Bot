@@ -1,11 +1,15 @@
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import CloseAndLockPostsTask from "./tasks/CloseAndLockPostsTask";
 import CreateGameDayPostTask from "./tasks/CreateGameDayPostTask";
 import schema from "./db/schema";
+import Zod from "@common/utils/ZodWrapper";
+import { z } from "zod";
 
-export default class GameDayPostsModule extends Module<IGameDayPostsConfig> {
+export type GameDayPostsConfigKeys = "channelId" | "tagIds.preseason" | "tagIds.regularSeason" | "tagIds.postSeason" | "tagIds.seasons";
+
+export default class GameDayPostsModule extends Module<GameDayPostsConfigKeys> {
   constructor(config: IKeyedObject) {
     super("GameDayPosts", config, schema);
   }
@@ -13,47 +17,78 @@ export default class GameDayPostsModule extends Module<IGameDayPostsConfig> {
   protected async setup(): Promise<void> {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
 
-    await this.registerSchedules();
+    this.registerSchedules();
   }
 
   protected async cleanup(): Promise<void> {}
 
-  protected getDefaultConfig(): IGameDayPostsConfig {
-    return {
-      channelId: "",
-      tagIds: {
-        preseason: "",
-        regularSeason: "",
-        postSeason: "",
-        seasons: [],
+  protected getConfigSchema(): IModuleConfigSchema<GameDayPostsConfigKeys>[] {
+    return [
+      {
+        key: "channelId",
+        description: "The channel ID of the forum channel that the posts will be created in",
+        required: true,
+        secret: false,
+        requiresRestart: true,
+        defaultValue: "",
+        schema: Zod.string(),
       },
-    };
+      {
+        key: "tagIds.preseason",
+        description: "The tag ID of the preseason tag",
+        required: true,
+        secret: false,
+        requiresRestart: true,
+        defaultValue: "",
+        schema: Zod.string(),
+      },
+      {
+        key: "tagIds.regularSeason",
+        description: "The tag ID of the regular season tag",
+        required: true,
+        secret: false,
+        requiresRestart: true,
+        defaultValue: "",
+        schema: Zod.string(),
+      },
+      {
+        key: "tagIds.postSeason",
+        description: "The tag ID of the post season tag",
+        required: true,
+        secret: false,
+        requiresRestart: true,
+        defaultValue: "",
+        schema: Zod.string(),
+      },
+      {
+        key: "tagIds.seasons",
+        description: "The tag IDs of the season tags",
+        required: true,
+        secret: false,
+        requiresRestart: true,
+        defaultValue: [],
+        schema: z.array(
+          z
+            .object({
+              name: Zod.string(),
+              startingYear: Zod.number({ min: 2000, max: 2100 }),
+              endingYear: Zod.number({ min: 2000, max: 2100 }),
+              tagId: Zod.string(),
+            })
+            .refine((data) => data.endingYear === data.startingYear + 1, {
+              message: "endingYear must be 1 year after startingYear",
+              path: ["endingYear"],
+            }),
+        ),
+      },
+    ];
   }
 
-  private async registerSchedules(): Promise<void> {
+  private registerSchedules(): void {
     // Run every day at 12:30 AM
-    await CreateGameDayPostTask.getInstance().createScheduledJob();
+    CreateGameDayPostTask.getInstance().createScheduledJob();
 
     // Run every day at 4:30 AM
-    await CloseAndLockPostsTask.getInstance().createScheduledJob();
+    CloseAndLockPostsTask.getInstance().createScheduledJob();
   }
-}
-
-export interface IGameDayPostsConfig {
-  channelId: string;
-  tagIds: IGameDayPostsTagsConfig;
-}
-
-interface IGameDayPostsTagsConfig {
-  preseason: string;
-  regularSeason: string;
-  postSeason: string;
-  seasons: IGameDaayPostsTagsSeasonConfig[];
-}
-
-interface IGameDaayPostsTagsSeasonConfig {
-  name: string;
-  startingYear: number;
-  endingYear: number;
-  tagId: string;
 }

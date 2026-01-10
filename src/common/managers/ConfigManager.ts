@@ -100,7 +100,7 @@ export default class ConfigManager extends Singleton {
       const configSchema = this.configs.get(dbConfig.moduleName)?.find((schema) => schema.key === dbConfig.key);
       if (!configSchema) {
         Stumper.error(
-          `Config ${dbConfig.moduleName}.${dbConfig.key} was found in database but not in config map`,
+          `Config ${dbConfig.moduleName}_${dbConfig.key} was found in database but not in config map`,
           "common:ConfigManager:refreshConfig",
         );
         results.configsMissingFromMap.push({ module: dbConfig.moduleName, key: dbConfig.key });
@@ -132,7 +132,7 @@ export default class ConfigManager extends Singleton {
       // Handle different scenarios
       if (!dbConfig.value && configSchema.required) {
         // DB is empty, required -> clear cached value
-        Stumper.warning(`Config ${dbConfig.moduleName}.${dbConfig.key} is required but has no value in DB`, "common:ConfigManager:refreshConfig");
+        Stumper.warning(`Config ${dbConfig.moduleName}_${dbConfig.key} is required but has no value in DB`, "common:ConfigManager:refreshConfig");
         await this.updateConfigValue(dbConfig.moduleName, dbConfig.key, null, null);
         results.success = false;
       } else if (!dbConfig.value && !configSchema.required) {
@@ -203,7 +203,7 @@ export default class ConfigManager extends Singleton {
 
     for (const config of moduleConfigs) {
       if (!config.value) {
-        Stumper.error(`Config ${module}.${config.key} is required but has no value`, "common:ConfigManager:validateModule");
+        Stumper.error(`Config ${module}_${config.key} is required but has no value`, "common:ConfigManager:validateModule");
         return false;
       }
     }

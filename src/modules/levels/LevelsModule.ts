@@ -1,11 +1,13 @@
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import onMessageCreate from "./listeners/onMessageCreate";
 import { calculateLevels } from "./utils/requiredExp";
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import schema from "./db/schema";
 
-export default class LevelsModule extends Module<ILevelsConfig> {
+export type LevelsConfigKeys = "";
+
+export default class LevelsModule extends Module<LevelsConfigKeys> {
   constructor(config: IKeyedObject) {
     super("Levels", config, schema);
   }
@@ -20,13 +22,11 @@ export default class LevelsModule extends Module<ILevelsConfig> {
 
   protected async cleanup(): Promise<void> {}
 
-  protected getDefaultConfig(): ILevelsConfig {
-    return {};
+  protected getConfigSchema(): IModuleConfigSchema<LevelsConfigKeys>[] {
+    return [];
   }
 
   private registerListeners(): void {
     onMessageCreate();
   }
 }
-
-export interface ILevelsConfig {}

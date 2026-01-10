@@ -4,7 +4,7 @@ import SlashCommand from "@common/models/SlashCommand";
 import CheckForNewPostsTask from "./tasks/CheckForNewPostsTask";
 import BlueSky from "./utils/BlueSky";
 import schema from "./db/schema";
-import zod from "@common/utils/ZodWrapper";
+import Zod from "@common/utils/ZodWrapper";
 
 export type BlueSkyConfigKeys = "username" | "password" | "channelId" | "listId";
 
@@ -37,7 +37,7 @@ export default class BlueSkyModule extends Module<BlueSkyConfigKeys> {
         secret: true,
         requiresRestart: true,
         defaultValue: "",
-        schema: zod.string(),
+        schema: Zod.string(),
       },
       {
         key: "password",
@@ -46,7 +46,7 @@ export default class BlueSkyModule extends Module<BlueSkyConfigKeys> {
         secret: true,
         requiresRestart: true,
         defaultValue: "",
-        schema: zod.encryptedString(),
+        schema: Zod.encryptedString(),
       },
       {
         key: "channelId",
@@ -55,7 +55,7 @@ export default class BlueSkyModule extends Module<BlueSkyConfigKeys> {
         secret: false,
         requiresRestart: true,
         defaultValue: "",
-        schema: zod.string(),
+        schema: Zod.string(),
       },
       {
         key: "listId",
@@ -64,7 +64,7 @@ export default class BlueSkyModule extends Module<BlueSkyConfigKeys> {
         secret: false,
         requiresRestart: true,
         defaultValue: "",
-        schema: zod.string(),
+        schema: Zod.string(),
       },
     ];
   }

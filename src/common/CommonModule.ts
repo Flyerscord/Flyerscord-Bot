@@ -1,35 +1,58 @@
+import { LOG_LEVEL } from "stumper";
 import schema from "./db/schema";
 import { IKeyedObject } from "./interfaces/IKeyedObject";
-import Module from "./models/Module";
+import Module, { IModuleConfigSchema } from "./models/Module";
+import Zod from "./utils/ZodWrapper";
+import { z } from "zod";
 
-export default class CommonModule extends Module<ICommonConfig> {
+export type CommonConfigKeys = "productionMode" | "logLevel" | "masterGuildId" | "adminPrefix" | "advancedDebug";
+export default class CommonModule extends Module<CommonConfigKeys> {
   constructor(config: IKeyedObject) {
     super("Common", config, schema);
   }
 
-  protected async setup(): Promise<void> {
-    // Do nothing
-  }
+  protected async setup(): Promise<void> {}
 
   protected async cleanup(): Promise<void> {}
 
-  protected getDefaultConfig(): ICommonConfig {
-    return {
-      productionMode: false,
-      token: "",
-      logLevel: 3,
-      masterGuildId: "",
-      adminPrefix: ".",
-      advancedDebug: false,
-    };
+  protected getConfigSchema(): IModuleConfigSchema<CommonConfigKeys>[] {
+    return [
+      {
+        key: "productionMode",
+        description: "Whether the bot is in production mode or not",
+        required: false,
+        secret: true,
+        requiresRestart: true,
+        defaultValue: false,
+        schema: z.boolean(),
+      },
+      {
+        key: "logLevel",
+        description: "The log level to use",
+        required: false,
+        secret: true,
+        requiresRestart: true,
+        defaultValue: LOG_LEVEL.INFO,
+        schema: Zod.number({ min: 0, max: 3 }),
+      },
+      {
+        key: "masterGuildId",
+        description: "The guild ID of the master guild",
+        required: true,
+        secret: true,
+        requiresRestart: true,
+        defaultValue: "",
+        schema: Zod.string(),
+      },
+      {
+        key: "adminPrefix",
+        description: "The prefix for the admin commands",
+        required: false,
+        secret: true,
+        requiresRestart: true,
+        defaultValue: ".",
+        schema: Zod.string({ minLength: 1, maxLength: 1 }),
+      },
+    ];
   }
-}
-
-export interface ICommonConfig {
-  productionMode: boolean;
-  token: string;
-  logLevel: number;
-  masterGuildId: string;
-  adminPrefix: string;
-  advancedDebug: boolean;
 }

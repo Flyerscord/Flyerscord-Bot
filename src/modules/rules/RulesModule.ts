@@ -1,17 +1,20 @@
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 import RulesDB from "./db/RulesDB";
 import SlashCommand from "@common/models/SlashCommand";
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import schema from "./db/schema";
 import ConfigManager from "@root/src/common/managers/ConfigManager";
+import Zod from "@common/utils/ZodWrapper";
+import { z } from "zod";
 
-export default class RulesModule extends Module<IRulesConfig> {
+export type RulesConfigKeys = "channelId" | "sections";
+
+export default class RulesModule extends Module<RulesConfigKeys> {
   constructor(config: IKeyedObject) {
     super("Rules", config, schema);
   }
 
   protected async setup(): Promise<void> {
-    // Initialize sections in database
     const db = new RulesDB();
     const rulesConfig = ConfigManager.getInstance().getConfig("Rules");
 
@@ -22,19 +25,28 @@ export default class RulesModule extends Module<IRulesConfig> {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
   }
 
-  protected async cleanup(): Promise<void> {
-    // No cleanup needed - database connections are pooled
-  }
+  protected async cleanup(): Promise<void> {}
 
-  getDefaultConfig(): IRulesConfig {
-    return {
-      channelId: "",
-      sections: ["Welcome", "Rules", "Staff", "Roles", "Channels", "Servers"],
-    };
+  protected getConfigSchema(): IModuleConfigSchema<RulesConfigKeys>[] {
+    return [
+      {
+        key: "channelId",
+        description: "The channel ID of the rules channel",
+        required: true,
+        secret: false,
+        requiresRestart: true,
+        defaultValue: "",
+        schema: Zod.string(),
+      },
+      {
+        key: "sections",
+        description: "The sections to create in the rules channel",
+        required: false,
+        secret: false,
+        requiresRestart: true,
+        defaultValue: ["Welcome", "Rules", "Staff", "Roles", "Channels", "Servers"],
+        schema: z.array(Zod.string()).min(1),
+      },
+    ];
   }
-}
-
-export interface IRulesConfig {
-  channelId: string;
-  sections: string[];
 }

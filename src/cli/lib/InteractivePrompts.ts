@@ -1,8 +1,8 @@
 import inquirer from "inquirer";
 import { z } from "zod";
 import chalk from "chalk";
-import type { SchemaConstraints } from "./types.js";
-import { SchemaInspector } from "./SchemaInspector.js";
+import type { SchemaConstraints } from "@cli/lib/types";
+import { SchemaInspector } from "@cli/lib/SchemaInspector";
 
 export class InteractivePrompts {
   /**

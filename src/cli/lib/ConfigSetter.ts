@@ -1,12 +1,12 @@
 import chalk from "chalk";
-import type { SetOptions, IConfig } from "./types.js";
-import type { Modules } from "../../modules/Modules.js";
-import ConfigManager from "../../common/managers/ConfigManager.js";
-import SecretManager from "../../common/managers/SecretManager.js";
-import Database from "../../common/db/db.js";
-import { config } from "../../common/db/schema.js";
-import { InteractivePrompts } from "./InteractivePrompts.js";
-import { SchemaInspector } from "./SchemaInspector.js";
+import type { SetOptions, IConfig } from "@cli/lib/types";
+import type { Modules } from "@modules/Modules";
+import ConfigManager from "@common/managers/ConfigManager";
+import SecretManager from "@common/managers/SecretManager";
+import Database from "@common/db/db";
+import { config } from "@common/db/schema";
+import { InteractivePrompts } from "@cli/lib/InteractivePrompts";
+import { SchemaInspector } from "@cli/lib/SchemaInspector";
 
 export class ConfigSetter {
   private configManager: ConfigManager;

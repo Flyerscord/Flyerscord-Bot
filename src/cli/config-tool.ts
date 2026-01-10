@@ -4,32 +4,32 @@
 /*                                   Imports                                  */
 /* -------------------------------------------------------------------------- */
 import Stumper, { LOG_LEVEL, TIMEZONE } from "stumper";
-import Env from "../common/utils/Env.js";
-import ModuleManager from "../common/managers/ModuleManager.js";
-import ConfigManager from "../common/managers/ConfigManager.js";
-import SecretManager from "../common/managers/SecretManager.js";
-import { ConfigCLI } from "./lib/ConfigCLI.js";
+import Env from "@common/utils/Env";
+import ModuleManager from "@common/managers/ModuleManager";
+import ConfigManager from "@common/managers/ConfigManager";
+import SecretManager from "@common/managers/SecretManager";
+import { ConfigCLI } from "@cli/lib/ConfigCLI";
 
 // Import all modules to register their config schemas
-import CommonModule from "../common/CommonModule.js";
-import AdminModule from "../modules/admin/AdminModule.js";
-import BlueSkyModule from "../modules/bluesky/BlueSkyModule.js";
-import CustomCommandsModule from "../modules/customCommands/CustomCommandsModule.js";
-import DaysUntilModule from "../modules/daysUntil/DaysUntilModule.js";
-import GameDayPostsModule from "../modules/gamedayPosts/GameDayPostsModule.js";
-import HealthCheckModule from "../modules/healthcheck/HealthCheckModule.js";
-import ImageProxyModule from "../modules/imageProxy/ImageProxyModule.js";
-import JoinLeaveModule from "../modules/joinLeave/JoinLeaveModule.js";
-import LevelsModule from "../modules/levels/LevelsModule.js";
-import MiscModule from "../modules/misc/MiscModule.js";
-import NHLModule from "../modules/nhl/NHLModule.js";
-import PinsModule from "../modules/pins/PinsModule.js";
-import PlayerEmojisModule from "../modules/playerEmojis/PlayerEmojisModule.js";
-import ReactionRoleModule from "../modules/reactionRole/ReactionRoleModule.js";
-import RegisterCommandsModule from "../modules/registerCommands/RegisterCommandsModule.js";
-import RulesModule from "../modules/rules/RulesModule.js";
-import StatsVoiceChannelModule from "../modules/statsVoiceChannel/StatsVoiceChannelModule.js";
-import VisitorRoleModule from "../modules/visitorRole/VisitorRoleModule.js";
+import CommonModule from "@common/CommonModule";
+import AdminModule from "@modules/admin/AdminModule";
+import BlueSkyModule from "@modules/bluesky/BlueSkyModule";
+import CustomCommandsModule from "@modules/customCommands/CustomCommandsModule";
+import DaysUntilModule from "@modules/daysUntil/DaysUntilModule";
+import GameDayPostsModule from "@modules/gamedayPosts/GameDayPostsModule";
+import HealthCheckModule from "@modules/healthcheck/HealthCheckModule";
+import ImageProxyModule from "@modules/imageProxy/ImageProxyModule";
+import JoinLeaveModule from "@modules/joinLeave/JoinLeaveModule";
+import LevelsModule from "@modules/levels/LevelsModule";
+import MiscModule from "@modules/misc/MiscModule";
+import NHLModule from "@modules/nhl/NHLModule";
+import PinsModule from "@modules/pins/PinsModule";
+import PlayerEmojisModule from "@modules/playerEmojis/PlayerEmojisModule";
+import ReactionRoleModule from "@modules/reactionRole/ReactionRoleModule";
+import RegisterCommandsModule from "@modules/registerCommands/RegisterCommandsModule";
+import RulesModule from "@modules/rules/RulesModule";
+import StatsVoiceChannelModule from "@modules/statsVoiceChannel/StatsVoiceChannelModule";
+import VisitorRoleModule from "@modules/visitorRole/VisitorRoleModule";
 
 /* -------------------------------------------------------------------------- */
 /*                                Initial Setup                               */

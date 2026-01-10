@@ -1,8 +1,8 @@
 import { Command } from "commander";
 import chalk from "chalk";
-import { ConfigViewer } from "./ConfigViewer.js";
-import { ConfigSetter } from "./ConfigSetter.js";
-import type { Modules } from "../../modules/Modules.js";
+import { ConfigViewer } from "@cli/lib/ConfigViewer";
+import { ConfigSetter } from "@cli/lib/ConfigSetter";
+import type { Modules } from "@modules/Modules";
 
 export class ConfigCLI {
   private program: Command;

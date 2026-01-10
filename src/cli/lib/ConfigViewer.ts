@@ -1,10 +1,10 @@
 import chalk from "chalk";
 import Table from "cli-table3";
 import { z } from "zod";
-import type { ViewOptions, IConfig } from "./types.js";
-import type { Modules } from "../../modules/Modules.js";
-import ConfigManager from "../../common/managers/ConfigManager.js";
-import { SchemaInspector } from "./SchemaInspector.js";
+import type { ViewOptions, IConfig } from "@cli/lib/types";
+import type { Modules } from "@modules/Modules";
+import ConfigManager from "@common/managers/ConfigManager";
+import { SchemaInspector } from "@cli/lib/SchemaInspector";
 
 export class ConfigViewer {
   private configManager: ConfigManager;

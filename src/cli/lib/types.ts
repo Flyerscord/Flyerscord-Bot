@@ -1,6 +1,6 @@
 import type { z } from "zod";
-import type { IModuleConfigSchema } from "../../common/models/Module.js";
-import type { Modules } from "../../modules/Modules.js";
+import type { IModuleConfigSchema } from "@common/models/Module";
+import type { Modules } from "@modules/Modules";
 
 // Extended config type used by ConfigManager
 export interface IConfig<TSchema extends z.ZodType = z.ZodType> extends Omit<IModuleConfigSchema<string>, "schema"> {

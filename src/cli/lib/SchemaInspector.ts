@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { SchemaType, SchemaConstraints, SchemaAnalysis } from "./types.js";
+import type { SchemaType, SchemaConstraints, SchemaAnalysis } from "@cli/lib/types";
 
 // Type guard to check if value is a ZodType
 function isZodType(value: unknown): value is z.ZodType {

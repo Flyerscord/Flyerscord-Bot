@@ -22,10 +22,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm run test:coverage` - Run Jest tests with coverage report
 
 ### Configuration
-- `pnpm run generate-config` - Generate default configuration file
+- `pnpm run config` - Interactive configuration management CLI
+- `pnpm run config:view` - View current configuration values
+- `pnpm run config:set` - Interactively modify configuration values
 
-### Database Migration
-- `tsx src/common/migration/migrateAllTables.ts` - Migrate all Enmap data to PostgreSQL raw tables
+### Database Management
+- `pnpm run db:generate` - Generate Drizzle migrations
+- `pnpm run db:migrate` - Run Drizzle migrations
+- `pnpm run db:push` - Push schema changes to database
 
 ## Architecture Overview
 
@@ -36,6 +40,7 @@ This is a modular Discord bot built with Discord.js v14 and TypeScript. The arch
 - `src/bot.ts` - Main entry point with comprehensive startup sequence
 - `src/common/` - Shared utilities, managers, configuration, and base classes
 - `src/modules/` - Feature modules (each Discord bot feature is a separate module)
+- `src/cli/` - Configuration management CLI tool
 
 ### Module System
 The bot uses a centralized ModuleManager that loads modules in a specific order:
@@ -48,23 +53,52 @@ The bot uses a centralized ModuleManager that loads modules in a specific order:
 
 Each module follows the singleton pattern and extends the base `Module` class.
 
-### Database Architecture
-The bot uses a dual database system during migration from Enmap to Drizzle ORM:
+**Active Modules (19 total):**
+Common, Admin, BlueSky, CustomCommands, DaysUntil, GameDayPosts, HealthCheck, ImageProxy, JoinLeave, Levels, Misc, NHL, Pins, PlayerEmojis, ReactionRole, RegisterCommands, Rules, StatsVoiceChannel, VisitorRole
 
-- **Legacy**: Enmap-based databases extending `Database` class in `src/common/providers/Database.ts`
-- **New**: Drizzle ORM with Neon PostgreSQL backend via HTTP connections
+**Module Configuration Pattern:**
+Each module exports a `configSchema` array that defines its configuration using Zod validators:
+```typescript
+export const moduleConfigSchema = [
+  {
+    key: "module.configKey",
+    description: "Description of config",
+    required: true,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+] as const satisfies readonly IModuleConfigSchema<ModuleConfigKeys>[];
+```
+
+Modules register their schemas during initialization, providing type-safe configuration access throughout the application.
+
+### Database Architecture
+The bot uses **Drizzle ORM** with **Neon PostgreSQL** (fully migrated from Enmap):
+
+- **ORM**: Drizzle ORM with PostgreSQL backend via HTTP connections
 - **Connection**: `getDb(pooled)` function supports both pooled and direct connections
-- **Migration Framework**: Complete migration system for Enmap → PostgreSQL transition
-  - `SchemaManager`: Dynamic raw table schema registration
-  - `Dump`: Individual database migration with conflict resolution
-  - `migrateAllTables`: Full migration orchestration with error handling
-- **Raw Tables**: Intermediate `raw_*` tables store Enmap data during migration
+  - `DATABASE_URL_POOLED` - Pooled connection for runtime operations
+  - `DATABASE_URL_SINGLE` - Direct connection for migrations/admin tasks
+- **Schema Management**: Each module defines its schema in `db/schema.ts`
+- **Common Tables**:
+  - `common__config` - Stores all configuration values
+  - `common__audit_log` - Audit logging for module operations
+- **Migrations**: Managed through Drizzle Kit (`pnpm run db:generate`, `pnpm run db:migrate`, `pnpm run db:push`)
 
 ### Configuration System
-- **Config Manager**: Centralized configuration in `src/common/config/`
-- **Local Development**: Copy `src/common/config/defaults.config.ts` to `src/common/config/local.config.ts`
-- **Module Configs**: Each module can have its own configuration section
-- **Environment**: Production/development mode detection affects module loading
+The bot uses a **database-driven configuration system** with Zod schema validation:
+
+- **Storage**: All configuration stored in `common__config` PostgreSQL table
+- **Schema-Driven**: Each module defines its configuration via Zod schemas in `configSchema` exports
+- **Type Safety**: Configuration access is fully type-safe using TypeScript types inferred from Zod schemas
+- **CLI Tool**: Interactive configuration management via `pnpm run config` (see CLI Tool section)
+- **Secret Management**: Encrypted secrets using `SecretManager` with `ENCRYPTION_KEY` environment variable
+- **Metadata**: Each config has metadata (required, secret, requiresRestart, description, defaultValue)
+- **Access Pattern**: `ConfigManager.getInstance().getConfig<"ModuleName">()`
+
+**No longer uses file-based configuration** - all configs are in the database and managed via the CLI tool.
 
 ### Command Types
 The bot supports multiple Discord interaction types:
@@ -75,13 +109,45 @@ The bot supports multiple Discord interaction types:
 
 All are managed through dedicated manager classes in `src/common/managers/`.
 
+## CLI Configuration Tool
+
+The bot includes a comprehensive CLI tool for managing configuration (`src/cli/`):
+
+**Commands:**
+- `pnpm run config` - Interactive configuration management
+- `pnpm run config:view` - View current configuration (supports filtering and --show-secrets flag)
+- `pnpm run config:set` - Interactively modify configuration values
+
+**Features:**
+- Schema introspection with Zod type analysis
+- Support for complex types: strings, numbers, booleans, arrays, objects
+- Constraint extraction: min/max lengths, numeric ranges, regex patterns
+- Interactive selection menus for modules and config keys
+- Encrypted secret handling with visual indicators
+- Table-based display of configuration values
+- Type-safe value validation during input
+
+**CLI Architecture:**
+- `config-tool.ts` - Main entry point using Commander.js
+- `ConfigCLI.ts` - CLI orchestrator with view/set commands
+- `ConfigViewer.ts` - Display configuration with formatting and tables
+- `ConfigSetter.ts` - Interactive prompts for setting values
+- `InteractivePrompts.ts` - Zod schema-based prompt generation
+- `SchemaInspector.ts` - Analyzes Zod schemas to extract type/constraint info
+- `types.ts` - Shared type definitions for CLI
+
 ## Development Setup
 
 ### Initial Configuration
 1. Install dependencies: `pnpm install`
-2. Create config: `cp src/common/config/defaults.config.ts src/common/config/local.config.ts`
-3. Set environment variables: `DATABASE_URL_POOLED`, `DATABASE_URL_SINGLE`, Discord bot token in config
-4. Build project: `pnpm run build`
+2. Set environment variables:
+   - `DATABASE_URL_POOLED` - Pooled PostgreSQL connection
+   - `DATABASE_URL_SINGLE` - Direct PostgreSQL connection
+   - `ENCRYPTION_KEY` - Key for encrypting secret configuration values
+   - `DISCORD_TOKEN` - Discord bot token (can also be set via config CLI)
+3. Run database migrations: `pnpm run db:push`
+4. Configure the bot: `pnpm run config:set`
+5. Build project: `pnpm run build`
 
 ### Environment Requirements
 - **Node.js**: Version 18+ (specified in GitHub Actions)
@@ -89,6 +155,11 @@ All are managed through dedicated manager classes in `src/common/managers/`.
 - **Database**: Neon PostgreSQL with HTTP connections
   - `DATABASE_URL_POOLED` - Pooled connection for runtime operations
   - `DATABASE_URL_SINGLE` - Direct connection for migrations/admin tasks
+- **Environment Variables**:
+  - `DATABASE_URL_POOLED` - Required for database operations
+  - `DATABASE_URL_SINGLE` - Required for migrations
+  - `ENCRYPTION_KEY` - Required for encrypting configuration secrets
+  - `DISCORD_TOKEN` - Discord bot token (can be set via database config instead)
 - **Canvas Dependencies**: Required for image generation features
 
 ### Production vs Development
@@ -115,37 +186,97 @@ The project enforces code quality through:
 
 Always run `pnpm run build`, `pnpm run lint`, and `pnpm run test` before committing changes.
 
-## Database Migration Guide
+## Adding New Configuration to Modules
 
-### Migration Architecture
-The bot implements a 3-phase migration strategy from Enmap to PostgreSQL:
+When adding new configuration options to a module:
 
-1. **Raw Data Migration**: Enmap data → `raw_*` tables (key-value format)
-2. **Schema Normalization**: Design proper relational schemas for each module
-3. **Data Transformation**: `raw_*` tables → normalized tables
+1. **Define the config schema** in your module file:
+```typescript
+import { Zod } from "zod";
+import type { IModuleConfigSchema } from "../common/types/ModuleConfig";
 
-### Migration Tools
-- **Dynamic Schema Registration**: `SchemaManager.registerRawTables(tableNames)`
-- **Table Creation**: Uses Drizzle Kit's `pushSchema()` for physical table creation
-- **Data Migration**: `Dump` class handles individual database migrations
-- **Orchestration**: `migrateAllTables()` manages full migration with error handling
+export type YourModuleConfigKeys = "yourModule.setting1" | "yourModule.setting2";
 
-### Migration Commands
-```bash
-# Migrate all databases
-tsx src/common/migration/migrateAllTables.ts
+export const yourModuleConfigSchema = [
+  {
+    key: "yourModule.setting1",
+    description: "Description of setting1",
+    required: true,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: "default",
+    schema: Zod.string().min(1),
+  },
+  {
+    key: "yourModule.setting2",
+    description: "Sensitive API key",
+    required: true,
+    secret: true,  // Will be encrypted
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+] as const satisfies readonly IModuleConfigSchema<YourModuleConfigKeys>[];
 ```
 
-### Database Modules
-The following modules have Enmap databases that require migration:
-- **Common**: Global settings
-- **bluesky**: Social media integration (2 databases)
-- **customCommands**: User-created commands
-- **daysUntil**: Event countdown system
-- **gamedayPosts**: Game day thread management
-- **levels**: User XP system (2 databases)
-- **pins**: Message pinning system
-- **playerEmojis**: NHL player emoji management
-- **reactionRole**: Role assignment via reactions
-- **rules**: Server rules system (2 databases)
-- **userManagement**: User notes and warnings
+2. **Register the schema** in your module's constructor:
+```typescript
+constructor() {
+  super("YourModule", yourModuleConfigSchema, []);
+}
+```
+
+3. **Access configuration** in your module:
+```typescript
+const config = ConfigManager.getInstance().getConfig<"YourModule">();
+const setting1 = config["yourModule.setting1"];
+```
+
+4. **Set values via CLI**:
+```bash
+pnpm run config:set
+```
+
+The CLI tool will automatically discover your new configuration schema and provide interactive prompts based on the Zod validators.
+
+## Working with the Database
+
+### Schema Definition
+Each module defines its database schema in `src/modules/<module>/db/schema.ts` using Drizzle ORM:
+
+```typescript
+import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+
+export const yourModuleTable = pgTable("your_module__table_name", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+```
+
+**Naming Convention**: Use `modulename__tablename` format (e.g., `levels__user_xp`, `pins__pinned_messages`)
+
+### Schema Changes
+When you modify a schema:
+
+1. **Update the schema file** in `src/modules/<module>/db/schema.ts`
+2. **Generate migration**: `pnpm run db:generate`
+3. **Review the generated migration** in `drizzle/` directory
+4. **Apply migration**: `pnpm run db:migrate`
+
+For development, you can use `pnpm run db:push` to push schema changes directly without generating migrations.
+
+### Database Access
+Access the database in your module:
+
+```typescript
+import { getDb } from "../../common/db";
+import { yourModuleTable } from "./db/schema";
+
+// Use pooled connection for runtime operations
+const db = getDb(true);
+const results = await db.select().from(yourModuleTable);
+
+// Use single connection for admin/migration tasks
+const dbSingle = getDb(false);
+```

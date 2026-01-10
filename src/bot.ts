@@ -124,7 +124,6 @@ async function startUp(): Promise<void> {
   moduleManager.addModule(PinsModule.getInstance());
   moduleManager.addModule(PlayerEmojisModule.getInstance());
   moduleManager.addModule(ReactionRoleModule.getInstance());
-  moduleManager.addModule(RegisterCommandsModule.getInstance());
   moduleManager.addModule(RulesModule.getInstance());
   moduleManager.addModule(StatsVoiceChannelModule.getInstance());
   moduleManager.addModule(VisitorRoleModule.getInstance());

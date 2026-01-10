@@ -2,7 +2,6 @@ import { LOG_LEVEL } from "stumper";
 import schema from "./db/schema";
 import Module, { IModuleConfigSchema } from "./models/Module";
 import Zod from "./utils/ZodWrapper";
-import { z } from "zod";
 
 export type CommonConfigKeys = "productionMode" | "logLevel" | "masterGuildId" | "adminPrefix" | "advancedDebug";
 
@@ -14,7 +13,7 @@ export const commonConfigSchema = [
     secret: true,
     requiresRestart: true,
     defaultValue: false,
-    schema: z.boolean(),
+    schema: Zod.boolean(),
   },
   {
     key: "logLevel",
@@ -50,7 +49,7 @@ export const commonConfigSchema = [
     secret: true,
     requiresRestart: true,
     defaultValue: false,
-    schema: z.boolean(),
+    schema: Zod.boolean(),
   },
 ] as const satisfies readonly IModuleConfigSchema<CommonConfigKeys>[];
 

@@ -319,9 +319,21 @@ export default class ConfigManager extends Singleton {
    */
   private async parseValue(rawValue: string, configSchema: IConfig<z.ZodType>): Promise<unknown> {
     try {
+      // Attempt to parse JSON for complex types (arrays, objects)
+      let valueToValidate: unknown = rawValue;
+
+      if (typeof rawValue === "string" && (rawValue.startsWith("[") || rawValue.startsWith("{"))) {
+        try {
+          valueToValidate = JSON.parse(rawValue);
+        } catch {
+          // If JSON parsing fails, let Zod handle it
+          valueToValidate = rawValue;
+        }
+      }
+
       // Parse the value with the Zod schema
       // The schema handles all transformations (string->number, decryption, etc.)
-      const result = await configSchema.schema.parseAsync(rawValue);
+      const result = await configSchema.schema.parseAsync(valueToValidate);
       return result;
     } catch (error) {
       Stumper.caughtError(error, `common:ConfigManager:parseValue:${configSchema.key}`);

@@ -40,25 +40,29 @@ export default class ZodWrapper {
     return z.string().transform((val) => SecretManager.getInstance().decrypt(val));
   }
 
-  static number(options?: { min?: number; max?: number }): z.ZodNumber {
-    const defaultType = z.number();
+  static number(options?: { min?: number; max?: number }): z.ZodCoercedNumber {
+    const baseType = z.coerce.number();
 
     if (!options) {
-      return defaultType;
+      return baseType;
     }
 
     if (options.min && options.max) {
-      return z.number().min(options.min).max(options.max);
+      return baseType.min(options.min).max(options.max);
     }
 
     if (options.min) {
-      return z.number().min(options.min);
+      return baseType.min(options.min);
     }
 
     if (options.max) {
-      return z.number().max(options.max);
+      return baseType.max(options.max);
     }
 
-    return defaultType;
+    return baseType;
+  }
+
+  static boolean(): z.ZodBoolean {
+    return z.coerce.boolean();
   }
 }

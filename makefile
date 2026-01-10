@@ -15,3 +15,6 @@ dev-bot:
 
 dev-bot-clean:
 	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev down --volumes --rmi all
+
+dev-bot-down:
+	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev down

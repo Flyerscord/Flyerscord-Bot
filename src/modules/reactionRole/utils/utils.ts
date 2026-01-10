@@ -3,7 +3,7 @@ import Stumper from "stumper";
 import { EmbedBuilder } from "discord.js";
 import ConfigManager from "@root/src/common/managers/ConfigManager";
 import ReactionRoleDB from "../db/ReactionRoleDB";
-import { ReactionRolesConfig } from "../ReactionRoleModule";
+import type { ReactionRolesConfig } from "../ReactionRoleModule";
 
 export async function createRoleReactionMessagesIfNeeded(): Promise<void> {
   const db = new ReactionRoleDB();

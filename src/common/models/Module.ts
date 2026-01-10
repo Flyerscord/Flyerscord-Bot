@@ -16,13 +16,34 @@ import { TableEnumRecord } from "../db/schema-types";
 import { z } from "zod";
 
 export interface IModuleConfigSchema<TKey extends string> {
+  /**
+   * The key of the config in the database
+   */
   key: TKey;
-  schema: z.ZodType;
-  defaultValue: z.infer<z.ZodType>;
-  required: boolean;
+  /**
+   * The description of the config setting
+   */
   description: string;
+  /**
+   * Whether the config is required for the module to function
+   */
+  required: boolean;
+  /**
+   * Whether the config is secret and should not be displayed in the UI
+   */
   secret: boolean;
+  /**
+   * Whether the config requires a restart of the bot to take effect
+   */
   requiresRestart: boolean;
+  /**
+   * The default value of the config setting. Only used if the config is not required.
+   */
+  defaultValue: z.infer<z.ZodType>;
+  /**
+   * The Zod schema for the config setting
+   */
+  schema: z.ZodType;
 }
 
 export default abstract class Module<TConfigKeys extends string> extends Singleton {

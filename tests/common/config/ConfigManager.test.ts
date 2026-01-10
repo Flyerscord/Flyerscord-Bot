@@ -20,13 +20,16 @@ const mockStumper = {
   debug: jest.fn(),
 };
 
-jest.mock("@common/db/db", () => ({
-  default: {
-    getInstance: jest.fn(() => ({
-      getDb: jest.fn(() => mockDb),
-    })),
-  },
-}));
+jest.mock("@common/db/db", () => {
+  return {
+    __esModule: true,
+    default: {
+      getInstance: jest.fn(() => ({
+        getDb: jest.fn(() => mockDb),
+      })),
+    },
+  };
+});
 
 jest.mock("stumper", () => mockStumper);
 
@@ -41,6 +44,11 @@ describe("ConfigManager", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetModules();
+
+    // Clear singleton instance
+    const Singleton = await import("@root/src/common/models/Singleton");
+    // @ts-expect-error - Accessing private static field for testing
+    Singleton.Singleton.instances = new Map();
 
     // Re-import to get fresh instance
     const module = await import("@root/src/common/managers/ConfigManager");
@@ -265,8 +273,33 @@ describe("ConfigManager", () => {
   describe("validateModule", () => {
     it("should return true for module with no configs", async () => {
       const configManager = ConfigManager.getInstance();
-      mockDb.from.mockResolvedValue([]);
 
+      // Add a config to avoid "No configs found" error
+      const dummySchema: IModuleConfigSchema<"dummyKey"> = {
+        key: "dummyKey",
+        schema: z.string(),
+        defaultValue: "dummy",
+        required: false,
+        description: "Dummy config",
+        secret: false,
+        requiresRestart: false,
+      };
+      await configManager.addNewConfigSchema("Admin", dummySchema);
+
+      const dbConfigs = [
+        {
+          moduleName: "Admin" as Modules,
+          key: "dummyKey",
+          value: "value",
+          updatedAt: new Date(),
+        },
+      ];
+      mockDb.from.mockResolvedValue(dbConfigs);
+
+      // Need to load configs first
+      await configManager.refreshConfig();
+
+      // Now validate a module with no configs
       const isValid = configManager.validateModule("Common");
 
       expect(isValid).toBe(true);
@@ -286,7 +319,18 @@ describe("ConfigManager", () => {
       };
 
       await configManager.addNewConfigSchema("Common", schema);
-      mockDb.from.mockResolvedValue([]);
+
+      const dbConfigs = [
+        {
+          moduleName: "Common" as Modules,
+          key: "testKey",
+          value: null,
+          updatedAt: new Date(),
+        },
+      ];
+      mockDb.from.mockResolvedValue(dbConfigs);
+
+      await configManager.refreshConfig();
 
       const isValid = configManager.validateModule("Common");
 
@@ -327,8 +371,38 @@ describe("ConfigManager", () => {
   });
 
   describe("getConfig", () => {
-    it("should throw error when module config not loaded", () => {
+    it("should throw error when configs have not been loaded yet", () => {
       const configManager = ConfigManager.getInstance();
+
+      expect(() => configManager.getConfig("Common")).toThrow("Configs have not been loaded yet!");
+    });
+
+    it("should throw error when module config not loaded", async () => {
+      const configManager = ConfigManager.getInstance();
+
+      // Add a config for a different module to allow refreshConfig to succeed
+      const dummySchema: IModuleConfigSchema<"dummyKey"> = {
+        key: "dummyKey",
+        schema: z.string(),
+        defaultValue: "dummy",
+        required: false,
+        description: "Dummy config",
+        secret: false,
+        requiresRestart: false,
+      };
+      await configManager.addNewConfigSchema("Admin", dummySchema);
+
+      const dbConfigs = [
+        {
+          moduleName: "Admin" as Modules,
+          key: "dummyKey",
+          value: "value",
+          updatedAt: new Date(),
+        },
+      ];
+      mockDb.from.mockResolvedValue(dbConfigs);
+
+      await configManager.refreshConfig();
 
       expect(() => configManager.getConfig("Common")).toThrow("Config for module Common not loaded");
     });
@@ -482,6 +556,284 @@ describe("ConfigManager", () => {
       const instance2 = ConfigManager.getInstance();
 
       expect(instance1).toBe(instance2);
+    });
+  });
+
+  describe("isLoaded", () => {
+    it("should return false before refreshConfig is called", () => {
+      const configManager = ConfigManager.getInstance();
+      expect(configManager.isLoaded()).toBe(false);
+    });
+
+    it("should return true after successful refreshConfig", async () => {
+      const configManager = ConfigManager.getInstance();
+      const schema: IModuleConfigSchema<"testKey"> = {
+        key: "testKey",
+        schema: z.string(),
+        defaultValue: "default",
+        required: false,
+        description: "Test config",
+        secret: false,
+        requiresRestart: false,
+      };
+
+      await configManager.addNewConfigSchema("Common", schema);
+
+      const dbConfigs = [
+        {
+          moduleName: "Common" as Modules,
+          key: "testKey",
+          value: "value",
+          updatedAt: new Date(),
+        },
+      ];
+      mockDb.from.mockResolvedValue(dbConfigs);
+
+      expect(configManager.isLoaded()).toBe(false);
+      await configManager.refreshConfig();
+      expect(configManager.isLoaded()).toBe(true);
+    });
+
+    it("should remain false after failed refreshConfig with no configs", async () => {
+      const configManager = ConfigManager.getInstance();
+      mockDb.from.mockResolvedValue([]);
+
+      const result = await configManager.refreshConfig();
+
+      expect(result.success).toBe(false);
+      expect(configManager.isLoaded()).toBe(false);
+    });
+  });
+
+  describe("multiple modules", () => {
+    it("should handle configs from multiple modules independently", async () => {
+      const configManager = ConfigManager.getInstance();
+
+      await configManager.addNewConfigSchema("Common", {
+        key: "commonKey",
+        schema: z.string(),
+        defaultValue: "common",
+        required: false,
+        description: "Common config",
+        secret: false,
+        requiresRestart: false,
+      });
+
+      await configManager.addNewConfigSchema("Admin", {
+        key: "adminKey",
+        schema: z.coerce.number(),
+        defaultValue: 42,
+        required: false,
+        description: "Admin config",
+        secret: false,
+        requiresRestart: false,
+      });
+
+      const dbConfigs = [
+        {
+          moduleName: "Common" as Modules,
+          key: "commonKey",
+          value: "commonValue",
+          updatedAt: new Date(),
+        },
+        {
+          moduleName: "Admin" as Modules,
+          key: "adminKey",
+          value: "100",
+          updatedAt: new Date(),
+        },
+      ];
+      mockDb.from.mockResolvedValue(dbConfigs);
+
+      await configManager.refreshConfig();
+
+      const commonConfig = configManager.getConfig("Common");
+      const adminConfig = configManager.getConfig("Admin");
+
+      expect(commonConfig).toHaveProperty("commonKey", "commonValue");
+      expect(adminConfig).toHaveProperty("adminKey", 100);
+      expect(adminConfig).not.toHaveProperty("commonKey");
+      expect(commonConfig).not.toHaveProperty("adminKey");
+    });
+  });
+
+  describe("type transformations", () => {
+    it("should handle boolean coercion from string values", async () => {
+      const configManager = ConfigManager.getInstance();
+      const schema: IModuleConfigSchema<"enabled"> = {
+        key: "enabled",
+        schema: z.coerce.boolean(),
+        defaultValue: false,
+        required: false,
+        description: "Feature enabled",
+        secret: false,
+        requiresRestart: false,
+      };
+
+      await configManager.addNewConfigSchema("Common", schema);
+
+      const dbConfigs = [
+        {
+          moduleName: "Common" as Modules,
+          key: "enabled",
+          value: "true",
+          updatedAt: new Date(),
+        },
+      ];
+      mockDb.from.mockResolvedValue(dbConfigs);
+
+      await configManager.refreshConfig();
+
+      const config = configManager.getConfig("Common");
+      // @ts-expect-error - Testing dynamic config not in type map
+      expect(config.enabled).toBe(true);
+      // @ts-expect-error - Testing dynamic config not in type map
+      expect(typeof config.enabled).toBe("boolean");
+    });
+
+    it("should handle schemas with custom transformations", async () => {
+      const configManager = ConfigManager.getInstance();
+
+      const transformSchema = z.string().transform((val) => val.toUpperCase());
+
+      const schema: IModuleConfigSchema<"transformed"> = {
+        key: "transformed",
+        schema: transformSchema,
+        defaultValue: "default",
+        required: false,
+        description: "Transformed config",
+        secret: true, // Just metadata for UI
+        requiresRestart: false,
+      };
+
+      await configManager.addNewConfigSchema("Common", schema);
+
+      const dbConfigs = [
+        {
+          moduleName: "Common" as Modules,
+          key: "transformed",
+          value: "lowercase",
+          updatedAt: new Date(),
+        },
+      ];
+      mockDb.from.mockResolvedValue(dbConfigs);
+
+      await configManager.refreshConfig();
+
+      const config = configManager.getConfig("Common");
+      // @ts-expect-error - Testing dynamic config not in type map
+      expect(config.transformed).toBe("LOWERCASE");
+    });
+  });
+
+  describe("refreshConfig detailed results", () => {
+    it("should return correct lists for keysChanged and keysRequireRestart", async () => {
+      const configManager = ConfigManager.getInstance();
+
+      await configManager.addNewConfigSchema("Common", {
+        key: "normalKey",
+        schema: z.string(),
+        defaultValue: "default1",
+        required: false,
+        description: "Normal config",
+        secret: false,
+        requiresRestart: false,
+      });
+
+      await configManager.addNewConfigSchema("Common", {
+        key: "restartKey",
+        schema: z.string(),
+        defaultValue: "default2",
+        required: false,
+        description: "Restart config",
+        secret: false,
+        requiresRestart: true,
+      });
+
+      mockDb.from.mockResolvedValue([
+        { moduleName: "Common" as Modules, key: "normalKey", value: "value1", updatedAt: new Date() },
+        { moduleName: "Common" as Modules, key: "restartKey", value: "value2", updatedAt: new Date() },
+      ]);
+
+      const result = await configManager.refreshConfig();
+
+      expect(result.success).toBe(true);
+      expect(result.keysChanged).toEqual(expect.arrayContaining(["normalKey", "restartKey"]));
+      expect(result.keysRequireRestart).toEqual(["restartKey"]);
+      expect(result.keysRequireRestart).not.toContain("normalKey");
+    });
+
+    it("should handle mix of required and optional configs in validation", async () => {
+      const configManager = ConfigManager.getInstance();
+
+      await configManager.addNewConfigSchema("Common", {
+        key: "required",
+        schema: z.string(),
+        defaultValue: "default",
+        required: true,
+        description: "Required config",
+        secret: false,
+        requiresRestart: false,
+      });
+
+      await configManager.addNewConfigSchema("Common", {
+        key: "optional",
+        schema: z.string(),
+        defaultValue: "default",
+        required: false,
+        description: "Optional config",
+        secret: false,
+        requiresRestart: false,
+      });
+
+      const dbConfigs = [
+        {
+          moduleName: "Common" as Modules,
+          key: "required",
+          value: "hasValue",
+          updatedAt: new Date(),
+        },
+        {
+          moduleName: "Common" as Modules,
+          key: "optional",
+          value: null, // Optional has no value, should use default
+          updatedAt: new Date(),
+        },
+      ];
+      mockDb.from.mockResolvedValue(dbConfigs);
+
+      await configManager.refreshConfig();
+
+      const config = configManager.getConfig("Common");
+
+      // @ts-expect-error - Testing dynamic config not in type map
+      expect(config.required).toBe("hasValue");
+      // @ts-expect-error - Testing dynamic config not in type map
+      expect(config.optional).toBe("default"); // Should use default value
+
+      const isValid = configManager.validateModule("Common");
+      expect(isValid).toBe(true);
+    });
+  });
+
+  describe("schema registration", () => {
+    it("should handle adding same config key multiple times gracefully", async () => {
+      const configManager = ConfigManager.getInstance();
+      const schema: IModuleConfigSchema<"testKey"> = {
+        key: "testKey",
+        schema: z.string(),
+        defaultValue: "default",
+        required: false,
+        description: "Test config",
+        secret: false,
+        requiresRestart: false,
+      };
+
+      await configManager.addNewConfigSchema("Common", schema);
+      await configManager.addNewConfigSchema("Common", schema);
+
+      expect(mockDb.insert).toHaveBeenCalledTimes(2);
+      expect(mockDb.onConflictDoNothing).toHaveBeenCalledTimes(2);
     });
   });
 

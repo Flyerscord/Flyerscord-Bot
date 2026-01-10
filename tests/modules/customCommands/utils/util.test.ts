@@ -7,6 +7,21 @@ import Database from "@common/db/db";
 // Mock the database
 jest.mock("@common/db/db");
 
+// Mock ConfigManager
+jest.mock("@common/managers/ConfigManager", () => {
+  return {
+    __esModule: true,
+    default: {
+      getInstance: jest.fn(() => ({
+        getConfig: jest.fn(() => ({
+          prefix: "!",
+        })),
+        isLoaded: jest.fn(() => true),
+      })),
+    },
+  };
+});
+
 describe("createCommandListMessages", () => {
   beforeEach(() => {
     // Set up mock database

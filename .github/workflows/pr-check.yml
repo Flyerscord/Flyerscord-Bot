@@ -66,6 +66,10 @@ jobs:
       - name: Run tests with coverage
         run: pnpm run test:coverage
 
+      - name: Save PR branch coverage
+        if: github.event_name == 'pull_request'
+        run: cp coverage/lcov.info coverage/lcov-pr.info
+
       - name: Generate base branch coverage
         if: github.event_name == 'pull_request'
         run: |
@@ -77,6 +81,7 @@ jobs:
           mv coverage/lcov.info coverage/lcov-base.info
           git checkout -
           pnpm install --frozen-lockfile
+          mv coverage/lcov-pr.info coverage/lcov.info
 
       - name: Coverage Comment
         if: github.event_name == 'pull_request'

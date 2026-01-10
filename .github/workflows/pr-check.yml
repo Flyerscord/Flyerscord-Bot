@@ -90,3 +90,12 @@ jobs:
           lcov-base: ./coverage/lcov-base.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
           delete-old-comments: true
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t flyerscord-bot:pr-check .

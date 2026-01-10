@@ -8,6 +8,10 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   check-version:
     if: github.event_name == 'pull_request'
@@ -72,12 +76,7 @@ jobs:
           pnpm run test:coverage
           mv coverage/lcov.info coverage/lcov-base.info
           git checkout -
-
-      - name: Run tests with coverage (PR branch)
-        if: github.event_name == 'pull_request'
-        run: |
           pnpm install --frozen-lockfile
-          pnpm run test:coverage
 
       - name: Coverage Comment
         if: github.event_name == 'pull_request'

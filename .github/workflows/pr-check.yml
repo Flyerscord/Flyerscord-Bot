@@ -37,9 +37,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Create Config File
-        run: cp src/common/config/defaults.config.ts src/common/config/local.config.ts
-
       - name: Build project
         run: pnpm run build
 

@@ -85,7 +85,7 @@ jobs:
 
       - name: Coverage Comment
         if: github.event_name == 'pull_request'
-        uses: Nef10/lcov-reporter-action@0.5.0
+        uses: Nef10/lcov-reporter-action@v0.5.0
         with:
           lcov-file: ./coverage/lcov.info
           lcov-base: ./coverage/lcov-base.info

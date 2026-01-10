@@ -10,7 +10,8 @@
     "paths": {
       "@root/*": ["*"],
       "@common/*": ["src/common/*"],
-      "@modules/*": ["src/modules/*"]
+      "@modules/*": ["src/modules/*"],
+      "@cli/*": ["src/cli/*"]
     },
 
     /* Type Declarations */

@@ -1,5 +1,3 @@
-import crypto from "node:crypto";
-
 // Mock Env before importing SecretManager
 const mockEnv = {
   get: jest.fn((key: string) => {

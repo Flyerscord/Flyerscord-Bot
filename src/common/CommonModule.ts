@@ -1,6 +1,5 @@
 import { LOG_LEVEL } from "stumper";
 import schema from "./db/schema";
-import { IKeyedObject } from "./interfaces/IKeyedObject";
 import Module, { IModuleConfigSchema } from "./models/Module";
 import Zod from "./utils/ZodWrapper";
 import { z } from "zod";
@@ -56,8 +55,8 @@ export const commonConfigSchema = [
 ] as const satisfies readonly IModuleConfigSchema<CommonConfigKeys>[];
 
 export default class CommonModule extends Module<CommonConfigKeys> {
-  constructor(config: IKeyedObject) {
-    super("Common", config, schema);
+  constructor() {
+    super("Common", schema);
   }
 
   protected async setup(): Promise<void> {}

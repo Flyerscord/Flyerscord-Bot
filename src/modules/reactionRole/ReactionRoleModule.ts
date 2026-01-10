@@ -3,7 +3,6 @@ import onReady from "./listeners/onReady";
 import onMessageReactionAdd from "./listeners/onMessageReactionAdd";
 import onMessageReactionRemove from "./listeners/onMessageReactionRemove";
 import Module, { IModuleConfigSchema } from "@common/models/Module";
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import schema from "./db/schema";
 import Zod from "@common/utils/ZodWrapper";
 import { z } from "zod";
@@ -43,8 +42,8 @@ export const reactionRoleConfigSchema = [
 export type ReactionRolesConfig = z.infer<(typeof reactionRoleConfigSchema)[1]["schema"]>[number];
 
 export default class ReactionRoleModule extends Module<ReactionRoleConfigKeys> {
-  constructor(config: IKeyedObject) {
-    super("ReactionRole", config, schema);
+  constructor() {
+    super("ReactionRole", schema);
   }
 
   protected async setup(): Promise<void> {

@@ -1,4 +1,3 @@
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import TextCommand from "@common/models/TextCommand";
@@ -113,8 +112,8 @@ export const customCommandsConfigSchema = [
 ] as const satisfies readonly IModuleConfigSchema<CustomCommandsConfigKeys>[];
 
 export default class CustomCommandsModule extends Module<CustomCommandsConfigKeys> {
-  constructor(config: IKeyedObject) {
-    super("CustomCommands", config, schema);
+  constructor() {
+    super("CustomCommands", schema);
   }
 
   protected async setup(): Promise<void> {

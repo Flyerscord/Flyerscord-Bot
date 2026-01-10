@@ -1,4 +1,3 @@
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import Module, { IModuleConfigSchema } from "@common/models/Module";
 import onGuildMemberAdd from "./listeners/onGuildMemberAdd";
 import onGuildMemberRemove from "./listeners/onGuildMemberRemove";
@@ -19,17 +18,15 @@ export const joinLeaveConfigSchema = [
 ] as const satisfies readonly IModuleConfigSchema<JoinLeaveConfigKeys>[];
 
 export default class JoinLeaveModule extends Module<JoinLeaveConfigKeys> {
-  constructor(config: IKeyedObject) {
-    super("JoinLeave", config);
+  constructor() {
+    super("JoinLeave");
   }
 
   protected async setup(): Promise<void> {
     this.registerListeners();
   }
 
-  protected async cleanup(): Promise<void> {
-    // Nothing to cleanup
-  }
+  protected async cleanup(): Promise<void> {}
 
   getConfigSchema(): IModuleConfigSchema<JoinLeaveConfigKeys>[] {
     return [...joinLeaveConfigSchema];

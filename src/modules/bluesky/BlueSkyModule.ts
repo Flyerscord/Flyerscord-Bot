@@ -1,4 +1,3 @@
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import CheckForNewPostsTask from "./tasks/CheckForNewPostsTask";
@@ -48,8 +47,8 @@ export const blueSkyConfigSchema = [
 ] as const satisfies readonly IModuleConfigSchema<BlueSkyConfigKeys>[];
 
 export default class BlueSkyModule extends Module<BlueSkyConfigKeys> {
-  constructor(config: IKeyedObject) {
-    super("BlueSky", config, schema);
+  constructor() {
+    super("BlueSky", schema);
   }
 
   protected async setup(): Promise<void> {

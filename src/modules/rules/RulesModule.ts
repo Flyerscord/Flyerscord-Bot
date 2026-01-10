@@ -1,7 +1,6 @@
 import Module, { IModuleConfigSchema } from "@common/models/Module";
 import RulesDB from "./db/RulesDB";
 import SlashCommand from "@common/models/SlashCommand";
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import schema from "./db/schema";
 import ConfigManager from "@root/src/common/managers/ConfigManager";
 import Zod from "@common/utils/ZodWrapper";
@@ -31,8 +30,8 @@ export const rulesConfigSchema = [
 ] as const satisfies readonly IModuleConfigSchema<RulesConfigKeys>[];
 
 export default class RulesModule extends Module<RulesConfigKeys> {
-  constructor(config: IKeyedObject) {
-    super("Rules", config, schema);
+  constructor() {
+    super("Rules", schema);
   }
 
   protected async setup(): Promise<void> {

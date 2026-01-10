@@ -1,4 +1,3 @@
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import Module, { IModuleConfigSchema } from "@common/models/Module";
 import onGuildMemberAdd from "./listeners/onGuildMemberAdd";
 import onMessageReactionAdd from "./listeners/onMessageReactionAdd";
@@ -49,8 +48,8 @@ export const visitorRoleConfigSchema = [
 ] as const satisfies readonly IModuleConfigSchema<VisitorRoleConfigKeys>[];
 
 export default class VistorRoleModule extends Module<VisitorRoleConfigKeys> {
-  constructor(config: IKeyedObject) {
-    super("VisitorRole", config, schema);
+  constructor() {
+    super("VisitorRole", schema);
   }
 
   protected async setup(): Promise<void> {

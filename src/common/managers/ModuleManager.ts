@@ -16,6 +16,10 @@ export default class ModuleManager extends Singleton {
     this.modules.push(module);
   }
 
+  removeModule(module: Modules): void {
+    this.modules = this.modules.filter((m) => m.name !== module);
+  }
+
   getModules(): Module<any>[] {
     return this.modules;
   }

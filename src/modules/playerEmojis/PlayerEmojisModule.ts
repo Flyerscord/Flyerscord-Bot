@@ -1,4 +1,3 @@
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import EmojiCheckTask from "./tasks/EmojiCheckTask";
@@ -9,8 +8,8 @@ export type PlayerEmojisConfigKeys = "";
 export const playerEmojisConfigSchema = [] as const satisfies readonly IModuleConfigSchema<PlayerEmojisConfigKeys>[];
 
 export default class PlayerEmojisModule extends Module<PlayerEmojisConfigKeys> {
-  constructor(config: IKeyedObject) {
-    super("PlayerEmojis", config, schema);
+  constructor() {
+    super("PlayerEmojis", schema);
   }
 
   protected async setup(): Promise<void> {

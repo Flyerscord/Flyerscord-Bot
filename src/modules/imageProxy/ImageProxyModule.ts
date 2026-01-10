@@ -1,7 +1,6 @@
 import ExpressManager from "@common/managers/ExpressManager";
 import Module, { IModuleConfigSchema } from "@common/models/Module";
 import request from "request";
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import ConfigManager from "@root/src/common/managers/ConfigManager";
 
 export type ImageProxyConfigKeys = "";
@@ -9,8 +8,8 @@ export type ImageProxyConfigKeys = "";
 export const imageProxyConfigSchema = [] as const satisfies readonly IModuleConfigSchema<ImageProxyConfigKeys>[];
 
 export default class ImageProxyModule extends Module<ImageProxyConfigKeys> {
-  constructor(config: IKeyedObject) {
-    super("ImageProxy", config, {}, ["CustomCommands"]);
+  constructor() {
+    super("ImageProxy", {}, ["CustomCommands"]);
   }
 
   protected async setup(): Promise<void> {

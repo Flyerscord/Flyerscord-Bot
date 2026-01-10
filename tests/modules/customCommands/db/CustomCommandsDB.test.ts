@@ -11,24 +11,7 @@ describe("CustomCommandsDB", () => {
 
   beforeEach(() => {
     // Initialize the module with test config
-    CustomCommandsModule.getInstance({
-      customcommands: {
-        prefix: "!",
-        commandTempChannelId: "",
-        customCommandListChannelId: "",
-        imageKit: {
-          publicKey: "",
-          privateKey: "",
-          urlEndpoint: "",
-          redirectUrl: "",
-          proxyUrl: "",
-        },
-        imgur: {
-          clientId: "",
-          clientSecret: "",
-        },
-      },
-    });
+    CustomCommandsModule.getInstance();
 
     // Create a fresh mock database for each test
     mockDb = {

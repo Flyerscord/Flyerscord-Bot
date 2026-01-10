@@ -1,4 +1,3 @@
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import ContextMenuCommand from "@common/models/ContextMenuCommand";
 import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
@@ -20,8 +19,8 @@ export const pinsConfigSchema = [
 ] as const satisfies readonly IModuleConfigSchema<BlueSkyConfigKeys>[];
 
 export default class PinsModule extends Module<BlueSkyConfigKeys> {
-  constructor(config: IKeyedObject) {
-    super("Pins", config, schema);
+  constructor() {
+    super("Pins", schema);
   }
 
   protected async setup(): Promise<void> {

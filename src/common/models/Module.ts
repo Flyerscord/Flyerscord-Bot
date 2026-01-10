@@ -9,8 +9,7 @@ import ModalMenuManager from "../managers/ModalMenuManager";
 import TextCommandManager from "../managers/TextCommandManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
 import { Singleton } from "./Singleton";
-import type { IKeyedObject } from "../interfaces/IKeyedObject";
-import type { Modules, ModuleConfigMap } from "../../modules/Modules";
+import type { Modules } from "../../modules/Modules";
 import ConfigManager from "../managers/ConfigManager";
 import SchemaManager from "../managers/SchemaManager";
 import { TableEnumRecord } from "../db/schema-types";
@@ -34,10 +33,10 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
   private configValid: boolean = false;
   private started: boolean = false;
 
-  protected constructor(name: Modules, config: IKeyedObject, schemas: TableEnumRecord = {}, dependsOn: Modules[] = []) {
+  protected constructor(name: Modules, schemas: TableEnumRecord = {}, dependsOn: Modules[] = []) {
     super();
-    this.name = name;
 
+    this.name = name;
     this.dependsOn = dependsOn;
 
     SchemaManager.getInstance().register(schemas);
@@ -72,7 +71,7 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
 
   async register(): Promise<void> {
     if (this.registered) {
-      Stumper.error(`Module ${this.name} has already been registered!`, "common:Module:register");
+      Stumper.error(`Module ${this.name} has already been registered!`, `common:Module:${this.name}:register`);
       return;
     }
     await this.registerConfigSchema();
@@ -80,26 +79,26 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
   }
 
   async enable(): Promise<boolean> {
-    if (this.registered) {
-      if (!this.validateConfig()) {
-        return false;
-      }
-      this.configValid = true;
-
-      try {
-        await this.setup();
-      } catch (error) {
-        Stumper.caughtError(error, `module:${this.name}:enable`);
-        return false;
-      }
-
-      this.started = true;
-      Stumper.success(`${this.name} module enabled!`);
-      return true;
-    } else {
-      Stumper.error(`Module ${this.name} has not been registered!`, "common:Module:enable");
+    if (!this.registered) {
+      Stumper.error(`Module ${this.name} has not been registered!`, `common:Module:${this.name}:enable`);
       return false;
     }
+
+    if (!this.validateConfig()) {
+      return false;
+    }
+    this.configValid = true;
+
+    try {
+      await this.setup();
+    } catch (error) {
+      Stumper.caughtError(error, `module:${this.name}:enable`);
+      return false;
+    }
+
+    this.started = true;
+    Stumper.success(`${this.name} module enabled!`, `common:Module:${this.name}:enable`);
+    return true;
   }
 
   async disable(): Promise<boolean> {
@@ -109,7 +108,7 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
       Stumper.caughtError(error, `module:${this.name}:disable`);
       return false;
     }
-    Stumper.success(`${this.name} module disabled!`);
+    Stumper.success(`${this.name} module disabled!`, `common:Module:${this.name}:disable`);
     return true;
   }
 
@@ -123,7 +122,7 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
     const location = `${dir}/commands/${commandsPath}`;
     const files = fs.readdirSync(location);
 
-    Stumper.info(`Reading in commands from ${location}`, "common:Module:readInCommands");
+    Stumper.info(`Reading in commands from ${location}`, `common:Module:${this.name}:readInCommands`);
 
     for (const file of files) {
       if (!file.endsWith(".js") && !file.endsWith(".ts")) {
@@ -134,13 +133,13 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
       const command: T = new Command.default();
 
       if (command instanceof SlashCommand) {
-        Stumper.debug(`Read in slash command: ${command.name}`, "common:Module:readInCommands");
+        Stumper.debug(`Read in slash command: ${command.name}`, `common:Module:${this.name}:readInCommands`);
       } else if (command instanceof TextCommand) {
-        Stumper.debug(`Read in text command: ${command.name}`, "common:Module:readInCommands");
+        Stumper.debug(`Read in text command: ${command.name}`, `common:Module:${this.name}:readInCommands`);
       } else if (command instanceof ContextMenuCommand) {
-        Stumper.debug(`Read in context menu: ${command.name}`, "common:Module:readInCommands");
+        Stumper.debug(`Read in context menu: ${command.name}`, `common:Module:${this.name}:readInCommands`);
       } else if (command instanceof ModalMenu) {
-        Stumper.debug(`Read in modal: ${command.name}`, "common:Module:readInCommands");
+        Stumper.debug(`Read in modal: ${command.name}`, `common:Module:${this.name}:readInCommands`);
       }
 
       commands.push(command);
@@ -168,7 +167,7 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
   private validateConfig(): boolean {
     const configManager = ConfigManager.getInstance();
     if (!configManager.validateModule(this.name)) {
-      Stumper.error(`Module ${this.name} has invalid configs`, "common:Module:enable");
+      Stumper.error(`Module ${this.name} has invalid configs`, "common:Module:${this.name}:validateConfig");
       return false;
     }
     return true;

@@ -9,10 +9,15 @@ export default (): void => {
   });
 
   // Process UncaughtException
-  process.on("uncaughtException", function (err) {
+  process.on("uncaughtException", async function (err) {
     Stumper.caughtError(err, "Uncaught Exception");
 
-    ModuleManager.getInstance().disableAllModules();
+    const result = await ModuleManager.getInstance().disableAllModules();
+    if (result) {
+      Stumper.success("Successfully disabled all modules!", "common:processErrorHandling");
+    } else {
+      Stumper.warning("Failed to disable all modules! Check the logs above for more details.", "common:processErrorHandling");
+    }
 
     process.exit(1);
   });

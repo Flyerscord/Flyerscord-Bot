@@ -25,24 +25,7 @@ describe("createCommandListMessages", () => {
       getDb: jest.fn().mockReturnValue(mockDb),
     });
 
-    CustomCommandsModule.getInstance({
-      customcommands: {
-        prefix: "!",
-        commandTempChannelId: "",
-        customCommandListChannelId: "",
-        imageKit: {
-          publicKey: "",
-          privateKey: "",
-          urlEndpoint: "",
-          redirectUrl: "",
-          proxyUrl: "",
-        },
-        imgur: {
-          clientId: "",
-          clientSecret: "",
-        },
-      },
-    });
+    CustomCommandsModule.getInstance();
   });
 
   it("should return a single message if commands fit within 2000 characters", () => {

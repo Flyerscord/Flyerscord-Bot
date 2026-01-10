@@ -72,8 +72,8 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      PORT: 3000
       DATABASE_URL_POOLED: postgresql://postgres:${DB_PASSWORD}@pgbouncer:5432/flyerscord
+      DATABASE_URL_SINGLE: postgresql://postgres:${DB_PASSWORD}@postgres:5432/flyerscord
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       DISCORD_TOKEN: ${DISCORD_TOKEN}
     ports:

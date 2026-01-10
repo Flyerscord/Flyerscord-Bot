@@ -1,4 +1,3 @@
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import CloseAndLockPostsTask from "./tasks/CloseAndLockPostsTask";
@@ -70,8 +69,8 @@ export const gameDayPostsConfigSchema = [
 ] as const satisfies readonly IModuleConfigSchema<GameDayPostsConfigKeys>[];
 
 export default class GameDayPostsModule extends Module<GameDayPostsConfigKeys> {
-  constructor(config: IKeyedObject) {
-    super("GameDayPosts", config, schema);
+  constructor() {
+    super("GameDayPosts", schema);
   }
 
   protected async setup(): Promise<void> {

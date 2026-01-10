@@ -1,4 +1,3 @@
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import onMessageCreate from "./listeners/onMessageCreate";
@@ -28,8 +27,8 @@ export const adminConfigSchema = [
 ] as const satisfies readonly IModuleConfigSchema<AdminConfigKeys>[];
 
 export default class AdminModule extends Module<AdminConfigKeys> {
-  constructor(config: IKeyedObject) {
-    super("Admin", config);
+  constructor() {
+    super("Admin");
   }
 
   protected async setup(): Promise<void> {

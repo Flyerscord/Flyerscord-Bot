@@ -1,4 +1,3 @@
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import TotalMembersStatChannel from "./statChannels/TotalMembersStatChannel";
@@ -28,8 +27,8 @@ export const statsVoiceChannelConfigSchema = [
 ] as const satisfies readonly IModuleConfigSchema<StatsVoiceChannelConfigKeys>[];
 
 export default class StatsVoiceChannelModule extends Module<StatsVoiceChannelConfigKeys> {
-  constructor(config: IKeyedObject) {
-    super("StatsVoiceChannel", config);
+  constructor() {
+    super("StatsVoiceChannel");
   }
 
   protected async setup(): Promise<void> {

@@ -8,8 +8,6 @@ services:
       POSTGRES_DB: flyerscord
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - 6432:5432
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -28,16 +26,14 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:flyerscord-dev-db@postgres:5432/flyerscord
       POOL_MODE: transaction
-      MAX_CLIENT_CONN: 100
-      DEFAULT_POOL_SIZE: 20
+      MAX_CLIENT_CONN: 200
+      DEFAULT_POOL_SIZE: 25
       MIN_POOL_SIZE: 5
       RESERVE_POOL_SIZE: 5
       AUTH_TYPE: scram-sha-256 # PostgreSQL 16 uses scram by default
       AUTH_USER: postgres
       ADMIN_USERS: postgres
       STATS_USERS: postgres
-    ports:
-      - 7432:5432
     depends_on:
       postgres:
         condition: service_healthy
@@ -72,8 +68,10 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      PORT: 3000
       DATABASE_URL_POOLED: postgresql://postgres:flyerscord-dev-db@pgbouncer:5432/flyerscord
+      DATABASE_URL_SINGLE: postgresql://postgres:flyerscord-dev-db@postgres:5432/flyerscord
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      DISCORD_TOKEN: ${DISCORD_TOKEN}
     ports:
       - 3333:3000
     depends_on:

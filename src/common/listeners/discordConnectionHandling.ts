@@ -1,6 +1,6 @@
 import { Client } from "discord.js";
 import Stumper from "stumper";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 
 export default (client: Client): void => {
   client.rest.on("response", (res) => {

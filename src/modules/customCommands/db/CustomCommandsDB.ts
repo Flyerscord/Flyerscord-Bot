@@ -10,7 +10,7 @@ import ImageKit from "../utils/ImageKit";
 import axios from "axios";
 import HTMLPageException from "../exceptions/HTMLPageException";
 import discord from "@common/utils/discord/discord";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 import { sleepMs } from "@common/utils/sleep";
 import TextCommandManager from "@root/src/common/managers/TextCommandManager";
 import { Message } from "discord.js";

@@ -3,7 +3,7 @@ import TextCommand from "@common/models/TextCommand";
 import { getRandomNumber } from "@common/utils/misc";
 import discord from "@common/utils/discord/discord";
 import { COMMAND_LOCATION } from "@common/interfaces/ITextCommandOptions";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 
 export default class ChanceTextCommand extends TextCommand {
   constructor() {

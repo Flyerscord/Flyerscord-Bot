@@ -2,7 +2,7 @@ import { AttachmentBuilder, bold } from "discord.js";
 import ClientManager from "@common/managers/ClientManager";
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;

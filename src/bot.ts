@@ -33,7 +33,7 @@ import onMessageCreate from "@common/listeners/onMessageCreate";
 import onInteractionCreate from "@common/listeners/onInteractionCreate";
 import onReady from "@common/listeners/onReady";
 import CombinedTeamInfoCache from "@common/cache/CombinedTeamInfoCache";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 import CommonModule from "./common/CommonModule";
 import onSigInt from "@common/listeners/onSigInt";
 

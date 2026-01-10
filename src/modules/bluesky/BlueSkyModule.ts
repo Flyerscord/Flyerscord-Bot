@@ -1,11 +1,10 @@
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import CheckForNewPostsTask from "./tasks/CheckForNewPostsTask";
 import BlueSky from "./utils/BlueSky";
 import schema from "./db/schema";
-import { IConfigInfoNoModule } from "@root/src/common/config/ConfigManager";
-import { ValueType } from "@root/src/common/db/schema";
+import zod from "@common/utils/ZodWrapper";
 
 export type BlueSkyConfigKeys = "username" | "password" | "channelId" | "listId";
 
@@ -29,37 +28,43 @@ export default class BlueSkyModule extends Module<BlueSkyConfigKeys> {
     CheckForNewPostsTask.getInstance().createScheduledJob();
   }
 
-  protected setConfigInfo(): IConfigInfoNoModule<BlueSkyConfigKeys>[] {
+  protected getConfigSchema(): IModuleConfigSchema<BlueSkyConfigKeys>[] {
     return [
       {
         key: "username",
         description: "BlueSky username",
-        valueType: ValueType.ENCRYPTED,
-        defaultValue: "",
-        isSecret: true,
+        required: true,
+        secret: true,
         requiresRestart: true,
+        defaultValue: "",
+        schema: zod.string(),
       },
       {
         key: "password",
         description: "BlueSky password",
-        valueType: ValueType.ENCRYPTED,
-        defaultValue: "",
-        isSecret: true,
+        required: true,
+        secret: true,
         requiresRestart: true,
+        defaultValue: "",
+        schema: zod.encryptedString(),
       },
       {
         key: "channelId",
         description: "Channel that posts will be posted to",
-        valueType: ValueType.STRING,
-        defaultValue: "",
+        required: true,
+        secret: false,
         requiresRestart: true,
+        defaultValue: "",
+        schema: zod.string(),
       },
       {
         key: "listId",
         description: "The BlueSky list Id that will be used to pull posts from",
-        valueType: ValueType.STRING,
-        defaultValue: "",
+        required: true,
+        secret: false,
         requiresRestart: true,
+        defaultValue: "",
+        schema: zod.string(),
       },
     ];
   }

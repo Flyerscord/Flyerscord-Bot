@@ -1,7 +1,7 @@
 import { EmbedBuilder } from "discord.js";
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 import VisitorRoleDB from "../db/VisitorRoleDB";
 
 export async function createVisitorRoleMessageIfNeeded(): Promise<void> {

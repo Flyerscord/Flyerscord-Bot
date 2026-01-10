@@ -1,6 +1,6 @@
 import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import RulesDB from "@modules/rules/db/RulesDB";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 import discord from "@common/utils/discord/discord";
 import { ChatInputCommandInteraction } from "discord.js";
 

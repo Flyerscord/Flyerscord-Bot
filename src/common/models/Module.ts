@@ -10,19 +10,29 @@ import TextCommandManager from "../managers/TextCommandManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
 import { Singleton } from "./Singleton";
 import type { IKeyedObject } from "../interfaces/IKeyedObject";
-import type { Modules } from "../../modules/Modules";
-import ConfigManager, { IConfigInfoNoModule } from "../config/ConfigManager";
+import type { Modules, ModuleConfigMap } from "../../modules/Modules";
+import ConfigManager from "../managers/ConfigManager";
 import SchemaManager from "../managers/SchemaManager";
 import { TableEnumRecord } from "../db/schema-types";
-import SeedManager from "../config/seeding/SeedManager";
+import { z } from "zod";
 
-export interface IModuleConfig<TConfig> {
-  [key: string]: TConfig;
+export interface IModuleConfigSchema<TKey extends string> {
+  key: TKey;
+  schema: z.ZodType;
+  defaultValue: z.infer<z.ZodType>;
+  required: boolean;
+  description: string;
+  secret: boolean;
+  requiresRestart: boolean;
 }
 
 export default abstract class Module<TConfigKeys extends string> extends Singleton {
   readonly name: Modules;
   readonly dependsOn: Modules[];
+
+  private registered: boolean = false;
+  private configValid: boolean = false;
+  private started: boolean = false;
 
   protected constructor(name: Modules, config: IKeyedObject, schemas: TableEnumRecord = {}, dependsOn: Modules[] = []) {
     super();
@@ -33,44 +43,72 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
     SchemaManager.getInstance().register(schemas);
   }
 
+  isConfigValid(): boolean {
+    return this.configValid;
+  }
+
+  isStarted(): boolean {
+    return this.started;
+  }
+
+  isRegistered(): boolean {
+    return this.registered;
+  }
+
   protected abstract setup(): Promise<void>;
 
   protected abstract cleanup(): Promise<void>;
 
-  protected abstract setConfigInfo(): IConfigInfoNoModule<TConfigKeys>[];
+  protected abstract getConfigSchema(): IModuleConfigSchema<TConfigKeys>[];
 
-  private async registerConfigInfo(): Promise<void> {
+  private async registerConfigSchema(): Promise<void> {
     const configManager = ConfigManager.getInstance();
-    const configInfosWithoutModuleName = this.setConfigInfo();
+    const configSchemas = this.getConfigSchema();
 
-    const configInfos = configInfosWithoutModuleName.map((configInfo) => {
-      return { ...configInfo, moduleName: this.name };
-    });
-
-    for (const configInfo of configInfos) {
-      await configManager.addNewConfig(configInfo);
+    for (const configInfo of configSchemas) {
+      await configManager.addNewConfigSchema(this.name, configInfo);
     }
+  }
+
+  async register(): Promise<void> {
+    if (this.registered) {
+      Stumper.error(`Module ${this.name} has already been registered!`, "common:Module:register");
+      return;
+    }
+    await this.registerConfigSchema();
+    this.registered = true;
   }
 
   async enable(): Promise<boolean> {
-    await this.registerConfigInfo();
+    if (this.registered) {
+      if (!this.validateConfig()) {
+        return false;
+      }
+      this.configValid = true;
 
-    const seedManager = SeedManager.getInstance();
-    await seedManager.seedModule(this.name);
+      try {
+        await this.setup();
+      } catch (error) {
+        Stumper.caughtError(error, `module:${this.name}:enable`);
+        return false;
+      }
 
-    const configManager = ConfigManager.getInstance();
-    if (!configManager.validateModule(this.name)) {
-      Stumper.error(`Module ${this.name} has invalid configs`, "common:Module:enable");
+      this.started = true;
+      Stumper.success(`${this.name} module enabled!`);
+      return true;
+    } else {
+      Stumper.error(`Module ${this.name} has not been registered!`, "common:Module:enable");
       return false;
     }
-
-    await this.setup();
-    Stumper.success(`${this.name} module enabled!`);
-    return true;
   }
 
   async disable(): Promise<boolean> {
-    await this.cleanup();
+    try {
+      await this.cleanup();
+    } catch (error) {
+      Stumper.caughtError(error, `module:${this.name}:disable`);
+      return false;
+    }
     Stumper.success(`${this.name} module disabled!`);
     return true;
   }
@@ -125,5 +163,37 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
         ContextMenuCommandManager.getInstance().addCommands(commands as ContextMenuCommand[]);
       }
     }
+  }
+
+  private validateConfig(): boolean {
+    const configManager = ConfigManager.getInstance();
+    if (!configManager.validateModule(this.name)) {
+      Stumper.error(`Module ${this.name} has invalid configs`, "common:Module:enable");
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Get the typed configuration for this module
+   *
+   * @returns Typed config object with all parsed and validated values
+   *
+   * @example
+   * ```typescript
+   * protected async setup(): Promise<void> {
+   *   const config = this.getModuleConfig();
+   *   console.log(config.token); // Type: string, fully autocompleted!
+   *   console.log(config.logLevel); // Type: number
+   * }
+   * ```
+   *
+   * @remarks
+   * - Type is automatically inferred based on module's `ModuleConfigMap` entry
+   * - All values are already parsed and validated by Zod schemas
+   * - Internally calls `ConfigManager.getConfig()` with this module's name
+   */
+  protected getModuleConfig(): ModuleConfigMap[Modules] {
+    return ConfigManager.getInstance().getConfig(this.name);
   }
 }

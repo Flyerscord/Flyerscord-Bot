@@ -2,7 +2,7 @@ import ExpressManager from "@common/managers/ExpressManager";
 import Module from "@common/models/Module";
 import request from "request";
 import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 
 export default class ImageProxyModule extends Module<IImageProxyConfig> {
   constructor(config: IKeyedObject) {

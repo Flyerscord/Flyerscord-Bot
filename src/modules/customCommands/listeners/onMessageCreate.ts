@@ -5,7 +5,7 @@ import ClientManager from "@common/managers/ClientManager";
 import discord from "@common/utils/discord/discord";
 import CommandImporter from "../utils/CommandImporter";
 import MyImageKit from "../utils/ImageKit";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 import CustomCommandsDB from "../db/CustomCommandsDB";
 
 export default (): void => {

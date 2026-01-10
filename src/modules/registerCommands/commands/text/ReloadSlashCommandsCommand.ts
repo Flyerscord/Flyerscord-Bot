@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import { DMTextCommand } from "@common/models/TextCommand";
 import { readAndRegisterCommands } from "../../utils/registerCommands";
 import discord from "@common/utils/discord/discord";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 
 export default class ReloadSlashCommandsCommand extends DMTextCommand {
   constructor() {

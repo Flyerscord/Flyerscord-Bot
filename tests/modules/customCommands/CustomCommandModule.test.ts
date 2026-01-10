@@ -5,7 +5,7 @@ describe("CustomCommandModule", () => {
 
   it("should return the default config", async () => {
     const { default: CustomCommandsModule } = await import("@modules/customCommands/CustomCommandsModule");
-    const { default: ConfigManager } = await import("@common/config/ConfigManager");
+    const { default: ConfigManager } = await import("@root/src/common/managers/ConfigManager");
 
     CustomCommandsModule.getInstance({});
 
@@ -17,7 +17,7 @@ describe("CustomCommandModule", () => {
 
   it("should return the configured config", async () => {
     const { default: CustomCommandsModule } = await import("@modules/customCommands/CustomCommandsModule");
-    const { default: ConfigManager } = await import("@common/config/ConfigManager");
+    const { default: ConfigManager } = await import("@root/src/common/managers/ConfigManager");
 
     CustomCommandsModule.getInstance({
       customcommands: {

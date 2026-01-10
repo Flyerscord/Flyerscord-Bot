@@ -3,7 +3,7 @@ import Stumper from "stumper";
 import { UploadResponse } from "imagekit/dist/libs/interfaces/UploadResponse";
 import IKResponse from "imagekit/dist/libs/interfaces/IKResponse";
 import { Singleton } from "@common/models/Singleton";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 
 export default class MyImageKit extends Singleton {
   private client: ImageKit;

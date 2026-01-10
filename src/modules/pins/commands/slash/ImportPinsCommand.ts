@@ -3,7 +3,7 @@ import SlashCommand, { PARAM_TYPES } from "@common/models/SlashCommand";
 import Stumper from "stumper";
 import { getPinEmbed } from "../../utils/Embeds";
 import discord from "@common/utils/discord/discord";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 import PinsDB from "../../db/PinsDB";
 
 export default class ImportPinsCommand extends SlashCommand {

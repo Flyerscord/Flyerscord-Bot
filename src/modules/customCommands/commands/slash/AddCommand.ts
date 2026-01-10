@@ -5,7 +5,7 @@ import { ErrorUploadingToImageKitException } from "../../exceptions/ErrorUploadi
 import Stumper from "stumper";
 import PageNotFoundException from "../../exceptions/PageNotFoundException";
 import HTMLPageException from "../../exceptions/HTMLPageException";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 import CustomCommandsDB from "../../db/CustomCommandsDB";
 
 export default class AddCommand extends AdminSlashCommand {

@@ -4,7 +4,7 @@ import ClientManager from "@common/managers/ClientManager";
 import Time from "@common/utils/Time";
 import SlashCommandManager from "@common/managers/SlashCommandManager";
 import ContextMenuCommandManager from "@common/managers/ContextMenuManager";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 
 export async function readAndRegisterCommands(): Promise<void> {
   const client = ClientManager.getInstance().client;

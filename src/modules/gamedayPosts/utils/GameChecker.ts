@@ -7,7 +7,7 @@ import discord from "@common/utils/discord/discord";
 import { GuildForumTag, time, TimestampStyles } from "discord.js";
 import { IClubScheduleOutput_games } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubSchedule";
 import CombinedTeamInfoCache from "@common/cache/CombinedTeamInfoCache";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 import GameDayPostsDB from "../db/GameDayPostsDB";
 
 export async function checkForGameDay(): Promise<void> {

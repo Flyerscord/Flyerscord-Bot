@@ -2,7 +2,7 @@ import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
 import { EmbedBuilder } from "discord.js";
 import type { IReactionRolesConfig } from "../ReactionRoleModule";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@root/src/common/managers/ConfigManager";
 import ReactionRoleDB from "../db/ReactionRoleDB";
 
 export async function createRoleReactionMessagesIfNeeded(): Promise<void> {

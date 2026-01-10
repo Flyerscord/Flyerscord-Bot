@@ -12,49 +12,71 @@ export default class ModuleManager extends Singleton {
     this.modules = [];
   }
 
-  async addModule(module: Module<any>, enable: boolean = true): Promise<boolean> {
-    let result = true;
-    if (enable) {
-      const deps = module.getDependencies();
-      for (const dep of deps) {
-        if (!this.isModuleAdded(dep)) {
-          throw new Error(`Module ${module.name} depends on ${dep} but ${dep} is not enabled!`);
-        }
-      }
-
-      result = await module.enable();
-    }
+  addModule(module: Module<any>): void {
     this.modules.push(module);
-    return result;
   }
 
   getModules(): Module<any>[] {
     return this.modules;
   }
 
-  disableAllModules(): void {
-    this.modules.forEach((module) => module.disable());
-  }
-
-  async enableAllModules(): Promise<void> {
-    for (const module of this.modules) {
-      const deps = module.getDependencies();
-      let isOkay = true;
-      for (let i = 0; i < deps.length && isOkay; i++) {
-        const dep = deps[i];
-        if (!this.isModuleAdded(dep)) {
-          Stumper.error(`Module ${module.name} depends on ${dep} but ${dep} is not enabled!`, "common:ModuleManager:enableAllModules");
-          isOkay = false;
-        }
-      }
-
-      if (isOkay) {
-        await module.enable();
-      }
-    }
+  getModule(name: Modules): Module<any> | undefined {
+    return this.modules.find((module) => module.name === name);
   }
 
   isModuleAdded(name: Modules): boolean {
     return this.modules.some((module) => module.name === name);
+  }
+
+  async enableModule(name: Modules): Promise<boolean> {
+    const module = this.getModule(name);
+    if (!module) {
+      Stumper.error(`Module ${name} not found!`, "common:ModuleManager:enableModule");
+      return false;
+    }
+
+    const deps = module.getDependencies();
+    for (const dep of deps) {
+      if (!this.isModuleAdded(dep)) {
+        Stumper.error(`Module ${module.name} depends on ${dep} but ${dep} is not added!`, "common:ModuleManager:enableModule");
+        return false;
+      }
+
+      const depModule = this.getModule(dep)!;
+      if (!depModule.isStarted()) {
+        Stumper.error(`Module ${module.name} depends on ${dep} but ${dep} is not started!`, "common:ModuleManager:enableModule");
+        return false;
+      }
+    }
+
+    const result = await module.enable();
+    if (!result) {
+      Stumper.error(`Failed to enable module ${module.name}!`, "common:ModuleManager:enableModule");
+    }
+    return result;
+  }
+
+  async disableAllModules(): Promise<boolean> {
+    let result = true;
+    // Disable in reverse order
+    for (let i = this.modules.length - 1; i >= 0; i--) {
+      const module = this.modules[i];
+      result = result && (await module.disable());
+    }
+    return result;
+  }
+
+  async enableAllModules(): Promise<boolean> {
+    let result = true;
+    for (const module of this.modules) {
+      result = result && (await this.enableModule(module.name));
+    }
+    return result;
+  }
+
+  async registerAllModules(): Promise<void> {
+    for (const module of this.modules) {
+      await module.register();
+    }
   }
 }

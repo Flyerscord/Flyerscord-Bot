@@ -7,6 +7,8 @@ import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 
 export type HealthCheckConfigKeys = "";
 
+export const healthCheckConfigSchema = [] as const satisfies readonly IModuleConfigSchema<HealthCheckConfigKeys>[];
+
 export default class HealthCheckModule extends Module<HealthCheckConfigKeys> {
   constructor(config: IKeyedObject) {
     super("HealthCheck", config);
@@ -29,7 +31,7 @@ export default class HealthCheckModule extends Module<HealthCheckConfigKeys> {
     // Nothing to cleanup
   }
 
-  protected getConfigSchema(): IModuleConfigSchema<HealthCheckConfigKeys>[] {
-    return [];
+  getConfigSchema(): IModuleConfigSchema<HealthCheckConfigKeys>[] {
+    return [...healthCheckConfigSchema];
   }
 }

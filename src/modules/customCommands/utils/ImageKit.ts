@@ -16,10 +16,10 @@ export default class MyImageKit extends Singleton {
   constructor() {
     super();
     const config = ConfigManager.getInstance().getConfig("CustomCommands");
-    this.publickey = config.imageKit.publicKey;
-    this.privatekey = config.imageKit.privateKey;
-    this.urlEndpoint = config.imageKit.urlEndpoint;
-    this.redirectUrl = config.imageKit.redirectUrl;
+    this.publickey = config["imageKit.publicKey"];
+    this.privatekey = config["imageKit.privateKey"];
+    this.urlEndpoint = config["imageKit.urlEndpoint"];
+    this.redirectUrl = config["imageKit.redirectUrl"];
 
     this.client = new ImageKit({
       publicKey: this.publickey,
@@ -69,7 +69,7 @@ export default class MyImageKit extends Singleton {
   }
 
   private async getImageIdFromUrl(url: string): Promise<string | undefined> {
-    const imageFilePath = url.replace(ConfigManager.getInstance().getConfig("CustomCommands").imageKit.redirectUrl, "");
+    const imageFilePath = url.replace(ConfigManager.getInstance().getConfig("CustomCommands")["imageKit.redirectUrl"], "");
     const resp = await this.client.listFiles({});
 
     if (resp.$ResponseMetadata.statusCode == 200) {
@@ -93,12 +93,12 @@ export default class MyImageKit extends Singleton {
   }
 
   private getImagePathFromUrl(url: string): string {
-    const imageFilePath = url.replace(ConfigManager.getInstance().getConfig("CustomCommands").imageKit.redirectUrl, "");
+    const imageFilePath = url.replace(ConfigManager.getInstance().getConfig("CustomCommands")["imageKit.redirectUrl"], "");
     return imageFilePath;
   }
 
   isImageKitUrl(text: string): boolean {
-    const endpoint = ConfigManager.getInstance().getConfig("CustomCommands").imageKit.redirectUrl;
+    const endpoint = ConfigManager.getInstance().getConfig("CustomCommands")["imageKit.redirectUrl"];
     const escapedEndpoint = endpoint.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const urlPattern = new RegExp(`^${escapedEndpoint}`);
 
@@ -134,7 +134,7 @@ export default class MyImageKit extends Singleton {
         return undefined;
       }
 
-      return `${ConfigManager.getInstance().getConfig("CustomCommands").imageKit.proxyUrl}${imagePath}.gif`;
+      return `${ConfigManager.getInstance().getConfig("CustomCommands")["imageKit.proxyUrl"]}${imagePath}.gif`;
     }
   }
 }

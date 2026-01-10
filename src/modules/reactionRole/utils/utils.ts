@@ -1,9 +1,9 @@
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
 import { EmbedBuilder } from "discord.js";
-import type { IReactionRolesConfig } from "../ReactionRoleModule";
 import ConfigManager from "@root/src/common/managers/ConfigManager";
 import ReactionRoleDB from "../db/ReactionRoleDB";
+import { ReactionRolesConfig } from "../ReactionRoleModule";
 
 export async function createRoleReactionMessagesIfNeeded(): Promise<void> {
   const db = new ReactionRoleDB();
@@ -23,7 +23,7 @@ export async function createRoleReactionMessagesIfNeeded(): Promise<void> {
   }
 }
 
-async function createRoleReactionMessage(reactionRole: IReactionRolesConfig): Promise<void> {
+async function createRoleReactionMessage(reactionRole: ReactionRolesConfig): Promise<void> {
   const db = new ReactionRoleDB();
   const embed = createEmbed(reactionRole);
   const message = await discord.messages.sendEmbedToChannel(ConfigManager.getInstance().getConfig("ReactionRole").channelId, embed);
@@ -38,7 +38,7 @@ async function createRoleReactionMessage(reactionRole: IReactionRolesConfig): Pr
   }
 }
 
-function createEmbed(reactionRole: IReactionRolesConfig): EmbedBuilder {
+function createEmbed(reactionRole: ReactionRolesConfig): EmbedBuilder {
   const embed = new EmbedBuilder();
 
   embed.setTitle(`${reactionRole.name} Role`);

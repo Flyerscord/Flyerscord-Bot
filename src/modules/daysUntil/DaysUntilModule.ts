@@ -5,6 +5,8 @@ import schema from "./db/schema";
 
 export type DaysUntilConfigKeys = "";
 
+export const daysUntilConfigSchema = [] as const satisfies readonly IModuleConfigSchema<DaysUntilConfigKeys>[];
+
 export default class DaysUntilModule extends Module<DaysUntilConfigKeys> {
   constructor(config: IKeyedObject) {
     super("DaysUntil", config, schema);
@@ -16,7 +18,7 @@ export default class DaysUntilModule extends Module<DaysUntilConfigKeys> {
 
   protected async cleanup(): Promise<void> {}
 
-  protected getConfigSchema(): IModuleConfigSchema<DaysUntilConfigKeys>[] {
-    return [];
+  getConfigSchema(): IModuleConfigSchema<DaysUntilConfigKeys>[] {
+    return [...daysUntilConfigSchema];
   }
 }

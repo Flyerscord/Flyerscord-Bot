@@ -9,6 +9,27 @@ import { z } from "zod";
 
 export type RulesConfigKeys = "channelId" | "sections";
 
+export const rulesConfigSchema = [
+  {
+    key: "channelId",
+    description: "The channel ID of the rules channel",
+    required: true,
+    secret: false,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+  {
+    key: "sections",
+    description: "The sections to create in the rules channel",
+    required: false,
+    secret: false,
+    requiresRestart: true,
+    defaultValue: ["Welcome", "Rules", "Staff", "Roles", "Channels", "Servers"],
+    schema: z.array(Zod.string()).min(1),
+  },
+] as const satisfies readonly IModuleConfigSchema<RulesConfigKeys>[];
+
 export default class RulesModule extends Module<RulesConfigKeys> {
   constructor(config: IKeyedObject) {
     super("Rules", config, schema);
@@ -27,26 +48,7 @@ export default class RulesModule extends Module<RulesConfigKeys> {
 
   protected async cleanup(): Promise<void> {}
 
-  protected getConfigSchema(): IModuleConfigSchema<RulesConfigKeys>[] {
-    return [
-      {
-        key: "channelId",
-        description: "The channel ID of the rules channel",
-        required: true,
-        secret: false,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-      {
-        key: "sections",
-        description: "The sections to create in the rules channel",
-        required: false,
-        secret: false,
-        requiresRestart: true,
-        defaultValue: ["Welcome", "Rules", "Staff", "Roles", "Channels", "Servers"],
-        schema: z.array(Zod.string()).min(1),
-      },
-    ];
+  getConfigSchema(): IModuleConfigSchema<RulesConfigKeys>[] {
+    return [...rulesConfigSchema];
   }
 }

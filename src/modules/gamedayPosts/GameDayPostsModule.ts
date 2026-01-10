@@ -9,6 +9,66 @@ import { z } from "zod";
 
 export type GameDayPostsConfigKeys = "channelId" | "tagIds.preseason" | "tagIds.regularSeason" | "tagIds.postSeason" | "tagIds.seasons";
 
+export const gameDayPostsConfigSchema = [
+  {
+    key: "channelId",
+    description: "The channel ID of the forum channel that the posts will be created in",
+    required: true,
+    secret: false,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+  {
+    key: "tagIds.preseason",
+    description: "The tag ID of the preseason tag",
+    required: true,
+    secret: false,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+  {
+    key: "tagIds.regularSeason",
+    description: "The tag ID of the regular season tag",
+    required: true,
+    secret: false,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+  {
+    key: "tagIds.postSeason",
+    description: "The tag ID of the post season tag",
+    required: true,
+    secret: false,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+  {
+    key: "tagIds.seasons",
+    description: "The tag IDs of the season tags",
+    required: true,
+    secret: false,
+    requiresRestart: true,
+    defaultValue: [],
+    schema: z.array(
+      z
+        .object({
+          name: Zod.string(),
+          startingYear: Zod.number({ min: 2000, max: 2100 }),
+          endingYear: Zod.number({ min: 2000, max: 2100 }),
+          tagId: Zod.string(),
+        })
+        .refine((data) => data.endingYear === data.startingYear + 1, {
+          message: "endingYear must be 1 year after startingYear",
+          path: ["endingYear"],
+        }),
+    ),
+  },
+] as const satisfies readonly IModuleConfigSchema<GameDayPostsConfigKeys>[];
+
 export default class GameDayPostsModule extends Module<GameDayPostsConfigKeys> {
   constructor(config: IKeyedObject) {
     super("GameDayPosts", config, schema);
@@ -22,66 +82,8 @@ export default class GameDayPostsModule extends Module<GameDayPostsConfigKeys> {
 
   protected async cleanup(): Promise<void> {}
 
-  protected getConfigSchema(): IModuleConfigSchema<GameDayPostsConfigKeys>[] {
-    return [
-      {
-        key: "channelId",
-        description: "The channel ID of the forum channel that the posts will be created in",
-        required: true,
-        secret: false,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-      {
-        key: "tagIds.preseason",
-        description: "The tag ID of the preseason tag",
-        required: true,
-        secret: false,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-      {
-        key: "tagIds.regularSeason",
-        description: "The tag ID of the regular season tag",
-        required: true,
-        secret: false,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-      {
-        key: "tagIds.postSeason",
-        description: "The tag ID of the post season tag",
-        required: true,
-        secret: false,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-      {
-        key: "tagIds.seasons",
-        description: "The tag IDs of the season tags",
-        required: true,
-        secret: false,
-        requiresRestart: true,
-        defaultValue: [],
-        schema: z.array(
-          z
-            .object({
-              name: Zod.string(),
-              startingYear: Zod.number({ min: 2000, max: 2100 }),
-              endingYear: Zod.number({ min: 2000, max: 2100 }),
-              tagId: Zod.string(),
-            })
-            .refine((data) => data.endingYear === data.startingYear + 1, {
-              message: "endingYear must be 1 year after startingYear",
-              path: ["endingYear"],
-            }),
-        ),
-      },
-    ];
+  getConfigSchema(): IModuleConfigSchema<GameDayPostsConfigKeys>[] {
+    return [...gameDayPostsConfigSchema];
   }
 
   private registerSchedules(): void {

@@ -4,6 +4,8 @@ import SlashCommand from "@common/models/SlashCommand";
 
 export type MiscConfigKeys = "";
 
+export const miscConfigSchema = [] as const satisfies readonly IModuleConfigSchema<MiscConfigKeys>[];
+
 export default class MiscModule extends Module<MiscConfigKeys> {
   constructor(config: IKeyedObject) {
     super("Misc", config);
@@ -15,7 +17,7 @@ export default class MiscModule extends Module<MiscConfigKeys> {
 
   protected async cleanup(): Promise<void> {}
 
-  protected getConfigSchema(): IModuleConfigSchema<MiscConfigKeys>[] {
-    return [];
+  getConfigSchema(): IModuleConfigSchema<MiscConfigKeys>[] {
+    return [...miscConfigSchema];
   }
 }

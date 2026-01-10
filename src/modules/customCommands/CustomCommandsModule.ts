@@ -19,6 +19,99 @@ export type CustomCommandsConfigKeys =
   | "imgur.clientId"
   | "imgur.clientSecret";
 
+export const customCommandsConfigSchema = [
+  {
+    key: "prefix",
+    description: "The prefix for the custom commands",
+    required: false,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: "!",
+    schema: Zod.string({ min: 1, max: 1 }),
+  },
+  {
+    key: "commandTempChannelId",
+    description: "The channel ID of the channel to send commands to tempararily to get a new discord url",
+    required: true,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+  {
+    key: "customCommandListChannelId",
+    description: "The channel ID of the channel to send the custom command list to",
+    required: true,
+    secret: false,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+  {
+    key: "imageKit.publicKey",
+    description: "The public key for ImageKit",
+    required: true,
+    secret: true,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.encryptedString(),
+  },
+  {
+    key: "imageKit.privateKey",
+    description: "The private key for ImageKit",
+    required: true,
+    secret: true,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.encryptedString(),
+  },
+  {
+    key: "imageKit.urlEndpoint",
+    description: "The URL endpoint for ImageKit",
+    required: true,
+    secret: true,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+  {
+    key: "imageKit.redirectUrl",
+    description: "The redirect URL for ImageKit",
+    required: true,
+    secret: true,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+  {
+    key: "imageKit.proxyUrl",
+    description: "The proxy URL for ImageKit",
+    required: true,
+    secret: true,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+  {
+    key: "imgur.clientId",
+    description: "The client ID for Imgur",
+    required: true,
+    secret: true,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.encryptedString(),
+  },
+  {
+    key: "imgur.clientSecret",
+    description: "The client secret for Imgur",
+    required: true,
+    secret: true,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.encryptedString(),
+  },
+] as const satisfies readonly IModuleConfigSchema<CustomCommandsConfigKeys>[];
+
 export default class CustomCommandsModule extends Module<CustomCommandsConfigKeys> {
   constructor(config: IKeyedObject) {
     super("CustomCommands", config, schema);
@@ -35,99 +128,8 @@ export default class CustomCommandsModule extends Module<CustomCommandsConfigKey
 
   protected async cleanup(): Promise<void> {}
 
-  protected getConfigSchema(): IModuleConfigSchema<CustomCommandsConfigKeys>[] {
-    return [
-      {
-        key: "prefix",
-        description: "The prefix for the custom commands",
-        required: false,
-        secret: false,
-        requiresRestart: false,
-        defaultValue: "!",
-        schema: Zod.string({ minLength: 1, maxLength: 1 }),
-      },
-      {
-        key: "commandTempChannelId",
-        description: "The channel ID of the channel to send commands to tempararily to get a new discord url",
-        required: true,
-        secret: false,
-        requiresRestart: false,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-      {
-        key: "customCommandListChannelId",
-        description: "The channel ID of the channel to send the custom command list to",
-        required: true,
-        secret: false,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-      {
-        key: "imageKit.publicKey",
-        description: "The public key for ImageKit",
-        required: true,
-        secret: true,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.encryptedString(),
-      },
-      {
-        key: "imageKit.privateKey",
-        description: "The private key for ImageKit",
-        required: true,
-        secret: true,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.encryptedString(),
-      },
-      {
-        key: "imageKit.urlEndpoint",
-        description: "The URL endpoint for ImageKit",
-        required: true,
-        secret: true,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-      {
-        key: "imageKit.redirectUrl",
-        description: "The redirect URL for ImageKit",
-        required: true,
-        secret: true,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-      {
-        key: "imageKit.proxyUrl",
-        description: "The proxy URL for ImageKit",
-        required: true,
-        secret: true,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-      {
-        key: "imgur.clientId",
-        description: "The client ID for Imgur",
-        required: true,
-        secret: true,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.encryptedString(),
-      },
-      {
-        key: "imgur.clientSecret",
-        description: "The client secret for Imgur",
-        required: true,
-        secret: true,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.encryptedString(),
-      },
-    ];
+  getConfigSchema(): IModuleConfigSchema<CustomCommandsConfigKeys>[] {
+    return [...customCommandsConfigSchema];
   }
 
   private registerListeners(): void {

@@ -4,6 +4,8 @@ import SlashCommand from "@common/models/SlashCommand";
 
 export type NHLConfigKeys = "";
 
+export const nHLConfigSchema = [] as const satisfies readonly IModuleConfigSchema<NHLConfigKeys>[];
+
 export default class NHLModule extends Module<NHLConfigKeys> {
   constructor(config: IKeyedObject) {
     super("NHL", config);
@@ -15,7 +17,7 @@ export default class NHLModule extends Module<NHLConfigKeys> {
 
   protected async cleanup(): Promise<void> {}
 
-  protected getConfigSchema(): IModuleConfigSchema<NHLConfigKeys>[] {
-    return [];
+  getConfigSchema(): IModuleConfigSchema<NHLConfigKeys>[] {
+    return [...nHLConfigSchema];
   }
 }

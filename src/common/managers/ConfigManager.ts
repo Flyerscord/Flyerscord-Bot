@@ -25,12 +25,13 @@ export type InferSchemaType<T extends z.ZodType> = z.infer<T>;
  * // Result: { token: string; port: number }
  * ```
  */
-export type ConfigFromSchemas<TSchemas extends ReadonlyArray<IModuleConfigSchema<string>>> =
-  TSchemas extends ReadonlyArray<IModuleConfigSchema<infer TKey>>
-    ? {
-        [K in TKey]: InferSchemaType<Extract<TSchemas[number], { key: K }>["schema"]>;
-      }
-    : never;
+export type ConfigFromSchemas<TSchemas extends readonly IModuleConfigSchema<string>[] | IModuleConfigSchema<string>[]> = TSchemas extends
+  | readonly IModuleConfigSchema<infer TKey>[]
+  | IModuleConfigSchema<infer TKey>[]
+  ? {
+      [K in TKey]: InferSchemaType<Extract<TSchemas[number], { key: K }>["schema"]>;
+    }
+  : never;
 
 interface IConfig<TSchema extends z.ZodType = z.ZodType> extends Omit<IModuleConfigSchema<string>, "schema"> {
   schema: TSchema;

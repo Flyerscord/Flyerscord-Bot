@@ -7,6 +7,18 @@ import Zod from "@common/utils/ZodWrapper";
 
 export type BlueSkyConfigKeys = "channelId";
 
+export const pinsConfigSchema = [
+  {
+    key: "channelId",
+    description: "The channel ID of the pins channel",
+    required: true,
+    secret: false,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+] as const satisfies readonly IModuleConfigSchema<BlueSkyConfigKeys>[];
+
 export default class PinsModule extends Module<BlueSkyConfigKeys> {
   constructor(config: IKeyedObject) {
     super("Pins", config, schema);
@@ -19,17 +31,7 @@ export default class PinsModule extends Module<BlueSkyConfigKeys> {
 
   protected async cleanup(): Promise<void> {}
 
-  protected getConfigSchema(): IModuleConfigSchema<BlueSkyConfigKeys>[] {
-    return [
-      {
-        key: "channelId",
-        description: "The channel ID of the pins channel",
-        required: true,
-        secret: false,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-    ];
+  getConfigSchema(): IModuleConfigSchema<BlueSkyConfigKeys>[] {
+    return [...pinsConfigSchema];
   }
 }

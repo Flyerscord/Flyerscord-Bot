@@ -6,6 +6,27 @@ import Zod from "@common/utils/ZodWrapper";
 
 export type AdminConfigKeys = "ub3rBot.userId" | "ub3rBot.alertChannelId";
 
+export const adminConfigSchema = [
+  {
+    key: "ub3rBot.userId",
+    description: "The user ID of the ub3rBot",
+    required: true,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+  {
+    key: "ub3rBot.alertChannelId",
+    description: "The channel ID of the ub3rBot alert channel",
+    required: true,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+] as const satisfies readonly IModuleConfigSchema<AdminConfigKeys>[];
+
 export default class AdminModule extends Module<AdminConfigKeys> {
   constructor(config: IKeyedObject) {
     super("Admin", config);
@@ -19,27 +40,8 @@ export default class AdminModule extends Module<AdminConfigKeys> {
 
   protected async cleanup(): Promise<void> {}
 
-  protected getConfigSchema(): IModuleConfigSchema<AdminConfigKeys>[] {
-    return [
-      {
-        key: "ub3rBot.userId",
-        description: "The user ID of the ub3rBot",
-        required: true,
-        secret: false,
-        requiresRestart: false,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-      {
-        key: "ub3rBot.alertChannelId",
-        description: "The channel ID of the ub3rBot alert channel",
-        required: true,
-        secret: false,
-        requiresRestart: false,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-    ];
+  getConfigSchema(): IModuleConfigSchema<AdminConfigKeys>[] {
+    return [...adminConfigSchema];
   }
 
   private registerListeners(): void {

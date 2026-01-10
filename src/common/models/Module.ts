@@ -59,7 +59,7 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
 
   protected abstract cleanup(): Promise<void>;
 
-  protected abstract getConfigSchema(): IModuleConfigSchema<TConfigKeys>[];
+  abstract getConfigSchema(): IModuleConfigSchema<TConfigKeys>[];
 
   private async registerConfigSchema(): Promise<void> {
     const configManager = ConfigManager.getInstance();
@@ -172,28 +172,5 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
       return false;
     }
     return true;
-  }
-
-  /**
-   * Get the typed configuration for this module
-   *
-   * @returns Typed config object with all parsed and validated values
-   *
-   * @example
-   * ```typescript
-   * protected async setup(): Promise<void> {
-   *   const config = this.getModuleConfig();
-   *   console.log(config.token); // Type: string, fully autocompleted!
-   *   console.log(config.logLevel); // Type: number
-   * }
-   * ```
-   *
-   * @remarks
-   * - Type is automatically inferred based on module's `ModuleConfigMap` entry
-   * - All values are already parsed and validated by Zod schemas
-   * - Internally calls `ConfigManager.getConfig()` with this module's name
-   */
-  protected getModuleConfig(): ModuleConfigMap[Modules] {
-    return ConfigManager.getInstance().getConfig(this.name);
   }
 }

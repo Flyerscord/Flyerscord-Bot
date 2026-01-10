@@ -14,7 +14,7 @@ export default (): void => {
 async function checkForQuoteCreation(message: Message): Promise<boolean> {
   let ub3rBotUserId: string | undefined;
   try {
-    ub3rBotUserId = ConfigManager.getInstance().getConfig("Admin").ub3rBot.userId;
+    ub3rBotUserId = ConfigManager.getInstance().getConfig("Admin")["ub3rBot.userId"];
   } catch (_error: unknown) {
     Stumper.warning("ub3rbot user id not set!", "checkForQuoteCreation");
   }
@@ -41,7 +41,7 @@ async function checkForQuoteCreation(message: Message): Promise<boolean> {
 
   const alertMessage = `New quote #${quoteNumber} added by ${creatorUsername} (${creatorUserId})\nQuoted message: ${quotedMessageLink}\nQuote created message: ${message.url}`;
 
-  const alertChannelId = ConfigManager.getInstance().getConfig("Admin").ub3rBot.alertChannelId;
+  const alertChannelId = ConfigManager.getInstance().getConfig("Admin")["ub3rBot.alertChannelId"];
   await discord.messages.sendMessageToChannel(alertChannelId, alertMessage);
   return true;
 }

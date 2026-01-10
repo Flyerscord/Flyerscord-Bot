@@ -36,7 +36,7 @@ export default class ZodWrapper {
     return defaultType;
   }
 
-  static encryptedString(): z.ZodType {
+  static encryptedString(): z.ZodPipe<z.ZodString, z.ZodTransform<string, string>> {
     return z.string().transform((val) => SecretManager.getInstance().decrypt(val));
   }
 

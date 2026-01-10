@@ -8,6 +8,45 @@ import Zod from "@common/utils/ZodWrapper";
 
 export type BlueSkyConfigKeys = "username" | "password" | "channelId" | "listId";
 
+export const blueSkyConfigSchema = [
+  {
+    key: "username",
+    description: "BlueSky username",
+    required: true,
+    secret: true,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+  {
+    key: "password",
+    description: "BlueSky password",
+    required: true,
+    secret: true,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.encryptedString(),
+  },
+  {
+    key: "channelId",
+    description: "Channel that posts will be posted to",
+    required: true,
+    secret: false,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+  {
+    key: "listId",
+    description: "The BlueSky list Id that will be used to pull posts from",
+    required: true,
+    secret: false,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+] as const satisfies readonly IModuleConfigSchema<BlueSkyConfigKeys>[];
+
 export default class BlueSkyModule extends Module<BlueSkyConfigKeys> {
   constructor(config: IKeyedObject) {
     super("BlueSky", config, schema);
@@ -28,44 +67,7 @@ export default class BlueSkyModule extends Module<BlueSkyConfigKeys> {
     CheckForNewPostsTask.getInstance().createScheduledJob();
   }
 
-  protected getConfigSchema(): IModuleConfigSchema<BlueSkyConfigKeys>[] {
-    return [
-      {
-        key: "username",
-        description: "BlueSky username",
-        required: true,
-        secret: true,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-      {
-        key: "password",
-        description: "BlueSky password",
-        required: true,
-        secret: true,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.encryptedString(),
-      },
-      {
-        key: "channelId",
-        description: "Channel that posts will be posted to",
-        required: true,
-        secret: false,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-      {
-        key: "listId",
-        description: "The BlueSky list Id that will be used to pull posts from",
-        required: true,
-        secret: false,
-        requiresRestart: true,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-    ];
+  getConfigSchema(): IModuleConfigSchema<BlueSkyConfigKeys>[] {
+    return [...blueSkyConfigSchema];
   }
 }

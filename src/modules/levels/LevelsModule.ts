@@ -7,6 +7,8 @@ import schema from "./db/schema";
 
 export type LevelsConfigKeys = "";
 
+export const levelsConfigSchema = [] as const satisfies readonly IModuleConfigSchema<LevelsConfigKeys>[];
+
 export default class LevelsModule extends Module<LevelsConfigKeys> {
   constructor(config: IKeyedObject) {
     super("Levels", config, schema);
@@ -22,8 +24,8 @@ export default class LevelsModule extends Module<LevelsConfigKeys> {
 
   protected async cleanup(): Promise<void> {}
 
-  protected getConfigSchema(): IModuleConfigSchema<LevelsConfigKeys>[] {
-    return [];
+  getConfigSchema(): IModuleConfigSchema<LevelsConfigKeys>[] {
+    return [...levelsConfigSchema];
   }
 
   private registerListeners(): void {

@@ -6,6 +6,18 @@ import Zod from "@common/utils/ZodWrapper";
 
 export type JoinLeaveConfigKeys = "channelId";
 
+export const joinLeaveConfigSchema = [
+  {
+    key: "channelId",
+    description: "The channel ID of the channel to send join/leave messages to",
+    required: true,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
+] as const satisfies readonly IModuleConfigSchema<JoinLeaveConfigKeys>[];
+
 export default class JoinLeaveModule extends Module<JoinLeaveConfigKeys> {
   constructor(config: IKeyedObject) {
     super("JoinLeave", config);
@@ -19,18 +31,8 @@ export default class JoinLeaveModule extends Module<JoinLeaveConfigKeys> {
     // Nothing to cleanup
   }
 
-  protected getConfigSchema(): IModuleConfigSchema<JoinLeaveConfigKeys>[] {
-    return [
-      {
-        key: "channelId",
-        description: "The channel ID of the channel to send join/leave messages to",
-        required: true,
-        secret: false,
-        requiresRestart: false,
-        defaultValue: "",
-        schema: Zod.string(),
-      },
-    ];
+  getConfigSchema(): IModuleConfigSchema<JoinLeaveConfigKeys>[] {
+    return [...joinLeaveConfigSchema];
   }
 
   private registerListeners(): void {

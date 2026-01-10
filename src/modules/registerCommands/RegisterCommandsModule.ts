@@ -4,6 +4,8 @@ import TextCommand from "@common/models/TextCommand";
 
 export type RegisterCommandsConfigKeys = "";
 
+export const registerCommandsConfigSchema = [] as const satisfies readonly IModuleConfigSchema<RegisterCommandsConfigKeys>[];
+
 export default class RegisterCommandsModule extends Module<RegisterCommandsConfigKeys> {
   constructor(config: IKeyedObject) {
     super("RegisterCommands", config);
@@ -15,7 +17,7 @@ export default class RegisterCommandsModule extends Module<RegisterCommandsConfi
 
   protected async cleanup(): Promise<void> {}
 
-  protected getConfigSchema(): IModuleConfigSchema<RegisterCommandsConfigKeys>[] {
-    return [];
+  getConfigSchema(): IModuleConfigSchema<RegisterCommandsConfigKeys>[] {
+    return [...registerCommandsConfigSchema];
   }
 }

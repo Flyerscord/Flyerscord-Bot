@@ -10,6 +10,23 @@ import { z } from "zod";
 
 export type StatsVoiceChannelConfigKeys = "channels";
 
+export const statsVoiceChannelConfigSchema = [
+  {
+    key: "channels",
+    description: "The channels to create stats voice channels in",
+    required: false,
+    secret: false,
+    requiresRestart: true,
+    defaultValue: [],
+    schema: z.array(
+      z.object({
+        name: Zod.string(),
+        channelId: Zod.string(),
+      }),
+    ),
+  },
+] as const satisfies readonly IModuleConfigSchema<StatsVoiceChannelConfigKeys>[];
+
 export default class StatsVoiceChannelModule extends Module<StatsVoiceChannelConfigKeys> {
   constructor(config: IKeyedObject) {
     super("StatsVoiceChannel", config);
@@ -24,23 +41,8 @@ export default class StatsVoiceChannelModule extends Module<StatsVoiceChannelCon
 
   protected async cleanup(): Promise<void> {}
 
-  protected getConfigSchema(): IModuleConfigSchema<StatsVoiceChannelConfigKeys>[] {
-    return [
-      {
-        key: "channels",
-        description: "The channels to create stats voice channels in",
-        required: false,
-        secret: false,
-        requiresRestart: true,
-        defaultValue: [],
-        schema: z.array(
-          z.object({
-            name: Zod.string(),
-            channelId: Zod.string(),
-          }),
-        ),
-      },
-    ];
+  getConfigSchema(): IModuleConfigSchema<StatsVoiceChannelConfigKeys>[] {
+    return [...statsVoiceChannelConfigSchema];
   }
 
   private registerSchedules(): void {

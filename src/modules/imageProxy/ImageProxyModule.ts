@@ -6,6 +6,8 @@ import ConfigManager from "@root/src/common/managers/ConfigManager";
 
 export type ImageProxyConfigKeys = "";
 
+export const imageProxyConfigSchema = [] as const satisfies readonly IModuleConfigSchema<ImageProxyConfigKeys>[];
+
 export default class ImageProxyModule extends Module<ImageProxyConfigKeys> {
   constructor(config: IKeyedObject) {
     super("ImageProxy", config, {}, ["CustomCommands"]);
@@ -16,7 +18,7 @@ export default class ImageProxyModule extends Module<ImageProxyConfigKeys> {
 
     expressManager.addRoute("/proxy/:imageId.gif", (req, res) => {
       const imageId = req.params.imageId;
-      const imageUrl = `${ConfigManager.getInstance().getConfig("CustomCommands").imageKit.urlEndpoint}/${imageId}`;
+      const imageUrl = `${ConfigManager.getInstance().getConfig("CustomCommands")["imageKit.urlEndpoint"]}/${imageId}`;
 
       request({ url: imageUrl, headers: { "Content-Type": "image/gif" } }).pipe(res);
     });
@@ -24,7 +26,7 @@ export default class ImageProxyModule extends Module<ImageProxyConfigKeys> {
 
   protected async cleanup(): Promise<void> {}
 
-  protected getConfigSchema(): IModuleConfigSchema<ImageProxyConfigKeys>[] {
-    return [];
+  getConfigSchema(): IModuleConfigSchema<ImageProxyConfigKeys>[] {
+    return [...imageProxyConfigSchema];
   }
 }

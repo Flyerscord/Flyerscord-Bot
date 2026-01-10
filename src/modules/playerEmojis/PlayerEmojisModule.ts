@@ -6,6 +6,8 @@ import schema from "./db/schema";
 
 export type PlayerEmojisConfigKeys = "";
 
+export const playerEmojisConfigSchema = [] as const satisfies readonly IModuleConfigSchema<PlayerEmojisConfigKeys>[];
+
 export default class PlayerEmojisModule extends Module<PlayerEmojisConfigKeys> {
   constructor(config: IKeyedObject) {
     super("PlayerEmojis", config, schema);
@@ -19,8 +21,8 @@ export default class PlayerEmojisModule extends Module<PlayerEmojisConfigKeys> {
 
   protected async cleanup(): Promise<void> {}
 
-  protected getConfigSchema(): IModuleConfigSchema<PlayerEmojisConfigKeys>[] {
-    return [];
+  getConfigSchema(): IModuleConfigSchema<PlayerEmojisConfigKeys>[] {
+    return [...playerEmojisConfigSchema];
   }
 
   private registerSchedules(): void {

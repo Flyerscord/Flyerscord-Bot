@@ -48,7 +48,7 @@ export const blueSkyConfigSchema = [
 
 export default class BlueSkyModule extends Module<BlueSkyConfigKeys> {
   constructor() {
-    super("BlueSky", schema);
+    super("BlueSky", { schema });
   }
 
   protected async setup(): Promise<void> {

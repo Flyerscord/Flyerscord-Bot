@@ -9,7 +9,7 @@ export const imageProxyConfigSchema = [] as const satisfies readonly IModuleConf
 
 export default class ImageProxyModule extends Module<ImageProxyConfigKeys> {
   constructor() {
-    super("ImageProxy", {}, ["CustomCommands"]);
+    super("ImageProxy", { dependsOn: ["CustomCommands"], prodOnly: true, loadPriority: 11 });
   }
 
   protected async setup(): Promise<void> {

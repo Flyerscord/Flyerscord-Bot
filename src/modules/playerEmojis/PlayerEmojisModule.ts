@@ -9,7 +9,7 @@ export const playerEmojisConfigSchema = [] as const satisfies readonly IModuleCo
 
 export default class PlayerEmojisModule extends Module<PlayerEmojisConfigKeys> {
   constructor() {
-    super("PlayerEmojis", schema);
+    super("PlayerEmojis", { schema });
   }
 
   protected async setup(): Promise<void> {

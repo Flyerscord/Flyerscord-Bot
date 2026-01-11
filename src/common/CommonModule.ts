@@ -34,20 +34,11 @@ export const commonConfigSchema = [
     defaultValue: ".",
     schema: Zod.string({ min: 1, max: 1 }),
   },
-  {
-    key: "advancedDebug",
-    description: "Whether to enable advanced debug logging",
-    required: false,
-    secret: true,
-    requiresRestart: true,
-    defaultValue: false,
-    schema: Zod.boolean(),
-  },
 ] as const satisfies readonly IModuleConfigSchema<CommonConfigKeys>[];
 
 export default class CommonModule extends Module<CommonConfigKeys> {
   constructor() {
-    super("Common", schema);
+    super("Common", { schema, loadPriority: -1 });
   }
 
   protected async setup(): Promise<void> {

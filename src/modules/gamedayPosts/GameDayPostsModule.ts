@@ -70,7 +70,7 @@ export const gameDayPostsConfigSchema = [
 
 export default class GameDayPostsModule extends Module<GameDayPostsConfigKeys> {
   constructor() {
-    super("GameDayPosts", schema);
+    super("GameDayPosts", { schema });
   }
 
   protected async setup(): Promise<void> {

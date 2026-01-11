@@ -18,6 +18,26 @@ import type { registerCommandsConfigSchema } from "./registerCommands/RegisterCo
 import type { rulesConfigSchema } from "./rules/RulesModule";
 import type { statsVoiceChannelConfigSchema } from "./statsVoiceChannel/StatsVoiceChannelModule";
 import type { visitorRoleConfigSchema } from "./visitorRole/VisitorRoleModule";
+import type Module from "../common/models/Module";
+import CommonModule from "@common/CommonModule";
+import AdminModule from "./admin/AdminModule";
+import BlueSkyModule from "./bluesky/BlueSkyModule";
+import CustomCommandsModule from "./customCommands/CustomCommandsModule";
+import DaysUntilModule from "./daysUntil/DaysUntilModule";
+import GameDayPostsModule from "./gamedayPosts/GameDayPostsModule";
+import HealthCheckModule from "./healthcheck/HealthCheckModule";
+import ImageProxyModule from "./imageProxy/ImageProxyModule";
+import JoinLeaveModule from "./joinLeave/JoinLeaveModule";
+import LevelsModule from "./levels/LevelsModule";
+import MiscModule from "./misc/MiscModule";
+import NHLModule from "./nhl/NHLModule";
+import PinsModule from "./pins/PinsModule";
+import PlayerEmojisModule from "./playerEmojis/PlayerEmojisModule";
+import ReactionRoleModule from "./reactionRole/ReactionRoleModule";
+import RegisterCommandsModule from "./registerCommands/RegisterCommandsModule";
+import RulesModule from "./rules/RulesModule";
+import StatsVoiceChannelModule from "./statsVoiceChannel/StatsVoiceChannelModule";
+import VisitorRoleModule from "./visitorRole/VisitorRoleModule";
 
 export type Modules =
   | "Common"
@@ -39,6 +59,28 @@ export type Modules =
   | "Rules"
   | "StatsVoiceChannel"
   | "VisitorRole";
+
+export const ModuleMap: Record<Modules, Module<string>> = {
+  Common: CommonModule.getInstance(),
+  Admin: AdminModule.getInstance(),
+  BlueSky: BlueSkyModule.getInstance(),
+  CustomCommands: CustomCommandsModule.getInstance(),
+  DaysUntil: DaysUntilModule.getInstance(),
+  GameDayPosts: GameDayPostsModule.getInstance(),
+  HealthCheck: HealthCheckModule.getInstance(),
+  ImageProxy: ImageProxyModule.getInstance(),
+  JoinLeave: JoinLeaveModule.getInstance(),
+  Levels: LevelsModule.getInstance(),
+  Misc: MiscModule.getInstance(),
+  NHL: NHLModule.getInstance(),
+  Pins: PinsModule.getInstance(),
+  PlayerEmojis: PlayerEmojisModule.getInstance(),
+  ReactionRole: ReactionRoleModule.getInstance(),
+  RegisterCommands: RegisterCommandsModule.getInstance(),
+  Rules: RulesModule.getInstance(),
+  StatsVoiceChannel: StatsVoiceChannelModule.getInstance(),
+  VisitorRole: VisitorRoleModule.getInstance(),
+};
 
 /**
  * Type map of module names to their configuration object types.

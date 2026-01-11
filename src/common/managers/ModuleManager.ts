@@ -2,7 +2,8 @@
 import Stumper from "stumper";
 import Module from "../models/Module";
 import { Singleton } from "../models/Singleton";
-import { Modules } from "../../modules/Modules";
+import { ModuleMap, Modules } from "../../modules/Modules";
+import Env from "../utils/Env";
 
 export default class ModuleManager extends Singleton {
   private modules: Module<any>[];
@@ -12,8 +13,21 @@ export default class ModuleManager extends Singleton {
     this.modules = [];
   }
 
-  addModule(module: Module<any>): void {
-    this.modules.push(module);
+  addAllModules(): void {
+    this.modules = [];
+    const productionMode = Env.getBoolean("PRODUCTION_MODE");
+
+    // Sort modules by load priority (lowest first)
+    const sortedModules = Object.entries(ModuleMap).sort((a, b) => a[1].getLoadPriority() - b[1].getLoadPriority());
+
+    Stumper.info(`Adding ${sortedModules.length} modules to manager...`, "common:ModuleManager:addAllModules");
+    for (const [_key, value] of sortedModules) {
+      if (!productionMode && value.isProdOnly()) {
+        Stumper.info(`Skipping ${value.name} module (prodOnly)`, "common:ModuleManager:addAllModules");
+        continue;
+      }
+      this.modules.push(value);
+    }
   }
 
   removeModule(module: Modules): void {
@@ -37,7 +51,7 @@ export default class ModuleManager extends Singleton {
     return this.modules.some((module) => module.name === name);
   }
 
-  async enableModule(name: Modules): Promise<boolean> {
+  private async enableModule(name: Modules): Promise<boolean> {
     const module = this.getModule(name);
     if (!module) {
       Stumper.error(`Module ${name} not found!`, "common:ModuleManager:enableModule");

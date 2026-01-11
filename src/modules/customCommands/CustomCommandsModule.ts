@@ -113,7 +113,7 @@ export const customCommandsConfigSchema = [
 
 export default class CustomCommandsModule extends Module<CustomCommandsConfigKeys> {
   constructor() {
-    super("CustomCommands", schema);
+    super("CustomCommands", { schema, prodOnly: true, loadPriority: 10 });
   }
 
   protected async setup(): Promise<void> {

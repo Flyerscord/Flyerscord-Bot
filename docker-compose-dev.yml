@@ -69,8 +69,8 @@ services:
     restart: unless-stopped
     environment:
       PRODUCTION_MODE: false
+      ADVANCED_DEBUG: ${ADVANCED_DEBUG}
       DATABASE_URL_POOLED: postgresql://postgres:flyerscord-dev-db@pgbouncer:5432/flyerscord
-      DATABASE_URL_SINGLE: postgresql://postgres:flyerscord-dev-db@postgres:5432/flyerscord
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       DISCORD_TOKEN: ${DISCORD_TOKEN}
     ports:

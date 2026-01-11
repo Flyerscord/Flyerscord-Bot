@@ -43,7 +43,7 @@ export type ReactionRolesConfig = z.infer<(typeof reactionRoleConfigSchema)[1]["
 
 export default class ReactionRoleModule extends Module<ReactionRoleConfigKeys> {
   constructor() {
-    super("ReactionRole", schema);
+    super("ReactionRole", { schema });
   }
 
   protected async setup(): Promise<void> {

@@ -10,27 +10,6 @@ import ConfigManager from "@common/managers/ConfigManager";
 import SecretManager from "@common/managers/SecretManager";
 import { ConfigCLI } from "@cli/lib/ConfigCLI";
 
-// Import all modules to register their config schemas
-import CommonModule from "@common/CommonModule";
-import AdminModule from "@modules/admin/AdminModule";
-import BlueSkyModule from "@modules/bluesky/BlueSkyModule";
-import CustomCommandsModule from "@modules/customCommands/CustomCommandsModule";
-import DaysUntilModule from "@modules/daysUntil/DaysUntilModule";
-import GameDayPostsModule from "@modules/gamedayPosts/GameDayPostsModule";
-import HealthCheckModule from "@modules/healthcheck/HealthCheckModule";
-import ImageProxyModule from "@modules/imageProxy/ImageProxyModule";
-import JoinLeaveModule from "@modules/joinLeave/JoinLeaveModule";
-import LevelsModule from "@modules/levels/LevelsModule";
-import MiscModule from "@modules/misc/MiscModule";
-import NHLModule from "@modules/nhl/NHLModule";
-import PinsModule from "@modules/pins/PinsModule";
-import PlayerEmojisModule from "@modules/playerEmojis/PlayerEmojisModule";
-import ReactionRoleModule from "@modules/reactionRole/ReactionRoleModule";
-import RegisterCommandsModule from "@modules/registerCommands/RegisterCommandsModule";
-import RulesModule from "@modules/rules/RulesModule";
-import StatsVoiceChannelModule from "@modules/statsVoiceChannel/StatsVoiceChannelModule";
-import VisitorRoleModule from "@modules/visitorRole/VisitorRoleModule";
-
 /* -------------------------------------------------------------------------- */
 /*                                Initial Setup                               */
 /* -------------------------------------------------------------------------- */
@@ -52,11 +31,6 @@ async function main(): Promise<void> {
       envErrors.push("DATABASE_URL_POOLED");
     }
 
-    const DATABASE_URL_SINGLE = Env.get("DATABASE_URL_SINGLE");
-    if (!DATABASE_URL_SINGLE) {
-      envErrors.push("DATABASE_URL_SINGLE");
-    }
-
     const ENCRYPTION_KEY = Env.get("ENCRYPTION_KEY");
     if (!ENCRYPTION_KEY) {
       envErrors.push("ENCRYPTION_KEY");
@@ -73,26 +47,8 @@ async function main(): Promise<void> {
     const configManager = ConfigManager.getInstance();
     SecretManager.getInstance();
 
-    // Add all modules (same order as bot.ts)
-    moduleManager.addModule(CommonModule.getInstance());
-    moduleManager.addModule(HealthCheckModule.getInstance());
-    moduleManager.addModule(AdminModule.getInstance());
-    moduleManager.addModule(BlueSkyModule.getInstance());
-    moduleManager.addModule(CustomCommandsModule.getInstance());
-    moduleManager.addModule(DaysUntilModule.getInstance());
-    moduleManager.addModule(GameDayPostsModule.getInstance());
-    moduleManager.addModule(ImageProxyModule.getInstance());
-    moduleManager.addModule(JoinLeaveModule.getInstance());
-    moduleManager.addModule(LevelsModule.getInstance());
-    moduleManager.addModule(MiscModule.getInstance());
-    moduleManager.addModule(NHLModule.getInstance());
-    moduleManager.addModule(PinsModule.getInstance());
-    moduleManager.addModule(PlayerEmojisModule.getInstance());
-    moduleManager.addModule(ReactionRoleModule.getInstance());
-    moduleManager.addModule(RegisterCommandsModule.getInstance());
-    moduleManager.addModule(RulesModule.getInstance());
-    moduleManager.addModule(StatsVoiceChannelModule.getInstance());
-    moduleManager.addModule(VisitorRoleModule.getInstance());
+    // Add all modules
+    moduleManager.addAllModules();
 
     // Register all modules (this registers config schemas)
     await moduleManager.registerAllModules();

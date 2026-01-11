@@ -1,9 +1,47 @@
+// Mock the database BEFORE any imports that use it
+jest.mock("@common/db/db", () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mockDb: any = {
+    select: jest.fn().mockReturnThis(),
+    insert: jest.fn().mockReturnThis(),
+    update: jest.fn().mockReturnThis(),
+    delete: jest.fn().mockReturnThis(),
+    from: jest.fn().mockReturnThis(),
+    where: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockReturnThis(),
+    values: jest.fn().mockReturnThis(),
+    execute: jest.fn().mockResolvedValue([]),
+    $client: jest.fn(),
+  };
+
+  return {
+    __esModule: true,
+    default: {
+      getInstance: jest.fn(() => ({
+        getDb: jest.fn(() => mockDb),
+      })),
+    },
+  };
+});
+
+// Mock ConfigManager
+jest.mock("@common/managers/ConfigManager", () => {
+  return {
+    __esModule: true,
+    default: {
+      getInstance: jest.fn(() => ({
+        getConfig: jest.fn(() => ({
+          prefix: "!",
+        })),
+        isLoaded: jest.fn(() => true),
+      })),
+    },
+  };
+});
+
 import CustomCommandsDB from "@modules/customCommands/db/CustomCommandsDB";
 import Database from "@common/db/db";
 import CustomCommandsModule from "@modules/customCommands/CustomCommandsModule";
-
-// Mock the Database singleton
-jest.mock("@common/db/db");
 
 describe("CustomCommandsDB", () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

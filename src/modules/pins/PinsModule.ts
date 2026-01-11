@@ -20,7 +20,7 @@ export const pinsConfigSchema = [
 
 export default class PinsModule extends Module<BlueSkyConfigKeys> {
   constructor() {
-    super("Pins", schema);
+    super("Pins", { schema });
   }
 
   protected async setup(): Promise<void> {

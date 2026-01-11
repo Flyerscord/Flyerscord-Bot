@@ -1,10 +1,10 @@
 import { Client } from "discord.js";
 import Stumper from "stumper";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
+import Env from "../utils/Env";
 
 export default (client: Client): void => {
   client.rest.on("response", (res) => {
-    if (ConfigManager.getInstance().getConfig("Common").advancedDebug) {
+    if (Env.getBoolean("ADVANCED_DEBUG")) {
       Stumper.debug(`Method: ${res.method}  Path: ${res.path}`, "[REST response]");
     }
   });

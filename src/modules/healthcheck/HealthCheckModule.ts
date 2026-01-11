@@ -10,7 +10,7 @@ export const healthCheckConfigSchema = [] as const satisfies readonly IModuleCon
 
 export default class HealthCheckModule extends Module<HealthCheckConfigKeys> {
   constructor() {
-    super("HealthCheck");
+    super("HealthCheck", { loadPriority: 0 });
   }
 
   protected async setup(): Promise<void> {

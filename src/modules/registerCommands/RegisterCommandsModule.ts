@@ -7,7 +7,7 @@ export const registerCommandsConfigSchema = [] as const satisfies readonly IModu
 
 export default class RegisterCommandsModule extends Module<RegisterCommandsConfigKeys> {
   constructor() {
-    super("RegisterCommands");
+    super("RegisterCommands", { loadPriority: 1000 });
   }
 
   protected async setup(): Promise<void> {

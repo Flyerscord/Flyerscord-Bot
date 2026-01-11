@@ -49,18 +49,31 @@ export interface IModuleConfigSchema<TKey extends string> {
 export default abstract class Module<TConfigKeys extends string> extends Singleton {
   readonly name: Modules;
   readonly dependsOn: Modules[];
+  // The lower the number, the higher the priority
+  readonly loadPriority: number;
+  readonly prodOnly: boolean;
 
   private registered: boolean = false;
   private configValid: boolean = false;
   private started: boolean = false;
 
-  protected constructor(name: Modules, schemas: TableEnumRecord = {}, dependsOn: Modules[] = []) {
+  protected constructor(
+    name: Modules,
+    {
+      schema = {},
+      dependsOn = [],
+      loadPriority = 50,
+      prodOnly = false,
+    }: { schema?: TableEnumRecord; dependsOn?: Modules[]; loadPriority?: number; prodOnly?: boolean } = {},
+  ) {
     super();
 
     this.name = name;
     this.dependsOn = dependsOn;
+    this.loadPriority = loadPriority;
+    this.prodOnly = prodOnly;
 
-    SchemaManager.getInstance().register(schemas);
+    SchemaManager.getInstance().register(schema);
   }
 
   isConfigValid(): boolean {
@@ -73,6 +86,18 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
 
   isRegistered(): boolean {
     return this.registered;
+  }
+
+  getDependencies(): Modules[] {
+    return this.dependsOn;
+  }
+
+  getLoadPriority(): number {
+    return this.loadPriority;
+  }
+
+  isProdOnly(): boolean {
+    return this.prodOnly;
   }
 
   protected abstract setup(): Promise<void>;
@@ -132,10 +157,6 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
     }
     Stumper.success(`${this.name} module disabled!`, `common:Module:${this.name}:disable`);
     return true;
-  }
-
-  getDependencies(): Modules[] {
-    return this.dependsOn;
   }
 
   protected async readInCommands<T>(dir: string, commandsPath: string): Promise<void> {

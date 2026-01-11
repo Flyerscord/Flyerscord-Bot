@@ -29,27 +29,6 @@ import onMessageCreate from "@common/listeners/onMessageCreate";
 import onInteractionCreate from "@common/listeners/onInteractionCreate";
 import onReady from "@common/listeners/onReady";
 
-// Import the Modules
-import CommonModule from "@common/CommonModule";
-import AdminModule from "@modules/admin/AdminModule";
-import BlueSkyModule from "@modules/bluesky/BlueSkyModule";
-import CustomCommandsModule from "@modules/customCommands/CustomCommandsModule";
-import DaysUntilModule from "@modules/daysUntil/DaysUntilModule";
-import GameDayPostsModule from "@modules/gamedayPosts/GameDayPostsModule";
-import HealthCheckModule from "@modules/healthcheck/HealthCheckModule";
-import ImageProxyModule from "@modules/imageProxy/ImageProxyModule";
-import JoinLeaveModule from "@modules/joinLeave/JoinLeaveModule";
-import LevelsModule from "@modules/levels/LevelsModule";
-import MiscModule from "@modules/misc/MiscModule";
-import NHLModule from "@modules/nhl/NHLModule";
-import PinsModule from "@modules/pins/PinsModule";
-import PlayerEmojisModule from "@modules/playerEmojis/PlayerEmojisModule";
-import ReactionRoleModule from "@modules/reactionRole/ReactionRoleModule";
-import RegisterCommandsModule from "@modules/registerCommands/RegisterCommandsModule";
-import RulesModule from "@modules/rules/RulesModule";
-import StatsVoiceChannelModule from "@modules/statsVoiceChannel/StatsVoiceChannelModule";
-import VisitorRoleModule from "@modules/visitorRole/VisitorRoleModule";
-
 /* -------------------------------------------------------------------------- */
 /*                                Initial Setup                               */
 /* -------------------------------------------------------------------------- */
@@ -79,11 +58,6 @@ async function startUp(): Promise<void> {
     envErrors.push("DATABASE_URL_POOLED");
   }
 
-  const DATABASE_URL_SINGLE = Env.get("DATABASE_URL_SINGLE");
-  if (!DATABASE_URL_SINGLE) {
-    envErrors.push("DATABASE_URL_SINGLE");
-  }
-
   const ENCRYPTION_KEY = Env.get("ENCRYPTION_KEY");
   if (!ENCRYPTION_KEY) {
     envErrors.push("ENCRYPTION_KEY");
@@ -92,6 +66,11 @@ async function startUp(): Promise<void> {
   const PRODUCTION_MODE = Env.getBoolean("PRODUCTION_MODE");
   if (PRODUCTION_MODE === undefined) {
     envErrors.push("PRODUCTION_MODE");
+  }
+
+  const ADVANCED_DEBUG = Env.getBoolean("ADVANCED_DEBUG");
+  if (ADVANCED_DEBUG === undefined) {
+    envErrors.push("ADVANCED_DEBUG");
   }
 
   if (envErrors.length > 0) {
@@ -111,33 +90,11 @@ async function startUp(): Promise<void> {
   // Initialize the Bot Health Manager
   BotHealthManager.getInstance();
 
-  // Add all of the modules
-  // CommonModule must be first followed by HealthCheckModule
-  moduleManager.addModule(CommonModule.getInstance());
-  moduleManager.addModule(HealthCheckModule.getInstance());
-  moduleManager.addModule(AdminModule.getInstance());
-  moduleManager.addModule(BlueSkyModule.getInstance());
+  // Add all of the modules (in order of load priority)
+  moduleManager.addAllModules();
 
-  if (Env.getBoolean("PRODUCTION_MODE")) {
-    moduleManager.addModule(CustomCommandsModule.getInstance());
-    moduleManager.addModule(ImageProxyModule.getInstance());
-  }
-
-  moduleManager.addModule(DaysUntilModule.getInstance());
-  moduleManager.addModule(GameDayPostsModule.getInstance());
-  moduleManager.addModule(JoinLeaveModule.getInstance());
-  moduleManager.addModule(LevelsModule.getInstance());
-  moduleManager.addModule(MiscModule.getInstance());
-  moduleManager.addModule(NHLModule.getInstance());
-  moduleManager.addModule(PinsModule.getInstance());
-  moduleManager.addModule(PlayerEmojisModule.getInstance());
-  moduleManager.addModule(ReactionRoleModule.getInstance());
-  moduleManager.addModule(RulesModule.getInstance());
-  moduleManager.addModule(StatsVoiceChannelModule.getInstance());
-  moduleManager.addModule(VisitorRoleModule.getInstance());
-
-  // Must be last
-  moduleManager.addModule(RegisterCommandsModule.getInstance());
+  // Disable any modules that you don't want to run with (none by default)
+  // moduleManager.disableModule("Admin");
 
   // Register all modules
   await moduleManager.registerAllModules();

@@ -49,7 +49,7 @@ export const visitorRoleConfigSchema = [
 
 export default class VistorRoleModule extends Module<VisitorRoleConfigKeys> {
   constructor() {
-    super("VisitorRole", schema);
+    super("VisitorRole", { schema });
   }
 
   protected async setup(): Promise<void> {

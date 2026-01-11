@@ -1,11 +1,28 @@
-import ICustomCommand from "@modules/customCommands/interfaces/ICustomCommand";
-import "@common/types/discord.js/index.d.ts";
-import CustomCommandsModule from "@modules/customCommands/CustomCommandsModule";
-import CustomCommandsDB from "@modules/customCommands/db/CustomCommandsDB";
-import Database from "@common/db/db";
+// Mock the database BEFORE any imports that use it
+jest.mock("@common/db/db", () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mockDb: any = {
+    select: jest.fn().mockReturnThis(),
+    insert: jest.fn().mockReturnThis(),
+    update: jest.fn().mockReturnThis(),
+    delete: jest.fn().mockReturnThis(),
+    from: jest.fn().mockReturnThis(),
+    where: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockReturnThis(),
+    values: jest.fn().mockReturnThis(),
+    execute: jest.fn().mockResolvedValue([]),
+    $client: jest.fn(),
+  };
 
-// Mock the database
-jest.mock("@common/db/db");
+  return {
+    __esModule: true,
+    default: {
+      getInstance: jest.fn(() => ({
+        getDb: jest.fn(() => mockDb),
+      })),
+    },
+  };
+});
 
 // Mock ConfigManager
 jest.mock("@common/managers/ConfigManager", () => {
@@ -22,24 +39,14 @@ jest.mock("@common/managers/ConfigManager", () => {
   };
 });
 
+import ICustomCommand from "@modules/customCommands/interfaces/ICustomCommand";
+import "@common/types/discord.js/index.d.ts";
+import CustomCommandsModule from "@modules/customCommands/CustomCommandsModule";
+import CustomCommandsDB from "@modules/customCommands/db/CustomCommandsDB";
+
 describe("createCommandListMessages", () => {
   beforeEach(() => {
-    // Set up mock database
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mockDb: any = {
-      select: jest.fn(),
-      insert: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      execute: jest.fn(),
-      $client: jest.fn(),
-    };
-
-    // Mock the Database singleton's getInstance and getDb methods
-    (Database.getInstance as jest.Mock) = jest.fn().mockReturnValue({
-      getDb: jest.fn().mockReturnValue(mockDb),
-    });
-
+    // Initialize the module
     CustomCommandsModule.getInstance();
   });
 

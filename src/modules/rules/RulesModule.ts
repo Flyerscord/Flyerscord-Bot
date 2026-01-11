@@ -31,7 +31,7 @@ export const rulesConfigSchema = [
 
 export default class RulesModule extends Module<RulesConfigKeys> {
   constructor() {
-    super("Rules", schema);
+    super("Rules", { schema });
   }
 
   protected async setup(): Promise<void> {

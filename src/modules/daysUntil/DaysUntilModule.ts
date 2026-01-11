@@ -8,7 +8,7 @@ export const daysUntilConfigSchema = [] as const satisfies readonly IModuleConfi
 
 export default class DaysUntilModule extends Module<DaysUntilConfigKeys> {
   constructor() {
-    super("DaysUntil", schema);
+    super("DaysUntil", { schema });
   }
 
   protected async setup(): Promise<void> {

@@ -10,7 +10,7 @@ export const levelsConfigSchema = [] as const satisfies readonly IModuleConfigSc
 
 export default class LevelsModule extends Module<LevelsConfigKeys> {
   constructor() {
-    super("Levels", schema);
+    super("Levels", { schema });
   }
 
   protected async setup(): Promise<void> {

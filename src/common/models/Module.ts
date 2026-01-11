@@ -107,7 +107,6 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
     }
 
     if (!this.validateConfig()) {
-      Stumper.error(`Module ${this.name} has an invalid config!`, `common:Module:${this.name}:enable`);
       return false;
     }
     this.configValid = true;

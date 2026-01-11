@@ -24,7 +24,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Configuration
 - `pnpm run config` - Interactive configuration management CLI
 - `pnpm run config:view` - View current configuration values
-- `pnpm run config:set` - Interactively modify configuration values
+- `pnpm run config:set` - Interactively modify configuration values (displays numbered lists of modules and keys)
 
 ### Database Management
 - `pnpm run db:generate` - Generate Drizzle migrations
@@ -122,7 +122,8 @@ The bot includes a comprehensive CLI tool for managing configuration (`src/cli/`
 - Schema introspection with Zod type analysis
 - Support for complex types: strings, numbers, booleans, arrays, objects
 - Constraint extraction: min/max lengths, numeric ranges, regex patterns
-- Interactive selection menus for modules and config keys
+- Interactive selection menus with numbered lists of modules and config keys
+- Visual badges for config metadata (required, secret, restart required)
 - Encrypted secret handling with visual indicators
 - Table-based display of configuration values
 - Type-safe value validation during input
@@ -131,7 +132,7 @@ The bot includes a comprehensive CLI tool for managing configuration (`src/cli/`
 - `config-tool.ts` - Main entry point using Commander.js
 - `ConfigCLI.ts` - CLI orchestrator with view/set commands
 - `ConfigViewer.ts` - Display configuration with formatting and tables
-- `ConfigSetter.ts` - Interactive prompts for setting values
+- `ConfigSetter.ts` - Interactive prompts with numbered module/key lists
 - `InteractivePrompts.ts` - Zod schema-based prompt generation
 - `SchemaInspector.ts` - Analyzes Zod schemas to extract type/constraint info
 - `types.ts` - Shared type definitions for CLI

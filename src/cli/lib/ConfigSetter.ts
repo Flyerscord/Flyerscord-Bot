@@ -25,13 +25,24 @@ export class ConfigSetter {
       return;
     }
 
-    // Get all config schemas from ConfigManager
-    const allConfigs = (this.configManager as unknown as { configs: Map<Modules, IConfig[]> }).configs;
+    // Get all modules
+    const modules = this.configManager.getAllModules();
 
     // Step 1: Select module (if not provided)
     let selectedModule = options.module;
     if (!selectedModule) {
-      const moduleChoices = Array.from(allConfigs.keys()).map((module) => ({
+      // Display available modules
+      console.log(chalk.bold.blue("\n📋 Available Modules:"));
+      console.log(chalk.gray("─".repeat(60)));
+
+      const sortedModules = modules.sort();
+      sortedModules.forEach((module, index) => {
+        const schemas = this.configManager.getModuleConfigSchemas(module);
+        console.log(chalk.cyan(`${index + 1}.`) + ` ${module} ${chalk.gray(`(${schemas.length} config${schemas.length !== 1 ? "s" : ""})`)}`);
+      });
+      console.log(chalk.gray("─".repeat(60)) + "\n");
+
+      const moduleChoices = sortedModules.map((module) => ({
         name: module,
         value: module,
       }));
@@ -40,7 +51,7 @@ export class ConfigSetter {
     }
 
     // Step 2: Get module configs
-    const moduleConfigs = allConfigs.get(selectedModule);
+    const moduleConfigs = this.configManager.getModuleConfigSchemas(selectedModule);
     if (!moduleConfigs || moduleConfigs.length === 0) {
       console.error(chalk.red(`No configs found for module: ${selectedModule}`));
       return;
@@ -55,8 +66,25 @@ export class ConfigSetter {
         return;
       }
     } else {
-      const configChoices = moduleConfigs.map((schema) => ({
-        name: `${schema.key} - ${schema.description} (${SchemaInspector.getTypeDescription(schema.schema)})`,
+      // Display available config keys
+      console.log(chalk.bold.blue(`\n⚙️  Config Keys for ${selectedModule}:`));
+      console.log(chalk.gray("─".repeat(80)));
+
+      const sortedConfigs = [...moduleConfigs].sort((a, b) => a.key.localeCompare(b.key));
+      sortedConfigs.forEach((schema, index) => {
+        const typeDesc = SchemaInspector.getTypeDescription(schema.schema);
+        const badges: string[] = [];
+        if (schema.required) badges.push(chalk.red("required"));
+        if (schema.secret) badges.push(chalk.yellow("secret"));
+        if (schema.requiresRestart) badges.push(chalk.magenta("restart"));
+
+        const badgeStr = badges.length > 0 ? ` ${chalk.gray("[")}${badges.join(chalk.gray(", "))}${chalk.gray("]")}` : "";
+        console.log(chalk.cyan(`${index + 1}.`) + ` ${schema.key} ${chalk.gray(`(${typeDesc})`)}${badgeStr}\n   ${chalk.dim(schema.description)}`);
+      });
+      console.log(chalk.gray("─".repeat(80)) + "\n");
+
+      const configChoices = sortedConfigs.map((schema) => ({
+        name: `${schema.key} - ${schema.description}`,
         value: schema.key,
       }));
 

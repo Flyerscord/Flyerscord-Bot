@@ -139,6 +139,8 @@ export class ConfigSetter {
       // Step 9: Ask if user wants to set another config
       const setAnother = await InteractivePrompts.confirm("\nSet another configuration?", true);
       if (setAnother) {
+        // Refresh ConfigManager to load the new value we just saved
+        await this.configManager.refreshConfig();
         // Recursively call set() to start over
         await this.set({});
       }

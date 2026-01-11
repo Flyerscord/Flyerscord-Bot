@@ -160,7 +160,7 @@ export class InteractivePrompts {
     while (building) {
       const { action } = await inquirer.prompt([
         {
-          type: "list",
+          type: "rawlist",
           name: "action",
           message: "What would you like to do?",
           choices: [
@@ -182,7 +182,7 @@ export class InteractivePrompts {
         case "remove": {
           const { indexToRemove } = await inquirer.prompt([
             {
-              type: "list",
+              type: "rawlist",
               name: "indexToRemove",
               message: "Which item would you like to remove?",
               choices: items.map((item, index) => ({

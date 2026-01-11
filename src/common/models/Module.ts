@@ -96,6 +96,7 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
       return;
     }
     await this.registerConfigSchema();
+    Stumper.success(`Module ${this.name} registered!`, `common:Module:${this.name}:register`);
     this.registered = true;
   }
 

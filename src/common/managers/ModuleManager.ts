@@ -79,6 +79,7 @@ export default class ModuleManager extends Singleton {
   }
 
   async registerAllModules(): Promise<void> {
+    Stumper.info(`Registering ${this.modules.length} modules...`, "common:ModuleManager:registerAllModules");
     for (const module of this.modules) {
       await module.register();
     }

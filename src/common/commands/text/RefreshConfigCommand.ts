@@ -13,12 +13,14 @@ export default class RefreshConfigCommand extends DMTextCommand {
 
   async execute(message: Message, _args: string[]): Promise<void> {
     const configManager = ConfigManager.getInstance();
+
+    const result = await configManager.refreshConfig();
+
     await MyAuditLog.createAuditLog("Common", {
       action: "RefreshConfig",
       userId: message.author.id,
+      details: { result },
     });
-
-    const result = await configManager.refreshConfig();
 
     await discord.messages.sendMesssageDMToUser(
       message.author.id,

@@ -8,6 +8,13 @@
       "when": 1766904895291,
       "tag": "0000_fantastic_living_lightning",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1768034292246,
+      "tag": "0001_wide_mongu",
+      "breakpoints": true
     }
   ]
 }

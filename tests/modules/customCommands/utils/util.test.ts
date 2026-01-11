@@ -1,48 +1,53 @@
+// Mock the database BEFORE any imports that use it
+jest.mock("@common/db/db", () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mockDb: any = {
+    select: jest.fn().mockReturnThis(),
+    insert: jest.fn().mockReturnThis(),
+    update: jest.fn().mockReturnThis(),
+    delete: jest.fn().mockReturnThis(),
+    from: jest.fn().mockReturnThis(),
+    where: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockReturnThis(),
+    values: jest.fn().mockReturnThis(),
+    execute: jest.fn().mockResolvedValue([]),
+    $client: jest.fn(),
+  };
+
+  return {
+    __esModule: true,
+    default: {
+      getInstance: jest.fn(() => ({
+        getDb: jest.fn(() => mockDb),
+      })),
+    },
+  };
+});
+
+// Mock ConfigManager
+jest.mock("@common/managers/ConfigManager", () => {
+  return {
+    __esModule: true,
+    default: {
+      getInstance: jest.fn(() => ({
+        getConfig: jest.fn(() => ({
+          prefix: "!",
+        })),
+        isLoaded: jest.fn(() => true),
+      })),
+    },
+  };
+});
+
 import ICustomCommand from "@modules/customCommands/interfaces/ICustomCommand";
 import "@common/types/discord.js/index.d.ts";
 import CustomCommandsModule from "@modules/customCommands/CustomCommandsModule";
 import CustomCommandsDB from "@modules/customCommands/db/CustomCommandsDB";
-import Database from "@common/db/db";
-
-// Mock the database
-jest.mock("@common/db/db");
 
 describe("createCommandListMessages", () => {
   beforeEach(() => {
-    // Set up mock database
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mockDb: any = {
-      select: jest.fn(),
-      insert: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      execute: jest.fn(),
-      $client: jest.fn(),
-    };
-
-    // Mock the Database singleton's getInstance and getDb methods
-    (Database.getInstance as jest.Mock) = jest.fn().mockReturnValue({
-      getDb: jest.fn().mockReturnValue(mockDb),
-    });
-
-    CustomCommandsModule.getInstance({
-      customcommands: {
-        prefix: "!",
-        commandTempChannelId: "",
-        customCommandListChannelId: "",
-        imageKit: {
-          publicKey: "",
-          privateKey: "",
-          urlEndpoint: "",
-          redirectUrl: "",
-          proxyUrl: "",
-        },
-        imgur: {
-          clientId: "",
-          clientSecret: "",
-        },
-      },
-    });
+    // Initialize the module
+    CustomCommandsModule.getInstance();
   });
 
   it("should return a single message if commands fit within 2000 characters", () => {

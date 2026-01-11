@@ -1,23 +1,22 @@
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 import TextCommand from "@common/models/TextCommand";
 
-export default class RegisterCommandsModule extends Module<IRegisterCommandsConfig> {
-  constructor(config: IKeyedObject) {
-    super("RegisterCommands", config);
+export type RegisterCommandsConfigKeys = "";
+
+export const registerCommandsConfigSchema = [] as const satisfies readonly IModuleConfigSchema<RegisterCommandsConfigKeys>[];
+
+export default class RegisterCommandsModule extends Module<RegisterCommandsConfigKeys> {
+  constructor() {
+    super("RegisterCommands", { loadPriority: 1000 });
   }
 
   protected async setup(): Promise<void> {
     await this.readInCommands<TextCommand>(__dirname, "text");
   }
 
-  protected async cleanup(): Promise<void> {
-    // Nothing to cleanup
-  }
+  protected async cleanup(): Promise<void> {}
 
-  protected getDefaultConfig(): IRegisterCommandsConfig {
-    return {};
+  getConfigSchema(): IModuleConfigSchema<RegisterCommandsConfigKeys>[] {
+    return [...registerCommandsConfigSchema];
   }
 }
-
-export interface IRegisterCommandsConfig {}

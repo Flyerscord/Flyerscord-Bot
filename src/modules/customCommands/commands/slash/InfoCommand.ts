@@ -2,7 +2,7 @@ import { AutocompleteInteraction, ChatInputCommandInteraction, EmbedBuilder } fr
 
 import { AdminAutocompleteSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import discord from "@common/utils/discord/discord";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 import CustomCommandsDB from "../../db/CustomCommandsDB";
 import { CustomCommand } from "../../db/schema";
 

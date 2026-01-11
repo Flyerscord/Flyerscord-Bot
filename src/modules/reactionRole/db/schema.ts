@@ -1,4 +1,4 @@
-import { createModuleTable } from "@root/src/common/db/schema-types";
+import { createModuleTable } from "@common/db/schema-types";
 import { varchar } from "drizzle-orm/pg-core";
 
 export const reactionRoleMessages = createModuleTable("reactionrole__messages", {

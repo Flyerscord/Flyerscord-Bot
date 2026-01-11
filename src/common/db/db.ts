@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { TableEnumRecord } from "./schema-types";
 import { Singleton } from "../models/Singleton";
 import Stumper from "stumper";
+import Env from "../utils/Env";
 
 // Get dotenv variables
 dotenv.config();
@@ -21,10 +22,11 @@ export default class Database extends Singleton {
   constructor() {
     super();
 
-    if (!process.env.DATABASE_URL_POOLED) {
+    const DATABASE_URL_POOLED = Env.get("DATABASE_URL_POOLED");
+    if (!DATABASE_URL_POOLED) {
       throw new Error("DATABASE_URL_POOLED is not set");
     }
-    this.connectionString = process.env.DATABASE_URL_POOLED;
+    this.connectionString = DATABASE_URL_POOLED;
 
     const schema = SchemaManager.getInstance().getSchema();
 

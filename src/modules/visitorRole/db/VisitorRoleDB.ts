@@ -1,4 +1,4 @@
-import { ModuleDatabase } from "@root/src/common/models/ModuleDatabase";
+import { ModuleDatabase } from "@common/models/ModuleDatabase";
 import { visitorRoleState } from "./schema";
 import { eq } from "drizzle-orm";
 

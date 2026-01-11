@@ -7,7 +7,7 @@ import discord from "@common/utils/discord/discord";
 import { GuildForumTag, time, TimestampStyles } from "discord.js";
 import { IClubScheduleOutput_games } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubSchedule";
 import CombinedTeamInfoCache from "@common/cache/CombinedTeamInfoCache";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 import GameDayPostsDB from "../db/GameDayPostsDB";
 
 export async function checkForGameDay(): Promise<void> {
@@ -35,11 +35,11 @@ export async function checkForGameDay(): Promise<void> {
 
         let tags: GuildForumTag[] = [];
         if (game.gameType == GAME_TYPE.PRESEASON) {
-          tags = availableTags.filter((tag) => tag.id == config.tagIds.preseason);
+          tags = availableTags.filter((tag) => tag.id == config["tagIds.preseason"]);
         } else if (game.gameType == GAME_TYPE.REGULAR_SEASON) {
-          tags = availableTags.filter((tag) => tag.id == config.tagIds.regularSeason);
+          tags = availableTags.filter((tag) => tag.id == config["tagIds.regularSeason"]);
         } else if (game.gameType == GAME_TYPE.POSTSEASON) {
-          tags = availableTags.filter((tag) => tag.id == config.tagIds.postSeason);
+          tags = availableTags.filter((tag) => tag.id == config["tagIds.postSeason"]);
         }
 
         const seasonTag = await getCurrentSeasonTagId(game);
@@ -132,7 +132,7 @@ async function getCurrentSeasonTagId(game: IClubScheduleOutput_games): Promise<G
   const config = ConfigManager.getInstance().getConfig("GameDayPosts");
   const availableTags = await discord.forums.getAvailableTags(config.channelId);
 
-  const seasonTags = config.tagIds.seasons;
+  const seasonTags = config["tagIds.seasons"];
 
   for (const seasonTag of seasonTags) {
     if (game.season.toString() == `${seasonTag.startingYear}${seasonTag.endingYear}`) {

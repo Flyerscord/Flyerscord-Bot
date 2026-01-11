@@ -1,14 +1,34 @@
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import TotalMembersStatChannel from "./statChannels/TotalMembersStatChannel";
 import TotalNitroBoostersStatChannel from "./statChannels/TotalNitroBoostersStatChannel";
 import UpdateStatsChannelsTask from "./tasks/UpdateStatsChannelsTask";
 import StatsVoiceChannelsManager from "./utils/StatsVoiceChannelsManager";
+import Zod from "@common/utils/ZodWrapper";
+import { z } from "zod";
 
-export default class StatsVoiceChannelModule extends Module<IStatsVoiceChannelConfig> {
-  constructor(config: IKeyedObject) {
-    super("StatsVoiceChannel", config);
+export type StatsVoiceChannelConfigKeys = "channels";
+
+export const statsVoiceChannelConfigSchema = [
+  {
+    key: "channels",
+    description: "The channels to create stats voice channels in",
+    required: false,
+    secret: false,
+    requiresRestart: true,
+    defaultValue: [],
+    schema: z.array(
+      z.object({
+        name: Zod.string(),
+        channelId: Zod.string(),
+      }),
+    ),
+  },
+] as const satisfies readonly IModuleConfigSchema<StatsVoiceChannelConfigKeys>[];
+
+export default class StatsVoiceChannelModule extends Module<StatsVoiceChannelConfigKeys> {
+  constructor() {
+    super("StatsVoiceChannel");
   }
 
   protected async setup(): Promise<void> {
@@ -18,14 +38,10 @@ export default class StatsVoiceChannelModule extends Module<IStatsVoiceChannelCo
     this.registerSchedules();
   }
 
-  protected async cleanup(): Promise<void> {
-    // Nothing to cleanup
-  }
+  protected async cleanup(): Promise<void> {}
 
-  protected getDefaultConfig(): IStatsVoiceChannelConfig {
-    return {
-      channels: [],
-    };
+  getConfigSchema(): IModuleConfigSchema<StatsVoiceChannelConfigKeys>[] {
+    return [...statsVoiceChannelConfigSchema];
   }
 
   private registerSchedules(): void {
@@ -38,13 +54,4 @@ export default class StatsVoiceChannelModule extends Module<IStatsVoiceChannelCo
     manager.addStatChannel(new TotalMembersStatChannel());
     manager.addStatChannel(new TotalNitroBoostersStatChannel());
   }
-}
-
-export interface IStatsVoiceChannelConfig {
-  channels: IStatsVoiceChannelChannelsConfig[];
-}
-
-interface IStatsVoiceChannelChannelsConfig {
-  name: string;
-  channelId: string;
 }

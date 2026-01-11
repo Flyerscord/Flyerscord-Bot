@@ -1,6 +1,6 @@
 import { AttachmentBuilder, Attachment } from "discord.js";
 import RulesDB from "../db/RulesDB";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 import Stumper from "stumper";
 import discord from "@common/utils/discord/discord";
 import { RuleContentPageDTO } from "../db/schema";

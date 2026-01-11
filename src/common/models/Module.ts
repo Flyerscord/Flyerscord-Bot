@@ -9,64 +9,154 @@ import ModalMenuManager from "../managers/ModalMenuManager";
 import TextCommandManager from "../managers/TextCommandManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
 import { Singleton } from "./Singleton";
-import type { IKeyedObject } from "../interfaces/IKeyedObject";
 import type { Modules } from "../../modules/Modules";
-import ConfigManager from "../config/ConfigManager";
+import ConfigManager from "../managers/ConfigManager";
 import SchemaManager from "../managers/SchemaManager";
 import { TableEnumRecord } from "../db/schema-types";
+import { z } from "zod";
 
-export interface IModuleConfig<TConfig> {
-  [key: string]: TConfig;
+export interface IModuleConfigSchema<TKey extends string> {
+  /**
+   * The key of the config in the database
+   */
+  key: TKey;
+  /**
+   * The description of the config setting
+   */
+  description: string;
+  /**
+   * Whether the config is required for the module to function
+   */
+  required: boolean;
+  /**
+   * Whether the config is secret and should not be displayed in the UI
+   */
+  secret: boolean;
+  /**
+   * Whether the config requires a restart of the bot to take effect
+   */
+  requiresRestart: boolean;
+  /**
+   * The default value of the config setting. Only used if the config is not required.
+   */
+  defaultValue: z.infer<z.ZodType>;
+  /**
+   * The Zod schema for the config setting. If the value is encryped a transform is used in the schema.
+   */
+  schema: z.ZodType;
 }
 
-export default abstract class Module<TConfig extends IKeyedObject> extends Singleton {
+export default abstract class Module<TConfigKeys extends string> extends Singleton {
   readonly name: Modules;
-  readonly cleanName: string;
   readonly dependsOn: Modules[];
+  // The lower the number, the higher the priority
+  readonly loadPriority: number;
+  readonly prodOnly: boolean;
 
-  protected constructor(name: Modules, config: IKeyedObject, schemas: TableEnumRecord = {}, dependsOn: Modules[] = []) {
+  private registered: boolean = false;
+  private configValid: boolean = false;
+  private started: boolean = false;
+
+  protected constructor(
+    name: Modules,
+    {
+      schema = {},
+      dependsOn = [],
+      loadPriority = 50,
+      prodOnly = false,
+    }: { schema?: TableEnumRecord; dependsOn?: Modules[]; loadPriority?: number; prodOnly?: boolean } = {},
+  ) {
     super();
+
     this.name = name;
-
-    this.cleanName = this.doCleanName();
-
-    const configManager = ConfigManager.getInstance();
-
-    // Get the module config from the main config
-    if (this.cleanName in config) {
-      configManager.setConfig(this.name, config[this.cleanName]);
-    } else {
-      Stumper.error(`Config for module ${this.name} not found, using default! Clean name: ${this.cleanName}`, "common:Module:constructor");
-      configManager.setConfig(this.name, this.getDefaultConfig());
-    }
-
     this.dependsOn = dependsOn;
+    this.loadPriority = loadPriority;
+    this.prodOnly = prodOnly;
 
-    SchemaManager.getInstance().register(schemas);
+    SchemaManager.getInstance().register(schema);
+  }
+
+  isConfigValid(): boolean {
+    return this.configValid;
+  }
+
+  isStarted(): boolean {
+    return this.started;
+  }
+
+  isRegistered(): boolean {
+    return this.registered;
+  }
+
+  getDependencies(): Modules[] {
+    return this.dependsOn;
+  }
+
+  getLoadPriority(): number {
+    return this.loadPriority;
+  }
+
+  isProdOnly(): boolean {
+    return this.prodOnly;
   }
 
   protected abstract setup(): Promise<void>;
 
   protected abstract cleanup(): Promise<void>;
 
-  protected abstract getDefaultConfig(): TConfig;
+  abstract getConfigSchema(): IModuleConfigSchema<TConfigKeys>[];
 
-  async enable(): Promise<void> {
-    await this.setup();
-    Stumper.success(`${this.name} module enabled!`);
+  private async registerConfigSchema(): Promise<void> {
+    const configManager = ConfigManager.getInstance();
+    const configSchemas = this.getConfigSchema();
+
+    for (const configInfo of configSchemas) {
+      await configManager.addNewConfigSchema(this.name, configInfo);
+    }
   }
 
-  async disable(): Promise<void> {
-    await this.cleanup();
-    Stumper.success(`${this.name} module disabled!`);
+  async register(): Promise<void> {
+    if (this.registered) {
+      Stumper.error(`Module ${this.name} has already been registered!`, `common:Module:${this.name}:register`);
+      return;
+    }
+    await this.registerConfigSchema();
+    Stumper.success(`Module ${this.name} registered!`, `common:Module:${this.name}:register`);
+    this.registered = true;
   }
 
-  getDefaultModuleConfig(): IModuleConfig<TConfig> {
-    return this.wrapObject(this.cleanName, this.getDefaultConfig());
+  async enable(): Promise<boolean> {
+    if (!this.registered) {
+      Stumper.error(`Module ${this.name} has not been registered!`, `common:Module:${this.name}:enable`);
+      return false;
+    }
+
+    if (!this.validateConfig()) {
+      return false;
+    }
+    this.configValid = true;
+
+    try {
+      await this.setup();
+    } catch (error) {
+      Stumper.caughtError(error, `module:${this.name}:enable`);
+      return false;
+    }
+
+    this.started = true;
+    Stumper.success(`${this.name} module enabled!`, `common:Module:${this.name}:enable`);
+    return true;
   }
 
-  getDependencies(): Modules[] {
-    return this.dependsOn;
+  async disable(): Promise<boolean> {
+    try {
+      await this.cleanup();
+    } catch (error) {
+      Stumper.caughtError(error, `module:${this.name}:disable`);
+      return false;
+    }
+    Stumper.success(`${this.name} module disabled!`, `common:Module:${this.name}:disable`);
+    return true;
   }
 
   protected async readInCommands<T>(dir: string, commandsPath: string): Promise<void> {
@@ -75,7 +165,7 @@ export default abstract class Module<TConfig extends IKeyedObject> extends Singl
     const location = `${dir}/commands/${commandsPath}`;
     const files = fs.readdirSync(location);
 
-    Stumper.info(`Reading in commands from ${location}`, "common:Module:readInCommands");
+    Stumper.info(`Reading in commands from ${location}`, `common:Module:${this.name}:readInCommands`);
 
     for (const file of files) {
       if (!file.endsWith(".js") && !file.endsWith(".ts")) {
@@ -86,13 +176,13 @@ export default abstract class Module<TConfig extends IKeyedObject> extends Singl
       const command: T = new Command.default();
 
       if (command instanceof SlashCommand) {
-        Stumper.debug(`Read in slash command: ${command.name}`, "common:Module:readInCommands");
+        Stumper.debug(`Read in slash command: ${command.name}`, `common:Module:${this.name}:readInCommands`);
       } else if (command instanceof TextCommand) {
-        Stumper.debug(`Read in text command: ${command.name}`, "common:Module:readInCommands");
+        Stumper.debug(`Read in text command: ${command.name}`, `common:Module:${this.name}:readInCommands`);
       } else if (command instanceof ContextMenuCommand) {
-        Stumper.debug(`Read in context menu: ${command.name}`, "common:Module:readInCommands");
+        Stumper.debug(`Read in context menu: ${command.name}`, `common:Module:${this.name}:readInCommands`);
       } else if (command instanceof ModalMenu) {
-        Stumper.debug(`Read in modal: ${command.name}`, "common:Module:readInCommands");
+        Stumper.debug(`Read in modal: ${command.name}`, `common:Module:${this.name}:readInCommands`);
       }
 
       commands.push(command);
@@ -117,12 +207,12 @@ export default abstract class Module<TConfig extends IKeyedObject> extends Singl
     }
   }
 
-  private wrapObject(key: string, obj: TConfig): IModuleConfig<TConfig> {
-    return { [key]: obj };
-  }
-
-  private doCleanName(): string {
-    let name = this.name.replace(" ", "_");
-    return name.toLowerCase();
+  private validateConfig(): boolean {
+    const configManager = ConfigManager.getInstance();
+    if (!configManager.validateModule(this.name)) {
+      Stumper.error(`Module ${this.name} has invalid configs`, "common:Module:${this.name}:validateConfig");
+      return false;
+    }
+    return true;
   }
 }

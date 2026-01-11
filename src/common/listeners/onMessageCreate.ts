@@ -2,7 +2,8 @@ import { Client, Message } from "discord.js";
 
 import TextCommand from "../models/TextCommand";
 import Stumper from "stumper";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
+import Env from "../utils/Env";
 
 export default (client: Client): void => {
   client.on("messageCreate", async (message: Message) => {
@@ -11,11 +12,21 @@ export default (client: Client): void => {
 };
 
 async function checkForNormalTextCommand(message: Message): Promise<boolean> {
-  const configManager = ConfigManager.getInstance();
-  const prefix = configManager.getConfig("CustomCommands")?.prefix ?? "!";
-  const adminPrefix = configManager.getConfig("Common").adminPrefix;
   if (message.author.bot) return false;
   if (!message.channel.isTextBased()) return false;
+  const configManager = ConfigManager.getInstance();
+  let prefix: string;
+  try {
+    prefix = configManager.getConfig("CustomCommands")?.prefix ?? "!";
+  } catch (error) {
+    if (Env.getBoolean("PRODUCTION_MODE")) {
+      Stumper.caughtError(error, "onMessageCreate:checkForNormalTextCommand");
+    } else {
+      Stumper.warning("Custom Commands config not loaded! This is normal in development mode.", "onMessageCreate:checkForNormalTextCommand");
+    }
+    prefix = "!";
+  }
+  const adminPrefix = configManager.getConfig("Common").adminPrefix;
   if (!message.content.startsWith(prefix) && !message.content.startsWith(adminPrefix)) return false;
 
   const messageArray = message.content.split(" ");

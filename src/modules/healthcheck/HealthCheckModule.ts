@@ -1,13 +1,16 @@
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 
 import IBotHealth from "./interfaces/IBotHealth";
 import { getBotHealth } from "./utils/healthCheck";
 import ExpressManager from "@common/managers/ExpressManager";
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
 
-export default class HealthCheckModule extends Module<IHealthCheckConfig> {
-  constructor(config: IKeyedObject) {
-    super("HealthCheck", config);
+export type HealthCheckConfigKeys = "";
+
+export const healthCheckConfigSchema = [] as const satisfies readonly IModuleConfigSchema<HealthCheckConfigKeys>[];
+
+export default class HealthCheckModule extends Module<HealthCheckConfigKeys> {
+  constructor() {
+    super("HealthCheck", { loadPriority: 0 });
   }
 
   protected async setup(): Promise<void> {
@@ -23,13 +26,9 @@ export default class HealthCheckModule extends Module<IHealthCheckConfig> {
     });
   }
 
-  protected async cleanup(): Promise<void> {
-    // Nothing to cleanup
-  }
+  protected async cleanup(): Promise<void> {}
 
-  protected getDefaultConfig(): IHealthCheckConfig {
-    return {};
+  getConfigSchema(): IModuleConfigSchema<HealthCheckConfigKeys>[] {
+    return [...healthCheckConfigSchema];
   }
 }
-
-export interface IHealthCheckConfig {}

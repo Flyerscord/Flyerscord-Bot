@@ -2,7 +2,7 @@ import { MessageReaction, PartialMessageReaction, PartialUser, User } from "disc
 import Stumper from "stumper";
 import ClientManager from "@common/managers/ClientManager";
 import discord from "@common/utils/discord/discord";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 import ReactionRoleDB from "../db/ReactionRoleDB";
 
 export default (): void => {

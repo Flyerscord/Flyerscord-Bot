@@ -1,12 +1,15 @@
 import ExpressManager from "@common/managers/ExpressManager";
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 import request from "request";
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 
-export default class ImageProxyModule extends Module<IImageProxyConfig> {
-  constructor(config: IKeyedObject) {
-    super("ImageProxy", config, {}, ["CustomCommands"]);
+export type ImageProxyConfigKeys = "";
+
+export const imageProxyConfigSchema = [] as const satisfies readonly IModuleConfigSchema<ImageProxyConfigKeys>[];
+
+export default class ImageProxyModule extends Module<ImageProxyConfigKeys> {
+  constructor() {
+    super("ImageProxy", { dependsOn: ["CustomCommands"], prodOnly: true, loadPriority: 11 });
   }
 
   protected async setup(): Promise<void> {
@@ -14,19 +17,15 @@ export default class ImageProxyModule extends Module<IImageProxyConfig> {
 
     expressManager.addRoute("/proxy/:imageId.gif", (req, res) => {
       const imageId = req.params.imageId;
-      const imageUrl = `${ConfigManager.getInstance().getConfig("CustomCommands").imageKit.urlEndpoint}/${imageId}`;
+      const imageUrl = `${ConfigManager.getInstance().getConfig("CustomCommands")["imageKit.urlEndpoint"]}/${imageId}`;
 
       request({ url: imageUrl, headers: { "Content-Type": "image/gif" } }).pipe(res);
     });
   }
 
-  protected async cleanup(): Promise<void> {
-    // Nothing to cleanup
-  }
+  protected async cleanup(): Promise<void> {}
 
-  protected getDefaultConfig(): IImageProxyConfig {
-    return {};
+  getConfigSchema(): IModuleConfigSchema<ImageProxyConfigKeys>[] {
+    return [...imageProxyConfigSchema];
   }
 }
-
-export interface IImageProxyConfig {}

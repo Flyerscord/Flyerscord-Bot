@@ -1,12 +1,15 @@
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import EmojiCheckTask from "./tasks/EmojiCheckTask";
 import schema from "./db/schema";
 
-export default class PlayerEmojisModule extends Module<IPlayerEmojisConfig> {
-  constructor(config: IKeyedObject) {
-    super("PlayerEmojis", config, schema);
+export type PlayerEmojisConfigKeys = "";
+
+export const playerEmojisConfigSchema = [] as const satisfies readonly IModuleConfigSchema<PlayerEmojisConfigKeys>[];
+
+export default class PlayerEmojisModule extends Module<PlayerEmojisConfigKeys> {
+  constructor() {
+    super("PlayerEmojis", { schema });
   }
 
   protected async setup(): Promise<void> {
@@ -17,13 +20,11 @@ export default class PlayerEmojisModule extends Module<IPlayerEmojisConfig> {
 
   protected async cleanup(): Promise<void> {}
 
-  protected getDefaultConfig(): IPlayerEmojisConfig {
-    return {};
+  getConfigSchema(): IModuleConfigSchema<PlayerEmojisConfigKeys>[] {
+    return [...playerEmojisConfigSchema];
   }
 
   private registerSchedules(): void {
     EmojiCheckTask.getInstance().createScheduledJob();
   }
 }
-
-export interface IPlayerEmojisConfig {}

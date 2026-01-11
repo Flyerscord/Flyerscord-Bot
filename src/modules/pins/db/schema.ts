@@ -1,4 +1,4 @@
-import { createModuleTable } from "@root/src/common/db/schema-types";
+import { createModuleTable } from "@common/db/schema-types";
 import { timestamp, varchar } from "drizzle-orm/pg-core";
 
 export const pinsPins = createModuleTable("pins__pins", {

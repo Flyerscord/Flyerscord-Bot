@@ -1,4 +1,4 @@
-import ConfigManager from "@common/config/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 import { AdminSlashCommand } from "@common/models/SlashCommand";
 import discord from "@common/utils/discord/discord";
 import RulesDB from "@modules/rules/db/RulesDB";

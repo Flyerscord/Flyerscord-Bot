@@ -1,4 +1,4 @@
-import { index, jsonb, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { index, jsonb, primaryKey, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { createModuleEnum, createModuleTable } from "./schema-types";
 import type { Modules } from "@modules/Modules";
 
@@ -32,11 +32,29 @@ export const auditLog = createModuleTable(
   ],
 );
 
+export type AuditLog = typeof auditLog.$inferSelect;
+export type NewAuditLog = Omit<typeof auditLog.$inferInsert, "id">;
+
+export const config = createModuleTable(
+  "common__config",
+  {
+    moduleName: text("module_name").notNull().$type<Modules>(),
+    key: text("key").notNull(),
+    value: text("value"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    primaryKey({
+      columns: [table.moduleName, table.key],
+    }),
+  ],
+);
+
+export type Config = typeof config.$inferSelect;
+export type NewConfig = typeof config.$inferInsert;
+
 export default {
   severityEnum,
   auditLog,
+  config,
 };
-
-export type AuditLog = typeof auditLog.$inferSelect;
-
-export type NewAuditLog = Omit<typeof auditLog.$inferInsert, "id">;

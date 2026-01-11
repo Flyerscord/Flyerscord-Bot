@@ -1,11 +1,14 @@
-import { IKeyedObject } from "@common/interfaces/IKeyedObject";
-import Module from "@common/models/Module";
+import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 import schema from "./db/schema";
 
-export default class DaysUntilModule extends Module<IDaysUntilConfig> {
-  constructor(config: IKeyedObject) {
-    super("DaysUntil", config, schema);
+export type DaysUntilConfigKeys = "";
+
+export const daysUntilConfigSchema = [] as const satisfies readonly IModuleConfigSchema<DaysUntilConfigKeys>[];
+
+export default class DaysUntilModule extends Module<DaysUntilConfigKeys> {
+  constructor() {
+    super("DaysUntil", { schema });
   }
 
   protected async setup(): Promise<void> {
@@ -14,9 +17,7 @@ export default class DaysUntilModule extends Module<IDaysUntilConfig> {
 
   protected async cleanup(): Promise<void> {}
 
-  protected getDefaultConfig(): IDaysUntilConfig {
-    return {};
+  getConfigSchema(): IModuleConfigSchema<DaysUntilConfigKeys>[] {
+    return [...daysUntilConfigSchema];
   }
 }
-
-export interface IDaysUntilConfig {}

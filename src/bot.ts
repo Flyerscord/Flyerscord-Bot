@@ -90,7 +90,7 @@ async function startUp(): Promise<void> {
   }
 
   const PRODUCTION_MODE = Env.getBoolean("PRODUCTION_MODE");
-  if (!PRODUCTION_MODE) {
+  if (PRODUCTION_MODE === undefined) {
     envErrors.push("PRODUCTION_MODE");
   }
 

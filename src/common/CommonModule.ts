@@ -2,6 +2,7 @@ import { LOG_LEVEL } from "stumper";
 import schema from "./db/schema";
 import Module, { IModuleConfigSchema } from "./models/Module";
 import Zod from "./utils/ZodWrapper";
+import SlashCommand from "./models/SlashCommand";
 
 export type CommonConfigKeys = "logLevel" | "masterGuildId" | "adminPrefix" | "advancedDebug";
 
@@ -49,7 +50,9 @@ export default class CommonModule extends Module<CommonConfigKeys> {
     super("Common", schema);
   }
 
-  protected async setup(): Promise<void> {}
+  protected async setup(): Promise<void> {
+    await this.readInCommands<SlashCommand>(__dirname, "slash");
+  }
 
   protected async cleanup(): Promise<void> {}
 

@@ -94,9 +94,7 @@ export class ConfigSetter {
     console.log(`Required: ${selectedConfigSchema.required ? chalk.green("Yes") : chalk.dim("No")}`);
 
     const currentValue = selectedConfigSchema.value;
-    if (selectedConfigSchema.secret && currentValue) {
-      console.log(`Current value: ${chalk.dim("***********")}`);
-    } else if (currentValue !== undefined && currentValue !== null) {
+    if (currentValue !== undefined && currentValue !== null) {
       console.log(`Current value: ${this.formatValue(currentValue)}`);
     } else {
       console.log(
@@ -117,13 +115,10 @@ export class ConfigSetter {
     console.log(chalk.bold("\n=== Preview Changes ==="));
     console.log(`Module: ${chalk.cyan(selectedModule)}`);
     console.log(`Key: ${chalk.cyan(selectedConfigSchema.key)}`);
-
+    console.log(`Old Value: ${this.formatValue(currentValue)}`);
+    console.log(`New Value: ${this.formatValue(newValue)}`);
     if (selectedConfigSchema.secret) {
-      console.log(`Old Value: ${chalk.dim("***********")}`);
-      console.log(`New Value: ${chalk.dim("***********")}`);
-    } else {
-      console.log(`Old Value: ${this.formatValue(currentValue)}`);
-      console.log(`New Value: ${this.formatValue(newValue)}`);
+      console.log(chalk.dim("(This value will be encrypted in the database)"));
     }
 
     // Step 7: Confirm

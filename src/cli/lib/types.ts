@@ -32,7 +32,6 @@ export interface ConfigSchemaInfo {
 export interface ViewOptions {
   module?: Modules;
   key?: string;
-  showSecrets?: boolean;
 }
 
 export interface SetOptions {

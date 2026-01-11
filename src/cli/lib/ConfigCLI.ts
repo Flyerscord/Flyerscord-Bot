@@ -28,7 +28,6 @@ export class ConfigCLI {
       .description("View configuration values")
       .option("-m, --module <module>", "Filter by module name")
       .option("-k, --key <key>", "View specific config key (format: Module.key)")
-      .option("--show-secrets", "Show decrypted secret values", false)
       .action(async (options) => {
         try {
           await this.handleView(options);
@@ -57,14 +56,11 @@ export class ConfigCLI {
   /**
    * Handle view command
    */
-  private async handleView(options: { module?: string; key?: string; showSecrets?: boolean }): Promise<void> {
+  private async handleView(options: { module?: string; key?: string }): Promise<void> {
     const viewOptions: {
       module?: Modules;
       key?: string;
-      showSecrets?: boolean;
-    } = {
-      showSecrets: options.showSecrets || false,
-    };
+    } = {};
 
     // Parse module
     if (options.module) {

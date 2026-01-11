@@ -3,6 +3,7 @@ import { Client, Message } from "discord.js";
 import TextCommand from "../models/TextCommand";
 import Stumper from "stumper";
 import ConfigManager from "@common/managers/ConfigManager";
+import Env from "../utils/Env";
 
 export default (client: Client): void => {
   client.on("messageCreate", async (message: Message) => {
@@ -16,7 +17,11 @@ async function checkForNormalTextCommand(message: Message): Promise<boolean> {
   try {
     prefix = configManager.getConfig("CustomCommands")?.prefix ?? "!";
   } catch (error) {
-    Stumper.caughtError(error, "onMessageCreate:checkForNormalTextCommand");
+    if (Env.getBoolean("PRODUCTION_MODE")) {
+      Stumper.caughtError(error, "onMessageCreate:checkForNormalTextCommand");
+    } else {
+      Stumper.warning("Custom Commands config not loaded! This is normal in development mode.", "onMessageCreate:checkForNormalTextCommand");
+    }
     prefix = "!";
   }
   const adminPrefix = configManager.getConfig("Common").adminPrefix;

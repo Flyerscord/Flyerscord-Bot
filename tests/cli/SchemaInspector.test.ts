@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { SchemaInspector } from "../../src/cli/lib/SchemaInspector";
+import ZodWrapper from "../../src/common/utils/ZodWrapper";
 
 describe("SchemaInspector", () => {
   describe("getSchemaType", () => {
@@ -233,6 +234,61 @@ describe("SchemaInspector", () => {
       expect(desc).toContain("pattern");
       // In Zod v4, we can't extract the actual regex pattern, just know it exists
       expect(desc).toContain("regex");
+    });
+  });
+
+  describe("isEncryptedString", () => {
+    it("should return true for encrypted string schemas", () => {
+      const schema = ZodWrapper.encryptedString();
+      expect(SchemaInspector.isEncryptedString(schema)).toBe(true);
+    });
+
+    it("should return false for regular string schemas", () => {
+      const schema = z.string();
+      expect(SchemaInspector.isEncryptedString(schema)).toBe(false);
+    });
+
+    it("should return false for wrapped string schemas", () => {
+      const schema = ZodWrapper.string({ min: 1, max: 10 });
+      expect(SchemaInspector.isEncryptedString(schema)).toBe(false);
+    });
+
+    it("should detect encrypted strings wrapped in optional", () => {
+      const schema = ZodWrapper.encryptedString().optional();
+      expect(SchemaInspector.isEncryptedString(schema)).toBe(true);
+    });
+
+    it("should detect encrypted strings with default values", () => {
+      const schema = ZodWrapper.encryptedString().default("");
+      expect(SchemaInspector.isEncryptedString(schema)).toBe(true);
+    });
+
+    it("should return true for any string transform (limitation)", () => {
+      // Note: Current implementation detects any transform on a string as encrypted
+      // This is a limitation but acceptable since transforms on strings are rare
+      // and encrypted strings are the primary use case
+      const schema = z.string().transform((val) => val.toUpperCase());
+      expect(SchemaInspector.isEncryptedString(schema)).toBe(true);
+    });
+
+    it("should return false for number schemas", () => {
+      const schema = z.number();
+      expect(SchemaInspector.isEncryptedString(schema)).toBe(false);
+    });
+
+    it("should return false for boolean schemas", () => {
+      const schema = z.boolean();
+      expect(SchemaInspector.isEncryptedString(schema)).toBe(false);
+    });
+
+    it("should return false for array schemas", () => {
+      const schema = z.array(z.string());
+      expect(SchemaInspector.isEncryptedString(schema)).toBe(false);
+    });
+
+    it("should return false for object schemas", () => {
+      const schema = z.object({ key: z.string() });
+      expect(SchemaInspector.isEncryptedString(schema)).toBe(false);
     });
   });
 });

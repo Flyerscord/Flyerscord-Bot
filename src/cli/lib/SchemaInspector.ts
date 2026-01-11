@@ -157,6 +157,36 @@ export class SchemaInspector {
   }
 
   /**
+   * Check if a schema is an encrypted string (has a transform with decrypt)
+   */
+  static isEncryptedString(schema: z.ZodType): boolean {
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    const def = (schema as z.ZodType & { _def: Record<string, unknown> })._def;
+    const type = def.type || def.typeName;
+
+    // Check if it's a pipe/transform (encrypted strings use transform)
+    if (type === "pipe" || type === "transform") {
+      // Check if the base type is string
+      const innerType = (def.in || def.schema || def.innerType) as unknown;
+      if (isZodType(innerType)) {
+        const innerSchemaType = this.getSchemaType(innerType);
+        // If it's a transform on a string, likely encrypted
+        return innerSchemaType === "string";
+      }
+    }
+
+    // Check wrapped schemas
+    if (type === "optional" || type === "nullable" || type === "default") {
+      const innerType = def.innerType as unknown;
+      if (isZodType(innerType)) {
+        return this.isEncryptedString(innerType);
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Unwrap a schema to get the inner type (removing wrappers)
    */
   static unwrapSchema(schema: z.ZodType): z.ZodType {

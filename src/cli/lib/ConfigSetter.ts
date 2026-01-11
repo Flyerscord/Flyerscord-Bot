@@ -136,7 +136,9 @@ export class ConfigSetter {
 
     // Step 8: Save to database
     try {
-      await this.saveConfigValue(selectedModule, selectedConfigSchema.key, newValue, selectedConfigSchema.secret);
+      // Check if this is an encrypted string by inspecting the schema
+      const isEncrypted = SchemaInspector.isEncryptedString(selectedConfigSchema.schema);
+      await this.saveConfigValue(selectedModule, selectedConfigSchema.key, newValue, isEncrypted);
       console.log(chalk.green(`\n✓ Successfully updated ${selectedModule}.${selectedConfigSchema.key}`));
 
       // Warn if restart required
@@ -151,12 +153,12 @@ export class ConfigSetter {
   /**
    * Save a config value to the database
    */
-  private async saveConfigValue(module: Modules, key: string, value: unknown, isSecret: boolean): Promise<void> {
+  private async saveConfigValue(module: Modules, key: string, value: unknown, shouldEncrypt: boolean): Promise<void> {
     // Convert value to string for storage
     let valueToStore: string;
 
-    if (isSecret && typeof value === "string") {
-      // Encrypt secret values
+    if (shouldEncrypt && typeof value === "string") {
+      // Encrypt values for encryptedString schemas
       valueToStore = SecretManager.getInstance().encrypt(value);
     } else if (typeof value === "object") {
       // Serialize objects and arrays as JSON

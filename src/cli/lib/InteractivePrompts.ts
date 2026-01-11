@@ -8,12 +8,14 @@ export class InteractivePrompts {
   /**
    * Prompt for a value based on the Zod schema type
    */
-  static async promptForValue(schema: z.ZodType, currentValue: unknown, key: string, isSecret: boolean): Promise<unknown> {
+  static async promptForValue(schema: z.ZodType, currentValue: unknown, key: string, _isSecret: boolean): Promise<unknown> {
     const analysis = SchemaInspector.analyzeSchema(schema);
+    // Check if this is an encrypted string by inspecting the schema, not the metadata flag
+    const isEncrypted = SchemaInspector.isEncryptedString(schema);
 
     switch (analysis.type) {
       case "string":
-        return this.promptString(schema, typeof currentValue === "string" ? currentValue : undefined, key, isSecret, analysis.constraints);
+        return this.promptString(schema, typeof currentValue === "string" ? currentValue : undefined, key, isEncrypted, analysis.constraints);
       case "number":
         return this.promptNumber(schema, typeof currentValue === "number" ? currentValue : undefined, key, analysis.constraints);
       case "boolean":
@@ -236,7 +238,7 @@ export class InteractivePrompts {
         }
       }
 
-      const propValue = await this.promptForValue(propSchema, obj[propKey], propKey, propAnalysis.constraints.isSecret);
+      const propValue = await this.promptForValue(propSchema, obj[propKey], propKey, false);
       obj[propKey] = propValue;
     }
 

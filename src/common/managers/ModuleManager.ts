@@ -18,6 +18,7 @@ export default class ModuleManager extends Singleton {
 
   removeModule(module: Modules): void {
     this.modules = this.modules.filter((m) => m.name !== module);
+    Stumper.info(`Removed module ${module}`, "common:ModuleManager:removeModule");
   }
 
   getModules(): Module<any>[] {

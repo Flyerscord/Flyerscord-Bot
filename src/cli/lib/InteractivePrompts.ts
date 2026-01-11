@@ -265,7 +265,7 @@ export class InteractivePrompts {
   static async selectFromList<T>(message: string, choices: { name: string; value: T }[]): Promise<T> {
     const { selected } = await inquirer.prompt([
       {
-        type: "list",
+        type: "rawlist",
         name: "selected",
         message,
         choices,

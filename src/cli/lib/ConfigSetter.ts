@@ -31,23 +31,17 @@ export class ConfigSetter {
     // Step 1: Select module (if not provided)
     let selectedModule = options.module;
     if (!selectedModule) {
-      // Display available modules
-      console.log(chalk.bold.blue("\n📋 Available Modules:"));
-      console.log(chalk.gray("─".repeat(60)));
-
       const sortedModules = modules.sort();
-      sortedModules.forEach((module, index) => {
+      const moduleChoices = sortedModules.map((module) => {
         const schemas = this.configManager.getModuleConfigSchemas(module);
-        console.log(chalk.cyan(`${index + 1}.`) + ` ${module} ${chalk.gray(`(${schemas.length} config${schemas.length !== 1 ? "s" : ""})`)}`);
+        return {
+          name: `${module} ${chalk.gray(`(${schemas.length} config${schemas.length !== 1 ? "s" : ""})`)}`,
+          value: module,
+        };
       });
-      console.log(chalk.gray("─".repeat(60)) + "\n");
 
-      const moduleChoices = sortedModules.map((module) => ({
-        name: module,
-        value: module,
-      }));
-
-      selectedModule = await InteractivePrompts.selectFromList("Select module:", moduleChoices);
+      console.log(chalk.bold.blue("\n📋 Select Module"));
+      selectedModule = await InteractivePrompts.selectFromList("Enter number or use arrow keys:", moduleChoices);
     }
 
     // Step 2: Get module configs
@@ -66,29 +60,23 @@ export class ConfigSetter {
         return;
       }
     } else {
-      // Display available config keys
-      console.log(chalk.bold.blue(`\n⚙️  Config Keys for ${selectedModule}:`));
-      console.log(chalk.gray("─".repeat(80)));
-
       const sortedConfigs = [...moduleConfigs].sort((a, b) => a.key.localeCompare(b.key));
-      sortedConfigs.forEach((schema, index) => {
+      const configChoices = sortedConfigs.map((schema) => {
         const typeDesc = SchemaInspector.getTypeDescription(schema.schema);
         const badges: string[] = [];
-        if (schema.required) badges.push(chalk.red("required"));
+        if (schema.required) badges.push(chalk.red("req"));
         if (schema.secret) badges.push(chalk.yellow("secret"));
         if (schema.requiresRestart) badges.push(chalk.magenta("restart"));
 
         const badgeStr = badges.length > 0 ? ` ${chalk.gray("[")}${badges.join(chalk.gray(", "))}${chalk.gray("]")}` : "";
-        console.log(chalk.cyan(`${index + 1}.`) + ` ${schema.key} ${chalk.gray(`(${typeDesc})`)}${badgeStr}\n   ${chalk.dim(schema.description)}`);
+        return {
+          name: `${schema.key} ${chalk.gray(`(${typeDesc})`)}${badgeStr} - ${chalk.dim(schema.description)}`,
+          value: schema.key,
+        };
       });
-      console.log(chalk.gray("─".repeat(80)) + "\n");
 
-      const configChoices = sortedConfigs.map((schema) => ({
-        name: `${schema.key} - ${schema.description}`,
-        value: schema.key,
-      }));
-
-      const selectedKey = await InteractivePrompts.selectFromList("Select config to modify:", configChoices);
+      console.log(chalk.bold.blue(`\n⚙️  Select Config Key for ${selectedModule}`));
+      const selectedKey = await InteractivePrompts.selectFromList("Enter number or use arrow keys:", configChoices);
       selectedConfigSchema = moduleConfigs.find((schema) => schema.key === selectedKey);
     }
 

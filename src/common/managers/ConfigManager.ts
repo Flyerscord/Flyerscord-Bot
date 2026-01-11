@@ -6,7 +6,6 @@ import Stumper from "stumper";
 import type { IModuleConfigSchema } from "../models/Module";
 import { z } from "zod";
 import { inArray } from "drizzle-orm";
-import ModuleManager from "./ModuleManager";
 
 /**
  * Extract TypeScript type from a Zod schema
@@ -90,10 +89,10 @@ export default class ConfigManager extends Singleton {
       keysChanged: [],
       configsMissingFromMap: [],
     };
-    const moduleManager = ModuleManager.getInstance();
-    const moduleNames = moduleManager.getModuleNames();
+    // Only fetch configs for modules that have been registered
+    const registeredModules = Array.from(this.configs.keys());
 
-    const allConfigs = await this.db.select().from(config).where(inArray(config.moduleName, moduleNames));
+    const allConfigs = await this.db.select().from(config).where(inArray(config.moduleName, registeredModules));
 
     if (allConfigs.length === 0) {
       Stumper.error("No configs found", "common:ConfigManager:refreshConfig");

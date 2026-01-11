@@ -41,7 +41,7 @@ export interface IModuleConfigSchema<TKey extends string> {
    */
   defaultValue: z.infer<z.ZodType>;
   /**
-   * The Zod schema for the config setting
+   * The Zod schema for the config setting. If the value is encryped a transform is used in the schema.
    */
   schema: z.ZodType;
 }

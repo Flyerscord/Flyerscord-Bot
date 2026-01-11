@@ -54,6 +54,10 @@ export class InteractivePrompts {
       message += chalk.dim(` (pattern: ${constraints.regex})`);
     }
 
+    // For encrypted strings, validate against the base string schema, not the transform
+    const isEncrypted = SchemaInspector.isEncryptedString(schema);
+    const validationSchema = isEncrypted ? SchemaInspector.unwrapSchema(schema) : schema;
+
     const { value } = await inquirer.prompt([
       {
         type: "input",
@@ -62,7 +66,7 @@ export class InteractivePrompts {
         default: currentValue,
         validate: async (input: string): Promise<boolean | string> => {
           try {
-            await schema.parseAsync(input);
+            await validationSchema.parseAsync(input);
             return true;
           } catch (error) {
             if (error && typeof error === "object" && "issues" in error) {

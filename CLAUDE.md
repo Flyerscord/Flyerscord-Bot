@@ -191,6 +191,62 @@ Always run `pnpm run build`, `pnpm run lint`, and `pnpm run test` before committ
 
 When adding new configuration options to a module:
 
+### IModuleConfigSchema Interface
+
+All module configuration schemas must conform to the `IModuleConfigSchema<TKey>` interface defined in [src/common/models/Module.ts](src/common/models/Module.ts#L18-L47):
+
+```typescript
+export interface IModuleConfigSchema<TKey extends string> {
+  /**
+   * The key of the config in the database
+   */
+  key: TKey;
+  /**
+   * The description of the config setting
+   */
+  description: string;
+  /**
+   * Whether the config is required for the module to function
+   */
+  required: boolean;
+  /**
+   * Whether the config is secret and should not be displayed in the UI
+   */
+  secret: boolean;
+  /**
+   * Whether the config requires a restart of the bot to take effect
+   */
+  requiresRestart: boolean;
+  /**
+   * The default value of the config setting. Only used if the config is not required.
+   */
+  defaultValue: z.infer<z.ZodType>;
+  /**
+   * The Zod schema for the config setting. If the value is encrypted a transform is used in the schema.
+   */
+  schema: z.ZodType;
+}
+```
+
+**Field Descriptions:**
+- **key**: The database key in `moduleName.configName` format (e.g., `"levels.xpPerMessage"`)
+- **description**: Human-readable description shown in the CLI tool
+- **required**: If `true`, the config must have a value for the module to function
+- **secret**: If `true`, the value will be hidden in CLI output and marked as secret in the UI
+- **requiresRestart**: If `true`, changing this config requires restarting the bot
+- **defaultValue**: Used when `required: false` and no value is set (can be any type matching the schema)
+- **schema**: Zod validator that defines the type and validation rules
+  - To encrypt a value in the database, use Zod transforms (detected by `SchemaInspector.isEncryptedString()`)
+  - Encryption is separate from the `secret` field - encryption protects storage, `secret` controls visibility
+
+**Important Notes:**
+- The `secret` field controls UI visibility and is displayed as a badge in the CLI
+- Database encryption is implemented through Zod schema transforms, not the `secret` field
+- The CLI tool uses `SchemaInspector.isEncryptedString()` to detect encrypted schemas and display an "encrypted" badge
+- A config can be both secret (hidden in UI) and encrypted (protected in database), or either independently
+
+### Creating a Config Schema
+
 1. **Define the config schema** in your module file:
 ```typescript
 import { Zod } from "zod";

@@ -12,7 +12,13 @@ export default (client: Client): void => {
 
 async function checkForNormalTextCommand(message: Message): Promise<boolean> {
   const configManager = ConfigManager.getInstance();
-  const prefix = configManager.getConfig("CustomCommands")?.prefix ?? "!";
+  let prefix: string;
+  try {
+    prefix = configManager.getConfig("CustomCommands")?.prefix ?? "!";
+  } catch (error) {
+    Stumper.caughtError(error, "onMessageCreate:checkForNormalTextCommand");
+    prefix = "!";
+  }
   const adminPrefix = configManager.getConfig("Common").adminPrefix;
   if (message.author.bot) return false;
   if (!message.channel.isTextBased()) return false;

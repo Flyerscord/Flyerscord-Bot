@@ -65,7 +65,6 @@ export class ConfigSetter {
         const typeDesc = SchemaInspector.getTypeDescription(schema.schema);
         const badges: string[] = [];
         if (schema.required) badges.push(chalk.red("req"));
-        if (schema.secret) badges.push(chalk.yellow("secret"));
         if (schema.requiresRestart) badges.push(chalk.magenta("restart"));
 
         const badgeStr = badges.length > 0 ? ` ${chalk.gray("[")}${badges.join(chalk.gray(", "))}${chalk.gray("]")}` : "";
@@ -92,6 +91,7 @@ export class ConfigSetter {
     console.log(`Description: ${selectedConfigSchema.description}`);
     console.log(`Type: ${SchemaInspector.getTypeDescription(selectedConfigSchema.schema)}`);
     console.log(`Required: ${selectedConfigSchema.required ? chalk.green("Yes") : chalk.dim("No")}`);
+    console.log(`Encrypted: ${selectedConfigSchema.secret ? chalk.yellow("Yes") : chalk.dim("No")}`);
 
     const currentValue = selectedConfigSchema.value;
     if (currentValue !== undefined && currentValue !== null) {
@@ -139,6 +139,13 @@ export class ConfigSetter {
       // Warn if restart required
       if (selectedConfigSchema.requiresRestart) {
         console.log(chalk.yellow("\n⚠ This config requires a bot restart to take effect"));
+      }
+
+      // Step 9: Ask if user wants to set another config
+      const setAnother = await InteractivePrompts.confirm("\nSet another configuration?", true);
+      if (setAnother) {
+        // Recursively call set() to start over
+        await this.set({});
       }
     } catch (error) {
       console.error(chalk.red("\n✗ Failed to save config:"), error);

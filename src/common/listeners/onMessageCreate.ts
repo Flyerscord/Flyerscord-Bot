@@ -12,6 +12,8 @@ export default (client: Client): void => {
 };
 
 async function checkForNormalTextCommand(message: Message): Promise<boolean> {
+  if (message.author.bot) return false;
+  if (!message.channel.isTextBased()) return false;
   const configManager = ConfigManager.getInstance();
   let prefix: string;
   try {
@@ -25,8 +27,6 @@ async function checkForNormalTextCommand(message: Message): Promise<boolean> {
     prefix = "!";
   }
   const adminPrefix = configManager.getConfig("Common").adminPrefix;
-  if (message.author.bot) return false;
-  if (!message.channel.isTextBased()) return false;
   if (!message.content.startsWith(prefix) && !message.content.startsWith(adminPrefix)) return false;
 
   const messageArray = message.content.split(" ");

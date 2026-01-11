@@ -5,6 +5,8 @@ import { config, NewConfig } from "../db/schema";
 import Stumper from "stumper";
 import type { IModuleConfigSchema } from "../models/Module";
 import { z } from "zod";
+import { inArray } from "drizzle-orm";
+import ModuleManager from "./ModuleManager";
 
 /**
  * Extract TypeScript type from a Zod schema
@@ -88,8 +90,10 @@ export default class ConfigManager extends Singleton {
       keysChanged: [],
       configsMissingFromMap: [],
     };
+    const moduleManager = ModuleManager.getInstance();
+    const moduleNames = moduleManager.getModuleNames();
 
-    const allConfigs = await this.db.select().from(config);
+    const allConfigs = await this.db.select().from(config).where(inArray(config.moduleName, moduleNames));
 
     if (allConfigs.length === 0) {
       Stumper.error("No configs found", "common:ConfigManager:refreshConfig");
@@ -100,7 +104,7 @@ export default class ConfigManager extends Singleton {
     for (const dbConfig of allConfigs) {
       const configSchema = this.configs.get(dbConfig.moduleName)?.find((schema) => schema.key === dbConfig.key);
       if (!configSchema) {
-        Stumper.error(
+        Stumper.warning(
           `Config ${dbConfig.moduleName}_${dbConfig.key} was found in database but not in config map`,
           "common:ConfigManager:refreshConfig",
         );

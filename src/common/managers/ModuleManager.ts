@@ -25,6 +25,10 @@ export default class ModuleManager extends Singleton {
     return this.modules;
   }
 
+  getModuleNames(): Modules[] {
+    return this.modules.map((module) => module.name);
+  }
+
   getModule(name: Modules): Module<any> | undefined {
     return this.modules.find((module) => module.name === name);
   }

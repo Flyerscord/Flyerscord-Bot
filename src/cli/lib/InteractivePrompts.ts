@@ -10,12 +10,10 @@ export class InteractivePrompts {
    */
   static async promptForValue(schema: z.ZodType, currentValue: unknown, key: string): Promise<unknown> {
     const analysis = SchemaInspector.analyzeSchema(schema);
-    // Check if this is an encrypted string by inspecting the schema
-    const isEncrypted = SchemaInspector.isEncryptedString(schema);
 
     switch (analysis.type) {
       case "string":
-        return this.promptString(schema, typeof currentValue === "string" ? currentValue : undefined, key, isEncrypted, analysis.constraints);
+        return this.promptString(schema, typeof currentValue === "string" ? currentValue : undefined, key, analysis.constraints);
       case "number":
         return this.promptNumber(schema, typeof currentValue === "number" ? currentValue : undefined, key, analysis.constraints);
       case "boolean":
@@ -42,7 +40,6 @@ export class InteractivePrompts {
     schema: z.ZodType,
     currentValue: string | undefined,
     key: string,
-    isSecret: boolean,
     constraints: SchemaConstraints,
   ): Promise<string> {
     let message = `Enter value for ${key}`;
@@ -59,7 +56,7 @@ export class InteractivePrompts {
 
     const { value } = await inquirer.prompt([
       {
-        type: isSecret ? "password" : "input",
+        type: "input",
         name: "value",
         message,
         default: currentValue,

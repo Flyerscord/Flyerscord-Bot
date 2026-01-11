@@ -63,8 +63,10 @@ export class ConfigSetter {
       const sortedConfigs = [...moduleConfigs].sort((a, b) => a.key.localeCompare(b.key));
       const configChoices = sortedConfigs.map((schema) => {
         const typeDesc = SchemaInspector.getTypeDescription(schema.schema);
+        const isEncrypted = SchemaInspector.isEncryptedString(schema.schema);
         const badges: string[] = [];
         if (schema.required) badges.push(chalk.red("req"));
+        if (isEncrypted) badges.push(chalk.yellow("encrypted"));
         if (schema.requiresRestart) badges.push(chalk.magenta("restart"));
 
         const badgeStr = badges.length > 0 ? ` ${chalk.gray("[")}${badges.join(chalk.gray(", "))}${chalk.gray("]")}` : "";
@@ -85,12 +87,14 @@ export class ConfigSetter {
     }
 
     // Step 4: Display current info
+    const isEncryptedValue = SchemaInspector.isEncryptedString(selectedConfigSchema.schema);
     console.log(chalk.bold("\n=== Config Information ==="));
     console.log(`Module: ${chalk.cyan(selectedModule)}`);
     console.log(`Key: ${chalk.cyan(selectedConfigSchema.key)}`);
     console.log(`Description: ${selectedConfigSchema.description}`);
     console.log(`Type: ${SchemaInspector.getTypeDescription(selectedConfigSchema.schema)}`);
     console.log(`Required: ${selectedConfigSchema.required ? chalk.green("Yes") : chalk.dim("No")}`);
+    console.log(`Encrypted: ${isEncryptedValue ? chalk.yellow("Yes") : chalk.dim("No")}`);
 
     const currentValue = selectedConfigSchema.value;
     if (currentValue !== undefined && currentValue !== null) {

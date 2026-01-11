@@ -7,7 +7,7 @@ import BotHealthManager from "../managers/BotHealthManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
 import SlashCommandManager from "../managers/SlashCommandManager";
 import fs from "fs";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
+import Env from "../utils/Env";
 
 export default (client: Client): void => {
   client.on("clientReady", async () => {
@@ -25,8 +25,7 @@ export default (client: Client): void => {
 };
 
 async function setupBot(client: Client): Promise<void> {
-  const configManager = ConfigManager.getInstance();
-  if (configManager.getConfig("Common").productionMode) {
+  if (Env.getBoolean("PRODUCTION_MODE")) {
     Stumper.info("Setting bot presence", "common:onReady:setupBot");
     client.user?.setPresence({ status: "online", activities: [{ name: "Flyers Hockey", type: ActivityType.Watching }] });
 

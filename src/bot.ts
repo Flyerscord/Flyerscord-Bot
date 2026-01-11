@@ -89,6 +89,11 @@ async function startUp(): Promise<void> {
     envErrors.push("ENCRYPTION_KEY");
   }
 
+  const PRODUCTION_MODE = Env.getBoolean("PRODUCTION_MODE");
+  if (!PRODUCTION_MODE) {
+    envErrors.push("PRODUCTION_MODE");
+  }
+
   if (envErrors.length > 0) {
     Stumper.error(`Missing environment variables: ${envErrors.join(", ")}`, "main:startUp");
     return;
@@ -110,13 +115,16 @@ async function startUp(): Promise<void> {
   // CommonModule must be first followed by HealthCheckModule
   moduleManager.addModule(CommonModule.getInstance());
   moduleManager.addModule(HealthCheckModule.getInstance());
-
   moduleManager.addModule(AdminModule.getInstance());
   moduleManager.addModule(BlueSkyModule.getInstance());
-  moduleManager.addModule(CustomCommandsModule.getInstance());
+
+  if (!Env.getBoolean("PRODUCTION_MODE")) {
+    moduleManager.addModule(CustomCommandsModule.getInstance());
+    moduleManager.addModule(ImageProxyModule.getInstance());
+  }
+
   moduleManager.addModule(DaysUntilModule.getInstance());
   moduleManager.addModule(GameDayPostsModule.getInstance());
-  moduleManager.addModule(ImageProxyModule.getInstance());
   moduleManager.addModule(JoinLeaveModule.getInstance());
   moduleManager.addModule(LevelsModule.getInstance());
   moduleManager.addModule(MiscModule.getInstance());
@@ -175,12 +183,6 @@ async function startUp(): Promise<void> {
 
   // Update Caches
   await CombinedTeamInfoCache.getInstance().forceUpdate();
-
-  // Remove Modules based on Production Mode
-  if (!commonConfig.productionMode) {
-    moduleManager.removeModule("CustomCommands");
-    moduleManager.removeModule("ImageProxy");
-  }
 
   // Enable All Modules
   const result = await moduleManager.enableAllModules();

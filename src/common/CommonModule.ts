@@ -3,18 +3,9 @@ import schema from "./db/schema";
 import Module, { IModuleConfigSchema } from "./models/Module";
 import Zod from "./utils/ZodWrapper";
 
-export type CommonConfigKeys = "productionMode" | "logLevel" | "masterGuildId" | "adminPrefix" | "advancedDebug";
+export type CommonConfigKeys = "logLevel" | "masterGuildId" | "adminPrefix" | "advancedDebug";
 
 export const commonConfigSchema = [
-  {
-    key: "productionMode",
-    description: "Whether the bot is in production mode or not",
-    required: false,
-    secret: true,
-    requiresRestart: true,
-    defaultValue: false,
-    schema: Zod.boolean(),
-  },
   {
     key: "logLevel",
     description: "The log level to use",

@@ -3,7 +3,7 @@ import { Message } from "discord.js";
 import Stumper from "stumper";
 import ClientManager from "@common/managers/ClientManager";
 import discord from "@common/utils/discord/discord";
-import ConfigManager from "common/managers/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 
 export default (): void => {
   ClientManager.getInstance().client.on("messageCreate", async (message: Message) => {

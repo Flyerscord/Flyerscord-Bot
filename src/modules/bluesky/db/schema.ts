@@ -1,4 +1,4 @@
-import { createModuleTable } from "common/db/schema-types";
+import { createModuleTable } from "@common/db/schema-types";
 import { varchar, text, timestamp } from "drizzle-orm/pg-core";
 
 export const blueSkyState = createModuleTable("bluesky__state", {

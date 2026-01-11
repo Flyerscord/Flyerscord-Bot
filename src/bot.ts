@@ -118,7 +118,7 @@ async function startUp(): Promise<void> {
   moduleManager.addModule(AdminModule.getInstance());
   moduleManager.addModule(BlueSkyModule.getInstance());
 
-  if (!Env.getBoolean("PRODUCTION_MODE")) {
+  if (Env.getBoolean("PRODUCTION_MODE")) {
     moduleManager.addModule(CustomCommandsModule.getInstance());
     moduleManager.addModule(ImageProxyModule.getInstance());
   }

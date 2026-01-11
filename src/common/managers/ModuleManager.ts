@@ -78,7 +78,11 @@ export default class ModuleManager extends Singleton {
   async enableAllModules(): Promise<boolean> {
     let result = true;
     for (const module of this.modules) {
-      result = result && (await this.enableModule(module.name));
+      try {
+        result = result && (await this.enableModule(module.name));
+      } catch (_error) {
+        result = false;
+      }
     }
     return result;
   }

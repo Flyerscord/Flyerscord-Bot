@@ -23,7 +23,8 @@
     "db:push": "drizzle-kit push",
     "config": "tsx src/cli/config-tool.ts",
     "config:view": "tsx src/cli/config-tool.ts view",
-    "config:set": "tsx src/cli/config-tool.ts set"
+    "config:set": "tsx src/cli/config-tool.ts set",
+    "config:list": "tsx src/cli/config-tool.ts list"
   },
   "repository": {
     "type": "git",

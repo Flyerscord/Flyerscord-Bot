@@ -2,17 +2,20 @@ import { Command } from "commander";
 import chalk from "chalk";
 import { ConfigViewer } from "@cli/lib/ConfigViewer";
 import { ConfigSetter } from "@cli/lib/ConfigSetter";
+import { ConfigLister } from "@cli/lib/ConfigLister";
 import type { Modules } from "@modules/Modules";
 
 export class ConfigCLI {
   private program: Command;
   private viewer: ConfigViewer;
   private setter: ConfigSetter;
+  private lister: ConfigLister;
 
   constructor() {
     this.program = new Command();
     this.viewer = new ConfigViewer();
     this.setter = new ConfigSetter();
+    this.lister = new ConfigLister();
     this.setupCommands();
   }
 
@@ -47,6 +50,21 @@ export class ConfigCLI {
       .action(async (options) => {
         try {
           await this.handleSet(options);
+        } catch (error) {
+          console.error(chalk.red("Error:"), error);
+          process.exit(1);
+        }
+      });
+
+    // List command
+    this.program
+      .command("list")
+      .description("List available modules and config keys")
+      .option("-m, --module <module>", "List config keys for a specific module")
+      .option("-a, --all", "List all modules with their config keys", false)
+      .action(async (options) => {
+        try {
+          await this.handleList(options);
         } catch (error) {
           console.error(chalk.red("Error:"), error);
           process.exit(1);
@@ -105,6 +123,22 @@ export class ConfigCLI {
     }
 
     await this.setter.set(setOptions);
+  }
+
+  /**
+   * Handle list command
+   */
+  private async handleList(options: { module?: string; all?: boolean }): Promise<void> {
+    if (options.all) {
+      // List all modules with their keys
+      this.lister.listAll();
+    } else if (options.module) {
+      // List keys for specific module
+      this.lister.listModuleKeys(options.module as Modules);
+    } else {
+      // List all modules (default behavior)
+      this.lister.listModules();
+    }
   }
 
   /**

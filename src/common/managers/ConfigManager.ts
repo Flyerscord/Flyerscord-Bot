@@ -261,6 +261,34 @@ export default class ConfigManager extends Singleton {
   }
 
   /**
+   * Get all registered module names
+   *
+   * @returns Array of all module names that have been registered
+   */
+  getAllModules(): Modules[] {
+    return Array.from(this.configs.keys());
+  }
+
+  /**
+   * Get all config schemas for a specific module
+   *
+   * @param module - The module name
+   * @returns Array of config schemas for the module, or empty array if module not found
+   */
+  getModuleConfigSchemas(module: Modules): readonly IConfig<z.ZodType>[] {
+    return this.configs.get(module) ?? [];
+  }
+
+  /**
+   * Get all config schemas for all modules
+   *
+   * @returns Map of module names to their config schema arrays
+   */
+  getAllConfigSchemas(): ReadonlyMap<Modules, readonly IConfig<z.ZodType>[]> {
+    return this.configs;
+  }
+
+  /**
    * Update a config value in the in-memory schema map
    *
    * @param module - Module name

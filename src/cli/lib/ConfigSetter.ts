@@ -91,7 +91,6 @@ export class ConfigSetter {
     console.log(`Description: ${selectedConfigSchema.description}`);
     console.log(`Type: ${SchemaInspector.getTypeDescription(selectedConfigSchema.schema)}`);
     console.log(`Required: ${selectedConfigSchema.required ? chalk.green("Yes") : chalk.dim("No")}`);
-    console.log(`Encrypted: ${selectedConfigSchema.secret ? chalk.yellow("Yes") : chalk.dim("No")}`);
 
     const currentValue = selectedConfigSchema.value;
     if (currentValue !== undefined && currentValue !== null) {
@@ -104,12 +103,7 @@ export class ConfigSetter {
 
     // Step 5: Prompt for new value
     console.log(chalk.bold("\n=== Enter New Value ==="));
-    const newValue = await InteractivePrompts.promptForValue(
-      selectedConfigSchema.schema,
-      currentValue,
-      selectedConfigSchema.key,
-      selectedConfigSchema.secret,
-    );
+    const newValue = await InteractivePrompts.promptForValue(selectedConfigSchema.schema, currentValue, selectedConfigSchema.key);
 
     // Step 6: Preview changes
     console.log(chalk.bold("\n=== Preview Changes ==="));
@@ -117,9 +111,6 @@ export class ConfigSetter {
     console.log(`Key: ${chalk.cyan(selectedConfigSchema.key)}`);
     console.log(`Old Value: ${this.formatValue(currentValue)}`);
     console.log(`New Value: ${this.formatValue(newValue)}`);
-    if (selectedConfigSchema.secret) {
-      console.log(chalk.dim("(This value will be encrypted in the database)"));
-    }
 
     // Step 7: Confirm
     const confirmed = await InteractivePrompts.confirm("\nSave this change?", true);

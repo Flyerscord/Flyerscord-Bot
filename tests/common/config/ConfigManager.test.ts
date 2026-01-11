@@ -5,10 +5,11 @@ import type { IModuleConfigSchema } from "@common/models/Module";
 // Mock dependencies
 const mockDb = {
   select: jest.fn().mockReturnThis(),
-  from: jest.fn(),
+  from: jest.fn().mockReturnThis(),
+  where: jest.fn().mockResolvedValue([]), // Default empty array
   insert: jest.fn().mockReturnThis(),
   values: jest.fn().mockReturnThis(),
-  onConflictDoNothing: jest.fn(),
+  onConflictDoNothing: jest.fn().mockResolvedValue(undefined),
 };
 
 const mockStumper = {
@@ -68,7 +69,7 @@ describe("ConfigManager", () => {
         requiresRestart: false,
       };
 
-      mockDb.from.mockResolvedValue([]);
+      mockDb.where.mockResolvedValue([]);
 
       await configManager.addNewConfigSchema("Common", schema);
 
@@ -101,7 +102,7 @@ describe("ConfigManager", () => {
         requiresRestart: true,
       };
 
-      mockDb.from.mockResolvedValue([]);
+      mockDb.where.mockResolvedValue([]);
 
       await configManager.addNewConfigSchema("Common", schema1);
       await configManager.addNewConfigSchema("Common", schema2);
@@ -113,7 +114,7 @@ describe("ConfigManager", () => {
   describe("refreshConfig", () => {
     it("should return success false when no configs found in database", async () => {
       const configManager = ConfigManager.getInstance();
-      mockDb.from.mockResolvedValue([]);
+      mockDb.where.mockResolvedValue([]);
 
       const result = await configManager.refreshConfig();
 
@@ -143,7 +144,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       const result = await configManager.refreshConfig();
 
@@ -173,7 +174,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       const result = await configManager.refreshConfig();
 
@@ -202,7 +203,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       const result = await configManager.refreshConfig();
 
@@ -235,7 +236,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       const result = await configManager.refreshConfig();
 
@@ -254,7 +255,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       const result = await configManager.refreshConfig();
 
@@ -263,7 +264,7 @@ describe("ConfigManager", () => {
         module: "Common",
         key: "unknownKey",
       });
-      expect(mockStumper.error).toHaveBeenCalledWith(
+      expect(mockStumper.warning).toHaveBeenCalledWith(
         expect.stringContaining("was found in database but not in config map"),
         "common:ConfigManager:refreshConfig",
       );
@@ -294,7 +295,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       // Need to load configs first
       await configManager.refreshConfig();
@@ -328,7 +329,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       await configManager.refreshConfig();
 
@@ -360,7 +361,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       await configManager.refreshConfig();
 
@@ -400,7 +401,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       await configManager.refreshConfig();
 
@@ -445,7 +446,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       await configManager.refreshConfig();
 
@@ -479,7 +480,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       await configManager.refreshConfig();
 
@@ -508,7 +509,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       await configManager.refreshConfig();
 
@@ -541,7 +542,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       await configManager.refreshConfig();
 
@@ -587,7 +588,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       expect(configManager.isLoaded()).toBe(false);
       await configManager.refreshConfig();
@@ -596,7 +597,7 @@ describe("ConfigManager", () => {
 
     it("should remain false after failed refreshConfig with no configs", async () => {
       const configManager = ConfigManager.getInstance();
-      mockDb.from.mockResolvedValue([]);
+      mockDb.where.mockResolvedValue([]);
 
       const result = await configManager.refreshConfig();
 
@@ -643,7 +644,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       await configManager.refreshConfig();
 
@@ -680,7 +681,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       await configManager.refreshConfig();
 
@@ -716,7 +717,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       await configManager.refreshConfig();
 
@@ -750,7 +751,7 @@ describe("ConfigManager", () => {
         requiresRestart: true,
       });
 
-      mockDb.from.mockResolvedValue([
+      mockDb.where.mockResolvedValue([
         { moduleName: "Common" as Modules, key: "normalKey", value: "value1", updatedAt: new Date() },
         { moduleName: "Common" as Modules, key: "restartKey", value: "value2", updatedAt: new Date() },
       ]);
@@ -800,7 +801,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       await configManager.refreshConfig();
 
@@ -860,7 +861,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs);
+      mockDb.where.mockResolvedValue(dbConfigs);
 
       // First refresh
       await configManager.refreshConfig();
@@ -893,7 +894,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs1);
+      mockDb.where.mockResolvedValue(dbConfigs1);
 
       await configManager.refreshConfig();
 
@@ -905,7 +906,7 @@ describe("ConfigManager", () => {
           updatedAt: new Date(),
         },
       ];
-      mockDb.from.mockResolvedValue(dbConfigs2);
+      mockDb.where.mockResolvedValue(dbConfigs2);
 
       const result = await configManager.refreshConfig();
 

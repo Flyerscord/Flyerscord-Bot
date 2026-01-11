@@ -8,9 +8,9 @@ export class InteractivePrompts {
   /**
    * Prompt for a value based on the Zod schema type
    */
-  static async promptForValue(schema: z.ZodType, currentValue: unknown, key: string, _isSecret: boolean): Promise<unknown> {
+  static async promptForValue(schema: z.ZodType, currentValue: unknown, key: string): Promise<unknown> {
     const analysis = SchemaInspector.analyzeSchema(schema);
-    // Check if this is an encrypted string by inspecting the schema, not the metadata flag
+    // Check if this is an encrypted string by inspecting the schema
     const isEncrypted = SchemaInspector.isEncryptedString(schema);
 
     switch (analysis.type) {
@@ -173,7 +173,7 @@ export class InteractivePrompts {
       switch (action) {
         case "add": {
           console.log(chalk.bold(`\n--- Item ${items.length + 1} ---`));
-          const item = await this.promptForValue(elementSchema, undefined, `item ${items.length + 1}`, false);
+          const item = await this.promptForValue(elementSchema, undefined, `item ${items.length + 1}`);
           items.push(item);
           console.log(chalk.green("✓ Item added"));
           break;
@@ -238,7 +238,7 @@ export class InteractivePrompts {
         }
       }
 
-      const propValue = await this.promptForValue(propSchema, obj[propKey], propKey, false);
+      const propValue = await this.promptForValue(propSchema, obj[propKey], propKey);
       obj[propKey] = propValue;
     }
 

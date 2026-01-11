@@ -78,6 +78,11 @@ async function startUp(): Promise<void> {
     return;
   }
 
+  Stumper.info(
+    `Bot starting up in ${PRODUCTION_MODE ? "production" : "development"} mode! Advanced debug: ${ADVANCED_DEBUG ? "enabled" : "disabled"}`,
+    "main:startUp",
+  );
+
   // Initialize the Module Manager
   const moduleManager = ModuleManager.getInstance();
 

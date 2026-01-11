@@ -1,7 +1,7 @@
 import { MessageContextMenuCommandInteraction } from "discord.js";
 import { AdminMessageContextMenuCommand } from "@common/models/ContextMenuCommand";
 import discord from "@common/utils/discord/discord";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 import PinsDB from "../../db/PinsDB";
 
 export default class RemovePinContext extends AdminMessageContextMenuCommand {

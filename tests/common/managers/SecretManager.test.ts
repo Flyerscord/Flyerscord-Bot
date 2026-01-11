@@ -25,19 +25,19 @@ const mockStumper = {
 jest.mock("stumper", () => mockStumper);
 
 describe("SecretManager", () => {
-  let SecretManager: typeof import("@root/src/common/managers/SecretManager").default;
+  let SecretManager: typeof import("@common/managers/SecretManager").default;
 
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetModules();
 
     // Clear singleton instance
-    const Singleton = await import("@root/src/common/models/Singleton");
+    const Singleton = await import("@common/models/Singleton");
     // @ts-expect-error - Accessing private static field for testing
     Singleton.Singleton.instances = new Map();
 
     // Re-import to get fresh instance
-    const module = await import("@root/src/common/managers/SecretManager");
+    const module = await import("@common/managers/SecretManager");
     SecretManager = module.default;
   });
 
@@ -347,10 +347,10 @@ describe("SecretManager", () => {
 
       // Clear singleton and create new instance
       jest.resetModules();
-      const Singleton = require("@root/src/common/models/Singleton").Singleton;
+      const Singleton = require("@common/models/Singleton").Singleton;
       Singleton.instances = new Map();
 
-      const SecretManagerModule = require("@root/src/common/managers/SecretManager");
+      const SecretManagerModule = require("@common/managers/SecretManager");
       const secretManager2 = SecretManagerModule.default.getInstance();
 
       // Should be able to decrypt with new instance (same key derivation)

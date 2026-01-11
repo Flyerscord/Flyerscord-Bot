@@ -1,6 +1,6 @@
 import Stumper from "stumper";
 import discord from "@common/utils/discord/discord";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 
 export default abstract class StatsVoiceChannel {
   name: string;

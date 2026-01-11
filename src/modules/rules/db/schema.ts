@@ -1,4 +1,4 @@
-import { createModuleEnum, createModuleTable } from "@root/src/common/db/schema-types";
+import { createModuleEnum, createModuleTable } from "@common/db/schema-types";
 import { check, integer, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm/sql";
 

@@ -2,7 +2,7 @@ import { Client, Message } from "discord.js";
 
 import TextCommand from "../models/TextCommand";
 import Stumper from "stumper";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 
 export default (client: Client): void => {
   client.on("messageCreate", async (message: Message) => {

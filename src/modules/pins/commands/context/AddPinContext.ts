@@ -3,7 +3,7 @@ import { AdminMessageContextMenuCommand } from "@common/models/ContextMenuComman
 import Stumper from "stumper";
 import { getPinEmbed } from "../../utils/Embeds";
 import discord from "@common/utils/discord/discord";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 import PinsDB from "../../db/PinsDB";
 
 export default class AddPinContext extends AdminMessageContextMenuCommand {

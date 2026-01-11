@@ -1,4 +1,4 @@
-import { createModuleTable } from "@root/src/common/db/schema-types";
+import { createModuleTable } from "@common/db/schema-types";
 import { boolean, serial, timestamp, varchar } from "drizzle-orm/pg-core";
 
 export const daysUntilDates = createModuleTable("daysuntil__dates", {

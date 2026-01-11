@@ -1,4 +1,4 @@
-import { createModuleTable } from "@root/src/common/db/schema-types";
+import { createModuleTable } from "@common/db/schema-types";
 import { sql } from "drizzle-orm";
 import { serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 

@@ -5,7 +5,7 @@ import discord from "@common/utils/discord/discord";
 import { sleepSec } from "@common/utils/sleep";
 import Stumper from "stumper";
 import MyImageKit from "../../utils/ImageKit";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 import CustomCommandsDB from "../../db/CustomCommandsDB";
 
 export default class TestAllCommand extends AdminSlashCommand {

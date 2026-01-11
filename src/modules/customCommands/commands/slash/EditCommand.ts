@@ -4,7 +4,7 @@ import { InvalidImgurUrlException } from "../../exceptions/InvalidImgurUrlExcept
 import { ErrorUploadingToImageKitException } from "../../exceptions/ErrorUploadingToImageKitException";
 import Stumper from "stumper";
 import PageNotFoundException from "../../exceptions/PageNotFoundException";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 import CustomCommandsDB from "../../db/CustomCommandsDB";
 
 export default class EditCommand extends AdminAutocompleteSlashCommand {

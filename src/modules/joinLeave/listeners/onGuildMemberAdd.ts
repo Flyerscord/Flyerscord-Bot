@@ -3,7 +3,7 @@ import ClientManager from "@common/managers/ClientManager";
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
 import JoinImageGenerator from "../utils/JoinImageGenerator";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;

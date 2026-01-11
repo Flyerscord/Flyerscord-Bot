@@ -2,7 +2,7 @@ import Module, { IModuleConfigSchema } from "@common/models/Module";
 import RulesDB from "./db/RulesDB";
 import SlashCommand from "@common/models/SlashCommand";
 import schema from "./db/schema";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 import Zod from "@common/utils/ZodWrapper";
 import { z } from "zod";
 

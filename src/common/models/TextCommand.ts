@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import ITextCommandOptions, { COMMAND_LOCATION } from "../interfaces/ITextCommandOptions";
 import Stumper from "stumper";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 
 export default abstract class TextCommand {
   readonly prefix: string;

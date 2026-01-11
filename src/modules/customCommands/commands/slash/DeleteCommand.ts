@@ -1,6 +1,6 @@
 import { AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js";
 import { AdminAutocompleteSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 import CustomCommandsDB from "../../db/CustomCommandsDB";
 
 export default class DeleteCommand extends AdminAutocompleteSlashCommand {

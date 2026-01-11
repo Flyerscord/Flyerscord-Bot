@@ -40,19 +40,19 @@ jest.mock("@common/db/schema", () => ({
 }));
 
 describe("ConfigManager", () => {
-  let ConfigManager: typeof import("@root/src/common/managers/ConfigManager").default;
+  let ConfigManager: typeof import("@common/managers/ConfigManager").default;
 
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetModules();
 
     // Clear singleton instance
-    const Singleton = await import("@root/src/common/models/Singleton");
+    const Singleton = await import("@common/models/Singleton");
     // @ts-expect-error - Accessing private static field for testing
     Singleton.Singleton.instances = new Map();
 
     // Re-import to get fresh instance
-    const module = await import("@root/src/common/managers/ConfigManager");
+    const module = await import("@common/managers/ConfigManager");
     ConfigManager = module.default;
   });
 

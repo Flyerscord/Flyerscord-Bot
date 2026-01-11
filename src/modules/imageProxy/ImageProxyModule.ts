@@ -1,7 +1,7 @@
 import ExpressManager from "@common/managers/ExpressManager";
 import Module, { IModuleConfigSchema } from "@common/models/Module";
 import request from "request";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 
 export type ImageProxyConfigKeys = "";
 

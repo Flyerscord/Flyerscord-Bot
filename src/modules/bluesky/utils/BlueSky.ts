@@ -5,7 +5,7 @@ import { AccountNotinListException } from "../exceptions/AccountNotInListExcepti
 import { AtpAgent, AtUri } from "@atproto/api";
 import { AccountDoesNotExistException } from "../exceptions/AccountDoesNotExistException";
 import { Singleton } from "@common/models/Singleton";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 import BlueSkyDB from "../db/BlueSkyDB";
 
 export default class BlueSky extends Singleton {

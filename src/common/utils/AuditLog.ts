@@ -1,4 +1,4 @@
-import { Modules } from "@root/src/modules/Modules";
+import { Modules } from "@modules/Modules";
 import Database from "../db/db";
 import { AuditLog, auditLog, NewAuditLog } from "../db/schema";
 import { count, eq, and } from "drizzle-orm";

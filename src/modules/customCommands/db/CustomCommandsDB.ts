@@ -10,9 +10,9 @@ import ImageKit from "../utils/ImageKit";
 import axios from "axios";
 import HTMLPageException from "../exceptions/HTMLPageException";
 import discord from "@common/utils/discord/discord";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
+import ConfigManager from "@common/managers/ConfigManager";
 import { sleepMs } from "@common/utils/sleep";
-import TextCommandManager from "@root/src/common/managers/TextCommandManager";
+import TextCommandManager from "@common/managers/TextCommandManager";
 import { Message } from "discord.js";
 
 export interface IAuditLogInfo {

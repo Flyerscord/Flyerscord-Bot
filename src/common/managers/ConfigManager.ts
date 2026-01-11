@@ -113,7 +113,12 @@ export default class ConfigManager extends Singleton {
       if (dbConfig.value) {
         newRawValue = dbConfig.value;
       } else {
-        newRawValue = String(configSchema.defaultValue);
+        // Convert default value to string, using JSON.stringify for arrays/objects
+        if (Array.isArray(configSchema.defaultValue) || (typeof configSchema.defaultValue === "object" && configSchema.defaultValue !== null)) {
+          newRawValue = JSON.stringify(configSchema.defaultValue);
+        } else {
+          newRawValue = String(configSchema.defaultValue);
+        }
       }
 
       // Check if value changed

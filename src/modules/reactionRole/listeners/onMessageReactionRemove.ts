@@ -38,6 +38,17 @@ export default (): void => {
     }
 
     if (reaction.emoji.id == reactionRole.emojiId) {
+      void db.createAuditLog({
+        action: "ReactionRoleRemoved",
+        userId: user.id,
+        details: {
+          reactionName,
+          emojiId: reaction.emoji.id,
+          channelId: reaction.message.channelId,
+          messageId,
+        },
+      });
+
       await discord.roles.removeRoleToUser(member, reactionRole.roleId);
       Stumper.debug(`Reaction removed from reaction role ${reactionName} by user ${user.id}`, "reactionRole:onMessageReactionRemove");
     }

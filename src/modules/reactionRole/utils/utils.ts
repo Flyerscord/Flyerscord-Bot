@@ -4,6 +4,7 @@ import { EmbedBuilder } from "discord.js";
 import ConfigManager from "@common/managers/ConfigManager";
 import ReactionRoleDB from "../db/ReactionRoleDB";
 import type { ReactionRolesConfig } from "../ReactionRoleModule";
+import { AuditLogSeverity } from "@common/db/schema";
 
 export async function createRoleReactionMessagesIfNeeded(): Promise<void> {
   const db = new ReactionRoleDB();
@@ -29,6 +30,16 @@ async function createRoleReactionMessage(reactionRole: ReactionRolesConfig): Pro
   const message = await discord.messages.sendEmbedToChannel(ConfigManager.getInstance().getConfig("ReactionRole").channelId, embed);
 
   if (message) {
+    void db.createAuditLog({
+      action: "ReactionRoleMessageCreated",
+      details: {
+        reactionName: reactionRole.name,
+        channelId: message.channelId,
+        messageId: message.id,
+      },
+      severity: AuditLogSeverity.WARNING,
+    });
+
     await db.setReactionMessage(reactionRole.name, message.id);
 
     await discord.reactions.reactToMessageWithEmoji(message, reactionRole.emojiId);

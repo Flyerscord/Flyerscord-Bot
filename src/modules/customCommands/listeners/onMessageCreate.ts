@@ -41,6 +41,17 @@ async function checkForCustomTextCommand(message: Message): Promise<boolean> {
     }
 
     Stumper.info(`Executing custom command ${customCommand.name}.`, "customCommands:onMessageCreate:checkForCustomTextCommand");
+
+    void db.createAuditLog({
+      action: "CustomCommandRan",
+      userId: message.author.id,
+      details: {
+        command: customCommand.name,
+        channelId: message.channelId,
+        messageId: message.id,
+      },
+    });
+
     await discord.messages.sendMessageToChannel(message.channel.id, text);
     return true;
   } else if (message.client.textCommands.hasAny(command)) {

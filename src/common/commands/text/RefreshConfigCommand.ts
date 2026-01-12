@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import ConfigManager from "../../managers/ConfigManager";
-import MyAuditLog from "../../utils/AuditLog";
+import MyAuditLog from "../../utils/MyAuditLog";
 import { DMTextCommand } from "../../models/TextCommand";
 import discord from "../../utils/discord/discord";
 import { AuditLogSeverity } from "../../db/schema";

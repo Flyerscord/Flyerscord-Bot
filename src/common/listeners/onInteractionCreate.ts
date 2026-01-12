@@ -13,6 +13,7 @@ import Stumper from "stumper";
 import ModalMenu from "../models/ModalMenu";
 import { MessageContextMenuCommand, UserContextMenuCommand } from "../models/ContextMenuCommand";
 import SlashCommand from "@common/models/SlashCommand";
+import MyAuditLog from "../utils/MyAuditLog";
 
 export default (client: Client): void => {
   client.on("interactionCreate", async (interaction: Interaction) => {
@@ -34,6 +35,15 @@ async function onSlashCommand(client: Client, interaction: ChatInputCommandInter
   const command: SlashCommand | undefined = client.slashCommands.get(interaction.commandName);
   if (!command) return;
   try {
+    void MyAuditLog.createAuditLog("Common", {
+      action: "SlashCommandRan",
+      userId: interaction.user.id,
+      details: {
+        command: command.name,
+        channelId: interaction.channelId,
+        args: interaction.options.data,
+      },
+    });
     await command.run(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onSlashCommand");
@@ -49,6 +59,15 @@ async function onModalSubmit(client: Client, interaction: ModalSubmitInteraction
   const modal: ModalMenu | undefined = client.modals.find((modal: ModalMenu) => modal.name.startsWith(idWithoutData));
   if (!modal) return;
   try {
+    void MyAuditLog.createAuditLog("Common", {
+      action: "ModalSubmitted",
+      userId: interaction.user.id,
+      details: {
+        id: idWithoutData,
+        name: modal.name,
+        channelId: interaction.channelId,
+      },
+    });
     await modal.run(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onModalSubmit");
@@ -62,6 +81,15 @@ async function onUserContextMenuCommand(client: Client, interaction: UserContext
   const userContextMenu: UserContextMenuCommand | undefined = client.contextMenus.get(interaction.commandName);
   if (!userContextMenu) return;
   try {
+    void MyAuditLog.createAuditLog("Common", {
+      action: "UserContextMenuCommandRan",
+      userId: interaction.user.id,
+      details: {
+        command: interaction.commandName,
+        channelId: interaction.channelId,
+        targetUser: interaction.targetUser.id,
+      },
+    });
     await userContextMenu.run(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onUserContextMenuCommand");
@@ -75,6 +103,15 @@ async function onMessageContextMenuCommand(client: Client, interaction: MessageC
   const messageContextMenu: MessageContextMenuCommand | undefined = client.contextMenus.get(interaction.commandName);
   if (!messageContextMenu) return;
   try {
+    void MyAuditLog.createAuditLog("Common", {
+      action: "MessageContextMenuCommandRan",
+      userId: interaction.user.id,
+      details: {
+        command: interaction.commandName,
+        channelId: interaction.channelId,
+        targetMessage: interaction.targetMessage.id,
+      },
+    });
     await messageContextMenu.run(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onMessageContextMenuCommand");

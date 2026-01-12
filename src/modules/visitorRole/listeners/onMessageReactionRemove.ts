@@ -35,6 +35,16 @@ export default (): void => {
     const visitorEmojiId = config.visitorEmojiId;
 
     if (reaction.emoji.id == visitorEmojiId) {
+      void db.createAuditLog({
+        action: "VisitorRoleRemoved",
+        userId: user.id,
+        details: {
+          emojiId: reaction.emoji.id,
+          channelId: reaction.message.channelId,
+          messageId: reaction.message.id,
+        },
+      });
+
       await discord.roles.removeRoleToUser(member, visitorRoleId);
       await discord.roles.addRoleToUser(member, memberRoleId);
       Stumper.debug(`Reaction removed from message ${reaction.message.id} by user ${user.id}`, "visitorRole:onMessageReactionRemove");

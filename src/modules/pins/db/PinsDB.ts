@@ -23,6 +23,16 @@ export default class PinsDB extends ModuleDatabase {
       })
       .returning();
 
+    void this.createAuditLog({
+      action: PinsActionType.ADD,
+      userId: pinnedBy,
+      details: {
+        ogMessageId,
+        ogChannelId,
+        ogCreatedAt,
+      },
+    });
+
     if (results.length === 0) {
       return undefined;
     }
@@ -46,6 +56,13 @@ export default class PinsDB extends ModuleDatabase {
 
   async deletePin(ogMessageId: string): Promise<boolean> {
     const result = await this.db.delete(pinsPins).where(eq(pinsPins.ogMessageId, ogMessageId)).returning();
+
+    void this.createAuditLog({
+      action: PinsActionType.REMOVE,
+      details: {
+        ogMessageId,
+      },
+    });
 
     if (result.length === 0) {
       return false;

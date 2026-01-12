@@ -2,6 +2,7 @@ import { Modules } from "@modules/Modules";
 import Database from "../db/db";
 import { AuditLog, auditLog, NewAuditLog } from "../db/schema";
 import { count, eq, and } from "drizzle-orm";
+import Stumper from "stumper";
 
 export default class MyAuditLog {
   static db = Database.getInstance().getDb();
@@ -10,26 +11,30 @@ export default class MyAuditLog {
    * Creates a new entry to the audit log, current timestamp will be used
    * @param moduleName - The name of the module adding the audit log
    * @param newAuditLog - The audit log entry to insert
+   * @param suppressErrors - If true (default), errors will be caught and logged. If false, errors will be thrown.
    */
-  static async createAuditLog(moduleName: Modules, newAuditLog: Omit<NewAuditLog, "timestamp" | "moduleName">): Promise<void> {
-    const newAuditLogWithModuleName: NewAuditLog = {
-      ...newAuditLog,
-      moduleName,
+  static async createAuditLog(
+    moduleName: Modules,
+    newAuditLog: Omit<NewAuditLog, "timestamp" | "moduleName">,
+    suppressErrors: boolean = true,
+  ): Promise<void> {
+    const insertAuditLog = async (): Promise<void> => {
+      const newAuditLogWithModuleName: NewAuditLog = {
+        ...newAuditLog,
+        moduleName,
+      };
+      await this.db.insert(auditLog).values(newAuditLogWithModuleName);
     };
-    await this.db.insert(auditLog).values(newAuditLogWithModuleName);
-  }
 
-  /**
-   * Creates a new entry to the audit log with a timestamp
-   * @param moduleName - The name of the module adding the audit log
-   * @param newAuditLog - The audit log entry to insert
-   */
-  static async createAuditLogWithDate(moduleName: Modules, newAuditLog: Omit<NewAuditLog, "moduleName">): Promise<void> {
-    const newAuditLogWithModuleName: NewAuditLog = {
-      ...newAuditLog,
-      moduleName,
-    };
-    await this.db.insert(auditLog).values(newAuditLogWithModuleName);
+    if (suppressErrors) {
+      try {
+        await insertAuditLog();
+      } catch (error) {
+        Stumper.error(`Failed to create audit log: ${error}`, `Common::MyAuditLog::createAuditLog`);
+      }
+    } else {
+      await insertAuditLog();
+    }
   }
 
   /**

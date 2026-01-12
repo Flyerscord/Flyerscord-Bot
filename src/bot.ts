@@ -28,7 +28,7 @@ import CombinedTeamInfoCache from "./common/cache/CombinedTeamInfoCache";
 import onMessageCreate from "@common/listeners/onMessageCreate";
 import onInteractionCreate from "@common/listeners/onInteractionCreate";
 import onReady from "@common/listeners/onReady";
-import MyAuditLog from "./common/utils/AuditLog";
+import MyAuditLog from "./common/utils/MyAuditLog";
 import Database from "./common/db/db";
 
 /* -------------------------------------------------------------------------- */

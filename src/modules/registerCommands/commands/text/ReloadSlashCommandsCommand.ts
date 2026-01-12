@@ -3,8 +3,8 @@ import { DMTextCommand } from "@common/models/TextCommand";
 import { readAndRegisterCommands } from "../../utils/registerCommands";
 import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/managers/ConfigManager";
-import MyAuditLog from "@root/src/common/utils/AuditLog";
-import { AuditLogSeverity } from "@root/src/common/db/schema";
+import MyAuditLog from "@common/utils/MyAuditLog";
+import { AuditLogSeverity } from "@common/db/schema";
 
 export default class ReloadSlashCommandsCommand extends DMTextCommand {
   constructor() {

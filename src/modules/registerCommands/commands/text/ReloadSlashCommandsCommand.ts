@@ -3,6 +3,8 @@ import { DMTextCommand } from "@common/models/TextCommand";
 import { readAndRegisterCommands } from "../../utils/registerCommands";
 import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/managers/ConfigManager";
+import MyAuditLog from "@root/src/common/utils/AuditLog";
+import { AuditLogSeverity } from "@root/src/common/db/schema";
 
 export default class ReloadSlashCommandsCommand extends DMTextCommand {
   constructor() {
@@ -13,6 +15,12 @@ export default class ReloadSlashCommandsCommand extends DMTextCommand {
 
   async execute(message: Message, _args: string[]): Promise<void> {
     await readAndRegisterCommands();
+
+    await MyAuditLog.createAuditLog("RegisterCommands", {
+      action: "ReloadSlashCommands",
+      userId: message.author.id,
+      severity: AuditLogSeverity.WARNING,
+    });
     await discord.messages.sendMesssageDMToUser(message.author.id, "Successfully reloaded slash commands!");
   }
 }

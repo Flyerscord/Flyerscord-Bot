@@ -17,6 +17,15 @@ export async function checkForNewEmojis(): Promise<void> {
       return;
     }
 
+    void db.createAuditLog({
+      action: "PlayerEmojisUpdated",
+      details: {
+        forwards: roster.forwards.length,
+        defensemen: roster.defensemen.length,
+        goalies: roster.goalies.length,
+      },
+    });
+
     await removeOldEmojis();
 
     for (const player of roster.forwards) {

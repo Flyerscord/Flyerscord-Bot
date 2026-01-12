@@ -4,6 +4,7 @@ import BlueSky from "../utils/BlueSky";
 import { IPost } from "../interfaces/IPost";
 import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/managers/ConfigManager";
+import BlueSkyDB from "../db/BlueSkyDB";
 
 export default class CheckForNewPostsTask extends Task {
   constructor() {
@@ -21,7 +22,17 @@ export default class CheckForNewPostsTask extends Task {
   }
 
   private async sendPostsToDiscord(posts: IPost[]): Promise<void> {
+    const db = new BlueSkyDB();
+
     for (const post of posts) {
+      void db.createAuditLog({
+        action: "BlueSkyPostCreated",
+        details: {
+          account: post.account,
+          postId: post.postId,
+        },
+      });
+
       const message = `[Post Link](${post.url})`;
       await discord.messages.sendMessageToChannel(ConfigManager.getInstance().getConfig("BlueSky").channelId, message);
     }

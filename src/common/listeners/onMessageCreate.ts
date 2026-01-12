@@ -4,6 +4,7 @@ import TextCommand from "../models/TextCommand";
 import Stumper from "stumper";
 import ConfigManager from "@common/managers/ConfigManager";
 import Env from "../utils/Env";
+import MyAuditLog from "../utils/MyAuditLog";
 
 export default (client: Client): void => {
   client.on("messageCreate", async (message: Message) => {
@@ -36,6 +37,17 @@ async function checkForNormalTextCommand(message: Message): Promise<boolean> {
   const textCmd: TextCommand = message.client.textCommands.get(command);
   try {
     if (textCmd) {
+      void MyAuditLog.createAuditLog("Common", {
+        action: "NormalTextCommandRan",
+        userId: message.author.id,
+        details: {
+          command: command,
+          channelId: message.channelId,
+          messageId: message.id,
+          args: args,
+        },
+      });
+
       Stumper.info(`Command ${command} called by user ${message.author.username}!`, "common:onMessageCreate:checkForNormalTextCommand");
       await textCmd.run(message, args);
       return true;

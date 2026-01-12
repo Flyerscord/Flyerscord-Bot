@@ -67,6 +67,13 @@ export async function checkForGameDay(): Promise<void> {
 
         if (post) {
           await post.setArchived(false);
+          void db.createAuditLog({
+            action: "GameDayPostCreated",
+            details: {
+              gameId: game.id,
+              postId: post.id,
+            },
+          });
           Stumper.info(`Created post for game: ${game.id}`, "gameDayPosts:GameChecker:checkForGameDay");
           await db.addPost(game.id, post.id);
         }

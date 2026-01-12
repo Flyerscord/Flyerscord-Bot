@@ -28,6 +28,16 @@ export async function addMessage(message: Message): Promise<void> {
     userLevel.totalExperience += getExpAmount();
     if (await checkForLevelUp(userLevel.currentLevel, userLevel.totalExperience)) {
       userLevel.currentLevel++;
+
+      void db.createAuditLog({
+        action: "LevelUp",
+        userId: userId,
+        details: {
+          currentLevel: userLevel.currentLevel,
+          totalExperience: userLevel.totalExperience,
+        },
+      });
+
       await sendLevelUpMessage(message, userId, userLevel.currentLevel);
     }
     await db.updateUser(userId, userLevel);

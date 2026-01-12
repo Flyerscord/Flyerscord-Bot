@@ -3,7 +3,7 @@ import Database, { PostgresDB } from "../db/db";
 import { PgTable } from "drizzle-orm/pg-core";
 import { count, sql, SQL } from "drizzle-orm";
 import { AuditLog, NewAuditLog } from "../db/schema";
-import AL from "../utils/AuditLog";
+import AL from "../utils/MyAuditLog";
 
 export abstract class ModuleDatabase {
   protected readonly db: PostgresDB;
@@ -28,22 +28,41 @@ export abstract class ModuleDatabase {
     return result[0]?.count ?? 0;
   }
 
+  /**
+   * Truncates a table
+   * @param table - The table to truncate
+   */
+  protected async truncateTable(table: PgTable): Promise<void> {
+    await this.db.execute(sql`TRUNCATE TABLE ${table} RESTART IDENTITY CASCADE`);
+  }
+
+  /**
+   * Checks if at least one row exists in a table matching the given condition
+   * @param table - The table to query
+   * @param where - The SQL condition to match
+   * @returns True if at least one matching row exists, false otherwise
+   */
+  protected async select1(table: PgTable, where: SQL): Promise<boolean> {
+    return (
+      (
+        await this.db
+          .select({ one: sql<number>`1` })
+          .from(table)
+          .where(where)
+          .limit(1)
+      ).length > 0
+    );
+  }
+
   // Audit Log Methods
 
   /**
    * Creates a new entry to the audit log, current timestamp will be used
    * @param newAuditLog - The audit log entry to insert
+   * @param suppressErrors - If true (default), errors will be caught and logged. If false, errors will be thrown.
    */
-  protected async createAuditLog(newAuditLog: Omit<NewAuditLog, "timestamp" | "moduleName">): Promise<void> {
-    await AL.createAuditLog(this.moduleName, newAuditLog);
-  }
-
-  /**
-   * Creates a new entry to the audit log with a timestamp
-   * @param newAuditLog - The audit log entry to insert
-   */
-  protected async createAuditLogWithDate(newAuditLog: Omit<NewAuditLog, "moduleName">): Promise<void> {
-    await AL.createAuditLogWithDate(this.moduleName, newAuditLog);
+  createAuditLog(newAuditLog: Omit<NewAuditLog, "timestamp" | "moduleName">, suppressErrors: boolean = true): Promise<void> {
+    return AL.createAuditLog(this.moduleName, newAuditLog, suppressErrors);
   }
 
   /**
@@ -101,25 +120,5 @@ export abstract class ModuleDatabase {
    */
   async getAuditLog(id: string): Promise<AuditLog | undefined> {
     return await AL.getAuditLog(id);
-  }
-
-  /**
-   * Truncates a table
-   * @param table - The table to truncate
-   */
-  protected async truncateTable(table: PgTable): Promise<void> {
-    await this.db.execute(sql`TRUNCATE TABLE ${table} RESTART IDENTITY CASCADE`);
-  }
-
-  protected async select1(table: PgTable, where: SQL): Promise<boolean> {
-    return (
-      (
-        await this.db
-          .select({ one: sql<number>`1` })
-          .from(table)
-          .where(where)
-          .limit(1)
-      ).length > 0
-    );
   }
 }

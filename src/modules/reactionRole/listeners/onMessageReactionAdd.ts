@@ -38,6 +38,17 @@ export default (): void => {
     }
 
     if (reaction.emoji.id == reactionRole.emojiId) {
+      void db.createAuditLog({
+        action: "ReactionRoleAdded",
+        userId: user.id,
+        details: {
+          reactionName,
+          emojiId: reaction.emoji.id,
+          channelId: reaction.message.channelId,
+          messageId,
+        },
+      });
+
       await discord.roles.addRoleToUser(member, reactionRole.roleId);
       Stumper.debug(`Reaction added to reaction role ${reactionName} by user ${user.id}`, "bagReactionRole:onMessageReactionAdd");
     }

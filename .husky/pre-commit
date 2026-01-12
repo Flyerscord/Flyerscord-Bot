@@ -1,6 +1,6 @@
 set -e
 
-npm run format
+pnpm run format
 
 # Add files that were already staged and modified by the formatter to staging
 # Dont add files that were deleted

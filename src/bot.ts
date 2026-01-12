@@ -28,6 +28,8 @@ import CombinedTeamInfoCache from "./common/cache/CombinedTeamInfoCache";
 import onMessageCreate from "@common/listeners/onMessageCreate";
 import onInteractionCreate from "@common/listeners/onInteractionCreate";
 import onReady from "@common/listeners/onReady";
+import MyAuditLog from "./common/utils/AuditLog";
+import Database from "./common/db/db";
 
 /* -------------------------------------------------------------------------- */
 /*                                Initial Setup                               */
@@ -82,6 +84,9 @@ async function startUp(): Promise<void> {
     `Bot starting up in ${PRODUCTION_MODE ? "production" : "development"} mode! Advanced debug: ${ADVANCED_DEBUG ? "enabled" : "disabled"}`,
     "main:startUp",
   );
+
+  // Initalize Database
+  Database.getInstance();
 
   // Initialize the Module Manager
   const moduleManager = ModuleManager.getInstance();
@@ -158,6 +163,11 @@ async function startUp(): Promise<void> {
   onMessageCreate(client);
   onInteractionCreate(client);
   onReady(client);
+
+  // Add Audit Log for Bot Startup
+  await MyAuditLog.createAuditLog("Common", {
+    action: "BotStartup",
+  });
 
   // Start the bot
   await client.login(DISCORD_TOKEN);

@@ -78,7 +78,6 @@ jobs:
           git fetch origin ${{ github.event.pull_request.base.ref }}
           git checkout origin/${{ github.event.pull_request.base.ref }}
           pnpm install --frozen-lockfile
-          cp src/common/config/defaults.config.ts src/common/config/local.config.ts
           pnpm run test:coverage
           mv coverage/lcov.info coverage/lcov-base.info
           git checkout -

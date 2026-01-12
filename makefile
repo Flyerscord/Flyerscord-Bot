@@ -13,6 +13,9 @@ db-backup:
 dev-bot:
 	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up --build --force-recreate -d
 
+dev-bot-db:
+	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up -d adminer pgbouncer
+
 dev-bot-clean:
 	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev down --volumes --rmi all
 

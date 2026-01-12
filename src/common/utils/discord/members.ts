@@ -43,3 +43,11 @@ export async function getNitroBoosters(): Promise<GuildMember[]> {
   }
   return members.filter((member) => member.premiumSince != null).map((member) => member);
 }
+
+export async function timeout(member: GuildMember, seconds: number, reason: string): Promise<void> {
+  await member.timeout(seconds * 1000, reason);
+}
+
+export async function removeTimeout(member: GuildMember, reason?: string): Promise<void> {
+  await member.timeout(null, reason);
+}

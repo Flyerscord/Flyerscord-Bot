@@ -374,13 +374,17 @@ Tests are located in the `tests/` directory and use the `.test.ts` extension.
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
-4. Run quality checks: `pnpm run prepush`
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
+4. **Increment the version** in `package.json` (required for all changes)
+   - GitHub CI will check that the version was incremented
+   - Follow semantic versioning: MAJOR.MINOR.PATCH
+5. Run quality checks: `pnpm run prepush`
+6. Commit your changes (`git commit -m 'Add amazing feature'`)
+7. Push to the branch (`git push origin feature/amazing-feature`)
+8. Open a Pull Request
 
 **Code Quality Requirements:**
 
+- **Version must be incremented** in `package.json` (enforced by GitHub CI)
 - All code must pass TypeScript type checking (`pnpm run build`)
 - ESLint must pass (`pnpm run lint`)
 - All tests must pass (`pnpm run test`)

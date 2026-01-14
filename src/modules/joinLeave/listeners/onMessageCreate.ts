@@ -1,8 +1,8 @@
-import ClientManager from "@root/src/common/managers/ClientManager";
+import ClientManager from "@common/managers/ClientManager";
 import { Message } from "discord.js";
 import JoinLeaveDB from "../db/JoinLeaveDB";
-import ConfigManager from "@root/src/common/managers/ConfigManager";
-import discord from "@root/src/common/utils/discord/discord";
+import ConfigManager from "@common/managers/ConfigManager";
+import discord from "@common/utils/discord/discord";
 import { sendCaptcha } from "../utils/Captcha";
 
 export default (): void => {

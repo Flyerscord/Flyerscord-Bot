@@ -2,7 +2,7 @@ import ConfigManager from "@common/managers/ConfigManager";
 import { EmbedBuilder, User } from "discord.js";
 import JoinLeaveDB from "../db/JoinLeaveDB";
 import Stumper from "stumper";
-import discord from "@root/src/common/utils/discord/discord";
+import discord from "@common/utils/discord/discord";
 
 export async function sendCaptcha(user: User): Promise<void> {
   const questions = ConfigManager.getInstance().getConfig("JoinLeave").captchaQuestions;

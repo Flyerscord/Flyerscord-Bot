@@ -7,8 +7,6 @@ import StatsVoiceChannelsManager from "./utils/StatsVoiceChannelsManager";
 import Zod from "@common/utils/ZodWrapper";
 import { z } from "zod";
 
-export type StatsVoiceChannelConfigKeys = "channels";
-
 export const statsVoiceChannelConfigSchema = [
   {
     key: "channels",
@@ -24,9 +22,11 @@ export const statsVoiceChannelConfigSchema = [
       }),
     ),
   },
-] as const satisfies readonly IModuleConfigSchema<StatsVoiceChannelConfigKeys>[];
+] as const satisfies readonly IModuleConfigSchema[];
 
-export default class StatsVoiceChannelModule extends Module<StatsVoiceChannelConfigKeys> {
+export default class StatsVoiceChannelModule extends Module {
+  protected readonly CONFIG_SCHEMA = statsVoiceChannelConfigSchema;
+
   constructor() {
     super("StatsVoiceChannel");
   }
@@ -39,10 +39,6 @@ export default class StatsVoiceChannelModule extends Module<StatsVoiceChannelCon
   }
 
   protected async cleanup(): Promise<void> {}
-
-  getConfigSchema(): IModuleConfigSchema<StatsVoiceChannelConfigKeys>[] {
-    return [...statsVoiceChannelConfigSchema];
-  }
 
   private registerSchedules(): void {
     UpdateStatsChannelsTask.getInstance().createScheduledJob();

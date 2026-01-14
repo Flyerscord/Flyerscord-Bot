@@ -4,8 +4,6 @@ import SlashCommand from "@common/models/SlashCommand";
 import schema from "./db/schema";
 import Zod from "@common/utils/ZodWrapper";
 
-export type BlueSkyConfigKeys = "channelId";
-
 export const pinsConfigSchema = [
   {
     key: "channelId",
@@ -16,9 +14,11 @@ export const pinsConfigSchema = [
     defaultValue: "",
     schema: Zod.string(),
   },
-] as const satisfies readonly IModuleConfigSchema<BlueSkyConfigKeys>[];
+] as const satisfies readonly IModuleConfigSchema[];
 
-export default class PinsModule extends Module<BlueSkyConfigKeys> {
+export default class PinsModule extends Module {
+  protected readonly CONFIG_SCHEMA = pinsConfigSchema;
+
   constructor() {
     super("Pins", { schema });
   }
@@ -29,8 +29,4 @@ export default class PinsModule extends Module<BlueSkyConfigKeys> {
   }
 
   protected async cleanup(): Promise<void> {}
-
-  getConfigSchema(): IModuleConfigSchema<BlueSkyConfigKeys>[] {
-    return [...pinsConfigSchema];
-  }
 }

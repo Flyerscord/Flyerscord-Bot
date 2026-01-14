@@ -3,11 +3,11 @@ import Module, { IModuleConfigSchema } from "@common/models/Module";
 import request from "request";
 import ConfigManager from "@common/managers/ConfigManager";
 
-export type ImageProxyConfigKeys = "";
+export const imageProxyConfigSchema = [] as const satisfies readonly IModuleConfigSchema[];
 
-export const imageProxyConfigSchema = [] as const satisfies readonly IModuleConfigSchema<ImageProxyConfigKeys>[];
+export default class ImageProxyModule extends Module {
+  protected readonly CONFIG_SCHEMA = imageProxyConfigSchema;
 
-export default class ImageProxyModule extends Module<ImageProxyConfigKeys> {
   constructor() {
     super("ImageProxy", { dependsOn: ["CustomCommands"], prodOnly: true, loadPriority: 11 });
   }
@@ -24,8 +24,4 @@ export default class ImageProxyModule extends Module<ImageProxyConfigKeys> {
   }
 
   protected async cleanup(): Promise<void> {}
-
-  getConfigSchema(): IModuleConfigSchema<ImageProxyConfigKeys>[] {
-    return [...imageProxyConfigSchema];
-  }
 }

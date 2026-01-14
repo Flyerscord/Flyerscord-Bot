@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import Stumper from "stumper";
 import { Singleton } from "../models/Singleton";
-import Env from "../utils/Env";
+import EnvManager from "./EnvManager";
 
 export default class SecretManager extends Singleton {
   private algorithm = "aes-256-gcm";
@@ -9,7 +9,7 @@ export default class SecretManager extends Singleton {
 
   constructor() {
     super();
-    const keyString = Env.get("ENCRYPTION_KEY")!;
+    const keyString = EnvManager.getInstance().get("ENCRYPTION_KEY");
 
     this.key = crypto.scryptSync(keyString, "discord-bot-salt", 32);
   }

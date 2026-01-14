@@ -6,18 +6,6 @@ import Imgur from "./utils/ImageKit";
 import schema from "./db/schema";
 import Zod from "@common/utils/ZodWrapper";
 
-export type CustomCommandsConfigKeys =
-  | "prefix"
-  | "commandTempChannelId"
-  | "customCommandListChannelId"
-  | "imageKit.publicKey"
-  | "imageKit.privateKey"
-  | "imageKit.urlEndpoint"
-  | "imageKit.redirectUrl"
-  | "imageKit.proxyUrl"
-  | "imgur.clientId"
-  | "imgur.clientSecret";
-
 export const customCommandsConfigSchema = [
   {
     key: "prefix",
@@ -109,9 +97,11 @@ export const customCommandsConfigSchema = [
     defaultValue: "",
     schema: Zod.encryptedString(),
   },
-] as const satisfies readonly IModuleConfigSchema<CustomCommandsConfigKeys>[];
+] as const satisfies readonly IModuleConfigSchema[];
 
-export default class CustomCommandsModule extends Module<CustomCommandsConfigKeys> {
+export default class CustomCommandsModule extends Module {
+  protected readonly CONFIG_SCHEMA = customCommandsConfigSchema;
+
   constructor() {
     super("CustomCommands", { schema, prodOnly: true, loadPriority: 10 });
   }
@@ -126,10 +116,6 @@ export default class CustomCommandsModule extends Module<CustomCommandsConfigKey
   }
 
   protected async cleanup(): Promise<void> {}
-
-  getConfigSchema(): IModuleConfigSchema<CustomCommandsConfigKeys>[] {
-    return [...customCommandsConfigSchema];
-  }
 
   private registerListeners(): void {
     onMessageCreate();

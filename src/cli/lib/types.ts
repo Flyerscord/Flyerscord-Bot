@@ -3,7 +3,7 @@ import type { IModuleConfigSchema } from "@common/models/Module";
 import type { Modules } from "@modules/Modules";
 
 // Extended config type used by ConfigManager
-export interface IConfig<TSchema extends z.ZodType = z.ZodType> extends Omit<IModuleConfigSchema<string>, "schema"> {
+export interface IConfig<TSchema extends z.ZodType = z.ZodType> extends Omit<IModuleConfigSchema, "schema"> {
   schema: TSchema;
   rawValue?: string; // Unparsed value from database for comparison
   value?: z.infer<TSchema>; // Parsed and validated value
@@ -24,7 +24,7 @@ export interface SchemaConstraints {
 export interface ConfigSchemaInfo {
   module: Modules;
   key: string;
-  schema: IModuleConfigSchema<string>;
+  schema: IModuleConfigSchema;
   type: SchemaType;
   constraints: SchemaConstraints;
 }

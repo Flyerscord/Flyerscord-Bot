@@ -6,8 +6,6 @@ import schema from "./db/schema";
 import Zod from "@common/utils/ZodWrapper";
 import { z } from "zod";
 
-export type GameDayPostsConfigKeys = "channelId" | "tagIds.preseason" | "tagIds.regularSeason" | "tagIds.postSeason" | "tagIds.seasons";
-
 export const gameDayPostsConfigSchema = [
   {
     key: "channelId",
@@ -66,9 +64,11 @@ export const gameDayPostsConfigSchema = [
         }),
     ),
   },
-] as const satisfies readonly IModuleConfigSchema<GameDayPostsConfigKeys>[];
+] as const satisfies readonly IModuleConfigSchema[];
 
-export default class GameDayPostsModule extends Module<GameDayPostsConfigKeys> {
+export default class GameDayPostsModule extends Module {
+  protected readonly CONFIG_SCHEMA = gameDayPostsConfigSchema;
+
   constructor() {
     super("GameDayPosts", { schema });
   }
@@ -80,10 +80,6 @@ export default class GameDayPostsModule extends Module<GameDayPostsConfigKeys> {
   }
 
   protected async cleanup(): Promise<void> {}
-
-  getConfigSchema(): IModuleConfigSchema<GameDayPostsConfigKeys>[] {
-    return [...gameDayPostsConfigSchema];
-  }
 
   private registerSchedules(): void {
     // Run every day at 12:30 AM

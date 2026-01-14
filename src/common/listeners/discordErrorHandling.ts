@@ -1,6 +1,6 @@
 import { Client } from "discord.js";
 import Stumper from "stumper";
-import Env from "../utils/Env";
+import EnvManager from "../managers/EnvManager";
 
 export default (client: Client): void => {
   client.on("error", (error) => {
@@ -12,7 +12,7 @@ export default (client: Client): void => {
   });
 
   client.on("debug", (debug) => {
-    if (Env.getBoolean("ADVANCED_DEBUG")) {
+    if (EnvManager.getInstance().get("ADVANCED_DEBUG")) {
       Stumper.debug(debug, "DiscordClientDebug");
     }
   });

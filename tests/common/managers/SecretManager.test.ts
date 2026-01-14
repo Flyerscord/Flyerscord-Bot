@@ -1,16 +1,25 @@
-// Mock Env before importing SecretManager
-const mockEnv = {
+// Mock EnvManager before importing SecretManager
+const mockEnvManager: {
+  get: jest.Mock<string | undefined, [string]>;
+  getInstance: jest.Mock<typeof mockEnvManager, []>;
+} = {
   get: jest.fn((key: string) => {
     if (key === "ENCRYPTION_KEY") {
       return "test-encryption-key-for-unit-tests";
     }
     return undefined;
   }),
+  getInstance: jest.fn(function (this: typeof mockEnvManager) {
+    return this;
+  }),
 };
 
-jest.mock("@common/utils/Env", () => ({
+// Bind getInstance to return mockEnvManager
+mockEnvManager.getInstance = jest.fn(() => mockEnvManager);
+
+jest.mock("@common/managers/EnvManager", () => ({
   __esModule: true,
-  default: mockEnv,
+  default: mockEnvManager,
 }));
 
 const mockStumper = {
@@ -337,7 +346,7 @@ describe("SecretManager", () => {
     it("should use the encryption key from environment", () => {
       SecretManager.getInstance();
 
-      expect(mockEnv.get).toHaveBeenCalledWith("ENCRYPTION_KEY");
+      expect(mockEnvManager.get).toHaveBeenCalledWith("ENCRYPTION_KEY");
     });
 
     it("should derive key using scrypt with consistent salt", () => {

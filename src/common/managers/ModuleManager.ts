@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Stumper from "stumper";
 import Module from "../models/Module";
 import { Singleton } from "../models/Singleton";
 import { ModuleMap, Modules } from "../../modules/Modules";
-import Env from "../utils/Env";
+import EnvManager from "./EnvManager";
 
 export default class ModuleManager extends Singleton {
-  private modules: Module<any>[];
+  private modules: Module[];
 
   constructor() {
     super();
@@ -15,7 +14,7 @@ export default class ModuleManager extends Singleton {
 
   addAllModules(): void {
     this.modules = [];
-    const productionMode = Env.getBoolean("PRODUCTION_MODE");
+    const productionMode = EnvManager.getInstance().get("PRODUCTION_MODE");
 
     // Sort modules by load priority (lowest first)
     const sortedModules = Object.entries(ModuleMap).sort((a, b) => a[1].getLoadPriority() - b[1].getLoadPriority());
@@ -35,7 +34,7 @@ export default class ModuleManager extends Singleton {
     Stumper.info(`Removed module ${module}`, "common:ModuleManager:removeModule");
   }
 
-  getModules(): Module<any>[] {
+  getModules(): Module[] {
     return this.modules;
   }
 
@@ -43,7 +42,7 @@ export default class ModuleManager extends Singleton {
     return this.modules.map((module) => module.name);
   }
 
-  getModule(name: Modules): Module<any> | undefined {
+  getModule(name: Modules): Module | undefined {
     return this.modules.find((module) => module.name === name);
   }
 

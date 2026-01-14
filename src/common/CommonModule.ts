@@ -4,8 +4,6 @@ import Module, { IModuleConfigSchema } from "./models/Module";
 import Zod from "./utils/ZodWrapper";
 import TextCommand from "./models/TextCommand";
 
-export type CommonConfigKeys = "logLevel" | "masterGuildId" | "adminPrefix" | "advancedDebug";
-
 export const commonConfigSchema = [
   {
     key: "logLevel",
@@ -34,9 +32,11 @@ export const commonConfigSchema = [
     defaultValue: ".",
     schema: Zod.string({ min: 1, max: 1 }),
   },
-] as const satisfies readonly IModuleConfigSchema<CommonConfigKeys>[];
+] as const satisfies readonly IModuleConfigSchema[];
 
-export default class CommonModule extends Module<CommonConfigKeys> {
+export default class CommonModule extends Module {
+  protected readonly CONFIG_SCHEMA = commonConfigSchema;
+
   constructor() {
     super("Common", { schema, loadPriority: -1 });
   }
@@ -46,8 +46,4 @@ export default class CommonModule extends Module<CommonConfigKeys> {
   }
 
   protected async cleanup(): Promise<void> {}
-
-  getConfigSchema(): IModuleConfigSchema<CommonConfigKeys>[] {
-    return [...commonConfigSchema];
-  }
 }

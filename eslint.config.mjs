@@ -2,7 +2,7 @@ import eslintPluginPrettier from "eslint-plugin-prettier";
 import eslintConfigPrettier from "eslint-config-prettier";
 import typescriptEslintPlugin from "@typescript-eslint/eslint-plugin";
 import typescriptEslintParser from "@typescript-eslint/parser";
-// import drizzleEslintPlugin from "eslint-plugin-drizzle";
+import eslintPluginImport from "eslint-plugin-import";
 
 export default [
   {
@@ -21,7 +21,7 @@ export default [
     plugins: {
       prettier: eslintPluginPrettier,
       "@typescript-eslint": typescriptEslintPlugin,
-      // drizzle: drizzleEslintPlugin,
+      "import": eslintPluginImport,
     },
     rules: {
       // TypeScript rules
@@ -47,8 +47,26 @@ export default [
       ],
       "@typescript-eslint/no-floating-promises": "error",
 
-      // Drizzle rules
-      // ...drizzleEslintPlugin.configs.all.rules,
+      // Import rules
+      "no-restricted-imports": [
+        "error",
+        {
+          "patterns": [
+            {
+              "group": ["@root/src/common/*", "@root/src/common"],
+              "message": "Use @common/* instead of @root/src/common/*"
+            },
+            {
+              "group": ["@root/src/modules/*", "@root/src/modules"],
+              "message": "Use @modules/* instead of @root/src/modules/*"
+            },
+            {
+              "group": ["@root/src/cli/*", "@root/src/cli"],
+              "message": "Use @cli/* instead of @root/src/cli/*"
+            }
+          ]
+        }
+      ],
 
       // Prettier integration
       "prettier/prettier": "error",

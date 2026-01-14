@@ -1,11 +1,11 @@
 import Module, { IModuleConfigSchema } from "@common/models/Module";
 import TextCommand from "@common/models/TextCommand";
 
-export type RegisterCommandsConfigKeys = "";
+export const registerCommandsConfigSchema = [] as const satisfies readonly IModuleConfigSchema[];
 
-export const registerCommandsConfigSchema = [] as const satisfies readonly IModuleConfigSchema<RegisterCommandsConfigKeys>[];
+export default class RegisterCommandsModule extends Module {
+  protected readonly CONFIG_SCHEMA = registerCommandsConfigSchema;
 
-export default class RegisterCommandsModule extends Module<RegisterCommandsConfigKeys> {
   constructor() {
     super("RegisterCommands", { loadPriority: 1000 });
   }
@@ -15,8 +15,4 @@ export default class RegisterCommandsModule extends Module<RegisterCommandsConfi
   }
 
   protected async cleanup(): Promise<void> {}
-
-  getConfigSchema(): IModuleConfigSchema<RegisterCommandsConfigKeys>[] {
-    return [...registerCommandsConfigSchema];
-  }
 }

@@ -3,11 +3,11 @@ import SlashCommand from "@common/models/SlashCommand";
 import EmojiCheckTask from "./tasks/EmojiCheckTask";
 import schema from "./db/schema";
 
-export type PlayerEmojisConfigKeys = "";
+export const playerEmojisConfigSchema = [] as const satisfies readonly IModuleConfigSchema[];
 
-export const playerEmojisConfigSchema = [] as const satisfies readonly IModuleConfigSchema<PlayerEmojisConfigKeys>[];
+export default class PlayerEmojisModule extends Module {
+  protected readonly CONFIG_SCHEMA = playerEmojisConfigSchema;
 
-export default class PlayerEmojisModule extends Module<PlayerEmojisConfigKeys> {
   constructor() {
     super("PlayerEmojis", { schema });
   }
@@ -19,10 +19,6 @@ export default class PlayerEmojisModule extends Module<PlayerEmojisConfigKeys> {
   }
 
   protected async cleanup(): Promise<void> {}
-
-  getConfigSchema(): IModuleConfigSchema<PlayerEmojisConfigKeys>[] {
-    return [...playerEmojisConfigSchema];
-  }
 
   private registerSchedules(): void {
     EmojiCheckTask.getInstance().createScheduledJob();

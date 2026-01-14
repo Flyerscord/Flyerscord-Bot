@@ -5,8 +5,6 @@ import BlueSky from "./utils/BlueSky";
 import schema from "./db/schema";
 import Zod from "@common/utils/ZodWrapper";
 
-export type BlueSkyConfigKeys = "username" | "password" | "channelId" | "listId";
-
 export const blueSkyConfigSchema = [
   {
     key: "username",
@@ -44,9 +42,11 @@ export const blueSkyConfigSchema = [
     defaultValue: "",
     schema: Zod.string(),
   },
-] as const satisfies readonly IModuleConfigSchema<BlueSkyConfigKeys>[];
+] as const satisfies readonly IModuleConfigSchema[];
 
-export default class BlueSkyModule extends Module<BlueSkyConfigKeys> {
+export default class BlueSkyModule extends Module {
+  protected readonly CONFIG_SCHEMA = blueSkyConfigSchema;
+
   constructor() {
     super("BlueSky", { schema });
   }
@@ -64,9 +64,5 @@ export default class BlueSkyModule extends Module<BlueSkyConfigKeys> {
 
   private registerSchedules(): void {
     CheckForNewPostsTask.getInstance().createScheduledJob();
-  }
-
-  getConfigSchema(): IModuleConfigSchema<BlueSkyConfigKeys>[] {
-    return [...blueSkyConfigSchema];
   }
 }

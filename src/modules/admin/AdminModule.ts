@@ -24,9 +24,11 @@ export const adminConfigSchema = [
     defaultValue: "",
     schema: Zod.string(),
   },
-] as const satisfies readonly IModuleConfigSchema<AdminConfigKeys>[];
+] as const satisfies readonly IModuleConfigSchema[];
 
-export default class AdminModule extends Module<AdminConfigKeys> {
+export default class AdminModule extends Module {
+  protected readonly CONFIG_SCHEMA = adminConfigSchema;
+
   constructor() {
     super("Admin");
   }
@@ -38,10 +40,6 @@ export default class AdminModule extends Module<AdminConfigKeys> {
   }
 
   protected async cleanup(): Promise<void> {}
-
-  getConfigSchema(): IModuleConfigSchema<AdminConfigKeys>[] {
-    return [...adminConfigSchema];
-  }
 
   private registerListeners(): void {
     onMessageCreate();

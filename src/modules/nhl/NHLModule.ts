@@ -1,11 +1,11 @@
 import Module, { IModuleConfigSchema } from "@common/models/Module";
 import SlashCommand from "@common/models/SlashCommand";
 
-export type NHLConfigKeys = "";
+export const nhlConfigSchema = [] as const satisfies readonly IModuleConfigSchema[];
 
-export const nHLConfigSchema = [] as const satisfies readonly IModuleConfigSchema<NHLConfigKeys>[];
+export default class NHLModule extends Module {
+  protected readonly CONFIG_SCHEMA = nhlConfigSchema;
 
-export default class NHLModule extends Module<NHLConfigKeys> {
   constructor() {
     super("NHL");
   }
@@ -15,8 +15,4 @@ export default class NHLModule extends Module<NHLConfigKeys> {
   }
 
   protected async cleanup(): Promise<void> {}
-
-  getConfigSchema(): IModuleConfigSchema<NHLConfigKeys>[] {
-    return [...nHLConfigSchema];
-  }
 }

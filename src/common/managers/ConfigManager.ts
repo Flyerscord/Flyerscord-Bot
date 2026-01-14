@@ -26,15 +26,11 @@ export type InferSchemaType<T extends z.ZodType> = z.infer<T>;
  * // Result: { token: string; port: number }
  * ```
  */
-export type ConfigFromSchemas<TSchemas extends readonly IModuleConfigSchema<string>[] | IModuleConfigSchema<string>[]> = TSchemas extends
-  | readonly IModuleConfigSchema<infer TKey>[]
-  | IModuleConfigSchema<infer TKey>[]
-  ? {
-      [K in TKey]: InferSchemaType<Extract<TSchemas[number], { key: K }>["schema"]>;
-    }
-  : never;
+export type ConfigFromSchemas<TSchemas extends readonly IModuleConfigSchema[] | IModuleConfigSchema[]> = {
+  [K in TSchemas[number]["key"]]: InferSchemaType<Extract<TSchemas[number], { key: K }>["schema"]>;
+};
 
-interface IConfig<TSchema extends z.ZodType = z.ZodType> extends Omit<IModuleConfigSchema<string>, "schema"> {
+interface IConfig<TSchema extends z.ZodType = z.ZodType> extends Omit<IModuleConfigSchema, "schema"> {
   schema: TSchema;
   rawValue?: string; // Unparsed value from database for comparison
   value?: z.infer<TSchema>; // Parsed and validated value
@@ -169,7 +165,7 @@ export default class ConfigManager extends Singleton {
    * - Only stores minimal data in DB (moduleName, key)
    * - Schema metadata (description, required, etc.) lives in code only
    */
-  async addNewConfigSchema<T extends string>(module: Modules, configSchema: IModuleConfigSchema<T>): Promise<void> {
+  async addNewConfigSchema(module: Modules, configSchema: IModuleConfigSchema): Promise<void> {
     const currentConfigSchemas = this.configs.get(module);
     if (currentConfigSchemas) {
       currentConfigSchemas.push(configSchema);

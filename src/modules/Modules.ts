@@ -10,7 +10,7 @@ import type { imageProxyConfigSchema } from "./imageProxy/ImageProxyModule";
 import type { joinLeaveConfigSchema } from "./joinLeave/JoinLeaveModule";
 import type { levelsConfigSchema } from "./levels/LevelsModule";
 import type { miscConfigSchema } from "./misc/MiscModule";
-import type { nHLConfigSchema } from "./nhl/NHLModule";
+import type { nhlConfigSchema } from "./nhl/NHLModule";
 import type { pinsConfigSchema } from "./pins/PinsModule";
 import type { playerEmojisConfigSchema } from "./playerEmojis/PlayerEmojisModule";
 import type { reactionRoleConfigSchema } from "./reactionRole/ReactionRoleModule";
@@ -60,7 +60,7 @@ export type Modules =
   | "StatsVoiceChannel"
   | "VisitorRole";
 
-export const ModuleMap: Record<Modules, Module<string>> = {
+export const ModuleMap: Record<Modules, Module> = {
   Common: CommonModule.getInstance(),
   Admin: AdminModule.getInstance(),
   BlueSky: BlueSkyModule.getInstance(),
@@ -108,7 +108,7 @@ export type ModuleConfigMap = {
   JoinLeave: ConfigFromSchemas<typeof joinLeaveConfigSchema>;
   Levels: ConfigFromSchemas<typeof levelsConfigSchema>;
   Misc: ConfigFromSchemas<typeof miscConfigSchema>;
-  NHL: ConfigFromSchemas<typeof nHLConfigSchema>;
+  NHL: ConfigFromSchemas<typeof nhlConfigSchema>;
   Pins: ConfigFromSchemas<typeof pinsConfigSchema>;
   PlayerEmojis: ConfigFromSchemas<typeof playerEmojisConfigSchema>;
   ReactionRole: ConfigFromSchemas<typeof reactionRoleConfigSchema>;

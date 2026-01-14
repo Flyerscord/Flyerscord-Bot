@@ -59,7 +59,7 @@ describe("ConfigManager", () => {
   describe("addNewConfigSchema", () => {
     it("should add a new config schema for a module", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema: IModuleConfigSchema<"testKey"> = {
+      const schema: IModuleConfigSchema = {
         key: "testKey",
         schema: z.string(),
         defaultValue: "default",
@@ -83,7 +83,7 @@ describe("ConfigManager", () => {
 
     it("should add multiple config schemas for the same module", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema1: IModuleConfigSchema<"key1"> = {
+      const schema1: IModuleConfigSchema = {
         key: "key1",
         schema: z.string(),
         defaultValue: "default1",
@@ -92,7 +92,7 @@ describe("ConfigManager", () => {
         secret: false,
         requiresRestart: false,
       };
-      const schema2: IModuleConfigSchema<"key2"> = {
+      const schema2: IModuleConfigSchema = {
         key: "key2",
         schema: z.number(),
         defaultValue: 42,
@@ -124,7 +124,7 @@ describe("ConfigManager", () => {
 
     it("should successfully refresh config with database values", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema: IModuleConfigSchema<"testKey"> = {
+      const schema: IModuleConfigSchema = {
         key: "testKey",
         schema: z.string(),
         defaultValue: "default",
@@ -154,7 +154,7 @@ describe("ConfigManager", () => {
 
     it("should use default value when database value is null for optional config", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema: IModuleConfigSchema<"testKey"> = {
+      const schema: IModuleConfigSchema = {
         key: "testKey",
         schema: z.string(),
         defaultValue: "default",
@@ -183,7 +183,7 @@ describe("ConfigManager", () => {
 
     it("should mark success false for required config with no database value", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema: IModuleConfigSchema<"testKey"> = {
+      const schema: IModuleConfigSchema = {
         key: "testKey",
         schema: z.string(),
         defaultValue: "default",
@@ -216,7 +216,7 @@ describe("ConfigManager", () => {
 
     it("should track configs that require restart when changed", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema: IModuleConfigSchema<"testKey"> = {
+      const schema: IModuleConfigSchema = {
         key: "testKey",
         schema: z.string(),
         defaultValue: "default",
@@ -276,7 +276,7 @@ describe("ConfigManager", () => {
       const configManager = ConfigManager.getInstance();
 
       // Add a config to avoid "No configs found" error
-      const dummySchema: IModuleConfigSchema<"dummyKey"> = {
+      const dummySchema: IModuleConfigSchema = {
         key: "dummyKey",
         schema: z.string(),
         defaultValue: "dummy",
@@ -309,7 +309,7 @@ describe("ConfigManager", () => {
 
     it("should return false when required config has no value", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema: IModuleConfigSchema<"testKey"> = {
+      const schema: IModuleConfigSchema = {
         key: "testKey",
         schema: z.string(),
         defaultValue: "default",
@@ -341,7 +341,7 @@ describe("ConfigManager", () => {
 
     it("should return true when all required configs have values", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema: IModuleConfigSchema<"testKey"> = {
+      const schema: IModuleConfigSchema = {
         key: "testKey",
         schema: z.string(),
         defaultValue: "default",
@@ -382,7 +382,7 @@ describe("ConfigManager", () => {
       const configManager = ConfigManager.getInstance();
 
       // Add a config for a different module to allow refreshConfig to succeed
-      const dummySchema: IModuleConfigSchema<"dummyKey"> = {
+      const dummySchema: IModuleConfigSchema = {
         key: "dummyKey",
         schema: z.string(),
         defaultValue: "dummy",
@@ -410,7 +410,7 @@ describe("ConfigManager", () => {
 
     it("should return typed config object for module", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema1: IModuleConfigSchema<"key1"> = {
+      const schema1: IModuleConfigSchema = {
         key: "key1",
         schema: z.string(),
         defaultValue: "default1",
@@ -419,7 +419,7 @@ describe("ConfigManager", () => {
         secret: false,
         requiresRestart: false,
       };
-      const schema2: IModuleConfigSchema<"key2"> = {
+      const schema2: IModuleConfigSchema = {
         key: "key2",
         schema: z.coerce.number(),
         defaultValue: 42,
@@ -460,7 +460,7 @@ describe("ConfigManager", () => {
   describe("parseValue edge cases", () => {
     it("should handle parsing errors gracefully for optional configs", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema: IModuleConfigSchema<"testKey"> = {
+      const schema: IModuleConfigSchema = {
         key: "testKey",
         schema: z.number(),
         defaultValue: 42,
@@ -489,7 +489,7 @@ describe("ConfigManager", () => {
 
     it("should return empty string for required configs with parsing errors", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema: IModuleConfigSchema<"testKey"> = {
+      const schema: IModuleConfigSchema = {
         key: "testKey",
         schema: z.number(),
         defaultValue: 42,
@@ -522,7 +522,7 @@ describe("ConfigManager", () => {
         return val.toUpperCase();
       });
 
-      const schema: IModuleConfigSchema<"testKey"> = {
+      const schema: IModuleConfigSchema = {
         key: "testKey",
         schema: asyncSchema,
         defaultValue: "default",
@@ -568,7 +568,7 @@ describe("ConfigManager", () => {
 
     it("should return true after successful refreshConfig", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema: IModuleConfigSchema<"testKey"> = {
+      const schema: IModuleConfigSchema = {
         key: "testKey",
         schema: z.string(),
         defaultValue: "default",
@@ -661,7 +661,7 @@ describe("ConfigManager", () => {
   describe("type transformations", () => {
     it("should handle boolean coercion from string values", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema: IModuleConfigSchema<"enabled"> = {
+      const schema: IModuleConfigSchema = {
         key: "enabled",
         schema: z.coerce.boolean(),
         defaultValue: false,
@@ -697,7 +697,7 @@ describe("ConfigManager", () => {
 
       const transformSchema = z.string().transform((val) => val.toUpperCase());
 
-      const schema: IModuleConfigSchema<"transformed"> = {
+      const schema: IModuleConfigSchema = {
         key: "transformed",
         schema: transformSchema,
         defaultValue: "default",
@@ -820,7 +820,7 @@ describe("ConfigManager", () => {
   describe("schema registration", () => {
     it("should handle adding same config key multiple times gracefully", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema: IModuleConfigSchema<"testKey"> = {
+      const schema: IModuleConfigSchema = {
         key: "testKey",
         schema: z.string(),
         defaultValue: "default",
@@ -841,7 +841,7 @@ describe("ConfigManager", () => {
   describe("value change detection", () => {
     it("should not mark unchanged values as changed", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema: IModuleConfigSchema<"testKey"> = {
+      const schema: IModuleConfigSchema = {
         key: "testKey",
         schema: z.string(),
         defaultValue: "default",
@@ -874,7 +874,7 @@ describe("ConfigManager", () => {
 
     it("should detect when value changes between refreshes", async () => {
       const configManager = ConfigManager.getInstance();
-      const schema: IModuleConfigSchema<"testKey"> = {
+      const schema: IModuleConfigSchema = {
         key: "testKey",
         schema: z.string(),
         defaultValue: "default",

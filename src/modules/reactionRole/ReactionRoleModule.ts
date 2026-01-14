@@ -7,8 +7,6 @@ import schema from "./db/schema";
 import Zod from "@common/utils/ZodWrapper";
 import { z } from "zod";
 
-export type ReactionRoleConfigKeys = "channelId" | "reactionRoles";
-
 export const reactionRoleConfigSchema = [
   {
     key: "channelId",
@@ -37,11 +35,13 @@ export const reactionRoleConfigSchema = [
       }),
     ),
   },
-] as const satisfies readonly IModuleConfigSchema<ReactionRoleConfigKeys>[];
+] as const satisfies readonly IModuleConfigSchema[];
 
 export type ReactionRolesConfig = z.infer<(typeof reactionRoleConfigSchema)[1]["schema"]>[number];
 
-export default class ReactionRoleModule extends Module<ReactionRoleConfigKeys> {
+export default class ReactionRoleModule extends Module {
+  protected readonly CONFIG_SCHEMA = reactionRoleConfigSchema;
+
   constructor() {
     super("ReactionRole", { schema });
   }
@@ -53,10 +53,6 @@ export default class ReactionRoleModule extends Module<ReactionRoleConfigKeys> {
   }
 
   protected async cleanup(): Promise<void> {}
-
-  getConfigSchema(): IModuleConfigSchema<ReactionRoleConfigKeys>[] {
-    return [...reactionRoleConfigSchema];
-  }
 
   private registerListeners(): void {
     onMessageReactionAdd();

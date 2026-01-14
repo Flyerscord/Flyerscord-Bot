@@ -5,7 +5,7 @@ import Time from "@common/utils/Time";
 import SlashCommandManager from "@common/managers/SlashCommandManager";
 import ContextMenuCommandManager from "@common/managers/ContextMenuManager";
 import ConfigManager from "@common/managers/ConfigManager";
-import Env from "@common/utils/Env";
+import EnvManager from "@common/managers/EnvManager";
 
 export async function readAndRegisterCommands(): Promise<void> {
   const client = ClientManager.getInstance().client;
@@ -26,7 +26,7 @@ async function registerAllCommands(
   commands: (RESTPostAPIChatInputApplicationCommandsJSONBody | RESTPostAPIContextMenuApplicationCommandsJSONBody)[],
 ): Promise<void> {
   const config = ConfigManager.getInstance().getConfig("Common");
-  const rest = new REST({ version: "10" }).setToken(Env.get("DISCORD_TOKEN")!);
+  const rest = new REST({ version: "10" }).setToken(EnvManager.getInstance().get("DISCORD_TOKEN"));
 
   if (!client.user) {
     Stumper.error("Client user not found", "registerCommands:registerCommands:registerAllCommands");

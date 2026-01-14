@@ -6,8 +6,6 @@ import onReady from "./listeners/onReady";
 import schema from "./db/schema";
 import Zod from "@common/utils/ZodWrapper";
 
-export type VisitorRoleConfigKeys = "memberRoleId" | "visitorRoleId" | "visitorEmojiId" | "rolesChannelId";
-
 export const visitorRoleConfigSchema = [
   {
     key: "memberRoleId",
@@ -45,9 +43,11 @@ export const visitorRoleConfigSchema = [
     defaultValue: "",
     schema: Zod.string(),
   },
-] as const satisfies readonly IModuleConfigSchema<VisitorRoleConfigKeys>[];
+] as const satisfies readonly IModuleConfigSchema[];
 
-export default class VistorRoleModule extends Module<VisitorRoleConfigKeys> {
+export default class VistorRoleModule extends Module {
+  protected readonly CONFIG_SCHEMA = visitorRoleConfigSchema;
+
   constructor() {
     super("VisitorRole", { schema });
   }
@@ -57,10 +57,6 @@ export default class VistorRoleModule extends Module<VisitorRoleConfigKeys> {
   }
 
   protected async cleanup(): Promise<void> {}
-
-  getConfigSchema(): IModuleConfigSchema<VisitorRoleConfigKeys>[] {
-    return [...visitorRoleConfigSchema];
-  }
 
   private registerListeners(): void {
     onGuildMemberAdd();

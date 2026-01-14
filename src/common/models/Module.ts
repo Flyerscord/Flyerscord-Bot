@@ -15,11 +15,11 @@ import SchemaManager from "../managers/SchemaManager";
 import { TableEnumRecord } from "../db/schema-types";
 import { z } from "zod";
 
-export interface IModuleConfigSchema<TKey extends string> {
+export interface IModuleConfigSchema {
   /**
    * The key of the config in the database
    */
-  key: TKey;
+  key: string;
   /**
    * The description of the config setting
    */
@@ -41,12 +41,12 @@ export interface IModuleConfigSchema<TKey extends string> {
    */
   defaultValue: z.infer<z.ZodType>;
   /**
-   * The Zod schema for the config setting. If the value is encryped a transform is used in the schema.
+   * The Zod schema for the config setting. If the value is encrypted a transform is used in the schema.
    */
   schema: z.ZodType;
 }
 
-export default abstract class Module<TConfigKeys extends string> extends Singleton {
+export default abstract class Module extends Singleton {
   readonly name: Modules;
   readonly dependsOn: Modules[];
   // The lower the number, the higher the priority
@@ -56,6 +56,8 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
   private registered: boolean = false;
   private configValid: boolean = false;
   private started: boolean = false;
+
+  protected abstract readonly CONFIG_SCHEMA: readonly IModuleConfigSchema[];
 
   protected constructor(
     name: Modules,
@@ -104,7 +106,9 @@ export default abstract class Module<TConfigKeys extends string> extends Singlet
 
   protected abstract cleanup(): Promise<void>;
 
-  abstract getConfigSchema(): IModuleConfigSchema<TConfigKeys>[];
+  getConfigSchema(): IModuleConfigSchema[] {
+    return [...this.CONFIG_SCHEMA];
+  }
 
   private async registerConfigSchema(): Promise<void> {
     const configManager = ConfigManager.getInstance();

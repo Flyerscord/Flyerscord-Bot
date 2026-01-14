@@ -3,8 +3,6 @@ import onGuildMemberAdd from "./listeners/onGuildMemberAdd";
 import onGuildMemberRemove from "./listeners/onGuildMemberRemove";
 import Zod from "@common/utils/ZodWrapper";
 
-export type JoinLeaveConfigKeys = "channelId";
-
 export const joinLeaveConfigSchema = [
   {
     key: "channelId",
@@ -15,9 +13,11 @@ export const joinLeaveConfigSchema = [
     defaultValue: "",
     schema: Zod.string(),
   },
-] as const satisfies readonly IModuleConfigSchema<JoinLeaveConfigKeys>[];
+] as const satisfies readonly IModuleConfigSchema[];
 
-export default class JoinLeaveModule extends Module<JoinLeaveConfigKeys> {
+export default class JoinLeaveModule extends Module {
+  protected readonly CONFIG_SCHEMA = joinLeaveConfigSchema;
+
   constructor() {
     super("JoinLeave");
   }
@@ -27,10 +27,6 @@ export default class JoinLeaveModule extends Module<JoinLeaveConfigKeys> {
   }
 
   protected async cleanup(): Promise<void> {}
-
-  getConfigSchema(): IModuleConfigSchema<JoinLeaveConfigKeys>[] {
-    return [...joinLeaveConfigSchema];
-  }
 
   private registerListeners(): void {
     onGuildMemberAdd();

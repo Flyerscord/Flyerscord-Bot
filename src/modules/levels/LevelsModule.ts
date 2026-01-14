@@ -4,11 +4,11 @@ import onMessageCreate from "./listeners/onMessageCreate";
 import { calculateLevels } from "./utils/requiredExp";
 import schema from "./db/schema";
 
-export type LevelsConfigKeys = "";
+export const levelsConfigSchema = [] as const satisfies readonly IModuleConfigSchema[];
 
-export const levelsConfigSchema = [] as const satisfies readonly IModuleConfigSchema<LevelsConfigKeys>[];
+export default class LevelsModule extends Module {
+  protected readonly CONFIG_SCHEMA = levelsConfigSchema;
 
-export default class LevelsModule extends Module<LevelsConfigKeys> {
   constructor() {
     super("Levels", { schema });
   }
@@ -22,10 +22,6 @@ export default class LevelsModule extends Module<LevelsConfigKeys> {
   }
 
   protected async cleanup(): Promise<void> {}
-
-  getConfigSchema(): IModuleConfigSchema<LevelsConfigKeys>[] {
-    return [...levelsConfigSchema];
-  }
 
   private registerListeners(): void {
     onMessageCreate();

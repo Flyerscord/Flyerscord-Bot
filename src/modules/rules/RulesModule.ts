@@ -6,8 +6,6 @@ import ConfigManager from "@common/managers/ConfigManager";
 import Zod from "@common/utils/ZodWrapper";
 import { z } from "zod";
 
-export type RulesConfigKeys = "channelId" | "sections";
-
 export const rulesConfigSchema = [
   {
     key: "channelId",
@@ -27,9 +25,11 @@ export const rulesConfigSchema = [
     defaultValue: ["Welcome", "Rules", "Staff", "Roles", "Channels", "Servers"],
     schema: z.array(Zod.string()).min(1),
   },
-] as const satisfies readonly IModuleConfigSchema<RulesConfigKeys>[];
+] as const satisfies readonly IModuleConfigSchema[];
 
-export default class RulesModule extends Module<RulesConfigKeys> {
+export default class RulesModule extends Module {
+  protected readonly CONFIG_SCHEMA = rulesConfigSchema;
+
   constructor() {
     super("Rules", { schema });
   }
@@ -46,8 +46,4 @@ export default class RulesModule extends Module<RulesConfigKeys> {
   }
 
   protected async cleanup(): Promise<void> {}
-
-  getConfigSchema(): IModuleConfigSchema<RulesConfigKeys>[] {
-    return [...rulesConfigSchema];
-  }
 }

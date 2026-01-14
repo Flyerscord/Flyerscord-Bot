@@ -21,9 +21,9 @@ import ModalMenuManager from "@common/managers/ModalMenuManager";
 import ModuleManager from "@common/managers/ModuleManager";
 import BotHealthManager from "@common/managers/BotHealthManager";
 import SecretManager from "./common/managers/SecretManager";
+import EnvManager from "@common/managers/EnvManager";
 
 // Import Other Internal Things
-import Env from "@common/utils/Env";
 import CombinedTeamInfoCache from "./common/cache/CombinedTeamInfoCache";
 import onMessageCreate from "@common/listeners/onMessageCreate";
 import onInteractionCreate from "@common/listeners/onInteractionCreate";
@@ -48,37 +48,16 @@ onSigInt();
 void startUp();
 
 async function startUp(): Promise<void> {
-  let envErrors: string[] = [];
-  // Validate the environment variables
-  const DISCORD_TOKEN = Env.get("DISCORD_TOKEN");
-  if (!DISCORD_TOKEN) {
-    envErrors.push("DISCORD_TOKEN");
-  }
-
-  const DATABASE_URL_POOLED = Env.get("DATABASE_URL_POOLED");
-  if (!DATABASE_URL_POOLED) {
-    envErrors.push("DATABASE_URL_POOLED");
-  }
-
-  const ENCRYPTION_KEY = Env.get("ENCRYPTION_KEY");
-  if (!ENCRYPTION_KEY) {
-    envErrors.push("ENCRYPTION_KEY");
-  }
-
-  const PRODUCTION_MODE = Env.getBoolean("PRODUCTION_MODE");
-  if (PRODUCTION_MODE === undefined) {
-    envErrors.push("PRODUCTION_MODE");
-  }
-
-  const ADVANCED_DEBUG = Env.getBoolean("ADVANCED_DEBUG");
-  if (ADVANCED_DEBUG === undefined) {
-    envErrors.push("ADVANCED_DEBUG");
-  }
-
-  if (envErrors.length > 0) {
-    Stumper.error(`Missing environment variables: ${envErrors.join(", ")}`, "main:startUp");
+  // Read environment variables
+  const envManager = EnvManager.getInstance();
+  if (!envManager.read()) {
+    Stumper.error("FATAL: Missing required environment variables. Exiting...", "main:startUp");
     return;
   }
+
+  const DISCORD_TOKEN = envManager.get("DISCORD_TOKEN");
+  const PRODUCTION_MODE = envManager.get("PRODUCTION_MODE");
+  const ADVANCED_DEBUG = envManager.get("ADVANCED_DEBUG");
 
   Stumper.info(
     `Bot starting up in ${PRODUCTION_MODE ? "production" : "development"} mode! Advanced debug: ${ADVANCED_DEBUG ? "enabled" : "disabled"}`,

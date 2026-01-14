@@ -3,6 +3,7 @@ import ClientManager from "@common/managers/ClientManager";
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
 import ConfigManager from "@common/managers/ConfigManager";
+import JoinLeaveDB from "../db/JoinLeaveDB";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
@@ -16,5 +17,8 @@ export default (): void => {
       new AttachmentBuilder("https://i.imgur.com/dDrkXV6.gif"),
     );
     Stumper.info(`User ${username} has left the server!`, "joinLeave:onGuildMemberRemove");
+
+    const db = new JoinLeaveDB();
+    await db.deleteNotVerifiedUser(member.user.id);
   });
 };

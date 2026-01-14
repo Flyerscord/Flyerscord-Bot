@@ -33,6 +33,15 @@ export const joinLeaveConfigSchema = [
     defaultValue: [],
     schema: z.array(z.object({ question: z.string(), answer: z.string() })),
   },
+  {
+    key: "maxAnswerLength",
+    description: "The threshold of answer lengths to allow the user to reply with",
+    required: false,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: 75,
+    schema: Zod.number({ min: 1, max: 1000 }),
+  },
   // Might be useful later, we will see if the captcha stops spam bots
   // {
   //   key: "brandNewAccountThreshold",

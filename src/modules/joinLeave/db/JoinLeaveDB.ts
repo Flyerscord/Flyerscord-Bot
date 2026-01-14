@@ -11,6 +11,10 @@ export default class JoinLeaveDB extends ModuleDatabase {
     await this.db.insert(notVerifiedUsers).values({ userId });
   }
 
+  async deleteNotVerifiedUser(userId: string): Promise<void> {
+    await this.db.delete(notVerifiedUsers).where(eq(notVerifiedUsers.userId, userId));
+  }
+
   async getNotVerifiedUsers(): Promise<NotVerifiedUser[]> {
     return await this.db.select().from(notVerifiedUsers);
   }
@@ -24,5 +28,13 @@ export default class JoinLeaveDB extends ModuleDatabase {
       .update(notVerifiedUsers)
       .set({ questionsAnswered: this.increment(notVerifiedUsers.questionsAnswered) })
       .where(eq(notVerifiedUsers.userId, userId));
+  }
+
+  async lockUser(userId: string): Promise<void> {
+    await this.db.update(notVerifiedUsers).set({ lock: true }).where(eq(notVerifiedUsers.userId, userId));
+  }
+
+  async unlockUser(userId: string): Promise<void> {
+    await this.db.update(notVerifiedUsers).set({ lock: false }).where(eq(notVerifiedUsers.userId, userId));
   }
 }

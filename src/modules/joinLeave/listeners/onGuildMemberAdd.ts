@@ -5,6 +5,7 @@ import Stumper from "stumper";
 import JoinImageGenerator from "../utils/JoinImageGenerator";
 import ConfigManager from "@common/managers/ConfigManager";
 import { sendCaptcha } from "../utils/Captcha";
+import JoinLeaveDB from "../db/JoinLeaveDB";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
@@ -28,14 +29,15 @@ export default (): void => {
     // User Captcha
     const notVerifiedRoleId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedRoleId;
 
+    const db = new JoinLeaveDB();
+
     try {
       await discord.roles.addRoleToUser(member, notVerifiedRoleId);
+      await sendCaptcha(user);
+      await db.addNotVerifiedUser(user.id);
     } catch (error) {
       Stumper.error(`Error adding not verified role to user ${user.id}`, "joinLeave:onGuildMemberAdd");
       Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
     }
-
-    // TODO: Send user the captcha question
-    await sendCaptcha(user);
   });
 };

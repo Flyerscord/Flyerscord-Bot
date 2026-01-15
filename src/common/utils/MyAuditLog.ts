@@ -5,8 +5,6 @@ import { count, eq, and } from "drizzle-orm";
 import Stumper from "stumper";
 
 export default class MyAuditLog {
-  static db = Database.getInstance().getDb();
-
   /**
    * Creates a new entry to the audit log, current timestamp will be used
    * @param moduleName - The name of the module adding the audit log
@@ -18,12 +16,13 @@ export default class MyAuditLog {
     newAuditLog: Omit<NewAuditLog, "timestamp" | "moduleName">,
     suppressErrors: boolean = true,
   ): Promise<void> {
+    const db = Database.getInstance().getDb();
     const insertAuditLog = async (): Promise<void> => {
       const newAuditLogWithModuleName: NewAuditLog = {
         ...newAuditLog,
         moduleName,
       };
-      await this.db.insert(auditLog).values(newAuditLogWithModuleName);
+      await db.insert(auditLog).values(newAuditLogWithModuleName);
     };
 
     if (suppressErrors) {
@@ -43,7 +42,8 @@ export default class MyAuditLog {
    * @returns The number of audit log entries for this module
    */
   static async getCountAuditLogs(moduleName: Modules): Promise<number> {
-    const result = await this.db.select({ count: count() }).from(auditLog).where(eq(auditLog.moduleName, moduleName));
+    const db = Database.getInstance().getDb();
+    const result = await db.select({ count: count() }).from(auditLog).where(eq(auditLog.moduleName, moduleName));
     return result[0]?.count ?? 0;
   }
 
@@ -54,10 +54,11 @@ export default class MyAuditLog {
    * @returns Array of audit log entries
    */
   static async getAuditLogs(moduleName: Modules, limit: number = Infinity): Promise<AuditLog[]> {
+    const db = Database.getInstance().getDb();
     if (limit === Infinity) {
-      return await this.db.select().from(auditLog).where(eq(auditLog.moduleName, moduleName));
+      return await db.select().from(auditLog).where(eq(auditLog.moduleName, moduleName));
     }
-    return await this.db.select().from(auditLog).where(eq(auditLog.moduleName, moduleName)).limit(limit);
+    return await db.select().from(auditLog).where(eq(auditLog.moduleName, moduleName)).limit(limit);
   }
 
   /**
@@ -68,13 +69,14 @@ export default class MyAuditLog {
    * @returns Array of audit log entries matching the action
    */
   static async getAuditLogsByAction(moduleName: Modules, action: string, limit: number = Infinity): Promise<AuditLog[]> {
+    const db = Database.getInstance().getDb();
     if (limit === Infinity) {
-      return await this.db
+      return await db
         .select()
         .from(auditLog)
         .where(and(eq(auditLog.moduleName, moduleName), eq(auditLog.action, action)));
     }
-    return await this.db
+    return await db
       .select()
       .from(auditLog)
       .where(and(eq(auditLog.moduleName, moduleName), eq(auditLog.action, action)))
@@ -88,13 +90,14 @@ export default class MyAuditLog {
    * @returns Array of audit log entries for the specified user
    */
   static async getAuditLogsByUser(moduleName: Modules, userId: string, limit: number = Infinity): Promise<AuditLog[]> {
+    const db = Database.getInstance().getDb();
     if (limit === Infinity) {
-      return await this.db
+      return await db
         .select()
         .from(auditLog)
         .where(and(eq(auditLog.moduleName, moduleName), eq(auditLog.userId, userId)));
     }
-    return await this.db
+    return await db
       .select()
       .from(auditLog)
       .where(and(eq(auditLog.moduleName, moduleName), eq(auditLog.userId, userId)))
@@ -110,13 +113,14 @@ export default class MyAuditLog {
    * @returns Array of audit log entries matching both user and action
    */
   static async getAuditLogsByUserAndAction(moduleName: Modules, userId: string, action: string, limit: number = Infinity): Promise<AuditLog[]> {
+    const db = Database.getInstance().getDb();
     if (limit === Infinity) {
-      return await this.db
+      return await db
         .select()
         .from(auditLog)
         .where(and(eq(auditLog.moduleName, moduleName), eq(auditLog.userId, userId), eq(auditLog.action, action)));
     }
-    return await this.db
+    return await db
       .select()
       .from(auditLog)
       .where(and(eq(auditLog.moduleName, moduleName), eq(auditLog.userId, userId), eq(auditLog.action, action)))
@@ -129,6 +133,7 @@ export default class MyAuditLog {
    * @returns The audit log entry if found, undefined otherwise
    */
   static async getAuditLog(id: string): Promise<AuditLog | undefined> {
-    return (await this.db.select().from(auditLog).where(eq(auditLog.id, id)).limit(1))[0];
+    const db = Database.getInstance().getDb();
+    return (await db.select().from(auditLog).where(eq(auditLog.id, id)).limit(1))[0];
   }
 }

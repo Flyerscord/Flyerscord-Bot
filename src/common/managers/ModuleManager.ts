@@ -84,7 +84,8 @@ export default class ModuleManager extends Singleton {
     // Disable in reverse order
     for (let i = this.modules.length - 1; i >= 0; i--) {
       const module = this.modules[i];
-      result = result && (await module.disable());
+      const moduleResult = await module.disable();
+      result = result && moduleResult;
     }
     return result;
   }
@@ -93,7 +94,8 @@ export default class ModuleManager extends Singleton {
     Stumper.info(`Enabling ${this.modules.length} modules...`, "common:ModuleManager:enableAllModules");
     let result = true;
     for (const module of this.modules) {
-      result = result && (await this.enableModule(module.name));
+      const moduleResult = await this.enableModule(module.name);
+      result = result && moduleResult;
     }
     return result;
   }

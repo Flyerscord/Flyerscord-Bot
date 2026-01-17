@@ -3,6 +3,7 @@ import eslintConfigPrettier from "eslint-config-prettier";
 import typescriptEslintPlugin from "@typescript-eslint/eslint-plugin";
 import typescriptEslintParser from "@typescript-eslint/parser";
 import eslintPluginImport from "eslint-plugin-import";
+import eslintPluginN from "eslint-plugin-n";
 
 export default [
   {
@@ -22,6 +23,7 @@ export default [
       prettier: eslintPluginPrettier,
       "@typescript-eslint": typescriptEslintPlugin,
       "import": eslintPluginImport,
+      "n": eslintPluginN,
     },
     rules: {
       // TypeScript rules
@@ -67,6 +69,8 @@ export default [
           ]
         }
       ],
+
+      "n/prefer-node-protocol": "error",
 
       // Prettier integration
       "prettier/prettier": "error",

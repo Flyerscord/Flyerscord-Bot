@@ -82,7 +82,7 @@ export default class LevelsDB extends ModuleDatabase {
   async addNewUser(userId: string): Promise<LevelsUser> {
     const result = await this.db
       .insert(levelsLevels)
-      .values({ userId: userId, totalExperience: 0, currentLevel: 0, messageCount: 0, timeOfLastMessage: new Date(0) })
+      .values({ userId: userId, timeOfLastMessage: new Date(0) })
       .onConflictDoNothing()
       .returning();
 

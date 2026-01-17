@@ -15,16 +15,50 @@ permissions:
   packages: write
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for code changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            code:
+              - '**/*.ts'
+              - '**/*.tsx'
+              - '**/*.js'
+              - '**/*.jsx'
+              - '**/*.json'
+              - '**/*.sql'
+              - '**/*.png'
+              - '**/*.jpg'
+              - '**/*.jpeg'
+              - '**/*.gif'
+              - '**/*.svg'
+              - '**/*.webp'
+              - 'pnpm-lock.yaml'
+              - 'Dockerfile'
+              - '.github/workflows/**'
+              - 'drizzle/**'
+
   check-version:
-    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
+    needs: changes
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false && needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Check if the version was updated
         uses: Flyerscord/enforce-version-bump-action@v1.0.0
         with:
           base-ref: ${{ github.event.pull_request.base.ref }}
+
   build:
-    if: github.event_name == 'push' || github.event.pull_request.draft == false
+    needs: changes
+    if: (github.event_name == 'push' || github.event.pull_request.draft == false) && needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -97,7 +131,8 @@ jobs:
           hide-branch-coverage: false
 
   docker-build:
-    if: github.event_name == 'push' || github.event.pull_request.draft == false
+    needs: changes
+    if: (github.event_name == 'push' || github.event.pull_request.draft == false) && needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

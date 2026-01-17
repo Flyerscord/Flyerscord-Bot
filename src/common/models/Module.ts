@@ -71,7 +71,12 @@ export default abstract class Module extends Singleton {
     super();
 
     this.name = name;
+
     this.dependsOn = dependsOn;
+    if (this.name !== "Common") {
+      this.dependsOn.push("Common");
+    }
+
     this.loadPriority = loadPriority;
     this.prodOnly = prodOnly;
 

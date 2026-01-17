@@ -33,8 +33,8 @@ export default (): void => {
 
     try {
       await discord.roles.addRoleToUser(member, notVerifiedRoleId);
-      await sendCaptcha(user);
       await db.addNotVerifiedUser(user.id);
+      await sendCaptcha(user);
     } catch (error) {
       Stumper.error(`Error adding not verified role to user ${user.id}`, "joinLeave:onGuildMemberAdd");
       Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");

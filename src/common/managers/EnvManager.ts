@@ -10,6 +10,7 @@ const envVarDefinitions = {
   ENCRYPTION_KEY: "string",
   PRODUCTION_MODE: "boolean",
   ADVANCED_DEBUG: "boolean",
+  BOT_MANAGERS: "list<string>",
 } as const;
 
 /**
@@ -20,7 +21,9 @@ type EnvVarTypeMap = {
     ? string
     : (typeof envVarDefinitions)[K] extends "boolean"
       ? boolean
-      : never;
+      : (typeof envVarDefinitions)[K] extends "list<string>"
+        ? string[]
+        : never;
 };
 
 /**
@@ -34,12 +37,12 @@ type EnvVarKey = keyof EnvVarTypeMap;
 const envVars = Object.entries(envVarDefinitions).map(([key, type]) => ({
   key: key as EnvVarKey,
   type,
-})) as { key: EnvVarKey; type: "string" | "boolean" }[];
+})) as { key: EnvVarKey; type: "string" | "boolean" | "list<string>" }[];
 
 /**
  * Represents an environment variable with its key and type.
  */
-type EnvVar = { key: EnvVarKey; type: "string" | "boolean" };
+type EnvVar = { key: EnvVarKey; type: "string" | "boolean" | "list<string>" };
 
 /**
  * Manages environment variables for the application.
@@ -58,7 +61,7 @@ type EnvVar = { key: EnvVarKey; type: "string" | "boolean" };
  * ```
  */
 export default class EnvManager extends Singleton {
-  private vars: Map<EnvVarKey, string | boolean> = new Map();
+  private vars: Map<EnvVarKey, string | boolean | string[]> = new Map();
 
   constructor() {
     super();
@@ -131,6 +134,14 @@ export default class EnvManager extends Singleton {
       this.vars.set(envVar.key, value);
     } else if (envVar.type === "boolean") {
       this.vars.set(envVar.key, value.toLowerCase() === "true");
+    } else if (envVar.type === "list<string>") {
+      this.vars.set(
+        envVar.key,
+        value
+          .split(",")
+          .map((item) => item.trim())
+          .filter((item) => item.length > 0),
+      );
     }
   }
 

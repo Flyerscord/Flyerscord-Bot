@@ -4,11 +4,12 @@ import MyAuditLog from "../../utils/MyAuditLog";
 import { DMTextCommand } from "../../models/TextCommand";
 import discord from "../../utils/discord/discord";
 import { AuditLogSeverity } from "../../db/schema";
+import EnvManager from "../../managers/EnvManager";
 
 export default class RefreshConfigCommand extends DMTextCommand {
   constructor() {
     super(ConfigManager.getInstance().getConfig("Common").adminPrefix, "Refresh Config", "refreshconfig", {
-      allowedUsers: ["140656762960347136"],
+      allowedUsers: EnvManager.getInstance().get("BOT_MANAGERS"),
     });
   }
 

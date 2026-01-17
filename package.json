@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(ts|json)\"",
-    "prepush": "pnpm run build && pnpm run build:test && pnpm run lint && pnpm run test",
+    "prepush": "pnpm run format && pnpm run build && pnpm run build:test && pnpm run lint && pnpm run test",
     "update": "npm-check -u",
     "depcheck": "npm-check",
     "prepare": "husky",

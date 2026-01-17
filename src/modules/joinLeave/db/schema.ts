@@ -1,15 +1,19 @@
 import { createModuleTable } from "@common/db/schema-types";
-import { boolean, integer, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, index, integer, text, timestamp } from "drizzle-orm/pg-core";
 
-export const notVerifiedUsers = createModuleTable("joinleave__not_verified_users", {
-  userId: text("user_id").primaryKey(),
-  addedAt: timestamp("added_at").defaultNow().notNull(),
-  questionsAnswered: integer("questions_answered").default(0).notNull(),
-  lock: boolean("lock").default(false).notNull(),
-  incorrectAnswers: integer("incorrect_answers").default(0).notNull(),
-  timedoutAt: timestamp("timedout_at"),
-  timeOutCount: integer("time_out_count").default(0).notNull(),
-});
+export const notVerifiedUsers = createModuleTable(
+  "joinleave__not_verified_users",
+  {
+    userId: text("user_id").primaryKey(),
+    addedAt: timestamp("added_at").defaultNow().notNull(),
+    questionsAnswered: integer("questions_answered").default(0).notNull(),
+    lock: boolean("lock").default(false).notNull(),
+    incorrectAnswers: integer("incorrect_answers").default(0).notNull(),
+    timedoutAt: timestamp("timedout_at"),
+    timeOutCount: integer("time_out_count").default(0).notNull(),
+  },
+  (table) => [index("joinleave_added_at_idx").on(table.addedAt), index("joinleave_timedout_at_idx").on(table.timedoutAt)],
+);
 
 export default {
   notVerifiedUsers,

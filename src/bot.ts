@@ -127,8 +127,11 @@ async function startUp(): Promise<void> {
   ModalMenuManager.getInstance();
   TextCommandManager.getInstance();
 
-  // Update Caches
-  await CombinedTeamInfoCache.getInstance().forceUpdate();
+  // Update Caches and register tasks
+  // TODO: #123 Move this cache to the NHL module
+  const combinedTeamInfoCache = CombinedTeamInfoCache.getInstance();
+  await combinedTeamInfoCache.forceUpdate();
+  combinedTeamInfoCache.createScheduledJob();
 
   // Enable All Modules
   const result = await moduleManager.enableAllModules();

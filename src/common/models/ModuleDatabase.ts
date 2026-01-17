@@ -1,7 +1,8 @@
 import { Modules } from "@modules/Modules";
 import Database, { PostgresDB } from "../db/db";
-import { PgColumn, PgTable } from "drizzle-orm/pg-core";
+import { PgColumn, PgTable, SelectedFields } from "drizzle-orm/pg-core";
 import { count, sql, SQL } from "drizzle-orm";
+import { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import { AuditLog, NewAuditLog } from "../db/schema";
 import AL from "../utils/MyAuditLog";
 
@@ -48,6 +49,35 @@ export abstract class ModuleDatabase {
       return undefined;
     }
     return result[0] as T;
+  }
+
+  /**
+   * Retrieves a single row from a table matching the given condition
+   * @param table - The table to query
+   * @param where - The SQL condition to match
+   * @param fields - The fields to select
+   * @returns The first matching row, or undefined if no match is found
+   *
+   * @example
+   * ```typescript
+   * const user = await this.getSingleRowWithFields(
+   *   usersTable,
+   *   eq(usersTable.id, userId),
+   *   { id: usersTable.id, username: usersTable.username }
+   * );
+   * // user is { id: number, username: string } | undefined
+   * ```
+   */
+  protected async getSingleRowWithFields<TSelection extends SelectedFields>(
+    table: PgTable,
+    where: SQL,
+    fields: TSelection,
+  ): Promise<SelectResultFields<TSelection> | undefined> {
+    const result = await this.db.select(fields).from(table).where(where);
+    if (result.length === 0) {
+      return undefined;
+    }
+    return result[0] as SelectResultFields<TSelection>;
   }
 
   /**

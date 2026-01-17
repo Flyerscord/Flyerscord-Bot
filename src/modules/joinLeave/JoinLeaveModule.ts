@@ -4,6 +4,7 @@ import onGuildMemberRemove from "./listeners/onGuildMemberRemove";
 import Zod from "@common/utils/ZodWrapper";
 import { z } from "zod";
 import schema from "./db/schema";
+import onMessageCreate from "./listeners/onMessageCreate";
 
 export const joinLeaveConfigSchema = [
   {
@@ -40,6 +41,33 @@ export const joinLeaveConfigSchema = [
     secret: false,
     requiresRestart: false,
     defaultValue: 75,
+    schema: Zod.number({ min: 1, max: 1000 }),
+  },
+  {
+    key: "maxIncorrectAnswers",
+    description: "The maximum number of incorrect answers allowed before the user is locked",
+    required: false,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: 3,
+    schema: Zod.number({ min: 1, max: 1000 }),
+  },
+  {
+    key: "incorrectAnswersTimeout",
+    description: "The number of seconds a user is locked for after reaching the max incorrect answers",
+    required: false,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: 3600,
+    schema: Zod.number({ min: 1, max: 2_592_000 }),
+  },
+  {
+    key: "maxTimeOuts",
+    description: "The maximum number of timeouts a user can have before being banned",
+    required: false,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: 2,
     schema: Zod.number({ min: 1, max: 1000 }),
   },
   // Might be useful later, we will see if the captcha stops spam bots
@@ -79,5 +107,6 @@ export default class JoinLeaveModule extends Module {
   private registerListeners(): void {
     onGuildMemberAdd();
     onGuildMemberRemove();
+    onMessageCreate();
   }
 }

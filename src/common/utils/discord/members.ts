@@ -1,4 +1,4 @@
-import { Collection, GuildMember } from "discord.js";
+import { BanOptions, Collection, GuildMember } from "discord.js";
 import { getGuild } from "./guilds";
 import Stumper from "stumper";
 
@@ -50,4 +50,26 @@ export async function timeout(member: GuildMember, seconds: number, reason: stri
 
 export async function removeTimeout(member: GuildMember, reason?: string): Promise<void> {
   await member.timeout(null, reason);
+}
+
+export async function kick(userId: string, reason?: string): Promise<boolean> {
+  const member = await getMember(userId);
+  if (!member) {
+    Stumper.warning(`Member with user id ${userId} not found, cannot kick`, "common:members:kick");
+    return false;
+  }
+  Stumper.warning(`Kicking user ${userId}, reason: ${reason}`, "common:members:kick");
+  await member.kick(reason);
+  return true;
+}
+
+export async function banUser(userId: string, options: BanOptions = {}): Promise<boolean> {
+  const member = await getMember(userId);
+  if (!member) {
+    Stumper.warning(`Member with user id ${userId} not found, cannot ban`, "common:members:banUser");
+    return false;
+  }
+  Stumper.warning(`Banning user ${userId}, reason: ${options.reason}`, "common:members:banUser");
+  await member.ban(options);
+  return true;
 }

@@ -5,11 +5,12 @@ import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/managers/ConfigManager";
 import MyAuditLog from "@common/utils/MyAuditLog";
 import { AuditLogSeverity } from "@common/db/schema";
+import EnvManager from "@common/managers/EnvManager";
 
 export default class ReloadSlashCommandsCommand extends DMTextCommand {
   constructor() {
     super(ConfigManager.getInstance().getConfig("Common").adminPrefix, "Reload Slash Commands", "reloadslashcommands", {
-      allowedUsers: ["140656762960347136"],
+      allowedUsers: EnvManager.getInstance().get("BOT_MANAGERS"),
     });
   }
 

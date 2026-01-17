@@ -60,6 +60,17 @@ export default class AddCommand extends AdminSlashCommand {
     }
 
     if (name != "" && text != "") {
+      const nameRegex = /^[a-zA-Z0-9_-]+$/;
+      if (name.length > 32) {
+        await this.replies.reply(`Command ${prefix}${name} is too long! The max length is 32 characters.`);
+        return;
+      } else if (!nameRegex.test(name)) {
+        await this.replies.reply(
+          `Command ${prefix}${name} contains invalid characters! Only alphanumeric characters, underscores and dashes are allowed.`,
+        );
+        return;
+      }
+
       if ((await db.hasCommand(name)) || interaction.client.textCommands.hasAny(name)) {
         await this.replies.reply(`Command ${prefix}${name} already exists!`);
         return;

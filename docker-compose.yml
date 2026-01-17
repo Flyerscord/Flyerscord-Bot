@@ -19,6 +19,8 @@ services:
         max-size: "10m"
         max-file: 3
         compress: "true"
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
 
   pgbouncer:
     image: edoburu/pgbouncer:latest
@@ -43,6 +45,8 @@ services:
         max-size: "10m"
         max-file: 3
         compress: "true"
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
 
   migrate:
     image: ghcr.io/flyerscord/flyerscord-bot:latest
@@ -59,6 +63,8 @@ services:
         max-size: "10m"
         max-file: 5
         compress: "true"
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
 
   bot:
     image: ghcr.io/flyerscord/flyerscord-bot:latest
@@ -91,6 +97,8 @@ services:
         condition: service_healthy
       pgbouncer:
         condition: service_started
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
 
   adminer:
     image: adminer:latest

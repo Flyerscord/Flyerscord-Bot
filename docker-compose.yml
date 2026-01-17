@@ -45,9 +45,7 @@ services:
         compress: "true"
 
   migrate:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/flyerscord/flyerscord-bot:latest
     restart: no
     command: pnpm run db:migrate
     environment:
@@ -63,9 +61,7 @@ services:
         compress: "true"
 
   bot:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/flyerscord/flyerscord-bot:latest
     restart: unless-stopped
     environment:
       PRODUCTION_MODE: true

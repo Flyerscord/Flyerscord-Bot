@@ -76,7 +76,7 @@ async function startUp(): Promise<void> {
   SecretManager.getInstance();
 
   // Initialize the Bot Health Manager
-  BotHealthManager.getInstance();
+  const botHealthManager = BotHealthManager.getInstance();
 
   // Add all of the modules (in order of load priority)
   moduleManager.addAllModules();
@@ -126,15 +126,14 @@ async function startUp(): Promise<void> {
   ModalMenuManager.getInstance();
   TextCommandManager.getInstance();
 
-  // Start the bot
-  await client.login(DISCORD_TOKEN);
-
   // Enable All Modules
+  const moduleCount = moduleManager.getModuleCount();
   const result = await moduleManager.enableAllModules();
   if (result) {
-    Stumper.success("Successfully enabled all modules!", "main:startUp");
+    Stumper.success(`Successfully enabled all ${moduleCount} modules!`, "main:startUp");
   } else {
-    Stumper.warning("Failed to enable all modules! Check the logs above for more details.", "main:startUp");
+    Stumper.warning(`Failed to enable all ${moduleCount} modules! Check the logs above for more details.`, "main:startUp");
+    botHealthManager.setHealthy(false, true);
   }
 
   // Register Common Event Handlers
@@ -146,4 +145,7 @@ async function startUp(): Promise<void> {
   await MyAuditLog.createAuditLog("Common", {
     action: "BotStartup",
   });
+
+  // Start the bot
+  await client.login(DISCORD_TOKEN);
 }

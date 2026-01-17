@@ -47,6 +47,7 @@ export default class ReactionRoleModule extends Module {
   }
 
   protected async setup(): Promise<void> {
+    // TODO: This can probably be refactored
     await setMessageIdsFromConfig();
 
     this.registerListeners();

@@ -3,7 +3,7 @@ import SlashCommand from "./SlashCommand";
 import ModalMenu from "./ModalMenu";
 import TextCommand from "./TextCommand";
 import ContextMenuCommand from "./ContextMenuCommand";
-import fs from "fs";
+import fs from "node:fs";
 import SlashCommandManager from "../managers/SlashCommandManager";
 import ModalMenuManager from "../managers/ModalMenuManager";
 import TextCommandManager from "../managers/TextCommandManager";
@@ -107,8 +107,14 @@ export default abstract class Module extends Singleton {
     return this.prodOnly;
   }
 
+  /**
+   * Called before the bot is logged into. Use a onReady run setup after the bot is logged into.
+   */
   protected abstract setup(): Promise<void>;
 
+  /**
+   * Called before the bot is killed.
+   */
   protected abstract cleanup(): Promise<void>;
 
   getConfigSchema(): IModuleConfigSchema[] {

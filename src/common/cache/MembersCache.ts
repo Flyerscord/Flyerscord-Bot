@@ -15,6 +15,7 @@ export default class MembersCache extends Cache<Collection<string, GuildMember> 
       Stumper.error("0 members found", "common:MembersCache:updateCache");
       return;
     }
+    Stumper.info(`Found ${members.size} members`, "common:MembersCache:updateCache");
     this.cache = members;
   }
 

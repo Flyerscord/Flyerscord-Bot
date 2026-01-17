@@ -4,7 +4,7 @@
   "description": "Flyers' Discord Helper Bot",
   "main": "src/bot.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json --noEmit",
+    "build": "tsc -p tsconfig.build.json --noEmit",
     "build:test": "tsc -p tsconfig.test.json --noEmit",
     "start": "tsx src/bot.ts",
     "start:dev": "pnpm run build && tsx src/bot.ts",

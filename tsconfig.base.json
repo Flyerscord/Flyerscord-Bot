@@ -1,3 +1,4 @@
+// This config is what is pulled into the other tsconfig files
 {
   "compilerOptions": {
     /* Language */

@@ -1,0 +1,9 @@
+// This config is used for building the source code and not the tests
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist"
+  },
+  "include": ["src", "drizzle.config.ts"],
+  "exclude": ["node_modules", "data", "dist"]
+}

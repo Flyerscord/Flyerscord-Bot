@@ -11,8 +11,12 @@ export async function getMember(userId: string): Promise<GuildMember | undefined
   }
 }
 
-export async function getMembers(): Promise<Collection<string, GuildMember> | undefined> {
+export async function getMembers(force: boolean = false): Promise<Collection<string, GuildMember> | undefined> {
   try {
+    if (force) {
+      getGuild()?.members.cache.clear();
+    }
+
     return await getGuild()?.members.fetch();
   } catch (error) {
     Stumper.error(error, "common:members:getMembers");

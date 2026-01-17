@@ -15,6 +15,13 @@
       "when": 1768034292246,
       "tag": "0001_wide_mongu",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1768635328058,
+      "tag": "0002_tan_sway",
+      "breakpoints": true
     }
   ]
 }

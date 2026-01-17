@@ -1,3 +1,4 @@
+// This config is used for building everything, is here for vscode support
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {

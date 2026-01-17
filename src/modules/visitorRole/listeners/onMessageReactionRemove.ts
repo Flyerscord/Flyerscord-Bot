@@ -45,7 +45,7 @@ export default (): void => {
         },
       });
 
-      await discord.roles.removeRoleToUser(member, visitorRoleId);
+      await discord.roles.removeRoleFromUser(member, visitorRoleId);
       await discord.roles.addRoleToUser(member, memberRoleId);
       Stumper.debug(`Reaction removed from message ${reaction.message.id} by user ${user.id}`, "visitorRole:onMessageReactionRemove");
     }

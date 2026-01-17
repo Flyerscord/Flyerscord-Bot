@@ -5,6 +5,7 @@ import type { Modules } from "@modules/Modules";
 export enum AuditLogSeverity {
   INFO = "INFO",
   WARNING = "WARNING",
+  CRITICAL = "CRITICAL",
   ERROR = "ERROR",
 }
 

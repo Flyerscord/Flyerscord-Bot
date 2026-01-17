@@ -1,7 +1,8 @@
 import { Modules } from "@modules/Modules";
 import Database, { PostgresDB } from "../db/db";
-import { PgTable } from "drizzle-orm/pg-core";
+import { PgColumn, PgTable, SelectedFields } from "drizzle-orm/pg-core";
 import { count, sql, SQL } from "drizzle-orm";
+import { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import { AuditLog, NewAuditLog } from "../db/schema";
 import AL from "../utils/MyAuditLog";
 
@@ -29,6 +30,57 @@ export abstract class ModuleDatabase {
   }
 
   /**
+   * Retrieves a single row from a table matching the given condition
+   * @param table - The table to query
+   * @param where - The SQL condition to match
+   * @returns The first matching row, or undefined if no match is found
+   *
+   * @example
+   * ```typescript
+   * const user = await this.getSingleRow<UserRow>(
+   *   usersTable,
+   *   eq(usersTable.id, userId)
+   * );
+   * ```
+   */
+  protected async getSingleRow<T>(table: PgTable, where: SQL): Promise<T | undefined> {
+    const result = await this.db.select().from(table).where(where).limit(1);
+    if (result.length === 0) {
+      return undefined;
+    }
+    return result[0] as T;
+  }
+
+  /**
+   * Retrieves a single row from a table matching the given condition
+   * @param table - The table to query
+   * @param where - The SQL condition to match
+   * @param fields - The fields to select
+   * @returns The first matching row, or undefined if no match is found
+   *
+   * @example
+   * ```typescript
+   * const user = await this.getSingleRowWithFields(
+   *   usersTable,
+   *   eq(usersTable.id, userId),
+   *   { id: usersTable.id, username: usersTable.username }
+   * );
+   * // user is { id: number, username: string } | undefined
+   * ```
+   */
+  protected async getSingleRowWithFields<TSelection extends SelectedFields>(
+    table: PgTable,
+    where: SQL,
+    fields: TSelection,
+  ): Promise<SelectResultFields<TSelection> | undefined> {
+    const result = await this.db.select(fields).from(table).where(where);
+    if (result.length === 0) {
+      return undefined;
+    }
+    return result[0] as SelectResultFields<TSelection>;
+  }
+
+  /**
    * Truncates a table
    * @param table - The table to truncate
    */
@@ -52,6 +104,42 @@ export abstract class ModuleDatabase {
           .limit(1)
       ).length > 0
     );
+  }
+
+  /**
+   * Creates a SQL expression to increment a column value.
+   *
+   * @param column - The column to increment
+   * @param amount - The amount to increment by (default: 1)
+   * @returns SQL expression for incrementing the column
+   *
+   * @example
+   * ```typescript
+   * await db.update(table)
+   *   .set({ count: this.increment(table.count, 5) })
+   *   .where(eq(table.id, id));
+   * ```
+   */
+  protected increment(column: PgColumn, amount = 1): SQL {
+    return sql`${column} + ${amount}`;
+  }
+
+  /**
+   * Creates a SQL expression to decrement a column value.
+   *
+   * @param column - The column to decrement
+   * @param amount - The amount to decrement by (default: 1)
+   * @returns SQL expression for decrementing the column
+   *
+   * @example
+   * ```typescript
+   * await db.update(table)
+   *   .set({ count: this.decrement(table.count, 3) })
+   *   .where(eq(table.id, id));
+   * ```
+   */
+  protected decrement(column: PgColumn, amount = 1): SQL {
+    return sql`${column} - ${amount}`;
   }
 
   // Audit Log Methods

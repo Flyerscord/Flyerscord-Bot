@@ -49,7 +49,7 @@ export default (): void => {
         },
       });
 
-      await discord.roles.removeRoleToUser(member, reactionRole.roleId);
+      await discord.roles.removeRoleFromUser(member, reactionRole.roleId);
       Stumper.debug(`Reaction removed from reaction role ${reactionName} by user ${user.id}`, "reactionRole:onMessageReactionRemove");
     }
   });

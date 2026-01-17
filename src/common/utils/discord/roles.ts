@@ -6,7 +6,7 @@ export async function addRoleToUser(member: GuildMember, roleId: string): Promis
   }
 }
 
-export async function removeRoleToUser(member: GuildMember, roleId: string): Promise<void> {
+export async function removeRoleFromUser(member: GuildMember, roleId: string): Promise<void> {
   if (userHasRole(member, roleId)) {
     await member.roles.remove(roleId);
   }

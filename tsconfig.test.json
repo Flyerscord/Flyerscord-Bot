@@ -1,3 +1,4 @@
+// This config is used for building the tests
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {

@@ -77,11 +77,11 @@ export default class LeaderboardCommand extends SlashCommand {
       }
 
       // Update button states based on current page
-      prevButton.setDisabled(currentPage === 0);
+      prevButton.setDisabled(currentPage === 1);
       nextButton.setDisabled(currentPage === totalPages);
 
       // Update the embed and buttons
-      await i.reply({ embeds: [await this.createEmbedPage(users, currentPage)], components: [row] });
+      await i.editReply({ embeds: [await this.createEmbedPage(users, currentPage)], components: [row] });
     });
 
     collector.on("end", async () => {

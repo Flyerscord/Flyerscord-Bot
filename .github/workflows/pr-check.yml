@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       code: ${{ steps.filter.outputs.code }}
+      code_no_ci: ${{ steps.filter.outputs.code_no_ci }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -45,10 +46,26 @@ jobs:
               - 'Dockerfile'
               - '.github/workflows/**'
               - 'drizzle/**'
+            code_no_ci:
+              - '**/*.ts'
+              - '**/*.tsx'
+              - '**/*.js'
+              - '**/*.jsx'
+              - '**/*.json'
+              - '**/*.sql'
+              - '**/*.png'
+              - '**/*.jpg'
+              - '**/*.jpeg'
+              - '**/*.gif'
+              - '**/*.svg'
+              - '**/*.webp'
+              - 'pnpm-lock.yaml'
+              - 'Dockerfile'
+              - 'drizzle/**'
 
   check-version:
     needs: changes
-    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false && needs.changes.outputs.code == 'true'
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false && needs.changes.outputs.code_no_ci == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Check if the version was updated
@@ -150,12 +167,14 @@ jobs:
         if: github.event_name == 'push'
         id: tag-check
         run: |
-          if docker manifest inspect ghcr.io/${{ github.repository }}:${{ steps.version.outputs.version }} > /dev/null 2>&1; then
+          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          if docker manifest inspect ghcr.io/${REPO_LOWER}:${{ steps.version.outputs.version }} > /dev/null 2>&1; then
             echo "Tag ${{ steps.version.outputs.version }} already exists, skipping push"
             echo "exists=true" >> $GITHUB_OUTPUT
           else
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
+          echo "repo=${REPO_LOWER}" >> $GITHUB_OUTPUT
 
       - name: Log in to GitHub Container Registry
         if: github.event_name == 'push' && steps.tag-check.outputs.exists == 'false'
@@ -181,7 +200,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:${{ steps.version.outputs.version }}
-            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ steps.tag-check.outputs.repo }}:${{ steps.version.outputs.version }}
+            ghcr.io/${{ steps.tag-check.outputs.repo }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max

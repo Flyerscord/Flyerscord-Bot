@@ -3,7 +3,6 @@ import SlashCommand from "@common/models/SlashCommand";
 import onMessageCreate from "./listeners/onMessageCreate";
 import { calculateLevels } from "./utils/requiredExp";
 import schema from "./db/schema";
-import LeaderboardCache from "./utils/LeaderboardCache";
 
 export const levelsConfigSchema = [] as const satisfies readonly IModuleConfigSchema[];
 
@@ -20,10 +19,6 @@ export default class LevelsModule extends Module {
     this.registerListeners();
 
     await calculateLevels(1000);
-
-    const leaderboardCache = LeaderboardCache.getInstance();
-    await leaderboardCache.forceUpdate();
-    leaderboardCache.createScheduledJob();
   }
 
   protected async cleanup(): Promise<void> {}

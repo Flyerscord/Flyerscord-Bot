@@ -3,6 +3,8 @@ import schema from "./db/schema";
 import Module, { IModuleConfigSchema } from "./models/Module";
 import Zod from "./utils/ZodWrapper";
 import TextCommand from "./models/TextCommand";
+import CombinedTeamInfoCache from "./cache/CombinedTeamInfoCache";
+import MembersCache from "./cache/MembersCache";
 
 export const commonConfigSchema = [
   {
@@ -43,7 +45,20 @@ export default class CommonModule extends Module {
 
   protected async setup(): Promise<void> {
     await this.readInCommands<TextCommand>(__dirname, "text");
+
+    await this.registerCaches();
   }
 
   protected async cleanup(): Promise<void> {}
+
+  private async registerCaches(): Promise<void> {
+    const membersCache = MembersCache.getInstance();
+    await membersCache.forceUpdate();
+    membersCache.createScheduledJob();
+
+    // TODO: #123 Move this cache to the NHL module
+    const combinedTeamInfoCache = CombinedTeamInfoCache.getInstance();
+    await combinedTeamInfoCache.forceUpdate();
+    combinedTeamInfoCache.createScheduledJob();
+  }
 }

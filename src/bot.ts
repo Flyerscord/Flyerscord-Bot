@@ -24,7 +24,6 @@ import SecretManager from "./common/managers/SecretManager";
 import EnvManager from "@common/managers/EnvManager";
 
 // Import Other Internal Things
-import CombinedTeamInfoCache from "./common/cache/CombinedTeamInfoCache";
 import onMessageCreate from "@common/listeners/onMessageCreate";
 import onInteractionCreate from "@common/listeners/onInteractionCreate";
 import onReady from "@common/listeners/onReady";
@@ -127,11 +126,8 @@ async function startUp(): Promise<void> {
   ModalMenuManager.getInstance();
   TextCommandManager.getInstance();
 
-  // Update Caches and register tasks
-  // TODO: #123 Move this cache to the NHL module
-  const combinedTeamInfoCache = CombinedTeamInfoCache.getInstance();
-  await combinedTeamInfoCache.forceUpdate();
-  combinedTeamInfoCache.createScheduledJob();
+  // Start the bot
+  await client.login(DISCORD_TOKEN);
 
   // Enable All Modules
   const result = await moduleManager.enableAllModules();
@@ -150,7 +146,4 @@ async function startUp(): Promise<void> {
   await MyAuditLog.createAuditLog("Common", {
     action: "BotStartup",
   });
-
-  // Start the bot
-  await client.login(DISCORD_TOKEN);
 }

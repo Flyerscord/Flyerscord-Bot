@@ -17,16 +17,6 @@ export async function getMember(userId: string, force: boolean = false): Promise
   }
 }
 
-export async function forceGetMembers(): Promise<Collection<string, GuildMember> | undefined> {
-  try {
-    getGuild()?.members.cache.clear();
-    return await getGuild()?.members.fetch();
-  } catch (error) {
-    Stumper.caughtError(error, "common:members:forceGetMembers");
-    return undefined;
-  }
-}
-
 export async function getMembers(force: boolean = false): Promise<Collection<string, GuildMember> | undefined> {
   try {
     const membersCache = MembersCache.getInstance();

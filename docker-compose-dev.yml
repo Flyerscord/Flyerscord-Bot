@@ -73,6 +73,7 @@ services:
       DATABASE_URL_POOLED: postgresql://postgres:flyerscord-dev-db@pgbouncer:5432/flyerscord
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
       DISCORD_TOKEN: ${DISCORD_TOKEN}
+      BOT_MANAGERS: ${BOT_MANAGERS}
     ports:
       - 3333:3000
     depends_on:

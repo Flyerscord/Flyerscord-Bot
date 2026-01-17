@@ -1,21 +1,32 @@
 import { BanOptions, Collection, GuildMember } from "discord.js";
 import { getGuild } from "./guilds";
 import Stumper from "stumper";
+import MembersCache from "../../cache/MembersCache";
 
-export async function getMember(userId: string): Promise<GuildMember | undefined> {
+export async function getMember(userId: string, force: boolean = false): Promise<GuildMember | undefined> {
   try {
-    return await getGuild()?.members.fetch(userId);
-  } catch (_error) {
+    if (force) {
+      return await getGuild()?.members.fetch({ user: userId, force: true });
+    }
+    const membersCache = MembersCache.getInstance();
+    return membersCache.getMember(userId);
+  } catch (error) {
     Stumper.error(`Error finding member for user ${userId}`, "common:members:getMember");
+    Stumper.caughtError(error, "common:members:getMember");
     return undefined;
   }
 }
 
-export async function getMembers(): Promise<Collection<string, GuildMember> | undefined> {
+export async function getMembers(force: boolean = false): Promise<Collection<string, GuildMember> | undefined> {
   try {
-    return await getGuild()?.members.fetch();
+    const membersCache = MembersCache.getInstance();
+    if (force) {
+      await membersCache.forceUpdate();
+    }
+
+    return membersCache.getCache();
   } catch (error) {
-    Stumper.error(error, "common:members:getMembers");
+    Stumper.caughtError(error, "common:members:getMembers");
     return undefined;
   }
 }

@@ -38,6 +38,10 @@ export default class ModuleManager extends Singleton {
     return this.modules;
   }
 
+  getModuleCount(): number {
+    return this.modules.length;
+  }
+
   getModuleNames(): Modules[] {
     return this.modules.map((module) => module.name);
   }

@@ -9,11 +9,11 @@ import {
 } from "discord.js";
 
 import SlashCommand from "@common/models/SlashCommand";
-import discord from "@common/utils/discord/discord";
 import { formatExp, getShortenedMessageCount } from "../../utils/leveling";
 import Stumper from "stumper";
 import LevelsDB from "../../db/LevelsDB";
 import { LevelsUser } from "../../db/schema";
+import discord from "@common/utils/discord/discord";
 
 export default class LeaderboardCommand extends SlashCommand {
   private readonly EMBED_PAGE_SIZE = 25;
@@ -77,11 +77,11 @@ export default class LeaderboardCommand extends SlashCommand {
       }
 
       // Update button states based on current page
-      prevButton.setDisabled(currentPage === 0);
+      prevButton.setDisabled(currentPage === 1);
       nextButton.setDisabled(currentPage === totalPages);
 
       // Update the embed and buttons
-      await this.replies.reply({ embeds: [await this.createEmbedPage(users, currentPage)], components: [row] });
+      await i.editReply({ embeds: [await this.createEmbedPage(users, currentPage)], components: [row] });
     });
 
     collector.on("end", async () => {
@@ -109,14 +109,17 @@ export default class LeaderboardCommand extends SlashCommand {
 
       if (!member) {
         Stumper.debug(`Failed to find member with user id: ${user.userId}. User probably left server`, "levels:LeaderboardCommand:createEmbedPage");
-        continue;
+        embed.addFields({
+          name: `${i + 1}) User Banned or Left Server`,
+          value: `**Level:** ${user.currentLevel} | **Total Messages:** ${getShortenedMessageCount(user.messageCount)} | **Total Exp:** ${formatExp(user.totalExperience)}`,
+        });
+      } else {
+        const username = member.displayName || member.user.username;
+        embed.addFields({
+          name: `${i + 1}) ${username}`,
+          value: `**Level:** ${user.currentLevel} | **Total Messages:** ${getShortenedMessageCount(user.messageCount)} | **Total Exp:** ${formatExp(user.totalExperience)} | **Exp to next level:** ${formatExp((await db.getLevelExp(user.currentLevel + 1)) - user.totalExperience)}`,
+        });
       }
-      const username = member ? member.displayName || member.user.username : user.userId;
-
-      embed.addFields({
-        name: `${i + 1}) ${username}`,
-        value: `**Level:** ${user.currentLevel} | **Total Messages:** ${getShortenedMessageCount(user.messageCount)} | **Total Exp:** ${formatExp(user.totalExperience)} | **Exp to next level:** ${formatExp((await db.getLevelExp(user.currentLevel + 1)) - user.totalExperience)}`,
-      });
     }
 
     return embed;

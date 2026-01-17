@@ -6,8 +6,9 @@ import ModalMenuManager from "../managers/ModalMenuManager";
 import BotHealthManager from "../managers/BotHealthManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
 import SlashCommandManager from "../managers/SlashCommandManager";
-import fs from "fs";
+import fs from "node:fs";
 import EnvManager from "../managers/EnvManager";
+import MembersCache from "../cache/MembersCache";
 
 export default (client: Client): void => {
   client.on("clientReady", async () => {
@@ -18,11 +19,19 @@ export default (client: Client): void => {
 
     await setupBot(client);
 
+    await updateAndRegisterCaches();
+
     const healthManager = BotHealthManager.getInstance();
     healthManager.setHealthy(true);
     Stumper.info("Bot Online!", "common:onReady:clientReady");
   });
 };
+
+async function updateAndRegisterCaches(): Promise<void> {
+  const membersCache = MembersCache.getInstance();
+  await membersCache.forceUpdate();
+  membersCache.createScheduledJob();
+}
 
 async function setupBot(client: Client): Promise<void> {
   if (EnvManager.getInstance().get("PRODUCTION_MODE")) {

@@ -1,6 +1,6 @@
 {
   "name": "flyerscord-helper",
-  "version": "4.1.7",
+  "version": "4.1.8",
   "description": "Flyers' Discord Helper Bot",
   "main": "src/bot.ts",
   "scripts": {
@@ -74,6 +74,7 @@
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-n": "^17.23.2",
     "eslint-plugin-prettier": "^5.5.1",
     "husky": "^9.1.7",
     "jest": "^30.2.0",

@@ -2,10 +2,11 @@ import Stumper from "stumper";
 import Task from "./Task";
 
 export default abstract class Cache<T> extends Task {
-  protected cache: T | undefined;
+  protected cache: T;
 
-  protected constructor(name: string, cron: string) {
+  protected constructor(name: string, cron: string, intialCache: T) {
     super(name, cron);
+    this.cache = intialCache;
   }
 
   protected abstract updateCache(): Promise<void>;
@@ -16,7 +17,7 @@ export default abstract class Cache<T> extends Task {
     Stumper.info(`Cache updated: ${this.name}`, "common:Cache:execute");
   }
 
-  getCache(): T | undefined {
+  getCache(): T {
     return this.cache;
   }
 

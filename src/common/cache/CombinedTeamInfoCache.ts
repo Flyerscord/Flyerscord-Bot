@@ -11,8 +11,8 @@ export default class CombinedTeamInfoCache extends Cache<ICombinedTeamInfo[]> {
   private franchisesCache: IFranchisesOutput | undefined;
 
   constructor() {
-    // Run every 2 hours
-    super("TeamInfoCache", "0 0 */2 * * *");
+    // Run every 4 hours
+    super("TeamInfoCache", "0 0 */4 * * *", []);
   }
 
   protected async updateCache(): Promise<void> {

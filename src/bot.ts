@@ -24,7 +24,6 @@ import SecretManager from "./common/managers/SecretManager";
 import EnvManager from "@common/managers/EnvManager";
 
 // Import Other Internal Things
-import CombinedTeamInfoCache from "./common/cache/CombinedTeamInfoCache";
 import onMessageCreate from "@common/listeners/onMessageCreate";
 import onInteractionCreate from "@common/listeners/onInteractionCreate";
 import onReady from "@common/listeners/onReady";
@@ -77,7 +76,7 @@ async function startUp(): Promise<void> {
   SecretManager.getInstance();
 
   // Initialize the Bot Health Manager
-  BotHealthManager.getInstance();
+  const botHealthManager = BotHealthManager.getInstance();
 
   // Add all of the modules (in order of load priority)
   moduleManager.addAllModules();
@@ -127,15 +126,14 @@ async function startUp(): Promise<void> {
   ModalMenuManager.getInstance();
   TextCommandManager.getInstance();
 
-  // Update Caches
-  await CombinedTeamInfoCache.getInstance().forceUpdate();
-
   // Enable All Modules
+  const moduleCount = moduleManager.getModuleCount();
   const result = await moduleManager.enableAllModules();
   if (result) {
-    Stumper.success("Successfully enabled all modules!", "main:startUp");
+    Stumper.success(`Successfully enabled all ${moduleCount} modules!`, "main:startUp");
   } else {
-    Stumper.warning("Failed to enable all modules! Check the logs above for more details.", "main:startUp");
+    Stumper.warning(`Failed to enable all ${moduleCount} modules! Check the logs above for more details.`, "main:startUp");
+    botHealthManager.setHealthy(false, true);
   }
 
   // Register Common Event Handlers

@@ -10,6 +10,9 @@ db-backup:
 dev-bot:
 	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up --build --force-recreate -d
 
+dev-bot-bot:
+	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up --build --force-recreate -d bot migrate
+
 dev-bot-db:
 	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up -d adminer pgbouncer
 

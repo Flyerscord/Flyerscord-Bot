@@ -27,6 +27,13 @@ export default (): void => {
     Stumper.info(`User ${username} has joined the server!`, "joinLeave:onGuildMemberAdd");
 
     // User Captcha
+
+    // Skip captcha for bots
+    if (user.bot) {
+      Stumper.info(`User ${user.id} is a bot, skipping captcha`, "joinLeave:onGuildMemberAdd");
+      return;
+    }
+
     const notVerifiedRoleId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedRoleId;
 
     const db = new JoinLeaveDB();

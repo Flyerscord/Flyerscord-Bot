@@ -91,6 +91,9 @@ describe("Captcha", () => {
         questionsAnswered: 0,
         addedAt: new Date(),
         lock: false,
+        incorrectAnswers: 0,
+        timedoutAt: null,
+        timeOutCount: 0,
       });
 
       await sendCaptcha(mockUser);
@@ -126,6 +129,9 @@ describe("Captcha", () => {
         questionsAnswered: 1,
         addedAt: new Date(),
         lock: false,
+        incorrectAnswers: 0,
+        timedoutAt: null,
+        timeOutCount: 0,
       });
 
       await sendCaptcha(mockUser);
@@ -152,6 +158,9 @@ describe("Captcha", () => {
         questionsAnswered: 2,
         addedAt: new Date(),
         lock: false,
+        incorrectAnswers: 0,
+        timedoutAt: null,
+        timeOutCount: 0,
       });
 
       await sendCaptcha(mockUser);
@@ -194,6 +203,9 @@ describe("Captcha", () => {
         questionsAnswered: 3,
         addedAt: new Date(),
         lock: false,
+        incorrectAnswers: 0,
+        timedoutAt: null,
+        timeOutCount: 0,
       });
 
       await sendCaptcha(mockUser);
@@ -212,6 +224,9 @@ describe("Captcha", () => {
         questionsAnswered: 5,
         addedAt: new Date(),
         lock: false,
+        incorrectAnswers: 0,
+        timedoutAt: null,
+        timeOutCount: 0,
       });
 
       await sendCaptcha(mockUser);
@@ -226,6 +241,9 @@ describe("Captcha", () => {
         questionsAnswered: 0,
         addedAt: new Date(),
         lock: false,
+        incorrectAnswers: 0,
+        timedoutAt: null,
+        timeOutCount: 0,
       });
 
       await sendCaptcha(mockUser);

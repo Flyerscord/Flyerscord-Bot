@@ -26,6 +26,9 @@ jest.mock("@common/managers/ConfigManager", () => {
                 { question: "What color is the sky?", answer: "blue" },
                 { question: "What is the capital of France?", answer: "paris" },
               ],
+              incorrectAnswersTimeout: 3600, // 1 hour in seconds
+              maxIncorrectAnswers: 3,
+              maxTimeOuts: 2,
             };
           }
           return {};
@@ -57,6 +60,7 @@ jest.mock("@common/managers/ClientManager", () => {
 jest.mock("@common/utils/discord/discord", () => ({
   members: {
     getMember: jest.fn(),
+    banUser: jest.fn().mockResolvedValue(undefined),
   },
   roles: {
     removeRoleFromUser: jest.fn().mockResolvedValue(undefined),
@@ -101,6 +105,16 @@ describe("onMessageCreate", () => {
       lockUser: jest.fn().mockResolvedValue(undefined),
       unlockUser: jest.fn().mockResolvedValue(undefined),
       getNotVerifiedUsers: jest.fn(),
+      // New methods for timeout and incorrect answer tracking
+      getTimeout: jest.fn().mockResolvedValue(undefined),
+      startTimeout: jest.fn().mockResolvedValue(undefined),
+      removeTimeout: jest.fn().mockResolvedValue(undefined),
+      incrementIncorrectAnswers: jest.fn().mockResolvedValue(undefined),
+      resetIncorrectAnswers: jest.fn().mockResolvedValue(undefined),
+      getIncorrectAnswers: jest.fn().mockResolvedValue(0),
+      getTimeOutCount: jest.fn().mockResolvedValue(0),
+      incrementTimeOutCount: jest.fn().mockResolvedValue(undefined),
+      createAuditLog: jest.fn().mockResolvedValue(undefined),
     } as unknown as jest.Mocked<JoinLeaveDB>;
 
     (JoinLeaveDB as jest.MockedClass<typeof JoinLeaveDB>).mockImplementation(() => mockDb);
@@ -137,6 +151,35 @@ describe("onMessageCreate", () => {
       } as User,
     } as unknown as GuildMember;
   };
+
+  const createMockNotVerifiedUser = (
+    overrides: Partial<{
+      userId: string;
+      questionsAnswered: number;
+      addedAt: Date;
+      lock: boolean;
+      incorrectAnswers: number;
+      timedoutAt: Date | null;
+      timeOutCount: number;
+    }> = {},
+  ): {
+    userId: string;
+    questionsAnswered: number;
+    addedAt: Date;
+    lock: boolean;
+    incorrectAnswers: number;
+    timedoutAt: Date | null;
+    timeOutCount: number;
+  } => ({
+    userId: "user-123",
+    questionsAnswered: 0,
+    addedAt: new Date(),
+    lock: false,
+    incorrectAnswers: 0,
+    timedoutAt: null,
+    timeOutCount: 0,
+    ...overrides,
+  });
 
   describe("message filtering", () => {
     it("should ignore messages from bots", async () => {
@@ -179,12 +222,7 @@ describe("onMessageCreate", () => {
 
     it("should ignore if user is locked", async () => {
       const message = createMockMessage("4", true, false);
-      mockDb.getNotVerifiedUser.mockResolvedValue({
-        userId: "user-123",
-        questionsAnswered: 0,
-        addedAt: new Date(),
-        lock: true,
-      });
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser({ lock: true }));
       (discord.members.getMember as jest.Mock).mockResolvedValue(createMockMember());
 
       await eventHandler(message);
@@ -195,12 +233,7 @@ describe("onMessageCreate", () => {
 
     it("should ignore if member is not found", async () => {
       const message = createMockMessage("4", true, false);
-      mockDb.getNotVerifiedUser.mockResolvedValue({
-        userId: "user-123",
-        questionsAnswered: 0,
-        addedAt: new Date(),
-        lock: false,
-      });
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
       (discord.members.getMember as jest.Mock).mockResolvedValue(null);
 
       await eventHandler(message);
@@ -215,12 +248,7 @@ describe("onMessageCreate", () => {
       const message = createMockMessage("4", true, false);
       const mockMember = createMockMember();
 
-      mockDb.getNotVerifiedUser.mockResolvedValue({
-        userId: "user-123",
-        questionsAnswered: 0,
-        addedAt: new Date(),
-        lock: false,
-      });
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
       (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
 
       await eventHandler(message);
@@ -230,6 +258,9 @@ describe("onMessageCreate", () => {
 
       // Should increment questions answered
       expect(mockDb.incrementQuestionsAnswered).toHaveBeenCalledWith("user-123");
+
+      // Should reply with "Correct!"
+      expect(message.reply).toHaveBeenCalledWith("Correct!");
 
       // Should send next captcha
       expect(sendCaptcha).toHaveBeenCalledWith(message.author);
@@ -246,12 +277,7 @@ describe("onMessageCreate", () => {
       const message = createMockMessage("paris", true, false);
       const mockMember = createMockMember();
 
-      mockDb.getNotVerifiedUser.mockResolvedValue({
-        userId: "user-123",
-        questionsAnswered: 2, // Last question
-        addedAt: new Date(),
-        lock: false,
-      });
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser({ questionsAnswered: 2 }));
       (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
 
       await eventHandler(message);
@@ -282,12 +308,7 @@ describe("onMessageCreate", () => {
       const message = createMockMessage("BLUE", true, false);
       const mockMember = createMockMember();
 
-      mockDb.getNotVerifiedUser.mockResolvedValue({
-        userId: "user-123",
-        questionsAnswered: 1,
-        addedAt: new Date(),
-        lock: false,
-      });
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser({ questionsAnswered: 1 }));
       (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
 
       await eventHandler(message);
@@ -300,12 +321,7 @@ describe("onMessageCreate", () => {
       const message = createMockMessage("The answer is 4!", true, false);
       const mockMember = createMockMember();
 
-      mockDb.getNotVerifiedUser.mockResolvedValue({
-        userId: "user-123",
-        questionsAnswered: 0,
-        addedAt: new Date(),
-        lock: false,
-      });
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
       (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
 
       await eventHandler(message);
@@ -315,16 +331,11 @@ describe("onMessageCreate", () => {
   });
 
   describe("incorrect answer handling", () => {
-    it("should not increment questions for incorrect answer", async () => {
+    it("should not increment questions for incorrect answer and track incorrect answers", async () => {
       const message = createMockMessage("wrong answer", true, false);
       const mockMember = createMockMember();
 
-      mockDb.getNotVerifiedUser.mockResolvedValue({
-        userId: "user-123",
-        questionsAnswered: 0,
-        addedAt: new Date(),
-        lock: false,
-      });
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
       (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
 
       await eventHandler(message);
@@ -333,45 +344,45 @@ describe("onMessageCreate", () => {
       expect(mockDb.lockUser).toHaveBeenCalledWith("user-123");
       expect(mockDb.unlockUser).toHaveBeenCalledWith("user-123");
 
-      // Should NOT increment or send next question
+      // Should NOT increment questions answered
       expect(mockDb.incrementQuestionsAnswered).not.toHaveBeenCalled();
       expect(sendCaptcha).not.toHaveBeenCalled();
+
+      // Should increment incorrect answers
+      expect(mockDb.incrementIncorrectAnswers).toHaveBeenCalledWith("user-123");
+
+      // Should reply with incorrect message
+      expect(message.reply).toHaveBeenCalledWith("Incorrect! Try again.");
     });
 
-    it("should reject answer if message exceeds max length", async () => {
+    it("should reject answer if message exceeds max length and track as incorrect", async () => {
       const longMessage = "4 " + "x".repeat(50); // Over 50 chars
       const message = createMockMessage(longMessage, true, false);
       const mockMember = createMockMember();
 
-      mockDb.getNotVerifiedUser.mockResolvedValue({
-        userId: "user-123",
-        questionsAnswered: 0,
-        addedAt: new Date(),
-        lock: false,
-      });
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
       (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
 
       await eventHandler(message);
 
       // Should NOT increment even if answer is correct
       expect(mockDb.incrementQuestionsAnswered).not.toHaveBeenCalled();
+
+      // Should track as incorrect
+      expect(mockDb.incrementIncorrectAnswers).toHaveBeenCalledWith("user-123");
     });
 
     it("should handle answer that does not contain the correct answer", async () => {
       const message = createMockMessage("five", true, false);
       const mockMember = createMockMember();
 
-      mockDb.getNotVerifiedUser.mockResolvedValue({
-        userId: "user-123",
-        questionsAnswered: 0,
-        addedAt: new Date(),
-        lock: false,
-      });
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
       (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
 
       await eventHandler(message);
 
       expect(mockDb.incrementQuestionsAnswered).not.toHaveBeenCalled();
+      expect(mockDb.incrementIncorrectAnswers).toHaveBeenCalledWith("user-123");
     });
   });
 
@@ -380,12 +391,7 @@ describe("onMessageCreate", () => {
       const message = createMockMessage("test", true, false);
       const mockMember = createMockMember();
 
-      mockDb.getNotVerifiedUser.mockResolvedValue({
-        userId: "user-123",
-        questionsAnswered: 3, // All 3 questions already answered
-        addedAt: new Date(),
-        lock: false,
-      });
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser({ questionsAnswered: 3 }));
       (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
 
       await eventHandler(message);
@@ -405,35 +411,28 @@ describe("onMessageCreate", () => {
       const message = createMockMessage("4", true, false);
       const mockMember = createMockMember();
 
-      mockDb.getNotVerifiedUser.mockResolvedValue({
-        userId: "user-123",
-        questionsAnswered: 0,
-        addedAt: new Date(),
-        lock: false,
-      });
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
       (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
 
       // Make incrementQuestionsAnswered throw an error
       const testError = new Error("Database error");
       mockDb.incrementQuestionsAnswered.mockRejectedValueOnce(testError);
 
-      // Should throw the error but we verify unlock happens in the promise chain
-      await expect(eventHandler(message)).rejects.toThrow(testError);
+      // Error is caught inside try-catch, so it won't throw
+      await eventHandler(message);
 
       // Lock should still be called
       expect(mockDb.lockUser).toHaveBeenCalledWith("user-123");
+
+      // Unlock should be called in finally block
+      expect(mockDb.unlockUser).toHaveBeenCalledWith("user-123");
     });
 
     it("should handle exact match of answer at max length", async () => {
       const message = createMockMessage("4".padEnd(50, " "), true, false);
       const mockMember = createMockMember();
 
-      mockDb.getNotVerifiedUser.mockResolvedValue({
-        userId: "user-123",
-        questionsAnswered: 0,
-        addedAt: new Date(),
-        lock: false,
-      });
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
       (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
 
       await eventHandler(message);
@@ -448,12 +447,7 @@ describe("onMessageCreate", () => {
       const message = createMockMessage("4", true, false);
       const mockMember = createMockMember();
 
-      mockDb.getNotVerifiedUser.mockResolvedValue({
-        userId: "user-123",
-        questionsAnswered: 0,
-        addedAt: new Date(),
-        lock: false,
-      });
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
       (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
 
       await eventHandler(message);
@@ -469,17 +463,241 @@ describe("onMessageCreate", () => {
       const message = createMockMessage("4", true, false);
       const mockMember = createMockMember();
 
-      mockDb.getNotVerifiedUser.mockResolvedValue({
-        userId: "user-123",
-        questionsAnswered: 0,
-        addedAt: new Date(),
-        lock: false,
-      });
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
       (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
 
       await eventHandler(message);
 
       expect(mockDb.unlockUser).toHaveBeenCalledWith("user-123");
+    });
+  });
+
+  describe("timeout functionality", () => {
+    it("should block user from answering while timed out", async () => {
+      const message = createMockMessage("4", true, false);
+      const mockMember = createMockMember();
+
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
+      (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
+
+      // Set timeout to 30 seconds ago (still within 1 hour timeout)
+      const thirtySecondsAgo = new Date(Date.now() - 30 * 1000);
+      mockDb.getTimeout.mockResolvedValue(thirtySecondsAgo);
+
+      await eventHandler(message);
+
+      // Should reply with wait message
+      expect(message.reply).toHaveBeenCalledWith(expect.stringContaining("You have to wait"));
+
+      // Should NOT process the answer
+      expect(mockDb.incrementQuestionsAnswered).not.toHaveBeenCalled();
+      expect(mockDb.incrementIncorrectAnswers).not.toHaveBeenCalled();
+    });
+
+    it("should allow user to answer after timeout expires and reset incorrect answers", async () => {
+      const message = createMockMessage("4", true, false);
+      const mockMember = createMockMember();
+
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
+      (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
+
+      // Set timeout to 2 hours ago (past the 1 hour timeout)
+      const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+      mockDb.getTimeout.mockResolvedValue(twoHoursAgo);
+
+      await eventHandler(message);
+
+      // Should remove timeout and reset incorrect answers
+      expect(mockDb.removeTimeout).toHaveBeenCalledWith("user-123");
+      expect(mockDb.resetIncorrectAnswers).toHaveBeenCalledWith("user-123");
+
+      // Should process the correct answer
+      expect(mockDb.incrementQuestionsAnswered).toHaveBeenCalledWith("user-123");
+    });
+
+    it("should start timeout when user reaches max incorrect answers", async () => {
+      const message = createMockMessage("wrong answer", true, false);
+      const mockMember = createMockMember();
+
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
+      (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
+
+      // User has 2 incorrect answers, this will be the 3rd (reaching max of 3)
+      mockDb.getIncorrectAnswers.mockResolvedValue(3);
+
+      await eventHandler(message);
+
+      // Should start timeout
+      expect(mockDb.startTimeout).toHaveBeenCalledWith("user-123");
+      expect(mockDb.incrementTimeOutCount).toHaveBeenCalledWith("user-123");
+
+      // Should reply with timeout message
+      expect(message.reply).toHaveBeenCalledWith(expect.stringContaining("maximum number of incorrect answers"));
+    });
+
+    it("should not start timeout if user has not reached max incorrect answers", async () => {
+      const message = createMockMessage("wrong answer", true, false);
+      const mockMember = createMockMember();
+
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
+      (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
+
+      // User has 1 incorrect answer after this one (below max of 3)
+      mockDb.getIncorrectAnswers.mockResolvedValue(1);
+
+      await eventHandler(message);
+
+      // Should NOT start timeout
+      expect(mockDb.startTimeout).not.toHaveBeenCalled();
+
+      // Should reply with simple incorrect message
+      expect(message.reply).toHaveBeenCalledWith("Incorrect! Try again.");
+    });
+  });
+
+  describe("ban functionality", () => {
+    it("should ban user when max timeouts reached", async () => {
+      const message = createMockMessage("wrong answer", true, false);
+      const mockMember = createMockMember();
+
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
+      (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
+
+      // User has reached max incorrect answers
+      mockDb.getIncorrectAnswers.mockResolvedValue(3);
+
+      // User already has 2 timeouts (max is 2, so this would be the 3rd)
+      mockDb.getTimeOutCount.mockResolvedValue(2);
+
+      await eventHandler(message);
+
+      // Should ban the user
+      expect(discord.members.banUser).toHaveBeenCalledWith("user-123", {
+        reason: "Reached the maximum number of captcha timeouts",
+      });
+
+      // Should delete the not verified user
+      expect(mockDb.deleteNotVerifiedUser).toHaveBeenCalledWith("user-123");
+
+      // Should reply with ban message
+      expect(message.reply).toHaveBeenCalledWith(expect.stringContaining("banned from the server"));
+
+      // Should NOT start a new timeout
+      expect(mockDb.startTimeout).not.toHaveBeenCalled();
+    });
+
+    it("should start timeout instead of ban when max timeouts not yet reached", async () => {
+      const message = createMockMessage("wrong answer", true, false);
+      const mockMember = createMockMember();
+
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
+      (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
+
+      // User has reached max incorrect answers
+      mockDb.getIncorrectAnswers.mockResolvedValue(3);
+
+      // User has 1 timeout (max is 2, so this will be the 2nd which is allowed)
+      mockDb.getTimeOutCount.mockResolvedValue(1);
+
+      await eventHandler(message);
+
+      // Should NOT ban the user
+      expect(discord.members.banUser).not.toHaveBeenCalled();
+
+      // Should start timeout
+      expect(mockDb.startTimeout).toHaveBeenCalledWith("user-123");
+      expect(mockDb.incrementTimeOutCount).toHaveBeenCalledWith("user-123");
+    });
+  });
+
+  describe("audit logging", () => {
+    it("should create audit log for correct answer", async () => {
+      const message = createMockMessage("4", true, false);
+      const mockMember = createMockMember();
+
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
+      (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
+
+      await eventHandler(message);
+
+      expect(mockDb.createAuditLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: "captchaCorrect",
+          userId: "user-123",
+        }),
+      );
+    });
+
+    it("should create audit log for incorrect answer", async () => {
+      const message = createMockMessage("wrong", true, false);
+      const mockMember = createMockMember();
+
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
+      (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
+
+      await eventHandler(message);
+
+      expect(mockDb.createAuditLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: "captchaIncorrect",
+          userId: "user-123",
+        }),
+      );
+    });
+
+    it("should create audit log when user is verified", async () => {
+      const message = createMockMessage("paris", true, false);
+      const mockMember = createMockMember();
+
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser({ questionsAnswered: 2 }));
+      (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
+
+      await eventHandler(message);
+
+      expect(mockDb.createAuditLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: "userVerified",
+          userId: "user-123",
+        }),
+      );
+    });
+
+    it("should create audit log when user is timed out", async () => {
+      const message = createMockMessage("wrong", true, false);
+      const mockMember = createMockMember();
+
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
+      (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
+      mockDb.getIncorrectAnswers.mockResolvedValue(3);
+      mockDb.getTimeOutCount.mockResolvedValue(0);
+
+      await eventHandler(message);
+
+      expect(mockDb.createAuditLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: "captchaTimeout",
+          userId: "user-123",
+        }),
+      );
+    });
+
+    it("should create audit log when user is banned", async () => {
+      const message = createMockMessage("wrong", true, false);
+      const mockMember = createMockMember();
+
+      mockDb.getNotVerifiedUser.mockResolvedValue(createMockNotVerifiedUser());
+      (discord.members.getMember as jest.Mock).mockResolvedValue(mockMember);
+      mockDb.getIncorrectAnswers.mockResolvedValue(3);
+      mockDb.getTimeOutCount.mockResolvedValue(2);
+
+      await eventHandler(message);
+
+      expect(mockDb.createAuditLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: "captchaBan",
+          userId: "user-123",
+        }),
+      );
     });
   });
 });

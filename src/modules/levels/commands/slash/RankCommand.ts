@@ -35,9 +35,7 @@ export default class RankCommand extends SlashCommand {
     const db = new LevelsDB();
     const userLevel = await db.getUser(user.id);
     const rank = await db.getUserRank(user.id);
-    Stumper.debug(`User: ${user.id}  Rank: ${rank}`, "levels:RankCommand:createEmbed");
     const adjustedRank = rank + 1;
-    Stumper.debug(`Adjusted Rank: ${adjustedRank}`, "levels:RankCommand:createEmbed");
 
     if (rank == -1) {
       await this.replies.reply({ content: "Error finding rank! You may need to send a message first!", ephemeral: true });

@@ -124,8 +124,6 @@ export default class LevelsDB extends ModuleDatabase {
       return -1;
     }
 
-    const rank = result[0].rank;
-    Stumper.debug(`User: ${userId}  Rank: ${rank}`, "levels:LevelsDB:getUserRank");
-    return rank;
+    return result[0].rank;
   }
 }

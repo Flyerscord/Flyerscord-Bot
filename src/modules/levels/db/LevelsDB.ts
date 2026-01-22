@@ -112,18 +112,18 @@ export default class LevelsDB extends ModuleDatabase {
   }
 
   async getUserRank(userId: string): Promise<number> {
-    const user = await this.db
-      .select({
-        userId: levelsLevels.userId,
-        totalExperience: levelsLevels.totalExperience,
-        rank: sql<number>`ROW_NUMBER() OVER (ORDER BY ${levelsLevels.totalExperience} DESC)`.as("rank"),
-      })
-      .from(levelsLevels)
-      .where(eq(levelsLevels.userId, userId));
+    const result = await this.db.execute<{ rank: number }>(sql`
+      SELECT rank::integer FROM (
+        SELECT user_id, ROW_NUMBER() OVER (ORDER BY total_experience DESC) as rank
+        FROM levels__levels
+      ) ranked
+      WHERE user_id = ${userId}
+    `);
 
-    if (user.length === 0) {
+    if (result.length === 0) {
       return -1;
     }
-    return user[0].rank;
+
+    return result[0].rank;
   }
 }

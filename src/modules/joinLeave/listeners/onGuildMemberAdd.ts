@@ -14,7 +14,7 @@ export default (): void => {
     const user = member.user;
 
     const message = `<@${member.id}>\nWelcome to the ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
-    const joinImageGenerator = new JoinImageGenerator(username, member.displayAvatarURL(), await discord.members.getMemberJoinPosition(member));
+    const joinImageGenerator = new JoinImageGenerator(username, member.displayAvatarURL(), await discord.members.getNumberOfMembers());
     let joinPhoto: Buffer;
     try {
       joinPhoto = await joinImageGenerator.getImage();

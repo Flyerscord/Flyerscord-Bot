@@ -204,3 +204,12 @@ jobs:
             ghcr.io/${{ steps.tag-check.outputs.repo }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Send Discord notification
+        if: github.event_name == 'push' && steps.tag-check.outputs.exists == 'false'
+        uses: sarisia/actions-status-discord@v1.16.0
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          title: "Docker Image Published"
+          description: "Version **${{ steps.version.outputs.version }}** has been built and pushed to `ghcr.io/${{ steps.tag-check.outputs.repo }}`"
+          color: 0x2ea043

@@ -32,7 +32,7 @@ export async function getMembers(force: boolean = false): Promise<Collection<str
 }
 
 export async function getMemberJoinPosition(member: GuildMember): Promise<number> {
-  const members = await getMembers();
+  const members = await getMembers(true);
   if (members) {
     const sortedMembers = members
       .filter((m) => m.joinedTimestamp) // Only keep members with a valid join date
@@ -44,6 +44,11 @@ export async function getMemberJoinPosition(member: GuildMember): Promise<number
     return memberIds.indexOf(member.id) + 1;
   }
   return -1;
+}
+
+export async function getNumberOfMembers(): Promise<number> {
+  const guild = getGuild();
+  return guild?.memberCount ?? 0;
 }
 
 export async function getNitroBoosters(): Promise<GuildMember[]> {

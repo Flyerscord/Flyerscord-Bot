@@ -33,6 +33,7 @@ export async function getMembers(force: boolean = false): Promise<Collection<str
 
 export async function getMemberJoinPosition(member: GuildMember): Promise<number> {
   const members = await getMembers();
+  Stumper.info(`Members: ${members?.size}`, "common:members:getMemberJoinPosition");
   if (members) {
     const sortedMembers = members
       .filter((m) => m.joinedTimestamp) // Only keep members with a valid join date

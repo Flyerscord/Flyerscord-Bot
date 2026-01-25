@@ -56,6 +56,7 @@ jest.mock("@common/utils/discord/discord", () => ({
   },
   members: {
     getMemberJoinPosition: jest.fn().mockResolvedValue(42),
+    getNumberOfMembers: jest.fn().mockResolvedValue(42),
   },
   roles: {
     addRoleToUser: jest.fn().mockResolvedValue(undefined),
@@ -147,8 +148,8 @@ describe("onGuildMemberAdd", () => {
 
       await eventHandler(mockMember);
 
-      // Should get member join position
-      expect(discord.members.getMemberJoinPosition).toHaveBeenCalledWith(mockMember);
+      // Should get number of members
+      expect(discord.members.getNumberOfMembers).toHaveBeenCalled();
 
       // Should create join image
       expect(JoinImageGenerator).toHaveBeenCalledWith("TestUser", "https://example.com/avatar.png", 42);

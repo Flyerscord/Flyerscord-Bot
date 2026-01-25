@@ -8,7 +8,7 @@ export default class TotalMembersStatChannel extends StatsVoiceChannel {
   }
 
   protected override async getNewValue(): Promise<string | null> {
-    const guild = await discord.guilds.getGuild();
+    const guild = discord.guilds.getGuild();
 
     if (!guild) {
       Stumper.error("Error finding guild", "statsVoiceChannel:TotalMembersStatChannel:update");

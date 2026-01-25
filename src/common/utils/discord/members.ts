@@ -32,7 +32,7 @@ export async function getMembers(force: boolean = false): Promise<Collection<str
 }
 
 export async function getMemberJoinPosition(member: GuildMember): Promise<number> {
-  const members = await getMembers();
+  const members = await getMembers(true);
   Stumper.info(`Members: ${members?.size}`, "common:members:getMemberJoinPosition");
   if (members) {
     const sortedMembers = members

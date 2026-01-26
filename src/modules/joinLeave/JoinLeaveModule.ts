@@ -6,6 +6,7 @@ import { z } from "zod";
 import schema from "./db/schema";
 import onMessageCreate from "./listeners/onMessageCreate";
 import SlashCommand from "@common/models/SlashCommand";
+import KickNotVerifiedTask from "./tasks/KickNotVerifiedTask";
 
 export const joinLeaveConfigSchema = [
   {
@@ -71,6 +72,15 @@ export const joinLeaveConfigSchema = [
     defaultValue: 2,
     schema: Zod.number({ min: 1, max: 1000 }),
   },
+  {
+    key: "kickNotVerifiedPeriod",
+    description: "The period in days to wait before kicking a user who has not verified",
+    required: false,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: 7,
+    schema: Zod.number({ min: 1, max: 365 }),
+  },
   // Might be useful later, we will see if the captcha stops spam bots
   // {
   //   key: "brandNewAccountThreshold",
@@ -103,6 +113,7 @@ export default class JoinLeaveModule extends Module {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
 
     this.registerListeners();
+    this.registerSchedules();
   }
 
   protected async cleanup(): Promise<void> {}
@@ -111,5 +122,9 @@ export default class JoinLeaveModule extends Module {
     onGuildMemberAdd();
     onGuildMemberRemove();
     onMessageCreate();
+  }
+
+  private registerSchedules(): void {
+    KickNotVerifiedTask.getInstance().createScheduledJob();
   }
 }

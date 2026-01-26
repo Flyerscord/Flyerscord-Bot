@@ -109,8 +109,14 @@ export default class LeaderboardCommand extends SlashCommand {
 
       if (!member) {
         Stumper.debug(`Failed to find member with user id: ${user.userId}. User probably left server`, "levels:LeaderboardCommand:createEmbedPage");
+        const discordUser = await discord.users.getUser(user.userId, true);
+        let username = "Unknown User";
+        if (discordUser) {
+          username = discordUser.displayName || discordUser.username;
+        }
+
         embed.addFields({
-          name: `${i + 1}) User Banned or Left Server`,
+          name: `${i + 1}) *${username}*`,
           value: `**Level:** ${user.currentLevel} | **Total Messages:** ${getShortenedMessageCount(user.messageCount)} | **Total Exp:** ${formatExp(user.totalExperience)}`,
         });
       } else {

@@ -77,7 +77,7 @@ export async function sendMessageAndAttachmentToChannel(
 }
 
 export async function sendMesssageDMToUser(userId: string, message: string): Promise<Message | undefined> {
-  const user = getUser(userId);
+  const user = await getUser(userId);
   if (user) {
     Stumper.debug(`Sending message to User DM: ${userId}`, "common:messages:sendMesssageDMToUser");
     return await user.send(message);
@@ -86,7 +86,7 @@ export async function sendMesssageDMToUser(userId: string, message: string): Pro
 }
 
 export async function sendEmbedDMToUser(userId: string, embed: EmbedBuilder): Promise<Message | undefined> {
-  const user = getUser(userId);
+  const user = await getUser(userId);
   if (user) {
     Stumper.debug(`Sending embed to User DM: ${userId}`, "common:messages:sendEmbedDMToUser");
     return await user.send({ embeds: [embed] });

@@ -22,7 +22,7 @@ export default class KickNotVerifiedTask extends Task {
       if (daysSinceAdded >= kickNotVerifiedPeriod) {
         const member = await discord.members.getMember(user.userId, true);
         if (member) {
-          void MyAuditLog.createAuditLog("JoinLeave", {
+          await MyAuditLog.createAuditLog("JoinLeave", {
             action: "kickedNotVerifiedUser",
             userId: user.userId,
             details: {

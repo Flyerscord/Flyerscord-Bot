@@ -100,9 +100,33 @@ export default (): void => {
 
           await message.reply("Correct! You are now verified!");
 
-          // Remove the role from the user
-          const notVerifiedRoleId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedRoleId;
-          await discord.roles.removeRoleFromUser(member, notVerifiedRoleId);
+          const member = await discord.members.getMember(user.id, true);
+          if (!member) {
+            Stumper.error(
+              `User ${user.id} is not in the server, skipping removal of not verified role and adding back roles`,
+              "joinLeave:onMessageCreate",
+            );
+          } else {
+            // Remove the role from the user
+            const notVerifiedRoleId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedRoleId;
+            await discord.roles.removeRoleFromUser(member, notVerifiedRoleId);
+
+            // If they were a previously left user add back their roles
+            const leftUser = await db.getLeftUser(user.id);
+            if (leftUser) {
+              Stumper.info(`User ${user.id} was previously left, adding their roles back`, "joinLeave:onMessageCreate");
+              const roles = leftUser.roles;
+              for (const role of roles) {
+                if (role === notVerifiedRoleId) {
+                  Stumper.warning(`User ${user.id} had previously left with the not verified role, skipping`, "joinLeave:onMessageCreate");
+                  continue;
+                }
+                Stumper.info(`Adding back role ${role} to user ${user.id}`, "joinLeave:onMessageCreate");
+                await discord.roles.addRoleToUser(member, role);
+              }
+              await db.deleteLeftUser(user.id);
+            }
+          }
 
           // Delete the not verified user
           await db.deleteNotVerifiedUser(user.id);

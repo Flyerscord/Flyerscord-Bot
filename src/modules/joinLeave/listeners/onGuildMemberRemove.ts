@@ -4,6 +4,7 @@ import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
 import ConfigManager from "@common/managers/ConfigManager";
 import JoinLeaveDB from "../db/JoinLeaveDB";
+import MyAuditLog from "@common/utils/MyAuditLog";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
@@ -20,5 +21,16 @@ export default (): void => {
 
     const db = new JoinLeaveDB();
     await db.deleteNotVerifiedUser(member.user.id);
+
+    const roles = discord.roles.getUserRoles(member);
+    await db.addLeftUser(member.user.id, roles);
+
+    void MyAuditLog.createAuditLog("JoinLeave", {
+      action: "userLeft",
+      userId: member.user.id,
+      details: {
+        roles,
+      },
+    });
   });
 };

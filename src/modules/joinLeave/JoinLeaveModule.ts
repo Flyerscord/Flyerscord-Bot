@@ -5,6 +5,7 @@ import Zod from "@common/utils/ZodWrapper";
 import { z } from "zod";
 import schema from "./db/schema";
 import onMessageCreate from "./listeners/onMessageCreate";
+import SlashCommand from "@common/models/SlashCommand";
 
 export const joinLeaveConfigSchema = [
   {
@@ -99,6 +100,8 @@ export default class JoinLeaveModule extends Module {
   }
 
   protected async setup(): Promise<void> {
+    await this.readInCommands<SlashCommand>(__dirname, "slash");
+
     this.registerListeners();
   }
 

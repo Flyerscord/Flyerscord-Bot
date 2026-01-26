@@ -1,5 +1,5 @@
 import { ModuleDatabase } from "@common/models/ModuleDatabase";
-import { NotVerifiedUser, notVerifiedUsers } from "./schema";
+import { LeftUser, leftUsers, NotVerifiedUser, notVerifiedUsers } from "./schema";
 import { eq } from "drizzle-orm";
 
 export default class JoinLeaveDB extends ModuleDatabase {
@@ -86,5 +86,22 @@ export default class JoinLeaveDB extends ModuleDatabase {
       .update(notVerifiedUsers)
       .set({ timeOutCount: this.increment(notVerifiedUsers.timeOutCount) })
       .where(eq(notVerifiedUsers.userId, userId));
+  }
+
+  // Left Users
+  async addLeftUser(userId: string, roles: string[]): Promise<void> {
+    await this.db.insert(leftUsers).values({ userId, roles });
+  }
+
+  async deleteLeftUser(userId: string): Promise<void> {
+    await this.db.delete(leftUsers).where(eq(leftUsers.userId, userId));
+  }
+
+  async getLeftUsers(): Promise<LeftUser[]> {
+    return await this.db.select().from(leftUsers);
+  }
+
+  async getLeftUser(userId: string): Promise<LeftUser | undefined> {
+    return await this.getSingleRow(leftUsers, eq(leftUsers.userId, userId));
   }
 }

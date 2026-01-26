@@ -15,9 +15,19 @@ export const notVerifiedUsers = createModuleTable(
   (table) => [index("joinleave_added_at_idx").on(table.addedAt), index("joinleave_timedout_at_idx").on(table.timedoutAt)],
 );
 
+export const leftUsers = createModuleTable("joinleave__left_users", {
+  userId: text("user_id").primaryKey(),
+  leftAt: timestamp("left_at").defaultNow().notNull(),
+  roles: text("roles").array().notNull().default([]),
+});
+
 export default {
   notVerifiedUsers,
+  leftUsers,
 };
 
 export type NotVerifiedUser = typeof notVerifiedUsers.$inferSelect;
 export type NewNotVerifiedUser = typeof notVerifiedUsers.$inferInsert;
+
+export type LeftUser = typeof leftUsers.$inferSelect;
+export type NewLeftUser = typeof leftUsers.$inferInsert;

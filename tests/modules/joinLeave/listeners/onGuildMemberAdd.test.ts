@@ -121,6 +121,11 @@ describe("onGuildMemberAdd", () => {
       lockUser: jest.fn(),
       unlockUser: jest.fn(),
       getNotVerifiedUsers: jest.fn(),
+      // Left user methods
+      getLeftUser: jest.fn().mockResolvedValue(undefined),
+      addLeftUser: jest.fn().mockResolvedValue(undefined),
+      deleteLeftUser: jest.fn().mockResolvedValue(undefined),
+      getLeftUsers: jest.fn().mockResolvedValue([]),
     } as unknown as jest.Mocked<JoinLeaveDB>;
 
     (JoinLeaveDB as jest.MockedClass<typeof JoinLeaveDB>).mockImplementation(() => mockDb);

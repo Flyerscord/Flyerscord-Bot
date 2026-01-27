@@ -16,7 +16,7 @@ export default class ManualVerifyUserCommand extends AdminSlashCommand {
 
     const member = await discord.members.getMember(user.id, true);
     if (!member) {
-      await this.replies.reply(`User ${user.id} is not in the server!`);
+      await this.replies.reply(`User <@${user.id}> is not in the server!`);
       return;
     }
 
@@ -24,7 +24,7 @@ export default class ManualVerifyUserCommand extends AdminSlashCommand {
 
     const notVerifiedUser = await db.getNotVerifiedUser(user.id);
     if (!notVerifiedUser) {
-      await this.replies.reply(`User ${user.id} is already verified!`);
+      await this.replies.reply(`User <@${user.id}> is already verified!`);
       return;
     }
 
@@ -34,6 +34,6 @@ export default class ManualVerifyUserCommand extends AdminSlashCommand {
 
     await discord.messages.sendMessageDMToUser(user.id, "You have been verified! You can now take part in the Go Flyers Server!");
 
-    await this.replies.reply(`User ${user.id} has been verified!`);
+    await this.replies.reply(`User <@${user.id}> has been verified!`);
   }
 }

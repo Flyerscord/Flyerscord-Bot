@@ -9,7 +9,7 @@ import CustomCommandsDB from "../../db/CustomCommandsDB";
 
 export default class EditCommand extends AdminAutocompleteSlashCommand {
   constructor() {
-    super("customedit", "Update a custom command", { ephermal: true });
+    super("customedit", "Update a custom command", { ephemeral: true });
 
     this.data
       .addStringOption((option) =>

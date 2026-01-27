@@ -4,7 +4,7 @@ import CommandImporter from "../../utils/CommandImporter";
 
 export default class CommandImportCommand extends AdminSlashCommand {
   constructor() {
-    super("customimport", "Start and stop the command import process", { ephermal: true });
+    super("customimport", "Start and stop the command import process", { ephemeral: true });
 
     this.data
       .addSubcommand((subcmd) =>

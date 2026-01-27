@@ -4,7 +4,7 @@ import discord from "@common/utils/discord/discord";
 
 export default class RoleAllAssignCommand extends AdminSlashCommand {
   constructor() {
-    super("roleallassign", "Assign the role to all members of the server", { ephermal: true });
+    super("roleallassign", "Assign the role to all members of the server", { ephemeral: true });
 
     this.data
       .addRoleOption((option) => option.setName("role").setDescription("The role to assign to everyone").setRequired(true))

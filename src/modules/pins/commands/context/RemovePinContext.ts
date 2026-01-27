@@ -6,7 +6,7 @@ import PinsDB from "../../db/PinsDB";
 
 export default class RemovePinContext extends AdminMessageContextMenuCommand {
   constructor() {
-    super("Remove Pin", { ephermal: true });
+    super("Remove Pin", { ephemeral: true });
   }
 
   async execute(interaction: MessageContextMenuCommandInteraction): Promise<void> {

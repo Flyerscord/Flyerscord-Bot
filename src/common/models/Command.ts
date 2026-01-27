@@ -4,17 +4,17 @@ import { CommandInteraction, ModalSubmitInteraction } from "discord.js";
 
 export default abstract class Command {
   readonly name: string;
-  protected readonly ephermal: boolean;
+  protected readonly ephemeral: boolean;
   protected readonly deferReply: boolean;
 
   replies: InteractionReplies;
 
-  constructor(name: string, ephermal: boolean, deferReply: boolean) {
+  constructor(name: string, ephemeral: boolean, deferReply: boolean) {
     this.name = name;
-    this.ephermal = ephermal;
+    this.ephemeral = ephemeral;
     this.deferReply = deferReply;
 
-    this.replies = discord.interactions.createReplies(this.name, this.ephermal);
+    this.replies = discord.interactions.createReplies(this.name, this.ephemeral);
   }
 
   protected async setupReplies(interaction: CommandInteraction | ModalSubmitInteraction): Promise<void> {
@@ -26,6 +26,6 @@ export default abstract class Command {
 }
 
 export interface ICommandConfig {
-  ephermal?: boolean;
+  ephemeral?: boolean;
   deferReply?: boolean;
 }

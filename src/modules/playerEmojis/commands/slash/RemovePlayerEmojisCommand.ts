@@ -4,7 +4,7 @@ import { removeOldEmojis } from "../../utils/PlayerEmojis";
 
 export default class RemovePlayerEmojisCommand extends AdminSlashCommand {
   constructor() {
-    super("removeplayeremojis", "Remove all player emojis (May take a while)", { ephermal: true });
+    super("removeplayeremojis", "Remove all player emojis (May take a while)", { ephemeral: true });
   }
 
   async execute(_interaction: ChatInputCommandInteraction): Promise<void> {

@@ -12,7 +12,7 @@ export default (): void => {
     const nonVerifiedUsers = await db.getNotVerifiedUsers();
     for (const user of nonVerifiedUsers) {
       if (!user.threadId) {
-        const discordUser = await discord.users.getUser(user.userId);
+        const discordUser = await discord.users.getUser(user.userId, true);
         if (!discordUser) {
           Stumper.error(`User ${user.userId} not found!`, "joinLeave:onReady");
           continue;

@@ -25,7 +25,6 @@ export async function sendCaptcha(user: User): Promise<void> {
     const thread = await discord.threads.createPrivateThread(notVerifiedChannelId, `${user.username}'s Captcha Thread`, {
       autoArchiveDuration: 10080,
       reason: "Created by Flyerscord Bot for user to answer captcha",
-      startMessage: "Please answer the captcha below to get access to the rest of the server!",
     });
 
     if (!thread) {

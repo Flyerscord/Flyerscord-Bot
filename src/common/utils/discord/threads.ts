@@ -1,12 +1,12 @@
 import Stumper from "stumper";
 import { getChannel, getTextChannel } from "./channels";
-import { ChannelType, PrivateThreadChannel, PublicThreadChannel, ThreadChannel } from "discord.js";
+import { ChannelType, MessageResolvable, PrivateThreadChannel, PublicThreadChannel, ThreadChannel } from "discord.js";
 
 interface ICreateThreadOptions {
   autoArchiveDuration?: 60 | 1440 | 4320 | 10080;
   reason?: string;
   invitable?: boolean;
-  startMessage?: string;
+  startMessage?: MessageResolvable;
   rateLimitPerUser?: number;
 }
 

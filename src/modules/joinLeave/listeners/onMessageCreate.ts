@@ -13,7 +13,7 @@ export default (): void => {
   client.on("messageCreate", async (message: Message) => {
     const user = message.author;
     if (user.bot) return;
-    if (!message.channel.isDMBased()) return;
+    if (!message.channel.isThread()) return;
 
     const db = new JoinLeaveDB();
     const notVerifiedUser = await db.getNotVerifiedUser(user.id);
@@ -21,6 +21,10 @@ export default (): void => {
     const member = await discord.members.getMember(user.id);
 
     if (!notVerifiedUser || notVerifiedUser.lock || !member) {
+      return;
+    }
+
+    if (message.channel.id !== notVerifiedUser.threadId) {
       return;
     }
 
@@ -130,6 +134,11 @@ export default (): void => {
 
           // Delete the not verified user
           await db.deleteNotVerifiedUser(user.id);
+
+          // Delete the thread
+          if (notVerifiedUser.threadId) {
+            await discord.threads.deleteThread(notVerifiedUser.threadId, "User completed captcha");
+          }
         } else {
           await message.reply("Correct!");
 
@@ -175,6 +184,9 @@ export default (): void => {
             await message.reply(`You have reached the maximum number of timeouts! You have been banned from the server.`);
             await discord.members.banUser(user.id, { reason: "Reached the maximum number of captcha timeouts" });
             await db.deleteNotVerifiedUser(user.id);
+            if (notVerifiedUser.threadId) {
+              await discord.threads.deleteThread(notVerifiedUser.threadId, "User banned due to failing captcha");
+            }
             return;
           } else {
             // User has not reached the maximum number of timeouts, start a timeout

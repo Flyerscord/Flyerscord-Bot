@@ -32,7 +32,9 @@ export default class ManualVerifyUserCommand extends AdminSlashCommand {
     await discord.roles.removeRoleFromUser(member, notVerifiedRoleId);
     await db.deleteNotVerifiedUser(user.id);
 
-    await discord.messages.sendMessageDMToUser(user.id, "You have been verified! You can now take part in the Go Flyers Server!");
+    if (notVerifiedUser.threadId) {
+      await discord.threads.deleteThread(notVerifiedUser.threadId, "User verified");
+    }
 
     await this.replies.reply(`User <@${user.id}> has been verified!`);
   }

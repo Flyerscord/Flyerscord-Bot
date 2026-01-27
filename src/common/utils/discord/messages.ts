@@ -6,6 +6,7 @@ import { getChannel, getTextChannel } from "./channels";
 import { getUser } from "./users";
 import MyAuditLog from "../MyAuditLog";
 import { AuditLogSeverity } from "../../db/schema";
+import { getThread } from "./threads";
 
 export async function getMessage(channelId: string, messageId: string): Promise<Message | undefined> {
   const channel = await getTextChannel(channelId);
@@ -187,4 +188,22 @@ export async function deleteMessage(channelId: string, messageId: string, reason
     Stumper.caughtError(error, "common:messages:deleteMessage");
     return false;
   }
+}
+
+export async function sendMessageToThread(threadId: string, message: string): Promise<Message | undefined> {
+  const thread = await getThread(threadId);
+  if (thread) {
+    Stumper.debug(`Sending message to thread: ${threadId}`, "common:messages:sendMessageToThread");
+    return await thread.send(message);
+  }
+  return undefined;
+}
+
+export async function sendEmbedToThread(threadId: string, embed: EmbedBuilder): Promise<Message | undefined> {
+  const thread = await getThread(threadId);
+  if (thread) {
+    Stumper.debug(`Sending embed to thread: ${threadId}`, "common:messages:sendEmbedToThread");
+    return await thread.send({ embeds: [embed] });
+  }
+  return undefined;
 }

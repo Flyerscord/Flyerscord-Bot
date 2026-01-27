@@ -1,0 +1,1 @@
+ALTER TABLE "joinleave__not_verified_users" ADD COLUMN "thread_id" text;

@@ -132,7 +132,7 @@ describe("onMessageCreate", () => {
     eventHandler = mockClient.on.mock.calls[0][1];
   });
 
-  const createMockMessage = (content: string, isDM = true, isBot = false): Message => {
+  const createMockMessage = (content: string, isThread = true, isBot = false): Message => {
     return {
       content,
       author: {
@@ -141,7 +141,8 @@ describe("onMessageCreate", () => {
         bot: isBot,
       } as User,
       channel: {
-        isDMBased: jest.fn().mockReturnValue(isDM),
+        id: "thread-123",
+        isThread: jest.fn().mockReturnValue(isThread),
       } as unknown as DMChannel,
       reply: jest.fn().mockResolvedValue(undefined),
     } as unknown as Message;
@@ -166,6 +167,7 @@ describe("onMessageCreate", () => {
       incorrectAnswers: number;
       timedoutAt: Date | null;
       timeOutCount: number;
+      threadId: string;
     }> = {},
   ): {
     userId: string;
@@ -175,6 +177,7 @@ describe("onMessageCreate", () => {
     incorrectAnswers: number;
     timedoutAt: Date | null;
     timeOutCount: number;
+    threadId: string;
   } => ({
     userId: "user-123",
     questionsAnswered: 0,
@@ -183,6 +186,7 @@ describe("onMessageCreate", () => {
     incorrectAnswers: 0,
     timedoutAt: null,
     timeOutCount: 0,
+    threadId: "thread-123",
     ...overrides,
   });
 

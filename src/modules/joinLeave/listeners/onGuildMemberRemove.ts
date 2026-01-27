@@ -34,7 +34,13 @@ export default (): void => {
     Stumper.info(`User ${username} has left the server!`, "joinLeave:onGuildMemberRemove");
 
     const db = new JoinLeaveDB();
-    await db.deleteNotVerifiedUser(member.user.id);
+    let notVerifiedUser = await db.getNotVerifiedUser(member.user.id);
+    if (notVerifiedUser) {
+      if (notVerifiedUser.threadId) {
+        await discord.threads.deleteThread(notVerifiedUser.threadId, "User left the server before answering the captcha");
+      }
+      await db.deleteNotVerifiedUser(member.user.id);
+    }
 
     const roles = discord.roles.getUserRoles(member);
     await db.addLeftUser(member.user.id, roles);

@@ -157,7 +157,7 @@ export async function addThreadMember(threadId: string, userId: string): Promise
   }
 
   await thread.members.add(userId);
-  Stumper.info(`Thread ${threadId} member added!`, "common:channels:addThreadMember");
+  Stumper.info(`Member ${userId} added to thread ${threadId}!`, "common:channels:addThreadMember");
 }
 
 export async function removeThreadMember(threadId: string, userId: string): Promise<void> {
@@ -168,5 +168,5 @@ export async function removeThreadMember(threadId: string, userId: string): Prom
   }
 
   await thread.members.remove(userId);
-  Stumper.info(`Thread ${threadId} member removed!`, "common:channels:removeThreadMember");
+  Stumper.info(`Member ${userId} removed from thread ${threadId}!`, "common:channels:removeThreadMember");
 }

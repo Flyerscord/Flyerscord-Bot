@@ -1,4 +1,4 @@
-import { IPost } from "../interfaces/IPost";
+import { IPost, IPostImage } from "../interfaces/IPost";
 import Stumper from "stumper";
 import { IBlueSkyAccount } from "../interfaces/IBlueSkyAccount";
 import { AccountNotinListException } from "../exceptions/AccountNotInListException";
@@ -78,10 +78,40 @@ export default class BlueSky extends Singleton {
         for (const post of newPosts) {
           // Only add posts that are not replies
           if (!post.reply) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const record = post.post.record as any;
+            const embed = post.post.embed;
+
+            // Extract images from embed if present
+            const images: IPostImage[] = [];
+            if (embed && embed.$type === "app.bsky.embed.images#view") {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const imageEmbed = embed as any;
+              for (const img of imageEmbed.images) {
+                images.push({
+                  thumb: img.thumb,
+                  fullsize: img.fullsize,
+                  alt: img.alt || "",
+                });
+              }
+            }
+
             const postData: IPost = {
               account: post.post.author.handle,
               postId: post.post.cid,
               url: `https://bsky.app/profile/${post.post.author.handle}/post/${post.post.uri.split("/").pop()}`,
+              author: {
+                handle: post.post.author.handle,
+                displayName: post.post.author.displayName,
+                avatar: post.post.author.avatar,
+              },
+              text: record.text || "",
+              createdAt: new Date(record.createdAt),
+              images: images,
+              likeCount: post.post.likeCount ?? 0,
+              repostCount: post.post.repostCount ?? 0,
+              replyCount: post.post.replyCount ?? 0,
+              quoteCount: post.post.quoteCount ?? 0,
             };
             postDatas.push(postData);
           }

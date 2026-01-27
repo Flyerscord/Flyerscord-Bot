@@ -13,7 +13,7 @@ export default (): void => {
   client.on("messageCreate", async (message: Message) => {
     const user = message.author;
     if (user.bot) return;
-    if (!message.channel.isDMBased()) return;
+    if (!message.channel.isThread()) return;
 
     const db = new JoinLeaveDB();
     const notVerifiedUser = await db.getNotVerifiedUser(user.id);
@@ -21,6 +21,10 @@ export default (): void => {
     const member = await discord.members.getMember(user.id);
 
     if (!notVerifiedUser || notVerifiedUser.lock || !member) {
+      return;
+    }
+
+    if (message.channel.id !== notVerifiedUser.threadId) {
       return;
     }
 

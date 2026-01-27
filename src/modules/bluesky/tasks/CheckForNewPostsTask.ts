@@ -5,6 +5,7 @@ import { IPost } from "../interfaces/IPost";
 import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/managers/ConfigManager";
 import BlueSkyDB from "../db/BlueSkyDB";
+import { createBlueSkyPostEmbed } from "../utils/Embeds";
 
 export default class CheckForNewPostsTask extends Task {
   constructor() {
@@ -33,8 +34,8 @@ export default class CheckForNewPostsTask extends Task {
         },
       });
 
-      const message = `[Post Link](${post.url})`;
-      await discord.messages.sendMessageToChannel(ConfigManager.getInstance().getConfig("BlueSky").channelId, message);
+      const embed = createBlueSkyPostEmbed(post);
+      await discord.messages.sendEmbedToChannel(ConfigManager.getInstance().getConfig("BlueSky").channelId, embed);
     }
   }
 }

@@ -1,8 +1,8 @@
-import { IPost } from "../interfaces/IPost";
+import { IPost, IPostImage } from "../interfaces/IPost";
 import Stumper from "stumper";
 import { IBlueSkyAccount } from "../interfaces/IBlueSkyAccount";
 import { AccountNotinListException } from "../exceptions/AccountNotInListException";
-import { AtpAgent, AtUri } from "@atproto/api";
+import { AppBskyEmbedImages, AppBskyFeedPost, AtpAgent, AtUri } from "@atproto/api";
 import { AccountDoesNotExistException } from "../exceptions/AccountDoesNotExistException";
 import { Singleton } from "@common/models/Singleton";
 import ConfigManager from "@common/managers/ConfigManager";
@@ -62,33 +62,63 @@ export default class BlueSky extends Singleton {
         const data = response.data;
         const sortedPosts = data.feed.sort(
           // Oldest to newest
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (a, b) => new Date((a.post.record as any).createdAt).getTime() - new Date((b.post.record as any).createdAt).getTime(),
+          (a, b) =>
+            new Date((a.post.record as AppBskyFeedPost.Record).createdAt).getTime() -
+            new Date((b.post.record as AppBskyFeedPost.Record).createdAt).getTime(),
         );
         if (!lastPost) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          await db.updateLastPostTime(new Date((sortedPosts[sortedPosts.length - 1].post.record as any).createdAt));
+          const lastRecord = sortedPosts[sortedPosts.length - 1].post.record as AppBskyFeedPost.Record;
+          await db.updateLastPostTime(new Date(lastRecord.createdAt));
           return [];
         }
 
         const timeOfLastPost = lastPost.getTime();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const newPosts = sortedPosts.filter((post) => new Date((post.post.record as any).createdAt).getTime() > timeOfLastPost);
+        const newPosts = sortedPosts.filter((post) => {
+          const record = post.post.record as AppBskyFeedPost.Record;
+          return new Date(record.createdAt).getTime() > timeOfLastPost;
+        });
 
         for (const post of newPosts) {
           // Only add posts that are not replies
           if (!post.reply) {
+            const record = post.post.record as AppBskyFeedPost.Record;
+            const embed = post.post.embed;
+
+            // Extract images from embed if present
+            const images: IPostImage[] = [];
+            if (AppBskyEmbedImages.isView(embed)) {
+              for (const img of embed.images) {
+                images.push({
+                  thumb: img.thumb,
+                  fullsize: img.fullsize,
+                  alt: img.alt || "",
+                });
+              }
+            }
+
             const postData: IPost = {
               account: post.post.author.handle,
               postId: post.post.cid,
               url: `https://bsky.app/profile/${post.post.author.handle}/post/${post.post.uri.split("/").pop()}`,
+              author: {
+                handle: post.post.author.handle,
+                displayName: post.post.author.displayName,
+                avatar: post.post.author.avatar,
+              },
+              text: record.text || "",
+              createdAt: new Date(record.createdAt),
+              images: images,
+              likeCount: post.post.likeCount ?? 0,
+              repostCount: post.post.repostCount ?? 0,
+              replyCount: post.post.replyCount ?? 0,
+              quoteCount: post.post.quoteCount ?? 0,
             };
             postDatas.push(postData);
           }
         }
         if (newPosts.length > 0) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          await db.updateLastPostTime(new Date((newPosts[newPosts.length - 1].post.record as any).createdAt));
+          const lastNewRecord = newPosts[newPosts.length - 1].post.record as AppBskyFeedPost.Record;
+          await db.updateLastPostTime(new Date(lastNewRecord.createdAt));
         }
       }
     } catch (error) {

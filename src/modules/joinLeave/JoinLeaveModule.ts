@@ -7,6 +7,7 @@ import schema from "./db/schema";
 import onMessageCreate from "./listeners/onMessageCreate";
 import SlashCommand from "@common/models/SlashCommand";
 import KickNotVerifiedTask from "./tasks/KickNotVerifiedTask";
+import onReady from "./listeners/onReady";
 
 export const joinLeaveConfigSchema = [
   {
@@ -131,6 +132,7 @@ export default class JoinLeaveModule extends Module {
     onGuildMemberAdd();
     onGuildMemberRemove();
     onMessageCreate();
+    onReady();
   }
 
   private registerSchedules(): void {

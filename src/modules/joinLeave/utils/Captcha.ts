@@ -31,6 +31,10 @@ export async function sendCaptcha(user: User): Promise<void> {
       Stumper.error(`Error creating thread for user ${user.id}`, "joinLeave:sendCaptcha");
       return;
     }
+
+    // Add the user to the thread
+    await discord.threads.addThreadMember(thread.id, user.id);
+
     await db.setThreadId(user.id, thread.id);
     notVerifiedUser.threadId = thread.id;
   }

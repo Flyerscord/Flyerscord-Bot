@@ -148,3 +148,25 @@ export async function deleteThread(threadId: string, reason?: string): Promise<v
   await thread.delete(reason);
   Stumper.info(`Thread ${threadId} deleted!`, "common:channels:deleteThread");
 }
+
+export async function addThreadMember(threadId: string, userId: string): Promise<void> {
+  const thread = await getThread(threadId);
+  if (!thread) {
+    Stumper.error(`Thread ${threadId} not found!`, "common:channels:addThreadMember");
+    return;
+  }
+
+  await thread.members.add(userId);
+  Stumper.info(`Thread ${threadId} member added!`, "common:channels:addThreadMember");
+}
+
+export async function removeThreadMember(threadId: string, userId: string): Promise<void> {
+  const thread = await getThread(threadId);
+  if (!thread) {
+    Stumper.error(`Thread ${threadId} not found!`, "common:channels:removeThreadMember");
+    return;
+  }
+
+  await thread.members.remove(userId);
+  Stumper.info(`Thread ${threadId} member removed!`, "common:channels:removeThreadMember");
+}

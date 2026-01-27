@@ -4,6 +4,8 @@ import Stumper from "stumper";
 import { AttachmentBuilder } from "discord.js";
 import { getChannel, getTextChannel } from "./channels";
 import { getUser } from "./users";
+import MyAuditLog from "../MyAuditLog";
+import { AuditLogSeverity } from "../../db/schema";
 
 export async function getMessage(channelId: string, messageId: string): Promise<Message | undefined> {
   const channel = await getTextChannel(channelId);
@@ -80,7 +82,19 @@ export async function sendMessageDMToUser(userId: string, message: string): Prom
   const user = await getUser(userId);
   if (user) {
     Stumper.debug(`Sending message to User DM: ${userId}`, "common:messages:sendMessageDMToUser");
-    return await user.send(message);
+    try {
+      return await user.send(message);
+    } catch (error) {
+      Stumper.caughtError(error, "common:messages:sendMessageDMToUser");
+      void MyAuditLog.createAuditLog("Common", {
+        action: "failedToSendDMToUser",
+        userId: userId,
+        severity: AuditLogSeverity.CRITICAL,
+        details: {
+          type: "message",
+        },
+      });
+    }
   }
   return undefined;
 }
@@ -89,7 +103,20 @@ export async function sendEmbedDMToUser(userId: string, embed: EmbedBuilder): Pr
   const user = await getUser(userId);
   if (user) {
     Stumper.debug(`Sending embed to User DM: ${userId}`, "common:messages:sendEmbedDMToUser");
-    return await user.send({ embeds: [embed] });
+    try {
+      return await user.send({ embeds: [embed] });
+    } catch (error) {
+      Stumper.caughtError(error, "common:messages:sendEmbedDMToUser");
+      void MyAuditLog.createAuditLog("Common", {
+        action: "failedToSendDMToUser",
+        userId: userId,
+        severity: AuditLogSeverity.CRITICAL,
+        details: {
+          type: "embed",
+        },
+      });
+      return undefined;
+    }
   }
   return undefined;
 }

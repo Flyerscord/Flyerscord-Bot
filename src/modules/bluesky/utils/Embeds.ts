@@ -17,16 +17,21 @@ export function createBlueSkyPostEmbed(post: IPost): EmbedBuilder {
   });
 
   // Set post content as description
+  // Discord embed description limit is 4096 characters
+  const viewLink = `[View on BlueSky](${post.url})`;
+  const linkSuffix = `\n\n${viewLink}`;
+  const maxDescriptionLength = 4096 - linkSuffix.length;
+
   let description = post.text;
-  if (description.length > 4000) {
-    description = description.substring(0, 3997) + "...";
+  if (description.length > maxDescriptionLength) {
+    description = description.substring(0, maxDescriptionLength - 3) + "...";
   }
 
   // Add "View on BlueSky" link at the end of description
   if (description.length > 0) {
-    description += `\n\n[View on BlueSky](${post.url})`;
+    description += linkSuffix;
   } else {
-    description = `[View on BlueSky](${post.url})`;
+    description = viewLink;
   }
 
   embed.setDescription(description);

@@ -88,6 +88,10 @@ export default class JoinLeaveDB extends ModuleDatabase {
       .where(eq(notVerifiedUsers.userId, userId));
   }
 
+  async setThreadId(userId: string, threadId: string): Promise<void> {
+    await this.db.update(notVerifiedUsers).set({ threadId }).where(eq(notVerifiedUsers.userId, userId));
+  }
+
   // Left Users
   async addLeftUser(userId: string, roles: string[]): Promise<void> {
     await this.db.insert(leftUsers).values({ userId, roles });

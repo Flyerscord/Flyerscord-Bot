@@ -5,7 +5,7 @@ import Stumper from "stumper";
 
 export default class TriggerStatVoiceChannelUpdateCommand extends AdminSlashCommand {
   constructor() {
-    super("triggerstatvoicechannelupdate", "Manually trigger the stat voice channel update process", { ephermal: true });
+    super("triggerstatvoicechannelupdate", "Manually trigger the stat voice channel update process", { ephemeral: true });
   }
 
   async execute(_interaction: ChatInputCommandInteraction): Promise<void> {

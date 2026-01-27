@@ -18,7 +18,7 @@ export default abstract class SlashCommand extends Command {
   readonly description: string;
 
   constructor(name: string, description: string, options: ICommandConfig = {}) {
-    super(name.toLowerCase(), options.ephermal ?? false, options.deferReply ?? true);
+    super(name.toLowerCase(), options.ephemeral ?? false, options.deferReply ?? true);
     this.description = description;
 
     this.data = new SlashCommandBuilder().setName(this.name).setDescription(this.description).setContexts([InteractionContextType.Guild]);

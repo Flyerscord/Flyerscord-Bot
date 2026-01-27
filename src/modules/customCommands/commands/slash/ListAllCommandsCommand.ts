@@ -5,7 +5,7 @@ import CustomCommandsDB from "../../db/CustomCommandsDB";
 
 export default class ListAllCommandsCommand extends AdminSlashCommand {
   constructor() {
-    super("customlistall", "List all custom commands. Mostly for debugging purposes.", { ephermal: true });
+    super("customlistall", "List all custom commands. Mostly for debugging purposes.", { ephemeral: true });
   }
 
   async execute(_interaction: ChatInputCommandInteraction): Promise<void> {

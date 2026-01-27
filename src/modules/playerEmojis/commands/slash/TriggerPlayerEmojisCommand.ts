@@ -4,7 +4,7 @@ import { checkForNewEmojis } from "../../utils/PlayerEmojis";
 
 export default class TriggerPlayerEmojisCommand extends AdminSlashCommand {
   constructor() {
-    super("triggerplayeremojis", "Manually trigger the player emoji process", { ephermal: true });
+    super("triggerplayeremojis", "Manually trigger the player emoji process", { ephemeral: true });
   }
 
   async execute(_interaction: ChatInputCommandInteraction): Promise<void> {

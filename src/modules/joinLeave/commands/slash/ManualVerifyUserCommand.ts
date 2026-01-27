@@ -6,9 +6,9 @@ import JoinLeaveDB from "../../db/JoinLeaveDB";
 
 export default class ManualVerifyUserCommand extends AdminSlashCommand {
   constructor() {
-    super("verifyuser", "Manually mark a user as verified", { ephermal: true });
+    super("verifyuser", "Manually mark a user as verified", { ephemeral: true });
 
-    this.data.addUserOption((option) => option.setName("user").setDescription("The user manually verify").setRequired(true));
+    this.data.addUserOption((option) => option.setName("user").setDescription("The user to manually verify").setRequired(true));
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -32,7 +32,7 @@ export default class ManualVerifyUserCommand extends AdminSlashCommand {
     await discord.roles.removeRoleFromUser(member, notVerifiedRoleId);
     await db.deleteNotVerifiedUser(user.id);
 
-    await discord.messages.sendMesssageDMToUser(user.id, "You have been verified! You can now take part in the Go Flyers Server!");
+    await discord.messages.sendMessageDMToUser(user.id, "You have been verified! You can now take part in the Go Flyers Server!");
 
     await this.replies.reply(`User ${user.id} has been verified!`);
   }

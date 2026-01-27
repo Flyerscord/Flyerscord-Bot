@@ -5,7 +5,7 @@ import LevelsDB from "../../db/LevelsDB";
 
 export default class ResetUserCommand extends AdminSlashCommand {
   constructor() {
-    super("resetuserexp", "Resets exp for a given user", { ephermal: true });
+    super("resetuserexp", "Resets exp for a given user", { ephemeral: true });
 
     this.data
       .addStringOption((option) =>

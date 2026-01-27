@@ -4,7 +4,7 @@ import { checkForGameDay } from "../../utils/GameChecker";
 
 export default class TriggerPostCreationCommand extends AdminSlashCommand {
   constructor() {
-    super("triggerpostcreation", "Trigger the post creation process", { ephermal: true });
+    super("triggerpostcreation", "Trigger the post creation process", { ephemeral: true });
   }
 
   async execute(_interaction: ChatInputCommandInteraction): Promise<void> {

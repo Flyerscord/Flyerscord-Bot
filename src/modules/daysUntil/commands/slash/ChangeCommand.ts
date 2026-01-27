@@ -6,7 +6,7 @@ import DaysUntilDB from "../../db/DaysUntilDB";
 
 export default class ChangeCommand extends AdminSlashCommand {
   constructor() {
-    super("daysuntilchange", "Change the event to get the number of days until", { ephermal: true });
+    super("daysuntilchange", "Change the event to get the number of days until", { ephemeral: true });
 
     this.data
       .addStringOption((option) =>

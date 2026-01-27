@@ -76,10 +76,10 @@ export async function sendMessageAndAttachmentToChannel(
   }
 }
 
-export async function sendMesssageDMToUser(userId: string, message: string): Promise<Message | undefined> {
+export async function sendMessageDMToUser(userId: string, message: string): Promise<Message | undefined> {
   const user = await getUser(userId);
   if (user) {
-    Stumper.debug(`Sending message to User DM: ${userId}`, "common:messages:sendMesssageDMToUser");
+    Stumper.debug(`Sending message to User DM: ${userId}`, "common:messages:sendMessageDMToUser");
     return await user.send(message);
   }
   return undefined;

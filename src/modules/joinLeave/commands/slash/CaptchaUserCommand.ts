@@ -7,7 +7,7 @@ import { sendCaptcha } from "../../utils/Captcha";
 
 export default class CaptchaUserCommand extends AdminSlashCommand {
   constructor() {
-    super("captchauser", "Mark user as not verified and send a captcha", { ephermal: true });
+    super("captchauser", "Mark user as not verified and send a captcha", { ephemeral: true });
 
     this.data
       .addUserOption((option) => option.setName("user").setDescription("The user to send the captcha to").setRequired(true))

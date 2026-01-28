@@ -89,6 +89,14 @@ jest.mock("@modules/joinLeave/utils/Captcha", () => ({
 // Mock JoinLeaveDB
 jest.mock("@modules/joinLeave/db/JoinLeaveDB");
 
+// Mock MyAuditLog
+jest.mock("@common/utils/MyAuditLog", () => ({
+  __esModule: true,
+  default: {
+    createAuditLog: jest.fn().mockResolvedValue(undefined),
+  },
+}));
+
 import onGuildMemberAdd from "@modules/joinLeave/listeners/onGuildMemberAdd";
 import ClientManager from "@common/managers/ClientManager";
 import discord from "@common/utils/discord/discord";
@@ -230,8 +238,7 @@ describe("onGuildMemberAdd", () => {
 
       await eventHandler(mockMember);
 
-      // Should log the error
-      expect(Stumper.error).toHaveBeenCalledWith(expect.stringContaining("Error adding not verified role"), "joinLeave:onGuildMemberAdd");
+      // Should log the error via caughtError
       expect(Stumper.caughtError).toHaveBeenCalledWith(testError, "joinLeave:onGuildMemberAdd");
     });
 
@@ -252,8 +259,7 @@ describe("onGuildMemberAdd", () => {
 
       await eventHandler(mockMember);
 
-      // Should still complete the flow and log error
-      expect(Stumper.error).toHaveBeenCalled();
+      // Should log error via caughtError
       expect(Stumper.caughtError).toHaveBeenCalledWith(testError, "joinLeave:onGuildMemberAdd");
     });
 
@@ -274,7 +280,7 @@ describe("onGuildMemberAdd", () => {
 
       await eventHandler(mockMember);
 
-      expect(Stumper.error).toHaveBeenCalled();
+      // Should log error via caughtError
       expect(Stumper.caughtError).toHaveBeenCalledWith(testError, "joinLeave:onGuildMemberAdd");
     });
   });

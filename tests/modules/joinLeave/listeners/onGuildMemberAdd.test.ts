@@ -60,6 +60,7 @@ jest.mock("@common/utils/discord/discord", () => ({
   },
   roles: {
     addRoleToUser: jest.fn().mockResolvedValue(true),
+    userHasRole: jest.fn().mockReturnValue(false),
   },
 }));
 

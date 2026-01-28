@@ -55,9 +55,12 @@ export default (): void => {
       }
 
       if (!roleAdded) {
-        Stumper.error(`Failed to add not verified role to user ${user.id} after retry, rolling back DB change`, "joinLeave:onGuildMemberAdd");
-        await db.deleteNotVerifiedUser(user.id);
-        return;
+        const hasRole = discord.roles.userHasRole(member, notVerifiedRoleId);
+        if (!hasRole) {
+          Stumper.error(`Failed to add not verified role to user ${user.id} after retry, rolling back DB change`, "joinLeave:onGuildMemberAdd");
+          await db.deleteNotVerifiedUser(user.id);
+          return;
+        }
       }
 
       await sendCaptcha(user);

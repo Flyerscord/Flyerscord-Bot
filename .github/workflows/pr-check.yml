@@ -156,7 +156,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker image (PR validation)
+      - name: Build Docker images (PR validation)
         if: github.event_name == 'pull_request'
         uses: docker/build-push-action@v6
         with:
@@ -164,8 +164,11 @@ jobs:
           push: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          # Build both targets to validate
+          targets: |
+            migrator
 
-      - name: Build and push Docker image
+      - name: Build and push bot image
         if: github.event_name == 'push' && steps.tag-check.outputs.exists == 'false'
         uses: docker/build-push-action@v6
         with:
@@ -177,11 +180,26 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Build and push migrator image
+        if: github.event_name == 'push' && steps.tag-check.outputs.exists == 'false'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: migrator
+          push: true
+          tags: |
+            ghcr.io/${{ steps.tag-check.outputs.repo }}:${{ steps.version.outputs.version }}-migrator
+            ghcr.io/${{ steps.tag-check.outputs.repo }}:migrator
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
       - name: Send Discord notification
         if: github.event_name == 'push' && steps.tag-check.outputs.exists == 'false'
         uses: sarisia/actions-status-discord@v1.16.0
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          title: "Docker Image Published"
-          description: "Version **${{ steps.version.outputs.version }}** has been built and pushed to `ghcr.io/${{ steps.tag-check.outputs.repo }}`"
+          title: "Docker Images Published"
+          description: |
+            **Bot:** `ghcr.io/${{ steps.tag-check.outputs.repo }}:${{ steps.version.outputs.version }}`
+            **Migrator:** `ghcr.io/${{ steps.tag-check.outputs.repo }}:${{ steps.version.outputs.version }}-migrator`
           color: 0x2ea043

@@ -1,12 +1,7 @@
 node_modules
 .vscode/settings.json
-data
 dist
 dist-tests
-**/local.config*.ts
-**/config.json
-**/configFile.ts
 coverage
 .env
 backups/
-src/common/config/seeding/Seeds.ts

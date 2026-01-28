@@ -1,7 +1,52 @@
+# Dependencies - rebuilt in Docker
 node_modules
-npm-debug.log
-data
+
+# Build outputs - rebuilt in Docker
 dist
+dist-tests
+coverage
+
+# Environment and secrets
 .env
+.env.*
+
+# Git
+.git
+.gitignore
+
+# IDE and editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# Docker files (prevent recursive context)
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Development/test files
+*.log
+npm-debug.log
+pnpm-debug.log
+
+# Local data and backups
 .backups/
+backups/
 postgres-data/
+
+# Documentation and misc
+README.md
+CLAUDE.md
+LICENSE
+*.md
+
+# Tests (not needed in production image)
+tests/
+__tests__/
+*.test.ts
+*.spec.ts
+jest.config.*
+
+# CI/CD
+.github/

@@ -63,6 +63,7 @@ jobs:
               - 'Dockerfile'
               - 'drizzle/**'
               - '!tests/**'
+              - '!.github/workflows/**'
 
   check-version:
     needs: changes

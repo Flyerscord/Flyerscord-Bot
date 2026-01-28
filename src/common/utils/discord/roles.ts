@@ -14,6 +14,7 @@ export async function addRoleToUser(member: GuildMember, roleId: string): Promis
   try {
     if (!userHasRole(member, roleId)) {
       await member.roles.add(roleId);
+      Stumper.info(`Added role ${roleId} to user ${member.id}`, "common:roles:addRoleToUser");
     }
     return true;
   } catch (error) {
@@ -36,10 +37,10 @@ export async function removeRoleFromUser(member: GuildMember, roleId: string): P
   if (userHasRole(member, roleId)) {
     try {
       await member.roles.remove(roleId);
+      Stumper.info(`Removed role ${roleId} from user ${member.id}`, "common:roles:removeRoleFromUser");
     } catch (error) {
       Stumper.caughtError(error, "common:roles:removeRoleFromUser");
     }
-    Stumper.info(`Removed role ${roleId} from user ${member.id}`, "common:roles:removeRoleFromUser");
   } else {
     Stumper.warning(`User ${member.id} does not have role ${roleId}, skipping removal`, "common:roles:removeRoleFromUser");
   }

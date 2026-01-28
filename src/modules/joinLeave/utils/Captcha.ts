@@ -44,6 +44,9 @@ export async function sendCaptcha(user: User): Promise<void> {
     return;
   }
 
+  // Ping the user
+  await discord.messages.sendMessageToThread(notVerifiedUser.threadId, `<@${user.id}>`);
+
   const embed = getCaptchaEmbed(questions[notVerifiedUser.questionsAnswered].question);
   await discord.messages.sendEmbedToThread(notVerifiedUser.threadId, embed);
 }

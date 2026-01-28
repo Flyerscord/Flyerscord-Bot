@@ -32,6 +32,7 @@ jest.mock("@common/managers/ConfigManager", () => {
 jest.mock("@common/utils/discord/discord", () => ({
   messages: {
     sendEmbedToThread: jest.fn().mockResolvedValue(undefined),
+    sendMessageToThread: jest.fn().mockResolvedValue(undefined),
   },
 }));
 

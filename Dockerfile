@@ -32,24 +32,7 @@ COPY . .
 
 RUN pnpm run build
 
-# Stage 4: Migration image (includes drizzle-kit)
-FROM node:24 AS migrator
-
-RUN npm install -g pnpm
-
-ENV TZ=America/New_York
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-WORKDIR /usr/src/app
-
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY --from=dependencies /usr/src/app/node_modules ./node_modules
-
-COPY . .
-
-CMD ["pnpm", "run", "db:migrate"]
-
-# Stage 5: Final runtime image
+# Stage 4: Final runtime image
 FROM node:24
 
 RUN npm install -g pnpm

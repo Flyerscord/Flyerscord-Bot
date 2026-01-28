@@ -20,7 +20,7 @@ export default (): void => {
         const timeSinceKick = Time.timeSince(al.timestamp.getTime());
         // If the user was kicked for not verified within the last minute
         if (timeSinceKick <= 60_000) {
-          message = `${bold(username)} has just left the server! Guess they don't know what a puck is...")}`;
+          message = `${bold(username)} has just left the server! Guess they don't know what a puck is...`;
           break;
         }
       }

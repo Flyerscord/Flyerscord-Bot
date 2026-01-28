@@ -3,6 +3,7 @@ import { EmbedBuilder, User } from "discord.js";
 import JoinLeaveDB from "../db/JoinLeaveDB";
 import Stumper from "stumper";
 import discord from "@common/utils/discord/discord";
+import ClientManager from "@common/managers/ClientManager";
 
 export async function sendCaptcha(user: User): Promise<void> {
   const questions = ConfigManager.getInstance().getConfig("JoinLeave").captchaQuestions;
@@ -31,6 +32,14 @@ export async function sendCaptcha(user: User): Promise<void> {
       Stumper.error(`Error creating thread for user ${user.id}`, "joinLeave:sendCaptcha");
       return;
     }
+
+    // Add the bot to the thread
+    const client = ClientManager.getInstance().client;
+    if (!client.user) {
+      Stumper.error(`Client user is not set!`, "joinLeave:sendCaptcha");
+      return;
+    }
+    await discord.threads.addThreadMember(thread.id, client.user.id);
 
     // Add the user to the thread
     await discord.threads.addThreadMember(thread.id, user.id);

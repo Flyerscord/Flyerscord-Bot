@@ -27,6 +27,7 @@ export async function createPublicThread(
     return undefined;
   }
 
+  Stumper.info(`Creating public thread ${name} in channel ${parentChannelId}`, "common:channels:createPublicThread");
   const thread = (await channel.threads.create({
     name,
     type: ChannelType.PublicThread,
@@ -62,6 +63,7 @@ export async function createPrivateThread(
     return undefined;
   }
 
+  Stumper.info(`Creating private thread ${name} in channel ${parentChannelId}`, "common:channels:createPrivateThread");
   const thread = (await channel.threads.create({
     name,
     type: ChannelType.PrivateThread,

@@ -5,9 +5,8 @@ WORKDIR /usr/src/app
 
 RUN npm install -g pnpm
 
+ENV NODE_ENV=production
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
-ENV HUSKY=0
 RUN pnpm install --prod --frozen-lockfile
 
 # Stage 2: Install all dependencies

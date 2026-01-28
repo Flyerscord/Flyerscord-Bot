@@ -7,6 +7,7 @@ RUN npm install -g pnpm
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
+ENV HUSKY=0
 RUN pnpm install --prod --frozen-lockfile
 
 # Stage 2: Install all dependencies

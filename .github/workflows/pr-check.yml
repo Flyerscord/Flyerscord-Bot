@@ -62,6 +62,7 @@ jobs:
               - 'pnpm-lock.yaml'
               - 'Dockerfile'
               - 'drizzle/**'
+              - '!tests/**'
 
   check-version:
     needs: changes
@@ -149,7 +150,7 @@ jobs:
 
   docker-build:
     needs: changes
-    if: (github.event_name == 'push' || github.event.pull_request.draft == false) && needs.changes.outputs.code == 'true'
+    if: (github.event_name == 'push' && needs.changes.outputs.code_no_ci == 'true') || (github.event_name == 'pull_request' && github.event.pull_request.draft == false && needs.changes.outputs.code == 'true')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

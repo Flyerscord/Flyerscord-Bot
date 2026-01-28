@@ -7,7 +7,7 @@ import { sendCaptcha } from "../../utils/Captcha";
 
 export default class CaptchaUserCommand extends AdminSlashCommand {
   constructor() {
-    super("captchauser", "Mark user as not verified and send a captcha", { ephermal: true });
+    super("captchauser", "Mark user as not verified and send a captcha", { ephemeral: true });
 
     this.data
       .addUserOption((option) => option.setName("user").setDescription("The user to send the captcha to").setRequired(true))
@@ -25,7 +25,7 @@ export default class CaptchaUserCommand extends AdminSlashCommand {
 
     const member = await discord.members.getMember(user.id, true);
     if (!member) {
-      await this.replies.reply(`User ${user.id} is not in the server!`);
+      await this.replies.reply(`User <@${user.id}> is not in the server!`);
       return;
     }
 
@@ -33,7 +33,7 @@ export default class CaptchaUserCommand extends AdminSlashCommand {
 
     const notVerifiedUser = await db.getNotVerifiedUser(user.id);
     if (notVerifiedUser) {
-      await this.replies.reply(`User ${user.id} is already not verified!`);
+      await this.replies.reply(`User <@${user.id}> is already not verified!`);
       return;
     }
 
@@ -42,6 +42,6 @@ export default class CaptchaUserCommand extends AdminSlashCommand {
     await db.addNotVerifiedUser(user.id);
     await sendCaptcha(user);
 
-    await this.replies.reply(`User ${user.id} has been marked as not verified and a captcha has been sent!`);
+    await this.replies.reply(`User <@${user.id}> has been marked as not verified and a captcha has been sent!`);
   }
 }

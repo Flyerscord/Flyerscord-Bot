@@ -22,6 +22,6 @@ export default class ReloadSlashCommandsCommand extends DMTextCommand {
       userId: message.author.id,
       severity: AuditLogSeverity.WARNING,
     });
-    await discord.messages.sendMesssageDMToUser(message.author.id, "Successfully reloaded slash commands!");
+    await discord.messages.sendMessageDMToUser(message.author.id, "Successfully reloaded slash commands!");
   }
 }

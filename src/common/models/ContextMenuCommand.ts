@@ -12,7 +12,7 @@ export default abstract class ContextMenuCommand extends Command {
   readonly data: ContextMenuCommandBuilder;
 
   constructor(name: string, options: ICommandConfig = {}) {
-    super(name, options.ephermal ?? false, options.deferReply ?? true);
+    super(name, options.ephemeral ?? false, options.deferReply ?? true);
 
     this.data = new ContextMenuCommandBuilder().setName(this.name);
   }

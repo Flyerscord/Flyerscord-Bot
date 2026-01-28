@@ -25,7 +25,7 @@ export default class RefreshConfigCommand extends DMTextCommand {
       details: { result },
     });
 
-    await discord.messages.sendMesssageDMToUser(
+    await discord.messages.sendMessageDMToUser(
       message.author.id,
       `Refreshed config successfully! ${result.success ? "✅" : "❌"} ${result.keysChanged.length} keys changed, ${result.keysRequireRestart.length} keys require restart`,
     );

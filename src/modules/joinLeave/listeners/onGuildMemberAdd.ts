@@ -46,14 +46,24 @@ export default (): void => {
 
       const notVerifiedRoleId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedRoleId;
 
-      try {
-        await discord.roles.addRoleToUser(member, notVerifiedRoleId);
-        await db.addNotVerifiedUser(user.id);
-        await sendCaptcha(user);
-      } catch (error) {
-        Stumper.error(`Error adding not verified role to user ${user.id}`, "joinLeave:onGuildMemberAdd");
-        Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
+      await db.addNotVerifiedUser(user.id);
+
+      let roleAdded = await discord.roles.addRoleToUser(member, notVerifiedRoleId);
+      if (!roleAdded) {
+        Stumper.warning(`Failed to add not verified role to user ${user.id}, retrying...`, "joinLeave:onGuildMemberAdd");
+        roleAdded = await discord.roles.addRoleToUser(member, notVerifiedRoleId);
       }
+
+      if (!roleAdded) {
+        const hasRole = discord.roles.userHasRole(member, notVerifiedRoleId);
+        if (!hasRole) {
+          Stumper.error(`Failed to add not verified role to user ${user.id} after retry, rolling back DB change`, "joinLeave:onGuildMemberAdd");
+          await db.deleteNotVerifiedUser(user.id);
+          return;
+        }
+      }
+
+      await sendCaptcha(user);
     } catch (error) {
       Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
     } finally {

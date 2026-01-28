@@ -5,7 +5,7 @@ import { ChatInputCommandInteraction } from "discord.js";
 
 export default class UpdateRulesCommand extends AdminSlashCommand {
   constructor() {
-    super("rulesupdate", "Update the rules", { ephermal: true });
+    super("rulesupdate", "Update the rules", { ephemeral: true });
 
     this.data
       .addSubcommand((subcommand) => subcommand.setName("get").setDescription("Get the file for the current rules"))

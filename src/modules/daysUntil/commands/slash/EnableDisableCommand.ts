@@ -5,7 +5,7 @@ import DaysUntilDB from "../../db/DaysUntilDB";
 
 export default class EnableDisableCommand extends AdminAutocompleteSlashCommand {
   constructor() {
-    super("daysuntiltoggle", "Enable or disable a certain days until event", { ephermal: true });
+    super("daysuntiltoggle", "Enable or disable a certain days until event", { ephemeral: true });
 
     this.data
       .addStringOption((option) => option.setName("event").setDescription("The event to enable or disable").setRequired(true).setAutocomplete(true))

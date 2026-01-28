@@ -6,6 +6,7 @@ import discord from "@common/utils/discord/discord";
 
 export async function sendCaptcha(user: User): Promise<void> {
   const questions = ConfigManager.getInstance().getConfig("JoinLeave").captchaQuestions;
+  const notVerifiedChannelId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedChannelId;
 
   const db = new JoinLeaveDB();
 
@@ -19,13 +20,35 @@ export async function sendCaptcha(user: User): Promise<void> {
     return;
   }
 
+  // Create thread if it doesn't exist
+  if (!notVerifiedUser.threadId) {
+    const thread = await discord.threads.createPrivateThread(notVerifiedChannelId, `${user.username}'s Captcha Thread`, {
+      autoArchiveDuration: 10080,
+      reason: "Created by Flyerscord Bot for user to answer captcha",
+    });
+
+    if (!thread) {
+      Stumper.error(`Error creating thread for user ${user.id}`, "joinLeave:sendCaptcha");
+      return;
+    }
+
+    // Add the user to the thread
+    await discord.threads.addThreadMember(thread.id, user.id);
+
+    await db.setThreadId(user.id, thread.id);
+    notVerifiedUser.threadId = thread.id;
+  }
+
   if (notVerifiedUser.questionsAnswered >= questions.length) {
     Stumper.error(`User ${user.id} has already answered all the questions!`, "joinLeave:sendCaptcha");
     return;
   }
 
+  // Ping the user
+  await discord.messages.sendMessageToThread(notVerifiedUser.threadId, `<@${user.id}>`);
+
   const embed = getCaptchaEmbed(questions[notVerifiedUser.questionsAnswered].question);
-  await discord.messages.sendEmbedDMToUser(user.id, embed);
+  await discord.messages.sendEmbedToThread(notVerifiedUser.threadId, embed);
 }
 
 function getCaptchaEmbed(question: string): EmbedBuilder {

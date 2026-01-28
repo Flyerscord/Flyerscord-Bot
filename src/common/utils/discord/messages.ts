@@ -4,6 +4,9 @@ import Stumper from "stumper";
 import { AttachmentBuilder } from "discord.js";
 import { getChannel, getTextChannel } from "./channels";
 import { getUser } from "./users";
+import MyAuditLog from "../MyAuditLog";
+import { AuditLogSeverity } from "../../db/schema";
+import { getThread } from "./threads";
 
 export async function getMessage(channelId: string, messageId: string): Promise<Message | undefined> {
   const channel = await getTextChannel(channelId);
@@ -76,11 +79,23 @@ export async function sendMessageAndAttachmentToChannel(
   }
 }
 
-export async function sendMesssageDMToUser(userId: string, message: string): Promise<Message | undefined> {
+export async function sendMessageDMToUser(userId: string, message: string): Promise<Message | undefined> {
   const user = await getUser(userId);
   if (user) {
-    Stumper.debug(`Sending message to User DM: ${userId}`, "common:messages:sendMesssageDMToUser");
-    return await user.send(message);
+    Stumper.debug(`Sending message to User DM: ${userId}`, "common:messages:sendMessageDMToUser");
+    try {
+      return await user.send(message);
+    } catch (error) {
+      Stumper.caughtError(error, "common:messages:sendMessageDMToUser");
+      void MyAuditLog.createAuditLog("Common", {
+        action: "failedToSendDMToUser",
+        userId: userId,
+        severity: AuditLogSeverity.CRITICAL,
+        details: {
+          type: "message",
+        },
+      });
+    }
   }
   return undefined;
 }
@@ -89,7 +104,20 @@ export async function sendEmbedDMToUser(userId: string, embed: EmbedBuilder): Pr
   const user = await getUser(userId);
   if (user) {
     Stumper.debug(`Sending embed to User DM: ${userId}`, "common:messages:sendEmbedDMToUser");
-    return await user.send({ embeds: [embed] });
+    try {
+      return await user.send({ embeds: [embed] });
+    } catch (error) {
+      Stumper.caughtError(error, "common:messages:sendEmbedDMToUser");
+      void MyAuditLog.createAuditLog("Common", {
+        action: "failedToSendDMToUser",
+        userId: userId,
+        severity: AuditLogSeverity.CRITICAL,
+        details: {
+          type: "embed",
+        },
+      });
+      return undefined;
+    }
   }
   return undefined;
 }
@@ -160,4 +188,22 @@ export async function deleteMessage(channelId: string, messageId: string, reason
     Stumper.caughtError(error, "common:messages:deleteMessage");
     return false;
   }
+}
+
+export async function sendMessageToThread(threadId: string, message: string): Promise<Message | undefined> {
+  const thread = await getThread(threadId);
+  if (thread) {
+    Stumper.debug(`Sending message to thread: ${threadId}`, "common:messages:sendMessageToThread");
+    return await thread.send(message);
+  }
+  return undefined;
+}
+
+export async function sendEmbedToThread(threadId: string, embed: EmbedBuilder): Promise<Message | undefined> {
+  const thread = await getThread(threadId);
+  if (thread) {
+    Stumper.debug(`Sending embed to thread: ${threadId}`, "common:messages:sendEmbedToThread");
+    return await thread.send({ embeds: [embed] });
+  }
+  return undefined;
 }

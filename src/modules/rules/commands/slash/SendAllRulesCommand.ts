@@ -8,7 +8,7 @@ import Stumper from "stumper";
 
 export default class SendAllRulesCommand extends AdminSlashCommand {
   constructor() {
-    super("rulessendall", "Sends all of the rules to the channel", { ephermal: true });
+    super("rulessendall", "Sends all of the rules to the channel", { ephemeral: true });
   }
 
   async execute(_interaction: ChatInputCommandInteraction): Promise<void> {

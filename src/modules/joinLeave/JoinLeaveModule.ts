@@ -7,6 +7,7 @@ import schema from "./db/schema";
 import onMessageCreate from "./listeners/onMessageCreate";
 import SlashCommand from "@common/models/SlashCommand";
 import KickNotVerifiedTask from "./tasks/KickNotVerifiedTask";
+import onReady from "./listeners/onReady";
 
 export const joinLeaveConfigSchema = [
   {
@@ -81,6 +82,15 @@ export const joinLeaveConfigSchema = [
     defaultValue: 7,
     schema: Zod.number({ min: 1, max: 365 }),
   },
+  {
+    key: "notVerifiedChannelId",
+    description: "The channel ID of the channel to create the threads in for users who have not verified",
+    required: true,
+    secret: false,
+    requiresRestart: true,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
   // Might be useful later, we will see if the captcha stops spam bots
   // {
   //   key: "brandNewAccountThreshold",
@@ -122,6 +132,7 @@ export default class JoinLeaveModule extends Module {
     onGuildMemberAdd();
     onGuildMemberRemove();
     onMessageCreate();
+    onReady();
   }
 
   private registerSchedules(): void {

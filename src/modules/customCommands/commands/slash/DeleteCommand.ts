@@ -5,7 +5,7 @@ import CustomCommandsDB from "../../db/CustomCommandsDB";
 
 export default class DeleteCommand extends AdminAutocompleteSlashCommand {
   constructor() {
-    super("customremove", "Remove a custom command", { ephermal: true });
+    super("customremove", "Remove a custom command", { ephemeral: true });
 
     this.data.addStringOption((option) =>
       option.setName("name").setDescription(`The name of the command. Case insensitive`).setRequired(true).setAutocomplete(true),

@@ -31,7 +31,8 @@ jest.mock("@common/managers/ConfigManager", () => {
 // Mock discord utilities
 jest.mock("@common/utils/discord/discord", () => ({
   messages: {
-    sendEmbedDMToUser: jest.fn().mockResolvedValue(undefined),
+    sendEmbedToThread: jest.fn().mockResolvedValue(undefined),
+    sendMessageToThread: jest.fn().mockResolvedValue(undefined),
   },
 }));
 
@@ -94,6 +95,7 @@ describe("Captcha", () => {
         incorrectAnswers: 0,
         timedoutAt: null,
         timeOutCount: 0,
+        threadId: "thread-123",
       });
 
       await sendCaptcha(mockUser);
@@ -101,9 +103,9 @@ describe("Captcha", () => {
       // Should get the user from DB
       expect(mockDb.getNotVerifiedUser).toHaveBeenCalledWith("123456789");
 
-      // Should send a DM with the first question
-      expect(discord.messages.sendEmbedDMToUser).toHaveBeenCalledWith(
-        "123456789",
+      // Should send a message to the thread with the first question
+      expect(discord.messages.sendEmbedToThread).toHaveBeenCalledWith(
+        "thread-123",
         expect.objectContaining({
           data: expect.objectContaining({
             title: "Captcha",
@@ -132,12 +134,13 @@ describe("Captcha", () => {
         incorrectAnswers: 0,
         timedoutAt: null,
         timeOutCount: 0,
+        threadId: "thread-123",
       });
 
       await sendCaptcha(mockUser);
 
-      expect(discord.messages.sendEmbedDMToUser).toHaveBeenCalledWith(
-        "123456789",
+      expect(discord.messages.sendEmbedToThread).toHaveBeenCalledWith(
+        "thread-123",
         expect.objectContaining({
           data: expect.objectContaining({
             fields: expect.arrayContaining([
@@ -161,12 +164,13 @@ describe("Captcha", () => {
         incorrectAnswers: 0,
         timedoutAt: null,
         timeOutCount: 0,
+        threadId: "thread-123",
       });
 
       await sendCaptcha(mockUser);
 
-      expect(discord.messages.sendEmbedDMToUser).toHaveBeenCalledWith(
-        "123456789",
+      expect(discord.messages.sendEmbedToThread).toHaveBeenCalledWith(
+        "thread-123",
         expect.objectContaining({
           data: expect.objectContaining({
             fields: expect.arrayContaining([
@@ -189,8 +193,8 @@ describe("Captcha", () => {
       // Should check for user
       expect(mockDb.getNotVerifiedUser).toHaveBeenCalledWith("123456789");
 
-      // Should not send DM
-      expect(discord.messages.sendEmbedDMToUser).not.toHaveBeenCalled();
+      // Should not send message
+      expect(discord.messages.sendEmbedToThread).not.toHaveBeenCalled();
 
       // Should log error
       expect(Stumper.error).toHaveBeenCalledWith(expect.stringContaining("not in the not verified users table"), "joinLeave:sendCaptcha");
@@ -206,12 +210,13 @@ describe("Captcha", () => {
         incorrectAnswers: 0,
         timedoutAt: null,
         timeOutCount: 0,
+        threadId: "thread-123",
       });
 
       await sendCaptcha(mockUser);
 
-      // Should not send DM
-      expect(discord.messages.sendEmbedDMToUser).not.toHaveBeenCalled();
+      // Should not send message
+      expect(discord.messages.sendEmbedToThread).not.toHaveBeenCalled();
 
       // Should log error
       expect(Stumper.error).toHaveBeenCalledWith(expect.stringContaining("already answered all the questions"), "joinLeave:sendCaptcha");
@@ -227,11 +232,12 @@ describe("Captcha", () => {
         incorrectAnswers: 0,
         timedoutAt: null,
         timeOutCount: 0,
+        threadId: "thread-123",
       });
 
       await sendCaptcha(mockUser);
 
-      expect(discord.messages.sendEmbedDMToUser).not.toHaveBeenCalled();
+      expect(discord.messages.sendEmbedToThread).not.toHaveBeenCalled();
       expect(Stumper.error).toHaveBeenCalled();
     });
 
@@ -244,12 +250,13 @@ describe("Captcha", () => {
         incorrectAnswers: 0,
         timedoutAt: null,
         timeOutCount: 0,
+        threadId: "thread-123",
       });
 
       await sendCaptcha(mockUser);
 
-      expect(discord.messages.sendEmbedDMToUser).toHaveBeenCalledWith(
-        "123456789",
+      expect(discord.messages.sendEmbedToThread).toHaveBeenCalledWith(
+        "thread-123",
         expect.objectContaining({
           data: expect.objectContaining({
             title: "Captcha",

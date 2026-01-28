@@ -43,6 +43,13 @@
       "when": 1769386669113,
       "tag": "0005_clever_changeling",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1769497437993,
+      "tag": "0006_mute_mad_thinker",
+      "breakpoints": true
     }
   ]
 }

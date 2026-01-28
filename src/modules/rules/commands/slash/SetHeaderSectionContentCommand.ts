@@ -6,7 +6,7 @@ import { Attachment, AutocompleteInteraction, ChatInputCommandInteraction } from
 
 export default class SetHeaderSectionContentCommand extends AdminAutocompleteSlashCommand {
   constructor() {
-    super("rulessetheader", "Set the content message for a header section", { ephermal: true });
+    super("rulessetheader", "Set the content message for a header section", { ephemeral: true });
 
     this.data
       .addStringOption((option) => option.setName("name").setDescription("The name of the rule section").setRequired(true).setAutocomplete(true))

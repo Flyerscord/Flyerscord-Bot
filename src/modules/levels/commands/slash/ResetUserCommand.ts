@@ -5,7 +5,7 @@ import LevelsDB from "../../db/LevelsDB";
 
 export default class ResetUserCommand extends AdminSlashCommand {
   constructor() {
-    super("resetuserexp", "Resets exp for a given user", { ephermal: true });
+    super("resetuserexp", "Resets exp for a given user", { ephemeral: true });
 
     this.data
       .addStringOption((option) =>
@@ -30,7 +30,7 @@ export default class ResetUserCommand extends AdminSlashCommand {
       );
 
       await db.resetUser(user.id);
-      await this.replies.reply(`Resetting exp for username: ${user.username} id: ${user.id}`);
+      await this.replies.reply(`Resetting exp for username: ${user.username} id: <@${user.id}>`);
       return;
     }
 

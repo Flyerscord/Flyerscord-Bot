@@ -4,7 +4,7 @@ import CustomCommandsDB from "../../db/CustomCommandsDB";
 
 export default class UpdateCommandListCommand extends AdminSlashCommand {
   constructor() {
-    super("updatecustomlist", "Update the custom commands list", { ephermal: true });
+    super("updatecustomlist", "Update the custom commands list", { ephemeral: true });
   }
 
   async execute(_interaction: ChatInputCommandInteraction): Promise<void> {

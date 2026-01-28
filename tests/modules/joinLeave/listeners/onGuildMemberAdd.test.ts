@@ -59,7 +59,7 @@ jest.mock("@common/utils/discord/discord", () => ({
     getNumberOfMembers: jest.fn().mockResolvedValue(42),
   },
   roles: {
-    addRoleToUser: jest.fn().mockResolvedValue(undefined),
+    addRoleToUser: jest.fn().mockResolvedValue(true),
   },
 }));
 
@@ -70,6 +70,7 @@ jest.mock("stumper", () => ({
     error: jest.fn(),
     info: jest.fn(),
     warn: jest.fn(),
+    warning: jest.fn(),
     caughtError: jest.fn(),
   },
 }));
@@ -221,7 +222,7 @@ describe("onGuildMemberAdd", () => {
       expect(mockDb.addNotVerifiedUser).toHaveBeenCalledWith("user-123");
     });
 
-    it("should handle errors during captcha setup and log them", async () => {
+    it("should retry role assignment once on failure", async () => {
       const mockMember = {
         id: "user-123",
         displayName: "TestUser",
@@ -233,13 +234,49 @@ describe("onGuildMemberAdd", () => {
         displayAvatarURL: jest.fn().mockReturnValue("https://example.com/avatar.png"),
       } as unknown as GuildMember;
 
-      const testError = new Error("Failed to add role");
-      (discord.roles.addRoleToUser as jest.Mock).mockRejectedValueOnce(testError);
+      // First call fails, second call succeeds
+      (discord.roles.addRoleToUser as jest.Mock).mockResolvedValueOnce(false).mockResolvedValueOnce(true);
 
       await eventHandler(mockMember);
 
-      // Should log the error via caughtError
-      expect(Stumper.caughtError).toHaveBeenCalledWith(testError, "joinLeave:onGuildMemberAdd");
+      // Should have called addRoleToUser twice (initial + retry)
+      expect(discord.roles.addRoleToUser).toHaveBeenCalledTimes(2);
+
+      // Should log warning about retry
+      expect(Stumper.warning).toHaveBeenCalledWith(expect.stringContaining("retrying"), "joinLeave:onGuildMemberAdd");
+
+      // Should still send captcha after successful retry
+      expect(sendCaptcha).toHaveBeenCalledWith(mockMember.user);
+    });
+
+    it("should rollback DB change and not send captcha when role assignment fails after retry", async () => {
+      const mockMember = {
+        id: "user-123",
+        displayName: "TestUser",
+        user: {
+          id: "user-123",
+          username: "testuser",
+          bot: false,
+        } as User,
+        displayAvatarURL: jest.fn().mockReturnValue("https://example.com/avatar.png"),
+      } as unknown as GuildMember;
+
+      // Both calls fail
+      (discord.roles.addRoleToUser as jest.Mock).mockResolvedValue(false);
+
+      await eventHandler(mockMember);
+
+      // Should have called addRoleToUser twice (initial + retry)
+      expect(discord.roles.addRoleToUser).toHaveBeenCalledTimes(2);
+
+      // Should log error
+      expect(Stumper.error).toHaveBeenCalledWith(expect.stringContaining("after retry"), "joinLeave:onGuildMemberAdd");
+
+      // Should rollback DB change
+      expect(mockDb.deleteNotVerifiedUser).toHaveBeenCalledWith("user-123");
+
+      // Should NOT send captcha
+      expect(sendCaptcha).not.toHaveBeenCalled();
     });
 
     it("should handle errors during captcha sending", async () => {
@@ -253,6 +290,9 @@ describe("onGuildMemberAdd", () => {
         } as User,
         displayAvatarURL: jest.fn().mockReturnValue("https://example.com/avatar.png"),
       } as unknown as GuildMember;
+
+      // Ensure role assignment succeeds so flow reaches sendCaptcha
+      (discord.roles.addRoleToUser as jest.Mock).mockResolvedValue(true);
 
       const testError = new Error("Failed to send captcha");
       (sendCaptcha as jest.Mock).mockRejectedValueOnce(testError);

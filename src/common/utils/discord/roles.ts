@@ -8,14 +8,17 @@ import Stumper from "stumper";
  *
  * @param member - The guild member to modify
  * @param roleId - The ID of the role to add
+ * @returns true if the role was added successfully or the member already had the role, false if an error occurred
  */
-export async function addRoleToUser(member: GuildMember, roleId: string): Promise<void> {
+export async function addRoleToUser(member: GuildMember, roleId: string): Promise<boolean> {
   try {
     if (!userHasRole(member, roleId)) {
       await member.roles.add(roleId);
     }
+    return true;
   } catch (error) {
     Stumper.caughtError(error, "common:roles:addRoleToUser");
+    return false;
   }
 }
 

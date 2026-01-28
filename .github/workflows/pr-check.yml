@@ -18,54 +18,27 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     outputs:
-      code: ${{ steps.filter.outputs.code }}
-      code_no_ci: ${{ steps.filter.outputs.code_no_ci }}
+      prod_code: ${{ steps.filter.outputs.prod_code }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check for code changes
+      - name: Check for production code changes
         uses: dorny/paths-filter@v3
         id: filter
         with:
           filters: |
-            code:
-              - '**/*.ts'
-              - '**/*.tsx'
-              - '**/*.js'
-              - '**/*.jsx'
-              - '**/*.json'
-              - '**/*.sql'
-              - '**/*.png'
-              - '**/*.jpg'
-              - '**/*.jpeg'
-              - '**/*.gif'
-              - '**/*.svg'
-              - '**/*.webp'
-              - 'pnpm-lock.yaml'
-              - 'Dockerfile'
-              - '.github/workflows/**'
+            prod_code:
+              - 'src/**'
               - 'drizzle/**'
-            code_no_ci:
-              - '**/*.ts'
-              - '**/*.tsx'
-              - '**/*.js'
-              - '**/*.jsx'
-              - '**/*.json'
-              - '**/*.sql'
-              - '**/*.png'
-              - '**/*.jpg'
-              - '**/*.jpeg'
-              - '**/*.gif'
-              - '**/*.svg'
-              - '**/*.webp'
-              - 'pnpm-lock.yaml'
+              - 'package.json'
               - 'Dockerfile'
-              - 'drizzle/**'
+              - 'tsconfig*.json'
+              - '.dockerignore'
 
   check-version:
     needs: changes
-    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false && needs.changes.outputs.code_no_ci == 'true'
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false && needs.changes.outputs.prod_code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Check if the version was updated
@@ -74,8 +47,7 @@ jobs:
           base-ref: ${{ github.event.pull_request.base.ref }}
 
   build:
-    needs: changes
-    if: (github.event_name == 'push' || github.event.pull_request.draft == false) && needs.changes.outputs.code == 'true'
+    if: github.event_name == 'push' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -149,7 +121,7 @@ jobs:
 
   docker-build:
     needs: changes
-    if: (github.event_name == 'push' || github.event.pull_request.draft == false) && needs.changes.outputs.code == 'true'
+    if: needs.changes.outputs.prod_code == 'true' && (github.event_name == 'push' || github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

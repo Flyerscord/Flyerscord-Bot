@@ -53,7 +53,7 @@ jest.mock("@common/utils/discord/discord", () => ({
 
 import RoleAllAssignCommand from "@modules/admin/commands/slash/RoleAllAssignCommand";
 import discord from "@common/utils/discord/discord";
-import { ChatInputCommandInteraction, Collection, GuildMember, Role } from "discord.js";
+import { ChatInputCommandInteraction, Collection, GuildMember } from "discord.js";
 
 describe("RoleAllAssignCommand", () => {
   let command: RoleAllAssignCommand;

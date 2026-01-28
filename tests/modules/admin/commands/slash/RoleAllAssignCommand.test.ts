@@ -112,7 +112,7 @@ describe("RoleAllAssignCommand", () => {
     it("should have ephemeral option set to true", () => {
       // Access via any to test protected property
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect((command as any).ephermal).toBe(true);
+      expect((command as any).ephemeral).toBe(true);
     });
   });
 

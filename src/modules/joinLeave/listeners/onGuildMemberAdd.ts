@@ -46,8 +46,8 @@ export default (): void => {
 
       const notVerifiedRoleId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedRoleId;
 
-      await discord.roles.addRoleToUser(member, notVerifiedRoleId);
       await db.addNotVerifiedUser(user.id);
+      await discord.roles.addRoleToUser(member, notVerifiedRoleId);
       await sendCaptcha(user);
     } catch (error) {
       Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");

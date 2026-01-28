@@ -1,6 +1,14 @@
 import { Role, GuildMember, PartialGuildMember } from "discord.js";
 import Stumper from "stumper";
 
+/**
+ * Adds a role to a guild member if the member does not already have it.
+ *
+ * Errors encountered while adding the role are reported via Stumper and do not propagate.
+ *
+ * @param member - The guild member to modify
+ * @param roleId - The ID of the role to add
+ */
 export async function addRoleToUser(member: GuildMember, roleId: string): Promise<void> {
   try {
     if (!userHasRole(member, roleId)) {
@@ -11,6 +19,16 @@ export async function addRoleToUser(member: GuildMember, roleId: string): Promis
   }
 }
 
+/**
+ * Remove a role from a guild member if the member currently has that role.
+ *
+ * If the role is present, attempts removal; on success logs an informational message.
+ * If removal fails, the error is reported to Stumper and not rethrown.
+ * If the member does not have the role, a warning is logged and no action is taken.
+ *
+ * @param member - The guild member to modify
+ * @param roleId - The ID of the role to remove
+ */
 export async function removeRoleFromUser(member: GuildMember, roleId: string): Promise<void> {
   if (userHasRole(member, roleId)) {
     try {

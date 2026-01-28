@@ -10,6 +10,18 @@ interface ICreateThreadOptions {
   rateLimitPerUser?: number;
 }
 
+/**
+ * Create a public thread in a specified text channel.
+ *
+ * @param parentChannelId - ID of the text channel to create the thread in
+ * @param name - Name for the new thread
+ * @param autoArchiveDuration - Duration in minutes before the thread is automatically archived
+ * @param reason - Audit log reason for creating the thread
+ * @param invitable - Whether non-moderators can be invited to the thread
+ * @param startMessage - ID or content of the message to start the thread from
+ * @param rateLimitPerUser - Per-user slowmode duration in seconds for the thread
+ * @returns The created `PublicThreadChannel`, or `undefined` if the parent channel was not found or creation failed
+ */
 export async function createPublicThread(
   parentChannelId: string,
   name: string,
@@ -46,6 +58,14 @@ export async function createPublicThread(
   return thread;
 }
 
+/**
+ * Creates a private thread in a text channel.
+ *
+ * @param parentChannelId - ID of the parent text channel to host the thread
+ * @param name - Name for the new thread
+ * @param options - Options to customize thread creation (autoArchiveDuration, reason, invitable, startMessage, rateLimitPerUser)
+ * @returns The created `PrivateThreadChannel`, or `undefined` if the parent channel is not found or thread creation fails
+ */
 export async function createPrivateThread(
   parentChannelId: string,
   name: string,

@@ -7,7 +7,6 @@ RUN npm install -g pnpm
 
 ENV NODE_ENV=production
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY .husky .husky
 RUN pnpm install --prod --frozen-lockfile
 
 # Stage 2: Install all dependencies

@@ -5,20 +5,14 @@ import JoinLeaveDB from "../db/JoinLeaveDB";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
-  client.on("guildMemberUpdate", async (oldMember, newMember) => {
-    const user = newMember.user;
-    Stumper.info(
-      `Got guildMemberUpdate for user ${user.id} old pending=${oldMember.pending} new pending=${newMember.pending}`,
-      "joinLeave:onGuildMemberUpdate",
-    );
-    // Skip captcha for bots
-    if (user.bot) {
-      Stumper.info(`User ${user.id} is a bot, skipping captcha`, "joinLeave:onGuildMemberAdd");
-      return;
-    }
-
+  client.on("guildMemberUpdate", async (_oldMember, newMember) => {
     // Check if user just completed onboarding and needs captcha
     if (!newMember.pending) {
+      const user = newMember.user;
+      // Skip captcha for bots
+      if (user.bot) {
+        return;
+      }
       const db = new JoinLeaveDB();
       const notVerifiedUser = await db.getNotVerifiedUser(user.id);
 

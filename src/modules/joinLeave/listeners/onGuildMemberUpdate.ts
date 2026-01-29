@@ -7,6 +7,10 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("guildMemberUpdate", async (oldMember, newMember) => {
     const user = newMember.user;
+    Stumper.info(
+      `Got guildMemberUpdate for user ${user.id} old pending=${oldMember.pending} new pending=${newMember.pending}`,
+      "joinLeave:onGuildMemberUpdate",
+    );
     // Skip captcha for bots
     if (user.bot) {
       Stumper.info(`User ${user.id} is a bot, skipping captcha`, "joinLeave:onGuildMemberAdd");

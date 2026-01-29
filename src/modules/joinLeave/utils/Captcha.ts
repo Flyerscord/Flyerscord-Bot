@@ -32,6 +32,8 @@ export async function sendCaptcha(user: User): Promise<void> {
       return;
     }
 
+    await discord.members.getMember(user.id, true);
+
     // Add the user to the thread
     await discord.threads.addThreadMember(thread.id, user.id);
 

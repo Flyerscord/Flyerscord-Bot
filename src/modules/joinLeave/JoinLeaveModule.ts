@@ -8,6 +8,7 @@ import onMessageCreate from "./listeners/onMessageCreate";
 import SlashCommand from "@common/models/SlashCommand";
 import KickNotVerifiedTask from "./tasks/KickNotVerifiedTask";
 import onReady from "./listeners/onReady";
+import onGuildMemberUpdate from "./listeners/onGuildMemberUpdate";
 
 export const joinLeaveConfigSchema = [
   {
@@ -129,6 +130,7 @@ export default class JoinLeaveModule extends Module {
   protected async cleanup(): Promise<void> {}
 
   private registerListeners(): void {
+    onGuildMemberUpdate();
     onGuildMemberAdd();
     onGuildMemberRemove();
     onMessageCreate();

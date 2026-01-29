@@ -195,4 +195,192 @@ describe("CustomCommandsDB", () => {
       expect(result.length).toBe(2);
     });
   });
+
+  describe("addCommandSkippingUpload", () => {
+    it("should add a command when it does not exist", async () => {
+      const newCommand = {
+        id: 1,
+        name: "newcmd",
+        text: "new response",
+        createdBy: "user123",
+        createdOn: new Date(),
+      };
+
+      // Mock hasCommand to return false (command doesn't exist)
+      mockDb.select.mockReturnValueOnce({
+        from: jest.fn().mockReturnValue({
+          where: jest.fn().mockReturnValue({
+            limit: jest.fn().mockResolvedValue([]),
+          }),
+        }),
+      });
+
+      // Mock insert().values().returning()
+      mockDb.insert.mockReturnValue({
+        values: jest.fn().mockReturnValue({
+          returning: jest.fn().mockResolvedValue([newCommand]),
+        }),
+      });
+
+      // Mock createAuditLog (from parent class)
+      const db = new CustomCommandsDB();
+      db.createAuditLog = jest.fn().mockResolvedValue(undefined);
+
+      // Mock updateCommandList
+      db.updateCommandList = jest.fn().mockResolvedValue(undefined);
+
+      // Mock getAllCommands for updateCommandList
+      mockDb.select.mockReturnValueOnce({
+        from: jest.fn().mockResolvedValue([newCommand]),
+      });
+
+      const result = await db.addCommandSkippingUpload("newcmd", "new response", "user123");
+
+      expect(result).toBe(true);
+      expect(mockDb.insert).toHaveBeenCalled();
+    });
+
+    it("should return false when command already exists", async () => {
+      // Mock hasCommand to return true (command exists)
+      mockDb.select.mockReturnValueOnce({
+        from: jest.fn().mockReturnValue({
+          where: jest.fn().mockReturnValue({
+            limit: jest.fn().mockResolvedValue([{ one: 1 }]),
+          }),
+        }),
+      });
+
+      const db = new CustomCommandsDB();
+      const result = await db.addCommandSkippingUpload("existingcmd", "text", "user123");
+
+      expect(result).toBe(false);
+      expect(mockDb.insert).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("removeCommand", () => {
+    it("should remove a command when it exists", async () => {
+      const existingCommand = {
+        id: 1,
+        name: "cmdtoremove",
+        text: "some text",
+        createdBy: "user123",
+        createdOn: new Date(),
+      };
+
+      // Mock hasCommand to return true
+      mockDb.select.mockReturnValueOnce({
+        from: jest.fn().mockReturnValue({
+          where: jest.fn().mockReturnValue({
+            limit: jest.fn().mockResolvedValue([{ one: 1 }]),
+          }),
+        }),
+      });
+
+      // Mock getCommand
+      mockDb.select.mockReturnValueOnce({
+        from: jest.fn().mockReturnValue({
+          where: jest.fn().mockResolvedValue([existingCommand]),
+        }),
+      });
+
+      // Mock delete().where()
+      mockDb.delete.mockReturnValue({
+        where: jest.fn().mockResolvedValue(undefined),
+      });
+
+      const db = new CustomCommandsDB();
+      db.createAuditLog = jest.fn().mockResolvedValue(undefined);
+      db.updateCommandList = jest.fn().mockResolvedValue(undefined);
+
+      // Mock getAllCommands for updateCommandList
+      mockDb.select.mockReturnValueOnce({
+        from: jest.fn().mockResolvedValue([]),
+      });
+
+      const result = await db.removeCommand("cmdtoremove", "user123");
+
+      expect(result).toBe(true);
+      expect(mockDb.delete).toHaveBeenCalled();
+    });
+
+    it("should return false when command does not exist", async () => {
+      // Mock hasCommand to return false
+      mockDb.select.mockReturnValueOnce({
+        from: jest.fn().mockReturnValue({
+          where: jest.fn().mockReturnValue({
+            limit: jest.fn().mockResolvedValue([]),
+          }),
+        }),
+      });
+
+      const db = new CustomCommandsDB();
+      const result = await db.removeCommand("nonexistent", "user123");
+
+      expect(result).toBe(false);
+      expect(mockDb.delete).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("getCommandListMessageIds", () => {
+    it("should return array of message IDs", async () => {
+      const mockMessageIds = ["msg1", "msg2", "msg3"];
+
+      mockDb.select.mockReturnValue({
+        from: jest.fn().mockReturnValue({
+          where: jest.fn().mockResolvedValue([{ commandListMessageIds: mockMessageIds }]),
+        }),
+      });
+
+      const db = new CustomCommandsDB();
+      const result = await db.getCommandListMessageIds();
+
+      expect(result).toEqual(mockMessageIds);
+    });
+  });
+
+  describe("removeAllCommandListMessageIds", () => {
+    it("should clear all message IDs", async () => {
+      mockDb.update.mockReturnValue({
+        set: jest.fn().mockReturnValue({
+          where: jest.fn().mockResolvedValue(undefined),
+        }),
+      });
+
+      const db = new CustomCommandsDB();
+      await db.removeAllCommandListMessageIds();
+
+      expect(mockDb.update).toHaveBeenCalled();
+    });
+  });
+
+  describe("addCommandListMessageId", () => {
+    it("should add a message ID to the array", async () => {
+      mockDb.update.mockReturnValue({
+        set: jest.fn().mockReturnValue({
+          where: jest.fn().mockResolvedValue(undefined),
+        }),
+      });
+
+      const db = new CustomCommandsDB();
+      await db.addCommandListMessageId("newmsgid");
+
+      expect(mockDb.update).toHaveBeenCalled();
+    });
+  });
+
+  describe("removeCommandListMessageId", () => {
+    it("should remove a specific message ID from the array", async () => {
+      mockDb.update.mockReturnValue({
+        set: jest.fn().mockReturnValue({
+          where: jest.fn().mockResolvedValue(undefined),
+        }),
+      });
+
+      const db = new CustomCommandsDB();
+      await db.removeCommandListMessageId("msgtoremove");
+
+      expect(mockDb.update).toHaveBeenCalled();
+    });
+  });
 });

@@ -20,6 +20,8 @@ jest.mock("@common/managers/ConfigManager", () => {
           if (moduleName === "JoinLeave") {
             return {
               notVerifiedRoleId: "not-verified-role-456",
+              channelId: "welcome-channel-123",
+              joinLeaveAdminNotificationChannelId: "admin-channel-789",
               maxAnswerLength: 50,
               captchaQuestions: [
                 { question: "What is 2+2?", answer: "4" },
@@ -61,9 +63,18 @@ jest.mock("@common/utils/discord/discord", () => ({
   members: {
     getMember: jest.fn(),
     banUser: jest.fn().mockResolvedValue(undefined),
+    getNumberOfMembers: jest.fn().mockResolvedValue(42),
   },
   roles: {
     removeRoleFromUser: jest.fn().mockResolvedValue(undefined),
+    addRoleToUser: jest.fn().mockResolvedValue(undefined),
+  },
+  messages: {
+    sendMessageAndImageBufferToChannel: jest.fn().mockResolvedValue(undefined),
+    sendMessageToChannel: jest.fn().mockResolvedValue(undefined),
+  },
+  threads: {
+    deleteThread: jest.fn().mockResolvedValue(undefined),
   },
 }));
 
@@ -71,6 +82,13 @@ jest.mock("@common/utils/discord/discord", () => ({
 jest.mock("@modules/joinLeave/utils/Captcha", () => ({
   sendCaptcha: jest.fn().mockResolvedValue(undefined),
 }));
+
+// Mock JoinImageGenerator
+jest.mock("@modules/joinLeave/utils/JoinImageGenerator", () => {
+  return jest.fn().mockImplementation(() => ({
+    getImage: jest.fn().mockResolvedValue(Buffer.from("fake-image-data")),
+  }));
+});
 
 // Mock JoinLeaveDB
 jest.mock("@modules/joinLeave/db/JoinLeaveDB");
@@ -151,10 +169,12 @@ describe("onMessageCreate", () => {
   const createMockMember = (): GuildMember => {
     return {
       id: "user-123",
+      displayName: "TestUser",
       user: {
         id: "user-123",
         username: "testuser",
       } as User,
+      displayAvatarURL: jest.fn().mockReturnValue("https://example.com/avatar.png"),
     } as unknown as GuildMember;
   };
 

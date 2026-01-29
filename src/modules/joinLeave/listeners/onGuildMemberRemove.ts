@@ -26,11 +26,17 @@ export default (): void => {
       }
     }
 
-    await discord.messages.sendMessageAndAttachmentToChannel(
-      ConfigManager.getInstance().getConfig("JoinLeave").channelId,
-      message,
-      new AttachmentBuilder("https://i.imgur.com/dDrkXV6.gif"),
-    );
+    const notVerifiedRoleId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedRoleId;
+    if (!discord.roles.userHasRole(member, notVerifiedRoleId)) {
+      await discord.messages.sendMessageAndAttachmentToChannel(
+        ConfigManager.getInstance().getConfig("JoinLeave").channelId,
+        message,
+        new AttachmentBuilder("https://i.imgur.com/dDrkXV6.gif"),
+      );
+    } else {
+      const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
+      void discord.messages.sendMessageToChannel(adminNotificationChannelId, message);
+    }
     Stumper.info(`User ${username} has left the server!`, "joinLeave:onGuildMemberRemove");
 
     const db = new JoinLeaveDB();

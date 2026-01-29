@@ -22,6 +22,7 @@ jest.mock("@common/managers/ConfigManager", () => {
               channelId: "welcome-channel-123",
               notVerifiedRoleId: "not-verified-role-456",
               captchaQuestions: [{ question: "What is 2+2?", answer: "4" }],
+              joinLeaveAdminNotificationChannelId: "admin-channel-789",
             };
           }
           return {};
@@ -51,16 +52,11 @@ jest.mock("@common/managers/ClientManager", () => {
 
 // Mock discord utilities
 jest.mock("@common/utils/discord/discord", () => ({
-  messages: {
-    sendMessageAndImageBufferToChannel: jest.fn().mockResolvedValue(undefined),
-  },
-  members: {
-    getMemberJoinPosition: jest.fn().mockResolvedValue(42),
-    getNumberOfMembers: jest.fn().mockResolvedValue(42),
-  },
   roles: {
     addRoleToUser: jest.fn().mockResolvedValue(true),
-    userHasRole: jest.fn().mockReturnValue(false),
+  },
+  messages: {
+    sendMessageToChannel: jest.fn().mockResolvedValue(undefined),
   },
 }));
 
@@ -75,13 +71,6 @@ jest.mock("stumper", () => ({
     caughtError: jest.fn(),
   },
 }));
-
-// Mock JoinImageGenerator
-jest.mock("@modules/joinLeave/utils/JoinImageGenerator", () => {
-  return jest.fn().mockImplementation(() => ({
-    getImage: jest.fn().mockResolvedValue(Buffer.from("fake-image-data")),
-  }));
-});
 
 // Mock JoinLeaveDB
 jest.mock("@modules/joinLeave/db/JoinLeaveDB");
@@ -98,7 +87,6 @@ import onGuildMemberAdd from "@modules/joinLeave/listeners/onGuildMemberAdd";
 import ClientManager from "@common/managers/ClientManager";
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
-import JoinImageGenerator from "@modules/joinLeave/utils/JoinImageGenerator";
 import JoinLeaveDB from "@modules/joinLeave/db/JoinLeaveDB";
 import { GuildMember, User } from "discord.js";
 
@@ -143,7 +131,7 @@ describe("onGuildMemberAdd", () => {
   });
 
   describe("successful member join", () => {
-    it("should send welcome message and image when a member joins", async () => {
+    it("should log info message when a member joins", async () => {
       const mockMember = {
         id: "user-123",
         displayName: "TestUser",
@@ -152,23 +140,9 @@ describe("onGuildMemberAdd", () => {
           username: "testuser",
           bot: false,
         } as User,
-        displayAvatarURL: jest.fn().mockReturnValue("https://example.com/avatar.png"),
       } as unknown as GuildMember;
 
       await eventHandler(mockMember);
-
-      // Should get number of members
-      expect(discord.members.getNumberOfMembers).toHaveBeenCalled();
-
-      // Should create join image
-      expect(JoinImageGenerator).toHaveBeenCalledWith("TestUser", "https://example.com/avatar.png", 42);
-
-      // Should send welcome message with image
-      expect(discord.messages.sendMessageAndImageBufferToChannel).toHaveBeenCalledWith(
-        "welcome-channel-123",
-        expect.stringContaining("<@user-123>"),
-        Buffer.from("fake-image-data"),
-      );
 
       // Should log success
       expect(Stumper.info).toHaveBeenCalledWith(expect.stringContaining("TestUser"), "joinLeave:onGuildMemberAdd");
@@ -183,12 +157,12 @@ describe("onGuildMemberAdd", () => {
           username: "fallbackuser",
           bot: false,
         } as User,
-        displayAvatarURL: jest.fn().mockReturnValue("https://example.com/avatar.png"),
       } as unknown as GuildMember;
 
       await eventHandler(mockMember);
 
-      expect(JoinImageGenerator).toHaveBeenCalledWith("fallbackuser", "https://example.com/avatar.png", 42);
+      // Should log with fallback username
+      expect(Stumper.info).toHaveBeenCalledWith(expect.stringContaining("fallbackuser"), "joinLeave:onGuildMemberAdd");
     });
   });
 
@@ -202,7 +176,6 @@ describe("onGuildMemberAdd", () => {
           username: "testuser",
           bot: false,
         } as User,
-        displayAvatarURL: jest.fn().mockReturnValue("https://example.com/avatar.png"),
       } as unknown as GuildMember;
 
       await eventHandler(mockMember);
@@ -223,7 +196,6 @@ describe("onGuildMemberAdd", () => {
           username: "testuser",
           bot: false,
         } as User,
-        displayAvatarURL: jest.fn().mockReturnValue("https://example.com/avatar.png"),
       } as unknown as GuildMember;
 
       const testError = new Error("Database error");
@@ -236,8 +208,8 @@ describe("onGuildMemberAdd", () => {
     });
   });
 
-  describe("image generation errors", () => {
-    it("should return early and log error when image generation fails", async () => {
+  describe("left user handling", () => {
+    it("should retrieve left user data when user rejoins", async () => {
       const mockMember = {
         id: "user-123",
         displayName: "TestUser",
@@ -246,52 +218,18 @@ describe("onGuildMemberAdd", () => {
           username: "testuser",
           bot: false,
         } as User,
-        displayAvatarURL: jest.fn().mockReturnValue("https://example.com/avatar.png"),
       } as unknown as GuildMember;
 
-      const imageError = new Error("Image generation failed");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (JoinImageGenerator as any).mockImplementationOnce(() => ({
-        getImage: jest.fn().mockRejectedValue(imageError),
-      }));
+      mockDb.getLeftUser.mockResolvedValue({
+        userId: "user-123",
+        roles: ["role-1", "role-2"],
+        leftAt: new Date(),
+      });
 
       await eventHandler(mockMember);
 
-      // Should log the error
-      expect(Stumper.caughtError).toHaveBeenCalledWith(imageError, "joinLeave:onGuildMemberAdd");
-
-      // Should NOT send message
-      expect(discord.messages.sendMessageAndImageBufferToChannel).not.toHaveBeenCalled();
-
-      // Should NOT proceed with captcha setup
-      expect(discord.roles.addRoleToUser).not.toHaveBeenCalled();
-      expect(mockDb.addNotVerifiedUser).not.toHaveBeenCalled();
-    });
-  });
-
-  describe("message format", () => {
-    it("should include user mention and welcome message", async () => {
-      const mockMember = {
-        id: "user-789",
-        displayName: "CoolUser",
-        user: {
-          id: "user-789",
-          username: "cooluser",
-          bot: false,
-        } as User,
-        displayAvatarURL: jest.fn().mockReturnValue("https://example.com/avatar.png"),
-      } as unknown as GuildMember;
-
-      await eventHandler(mockMember);
-
-      expect(discord.messages.sendMessageAndImageBufferToChannel).toHaveBeenCalledWith(
-        "welcome-channel-123",
-        expect.stringMatching(/<@user-789>/),
-        expect.any(Buffer),
-      );
-
-      const sentMessage = (discord.messages.sendMessageAndImageBufferToChannel as jest.Mock).mock.calls[0][1];
-      expect(sentMessage).toContain("Go Flyers");
+      // Should check for left user
+      expect(mockDb.getLeftUser).toHaveBeenCalledWith("user-123");
     });
   });
 });

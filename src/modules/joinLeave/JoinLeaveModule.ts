@@ -92,6 +92,15 @@ export const joinLeaveConfigSchema = [
     defaultValue: "",
     schema: Zod.string(),
   },
+  {
+    key: "joinLeaveAdminNotificationChannelId",
+    description: "The channel ID of the channel to send join/leave messages to for admin notifications",
+    required: true,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
   // Might be useful later, we will see if the captcha stops spam bots
   // {
   //   key: "brandNewAccountThreshold",

@@ -33,32 +33,10 @@ export async function sendCaptcha(user: User): Promise<void> {
       return;
     }
 
-    // Debug logging
-    const parentChannel = thread.parent;
-    const guild = thread.guild;
-    const member = await guild.members.fetch({ user: user.id, force: true });
-
-    Stumper.debug(
-      `Thread details: id=${thread.id}, parentId=${parentChannel?.id}, guildId=${guild.id}, invitable=${thread.invitable}, type=${thread.type}`,
-      "joinLeave:sendCaptcha:debug",
-    );
-    Stumper.debug(`User details: id=${user.id}, username=${user.username}, bot=${user.bot}`, "joinLeave:sendCaptcha:debug");
-    Stumper.debug(`Member roles: ${member.roles.cache.map((r) => `${r.name}(${r.id})`).join(", ")}`, "joinLeave:sendCaptcha:debug");
-    Stumper.debug(
-      `Member permissions on parent channel: ViewChannel=${parentChannel?.permissionsFor(member)?.has("ViewChannel")}, SendMessages=${parentChannel?.permissionsFor(member)?.has("SendMessages")}`,
-      "joinLeave:sendCaptcha:debug",
-    );
-    Stumper.debug(`Member in guild: ${member.guild.id === guild.id}`, "joinLeave:sendCaptcha:debug");
-
-    console.log("member", member);
-    console.log("parentChannel", parentChannel);
-    console.log("guild", guild);
-    console.log("thread", thread);
-
-    // Add the user to the thread
+    // Add the user to the thread with retries
     let result = await discord.threads.addThreadMember(thread.id, user.id);
     let attempts = 0;
-    const maxAttempts = 15;
+    const maxAttempts = 12;
     while (!result && attempts < maxAttempts) {
       Stumper.warning(`Failed to add user ${user.id} to thread ${thread.id}, retrying... (${attempts + 1}/${maxAttempts})`, "joinLeave:sendCaptcha");
       await sleepSec(5);

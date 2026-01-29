@@ -1,4 +1,7 @@
 bot:
+	docker compose -f docker-compose.yml -p flyerscord-discord-prod up --pull always --force-recreate -d bot migrate
+
+bot-full:
 	docker compose -f docker-compose.yml -p flyerscord-discord-prod up --pull always --force-recreate -d
 
 bot-db:

@@ -20,6 +20,7 @@ export default (): void => {
       }
 
       const username = member.displayName || member.user.username;
+      const user = member.user;
 
       const message = `<@${member.id}>\nWelcome${leftUser !== undefined ? " back" : ""} to the ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
       const joinImageGenerator = new JoinImageGenerator(username, member.displayAvatarURL(), await discord.members.getNumberOfMembers());
@@ -33,6 +34,12 @@ export default (): void => {
 
       await discord.messages.sendMessageAndImageBufferToChannel(ConfigManager.getInstance().getConfig("JoinLeave").channelId, message, joinPhoto);
       Stumper.info(`User ${username} has joined the server!`, "joinLeave:onGuildMemberAdd");
+
+      // Captcha
+      const notVerifiedRoleId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedRoleId;
+
+      await db.addNotVerifiedUser(user.id);
+      await discord.roles.addRoleToUser(member, notVerifiedRoleId);
     } catch (error) {
       Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
     } finally {

@@ -5,7 +5,7 @@ import Stumper from "stumper";
 import discord from "@common/utils/discord/discord";
 import { sleepSec } from "@common/utils/sleep";
 
-export async function sendCaptcha(user: User, freshJoin: boolean = false): Promise<void> {
+export async function sendCaptcha(user: User): Promise<void> {
   const questions = ConfigManager.getInstance().getConfig("JoinLeave").captchaQuestions;
   const notVerifiedChannelId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedChannelId;
 
@@ -35,14 +35,16 @@ export async function sendCaptcha(user: User, freshJoin: boolean = false): Promi
 
     await discord.members.getMember(user.id, true);
 
-    // Sleep for 1 second before adding the user to the thread
-    if (freshJoin) {
-      Stumper.info(`Sleeping for 1 second before adding user ${user.id} to the thread`, "joinLeave:sendCaptcha");
-      await sleepSec(1);
-    }
-
     // Add the user to the thread
-    await discord.threads.addThreadMember(thread.id, user.id);
+    let result = await discord.threads.addThreadMember(thread.id, user.id);
+    let attempts = 0;
+    const maxAttempts = 5;
+    while (!result && attempts < maxAttempts) {
+      Stumper.warning(`Failed to add user ${user.id} to thread ${thread.id}, retrying... (${attempts + 1}/${maxAttempts})`, "joinLeave:sendCaptcha");
+      await sleepSec(5);
+      result = await discord.threads.addThreadMember(thread.id, user.id);
+      attempts++;
+    }
 
     await db.setThreadId(user.id, thread.id);
     notVerifiedUser.threadId = thread.id;

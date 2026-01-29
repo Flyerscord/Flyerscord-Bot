@@ -7,6 +7,7 @@ import ConfigManager from "@common/managers/ConfigManager";
 import { sendCaptcha } from "../utils/Captcha";
 import JoinLeaveDB from "../db/JoinLeaveDB";
 import MyAuditLog from "@common/utils/MyAuditLog";
+import { sleepSec } from "@common/utils/sleep";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
@@ -62,6 +63,8 @@ export default (): void => {
           return;
         }
       }
+
+      await sleepSec(10);
 
       await sendCaptcha(user);
     } catch (error) {

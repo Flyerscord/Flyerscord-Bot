@@ -38,7 +38,7 @@ export async function sendCaptcha(user: User): Promise<void> {
     // Add the user to the thread
     let result = await discord.threads.addThreadMember(thread.id, user.id);
     let attempts = 0;
-    const maxAttempts = 5;
+    const maxAttempts = 15;
     while (!result && attempts < maxAttempts) {
       Stumper.warning(`Failed to add user ${user.id} to thread ${thread.id}, retrying... (${attempts + 1}/${maxAttempts})`, "joinLeave:sendCaptcha");
       await sleepSec(5);

@@ -38,8 +38,8 @@ export default (): void => {
       // Captcha
       const notVerifiedRoleId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedRoleId;
 
-      await db.addNotVerifiedUser(user.id);
       await discord.roles.addRoleToUser(member, notVerifiedRoleId);
+      await db.addNotVerifiedUser(user.id);
     } catch (error) {
       Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
     } finally {

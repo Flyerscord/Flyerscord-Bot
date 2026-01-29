@@ -17,17 +17,16 @@ export default (): void => {
       return;
     }
 
-    if (oldMember.pending && !newMember.pending) {
+    // Check if user just completed onboarding and needs captcha
+    if (!newMember.pending) {
       const db = new JoinLeaveDB();
       const notVerifiedUser = await db.getNotVerifiedUser(user.id);
-      if (!notVerifiedUser) {
-        Stumper.error(
-          `User ${user.id} is not in the not verified users table! They are either already verified or there is another error!`,
-          "joinLeave:onGuildMemberUpdate",
-        );
-        return;
+
+      // Only proceed if user is in notVerifiedUsers and doesn't have a thread yet
+      if (notVerifiedUser && !notVerifiedUser.threadId) {
+        Stumper.info(`User ${user.id} completed onboarding, sending captcha`, "joinLeave:onGuildMemberUpdate");
+        await sendCaptcha(user);
       }
-      await sendCaptcha(user);
     }
   });
 };

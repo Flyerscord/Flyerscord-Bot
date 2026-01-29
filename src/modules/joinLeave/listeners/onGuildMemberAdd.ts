@@ -63,7 +63,7 @@ export default (): void => {
         }
       }
 
-      await sendCaptcha(user, true);
+      await sendCaptcha(user);
     } catch (error) {
       Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
     } finally {

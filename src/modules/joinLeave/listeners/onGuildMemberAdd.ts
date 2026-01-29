@@ -63,10 +63,7 @@ export default (): void => {
         }
       }
 
-      const hasRole = discord.roles.userHasRole(member, notVerifiedRoleId);
-      Stumper.info(`Does user ${user.id} have role ${notVerifiedRoleId}? ${hasRole}`, "joinLeave:onGuildMemberAdd");
-
-      await sendCaptcha(user);
+      await sendCaptcha(user, true);
     } catch (error) {
       Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
     } finally {

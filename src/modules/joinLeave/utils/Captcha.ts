@@ -3,8 +3,9 @@ import { EmbedBuilder, User } from "discord.js";
 import JoinLeaveDB from "../db/JoinLeaveDB";
 import Stumper from "stumper";
 import discord from "@common/utils/discord/discord";
+import { sleepSec } from "@common/utils/sleep";
 
-export async function sendCaptcha(user: User): Promise<void> {
+export async function sendCaptcha(user: User, freshJoin: boolean = false): Promise<void> {
   const questions = ConfigManager.getInstance().getConfig("JoinLeave").captchaQuestions;
   const notVerifiedChannelId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedChannelId;
 
@@ -33,6 +34,12 @@ export async function sendCaptcha(user: User): Promise<void> {
     }
 
     await discord.members.getMember(user.id, true);
+
+    // Sleep for 1 second before adding the user to the thread
+    if (freshJoin) {
+      Stumper.info(`Sleeping for 1 second before adding user ${user.id} to the thread`, "joinLeave:sendCaptcha");
+      await sleepSec(1);
+    }
 
     // Add the user to the thread
     await discord.threads.addThreadMember(thread.id, user.id);

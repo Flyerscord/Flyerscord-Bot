@@ -37,15 +37,15 @@ export async function sendCaptcha(user: User): Promise<void> {
 
     await db.setThreadId(user.id, thread.id);
     notVerifiedUser.threadId = thread.id;
+
+    // Ping the user
+    await discord.messages.sendMessageToThread(notVerifiedUser.threadId, `<@${user.id}>`);
   }
 
   if (notVerifiedUser.questionsAnswered >= questions.length) {
     Stumper.error(`User ${user.id} has already answered all the questions!`, "joinLeave:sendCaptcha");
     return;
   }
-
-  // Ping the user
-  await discord.messages.sendMessageToThread(notVerifiedUser.threadId, `<@${user.id}>`);
 
   const embed = getCaptchaEmbed(questions[notVerifiedUser.questionsAnswered].question);
   await discord.messages.sendEmbedToThread(notVerifiedUser.threadId, embed);

@@ -1,5 +1,5 @@
 import ClientManager from "@common/managers/ClientManager";
-import { Message } from "discord.js";
+import { Message, bold } from "discord.js";
 import JoinLeaveDB from "../db/JoinLeaveDB";
 import ConfigManager from "@common/managers/ConfigManager";
 import discord from "@common/utils/discord/discord";
@@ -7,6 +7,7 @@ import { sendCaptcha } from "../utils/Captcha";
 import Stumper from "stumper";
 import Time from "@common/utils/Time";
 import { AuditLogSeverity } from "@common/db/schema";
+import JoinImageGenerator from "../utils/JoinImageGenerator";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
@@ -114,9 +115,28 @@ export default (): void => {
             // Remove the role from the user
             const notVerifiedRoleId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedRoleId;
             await discord.roles.removeRoleFromUser(member, notVerifiedRoleId);
+            const leftUser = await db.getLeftUser(user.id);
+
+            const username = member.displayName || member.user.username;
+            const message = `<@${member.id}>\nWelcome${leftUser !== undefined ? " back" : ""} to the ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
+            const joinImageGenerator = new JoinImageGenerator(username, member.displayAvatarURL(), await discord.members.getNumberOfMembers());
+            let joinPhoto: Buffer;
+            try {
+              joinPhoto = await joinImageGenerator.getImage();
+            } catch (error) {
+              Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
+              return;
+            }
+            const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
+            void discord.messages.sendMessageToChannel(adminNotificationChannelId, `<@${user.id}> has verified!`);
+
+            await discord.messages.sendMessageAndImageBufferToChannel(
+              ConfigManager.getInstance().getConfig("JoinLeave").channelId,
+              message,
+              joinPhoto,
+            );
 
             // If they were a previously left user add back their roles
-            const leftUser = await db.getLeftUser(user.id);
             if (leftUser) {
               Stumper.info(`User ${user.id} was previously left, adding their roles back`, "joinLeave:onMessageCreate");
               const roles = leftUser.roles;

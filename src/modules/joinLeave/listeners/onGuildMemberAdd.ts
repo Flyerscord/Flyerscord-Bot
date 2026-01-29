@@ -1,8 +1,6 @@
-import { bold } from "discord.js";
 import ClientManager from "@common/managers/ClientManager";
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
-import JoinImageGenerator from "../utils/JoinImageGenerator";
 import ConfigManager from "@common/managers/ConfigManager";
 import JoinLeaveDB from "../db/JoinLeaveDB";
 import MyAuditLog from "@common/utils/MyAuditLog";
@@ -22,18 +20,10 @@ export default (): void => {
       const username = member.displayName || member.user.username;
       const user = member.user;
 
-      const message = `<@${member.id}>\nWelcome${leftUser !== undefined ? " back" : ""} to the ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
-      const joinImageGenerator = new JoinImageGenerator(username, member.displayAvatarURL(), await discord.members.getNumberOfMembers());
-      let joinPhoto: Buffer;
-      try {
-        joinPhoto = await joinImageGenerator.getImage();
-      } catch (error) {
-        Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
-        return;
-      }
-
-      await discord.messages.sendMessageAndImageBufferToChannel(ConfigManager.getInstance().getConfig("JoinLeave").channelId, message, joinPhoto);
       Stumper.info(`User ${username} has joined the server!`, "joinLeave:onGuildMemberAdd");
+
+      const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
+      void discord.messages.sendMessageToChannel(adminNotificationChannelId, `<@${user.id}> has joined the server!`);
 
       // Captcha
       const notVerifiedRoleId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedRoleId;

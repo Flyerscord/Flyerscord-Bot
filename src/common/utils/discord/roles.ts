@@ -46,7 +46,7 @@ export async function removeRoleFromUser(member: GuildMember, roleId: string): P
   }
 }
 
-export function userHasRole(member: GuildMember, roleId: string): boolean {
+export function userHasRole(member: GuildMember | PartialGuildMember, roleId: string): boolean {
   return member.roles.cache.some((role: Role) => role.id == roleId);
 }
 

@@ -105,7 +105,7 @@ export default class LeaderboardCommand extends SlashCommand {
 
     for (let i = startingIndex; i < endingIndex; i++) {
       const user = data[i];
-      const member = await discord.members.getMember(user.userId);
+      const member = await discord.members.getMember(user.userId, false);
 
       if (!member) {
         Stumper.debug(`Failed to find member with user id: ${user.userId}. User probably left server`, "levels:LeaderboardCommand:createEmbedPage");

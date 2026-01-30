@@ -3,7 +3,7 @@ import { getGuild } from "./guilds";
 import Stumper from "stumper";
 import MembersCache from "../../cache/MembersCache";
 
-export async function getMember(userId: string, force: boolean = false): Promise<GuildMember | undefined> {
+export async function getMember(userId: string, force: boolean = true): Promise<GuildMember | undefined> {
   try {
     if (force) {
       return await getGuild()?.members.fetch({ user: userId, force: true });

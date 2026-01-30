@@ -12,9 +12,11 @@ import JoinImageGenerator from "../utils/JoinImageGenerator";
 export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("messageCreate", async (message: Message) => {
+    console.log(message);
     const user = message.author;
     if (user.bot) return;
     if (!message.channel.isThread()) return;
+    Stumper.info("Hi there");
 
     const db = new JoinLeaveDB();
     const notVerifiedUser = await db.getNotVerifiedUser(user.id);
@@ -25,6 +27,9 @@ export default (): void => {
       if (notVerifiedUser && notVerifiedUser.lock) {
         Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:onMessageCreate");
       }
+      Stumper.warning(`User ${user.id} is not in the not verified users table!`, "joinLeave:onMessageCreate");
+      console.log("notVerifiedUser", notVerifiedUser);
+      console.log("member", member);
       return;
     }
 
@@ -170,6 +175,7 @@ export default (): void => {
         } else {
           await message.reply("Correct!");
 
+          await db.unlockUser(user.id);
           // Send the next question
           await sendCaptcha(user);
         }

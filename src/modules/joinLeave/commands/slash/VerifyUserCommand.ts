@@ -19,7 +19,7 @@ export default class VerifyUserCommand extends AdminSlashCommand {
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     const user = this.getParamValue(interaction, PARAM_TYPES.USER, "user") as User;
-    const sendWelcomeMessage = (this.getParamValue(interaction, PARAM_TYPES.BOOLEAN, "sendWelcomeMessage") as boolean | null) ?? true;
+    const sendWelcomeMessage = (this.getParamValue(interaction, PARAM_TYPES.BOOLEAN, "sendwelcomemessage") as boolean | null) ?? true;
 
     const member = await discord.members.getMember(user.id, true);
     if (!member) {

@@ -5,14 +5,16 @@ import Stumper from "stumper";
 import discord from "@common/utils/discord/discord";
 import { sleepSec } from "@common/utils/sleep";
 
-export async function sendCaptcha(user: User): Promise<void> {
+export async function sendCaptcha(user: User, skipLock: boolean = false): Promise<void> {
   const db = new JoinLeaveDB();
 
-  // Atomically try to acquire lock - returns false if already locked
-  const lockAcquired = await db.tryLockUser(user.id);
-  if (!lockAcquired) {
-    Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:sendCaptcha");
-    return;
+  if (skipLock) {
+    // Atomically try to acquire lock - returns false if already locked
+    const lockAcquired = await db.tryLockUser(user.id);
+    if (!lockAcquired) {
+      Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:sendCaptcha");
+      return;
+    }
   }
 
   try {

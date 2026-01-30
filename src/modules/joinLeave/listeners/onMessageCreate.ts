@@ -12,7 +12,6 @@ import JoinImageGenerator from "../utils/JoinImageGenerator";
 export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("messageCreate", async (message: Message) => {
-    console.log(message);
     const user = message.author;
     if (user.bot) return;
     if (!message.channel.isThread()) return;
@@ -27,9 +26,10 @@ export default (): void => {
       if (notVerifiedUser && notVerifiedUser.lock) {
         Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:onMessageCreate");
       }
-      Stumper.warning(`User ${user.id} is not in the not verified users table!`, "joinLeave:onMessageCreate");
-      console.log("notVerifiedUser", notVerifiedUser);
-      console.log("member", member);
+
+      if (!member) {
+        Stumper.warning(`Could not find memeber for ${user.id}!`, "joinLeave:onMessageCreate");
+      }
       return;
     }
 
@@ -175,9 +175,8 @@ export default (): void => {
         } else {
           await message.reply("Correct!");
 
-          await db.unlockUser(user.id);
           // Send the next question
-          await sendCaptcha(user);
+          await sendCaptcha(user, true);
         }
       } else {
         await db.createAuditLog({

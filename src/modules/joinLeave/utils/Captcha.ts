@@ -8,14 +8,12 @@ import { sleepSec } from "@common/utils/sleep";
 export async function sendCaptcha(user: User): Promise<void> {
   const db = new JoinLeaveDB();
 
-  const isLocked = await db.isUserLocked(user.id);
-  if (isLocked) {
+  // Atomically try to acquire lock - returns false if already locked
+  const lockAcquired = await db.tryLockUser(user.id);
+  if (!lockAcquired) {
     Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:sendCaptcha");
     return;
   }
-
-  // Lock the user to prevent multiple captchas
-  await db.lockUser(user.id);
 
   try {
     const questions = ConfigManager.getInstance().getConfig("JoinLeave").captchaQuestions;

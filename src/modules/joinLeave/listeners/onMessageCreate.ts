@@ -33,7 +33,11 @@ export default (): void => {
     }
 
     // Lock the user to prevent processing multiple answers
-    await db.lockUser(user.id);
+    const lockAcquired = await db.tryLockUser(user.id);
+    if (!lockAcquired) {
+      Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:onMessageCreate");
+      return;
+    }
 
     try {
       const questions = ConfigManager.getInstance().getConfig("JoinLeave").captchaQuestions;

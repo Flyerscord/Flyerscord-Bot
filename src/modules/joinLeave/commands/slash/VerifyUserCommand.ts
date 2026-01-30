@@ -6,7 +6,7 @@ import JoinLeaveDB from "../../db/JoinLeaveDB";
 import JoinImageGenerator from "../../utils/JoinImageGenerator";
 import Stumper from "stumper";
 
-export default class ManualVerifyUserCommand extends AdminSlashCommand {
+export default class VerifyUserCommand extends AdminSlashCommand {
   constructor() {
     super("verifyuser", "Manually mark a user as verified", { ephemeral: true });
 
@@ -43,9 +43,10 @@ export default class ManualVerifyUserCommand extends AdminSlashCommand {
       await discord.threads.deleteThread(notVerifiedUser.threadId, "User verified");
     }
 
+    const leftUser = await db.getLeftUser(user.id);
+
     // Send the welcome message
     if (sendWelcomeMessage) {
-      const leftUser = await db.getLeftUser(user.id);
       const username = member.displayName || member.user.username;
       const message = `<@${member.id}>\nWelcome${leftUser !== undefined ? " back" : ""} to the ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
       const joinImageGenerator = new JoinImageGenerator(username, member.displayAvatarURL(), discord.members.getNumberOfMembers());
@@ -53,7 +54,7 @@ export default class ManualVerifyUserCommand extends AdminSlashCommand {
       try {
         joinPhoto = await joinImageGenerator.getImage();
       } catch (error) {
-        Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
+        Stumper.caughtError(error, "joinLeave:VerifyUserCommand");
         return;
       }
       await discord.messages.sendMessageAndImageBufferToChannel(ConfigManager.getInstance().getConfig("JoinLeave").channelId, message, joinPhoto);
@@ -63,5 +64,19 @@ export default class ManualVerifyUserCommand extends AdminSlashCommand {
     void discord.messages.sendMessageToChannel(adminNotificationChannelId, `<@${user.id}> has been manually verified!`);
 
     await this.replies.reply(`User <@${user.id}> has been verified!`);
+
+    if (leftUser) {
+      Stumper.info(`User ${user.id} was previously left, adding their roles back`, "joinLeave:VerifyUserCommand");
+      const roles = leftUser.roles;
+      for (const role of roles) {
+        if (role === notVerifiedRoleId) {
+          Stumper.warning(`User ${user.id} had previously left with the not verified role, skipping`, "joinLeave:VerifyUserCommand");
+          continue;
+        }
+        Stumper.info(`Adding back role ${role} to user ${user.id}`, "joinLeave:VerifyUserCommand");
+        await discord.roles.addRoleToUser(member, role);
+      }
+      await db.deleteLeftUser(user.id);
+    }
   }
 }

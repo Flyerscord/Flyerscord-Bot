@@ -1,6 +1,6 @@
 import { ModuleDatabase } from "@common/models/ModuleDatabase";
 import { LeftUser, leftUsers, NotVerifiedUser, notVerifiedUsers } from "./schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export default class JoinLeaveDB extends ModuleDatabase {
   constructor() {
@@ -30,10 +30,6 @@ export default class JoinLeaveDB extends ModuleDatabase {
       .where(eq(notVerifiedUsers.userId, userId));
   }
 
-  async lockUser(userId: string): Promise<void> {
-    await this.db.update(notVerifiedUsers).set({ lock: true }).where(eq(notVerifiedUsers.userId, userId));
-  }
-
   async unlockUser(userId: string): Promise<void> {
     await this.db.update(notVerifiedUsers).set({ lock: false }).where(eq(notVerifiedUsers.userId, userId));
   }
@@ -41,6 +37,15 @@ export default class JoinLeaveDB extends ModuleDatabase {
   async isUserLocked(userId: string): Promise<boolean> {
     const result = await this.getSingleRow<NotVerifiedUser>(notVerifiedUsers, eq(notVerifiedUsers.userId, userId));
     return result?.lock ?? false;
+  }
+
+  async tryLockUser(userId: string): Promise<boolean> {
+    const result = await this.db
+      .update(notVerifiedUsers)
+      .set({ lock: true })
+      .where(and(eq(notVerifiedUsers.userId, userId), eq(notVerifiedUsers.lock, false)))
+      .returning();
+    return result.length > 0;
   }
 
   async incrementIncorrectAnswers(userId: string): Promise<void> {

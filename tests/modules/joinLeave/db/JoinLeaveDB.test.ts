@@ -228,37 +228,39 @@ describe("JoinLeaveDB", () => {
     });
   });
 
-  describe("lockUser", () => {
-    it("should set lock to true for a user", async () => {
+  describe("tryLockUser", () => {
+    it("should return true when lock is acquired successfully", async () => {
       const userId = "user-123";
-      const mockWhere = jest.fn().mockResolvedValue(undefined);
+      const mockReturning = jest.fn().mockResolvedValue([{ userId, lock: true }]);
+      const mockWhere = jest.fn().mockReturnValue({ returning: mockReturning });
       const mockSet = jest.fn().mockReturnValue({ where: mockWhere });
 
       mockDbInstance.update.mockReturnValue({
         set: mockSet,
       });
 
-      await db.lockUser(userId);
+      const result = await db.tryLockUser(userId);
 
       expect(mockDbInstance.update).toHaveBeenCalledWith(notVerifiedUsers);
       expect(mockSet).toHaveBeenCalledWith({ lock: true });
       expect(mockWhere).toHaveBeenCalled();
+      expect(result).toBe(true);
     });
 
-    it("should handle locking already locked user", async () => {
+    it("should return false when user is already locked", async () => {
       const userId = "user-123";
-      const mockWhere = jest.fn().mockResolvedValue(undefined);
+      const mockReturning = jest.fn().mockResolvedValue([]);
+      const mockWhere = jest.fn().mockReturnValue({ returning: mockReturning });
       const mockSet = jest.fn().mockReturnValue({ where: mockWhere });
 
       mockDbInstance.update.mockReturnValue({
         set: mockSet,
       });
 
-      await db.lockUser(userId);
-      await db.lockUser(userId);
+      const result = await db.tryLockUser(userId);
 
-      expect(mockDbInstance.update).toHaveBeenCalledTimes(2);
-      expect(mockSet).toHaveBeenCalledWith({ lock: true });
+      expect(mockDbInstance.update).toHaveBeenCalledWith(notVerifiedUsers);
+      expect(result).toBe(false);
     });
   });
 
@@ -296,19 +298,30 @@ describe("JoinLeaveDB", () => {
     });
   });
 
-  describe("lock/unlock workflow", () => {
-    it("should support lock and unlock in sequence", async () => {
+  describe("tryLock/unlock workflow", () => {
+    it("should support tryLock and unlock in sequence", async () => {
       const userId = "user-123";
-      const mockWhere = jest.fn().mockResolvedValue(undefined);
-      const mockSet = jest.fn().mockReturnValue({ where: mockWhere });
+      const mockReturning = jest.fn().mockResolvedValue([{ userId, lock: true }]);
+      const mockWhereLock = jest.fn().mockReturnValue({ returning: mockReturning });
+      const mockWhereUnlock = jest.fn().mockResolvedValue(undefined);
+
+      let callCount = 0;
+      const mockSet = jest.fn().mockImplementation(() => {
+        callCount++;
+        if (callCount === 1) {
+          return { where: mockWhereLock };
+        }
+        return { where: mockWhereUnlock };
+      });
 
       mockDbInstance.update.mockReturnValue({
         set: mockSet,
       });
 
-      await db.lockUser(userId);
+      const lockResult = await db.tryLockUser(userId);
       await db.unlockUser(userId);
 
+      expect(lockResult).toBe(true);
       expect(mockSet).toHaveBeenNthCalledWith(1, { lock: true });
       expect(mockSet).toHaveBeenNthCalledWith(2, { lock: false });
     });
@@ -318,12 +331,23 @@ describe("JoinLeaveDB", () => {
     it("should support complete user verification flow", async () => {
       const userId = "user-123";
       const mockValues = jest.fn().mockResolvedValue(undefined);
-      const mockWhere = jest.fn().mockResolvedValue(undefined);
-      const mockSet = jest.fn().mockReturnValue({ where: mockWhere });
+      const mockReturning = jest.fn().mockResolvedValue([{ userId, lock: true }]);
+      const mockWhereLock = jest.fn().mockReturnValue({ returning: mockReturning });
+      const mockWhereOther = jest.fn().mockResolvedValue(undefined);
+
+      let updateCallCount = 0;
+      const mockSet = jest.fn().mockImplementation(() => {
+        updateCallCount++;
+        // First update call is tryLockUser which needs returning()
+        if (updateCallCount === 1) {
+          return { where: mockWhereLock };
+        }
+        return { where: mockWhereOther };
+      });
 
       mockDbInstance.insert.mockReturnValue({ values: mockValues });
       mockDbInstance.update.mockReturnValue({ set: mockSet });
-      mockDbInstance.delete.mockReturnValue({ where: mockWhere });
+      mockDbInstance.delete.mockReturnValue({ where: mockWhereOther });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       jest.spyOn(db as any, "increment").mockReturnValue("INCREMENTED_VALUE");
@@ -331,8 +355,9 @@ describe("JoinLeaveDB", () => {
       // Add user
       await db.addNotVerifiedUser(userId);
 
-      // Lock user
-      await db.lockUser(userId);
+      // Try to lock user
+      const lockResult = await db.tryLockUser(userId);
+      expect(lockResult).toBe(true);
 
       // Increment questions answered
       await db.incrementQuestionsAnswered(userId);

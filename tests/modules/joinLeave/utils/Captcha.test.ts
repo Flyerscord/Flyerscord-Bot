@@ -78,6 +78,7 @@ describe("Captcha", () => {
       incrementQuestionsAnswered: jest.fn(),
       lockUser: jest.fn(),
       unlockUser: jest.fn(),
+      isUserLocked: jest.fn().mockResolvedValue(false),
       getNotVerifiedUsers: jest.fn(),
     } as unknown as jest.Mocked<JoinLeaveDB>;
 

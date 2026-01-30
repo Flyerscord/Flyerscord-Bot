@@ -63,7 +63,7 @@ jest.mock("@common/utils/discord/discord", () => ({
   members: {
     getMember: jest.fn(),
     banUser: jest.fn().mockResolvedValue(undefined),
-    getNumberOfMembers: jest.fn().mockResolvedValue(42),
+    getNumberOfMembers: jest.fn().mockReturnValue(42),
   },
   roles: {
     removeRoleFromUser: jest.fn().mockResolvedValue(undefined),

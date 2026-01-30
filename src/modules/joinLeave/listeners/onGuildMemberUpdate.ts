@@ -19,8 +19,6 @@ export default (): void => {
       // Only proceed if user is in notVerifiedUsers and doesn't have a thread yet
       if (notVerifiedUser && !notVerifiedUser.threadId && !notVerifiedUser.lock) {
         Stumper.info(`User ${user.id} completed onboarding, sending captcha`, "joinLeave:onGuildMemberUpdate");
-        // Lock the user to prevent them from sending another captcha
-        await db.lockUser(user.id);
         await sendCaptcha(user);
       }
     }

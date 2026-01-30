@@ -46,7 +46,7 @@ export async function getMemberJoinPosition(member: GuildMember): Promise<number
   return -1;
 }
 
-export async function getNumberOfMembers(): Promise<number> {
+export function getNumberOfMembers(): number {
   const guild = getGuild();
   return guild?.memberCount ?? 0;
 }

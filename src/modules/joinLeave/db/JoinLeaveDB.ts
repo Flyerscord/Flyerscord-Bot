@@ -38,6 +38,11 @@ export default class JoinLeaveDB extends ModuleDatabase {
     await this.db.update(notVerifiedUsers).set({ lock: false }).where(eq(notVerifiedUsers.userId, userId));
   }
 
+  async isUserLocked(userId: string): Promise<boolean> {
+    const result = await this.getSingleRow<NotVerifiedUser>(notVerifiedUsers, eq(notVerifiedUsers.userId, userId));
+    return result?.lock ?? false;
+  }
+
   async incrementIncorrectAnswers(userId: string): Promise<void> {
     await this.db
       .update(notVerifiedUsers)

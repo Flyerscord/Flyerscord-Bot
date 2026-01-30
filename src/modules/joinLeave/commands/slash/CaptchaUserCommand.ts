@@ -42,6 +42,12 @@ export default class CaptchaUserCommand extends AdminSlashCommand {
     await db.addNotVerifiedUser(user.id);
     await sendCaptcha(user);
 
-    await this.replies.reply(`User <@${user.id}> has been marked as not verified and a captcha has been sent!`);
+    const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
+    void discord.messages.sendMessageToChannel(
+      adminNotificationChannelId,
+      `<@${user.id}> has been manually marked as not verified and a thread has been created!`,
+    );
+
+    await this.replies.reply(`User <@${user.id}> has been marked as not verified and a thread has been created!`);
   }
 }

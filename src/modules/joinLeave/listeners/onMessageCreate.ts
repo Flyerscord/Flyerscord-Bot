@@ -22,6 +22,9 @@ export default (): void => {
     const member = await discord.members.getMember(user.id);
 
     if (!notVerifiedUser || notVerifiedUser.lock || !member) {
+      if (notVerifiedUser && notVerifiedUser.lock) {
+        Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:onMessageCreate");
+      }
       return;
     }
 
@@ -29,6 +32,7 @@ export default (): void => {
       return;
     }
 
+    // Lock the user to prevent processing multiple answers
     await db.lockUser(user.id);
 
     try {
@@ -117,9 +121,13 @@ export default (): void => {
             await discord.roles.removeRoleFromUser(member, notVerifiedRoleId);
             const leftUser = await db.getLeftUser(user.id);
 
+            const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
+            void discord.messages.sendMessageToChannel(adminNotificationChannelId, `<@${user.id}> has verified!`);
+
+            // Send the welcome message
             const username = member.displayName || member.user.username;
             const message = `<@${member.id}>\nWelcome${leftUser !== undefined ? " back" : ""} to the ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
-            const joinImageGenerator = new JoinImageGenerator(username, member.displayAvatarURL(), await discord.members.getNumberOfMembers());
+            const joinImageGenerator = new JoinImageGenerator(username, member.displayAvatarURL(), discord.members.getNumberOfMembers());
             let joinPhoto: Buffer;
             try {
               joinPhoto = await joinImageGenerator.getImage();
@@ -127,9 +135,6 @@ export default (): void => {
               Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
               return;
             }
-            const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
-            void discord.messages.sendMessageToChannel(adminNotificationChannelId, `<@${user.id}> has verified!`);
-
             await discord.messages.sendMessageAndImageBufferToChannel(
               ConfigManager.getInstance().getConfig("JoinLeave").channelId,
               message,

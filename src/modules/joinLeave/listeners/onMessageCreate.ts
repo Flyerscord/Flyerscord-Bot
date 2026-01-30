@@ -15,6 +15,7 @@ export default (): void => {
     const user = message.author;
     if (user.bot) return;
     if (!message.channel.isThread()) return;
+    Stumper.info("Hi there");
 
     const db = new JoinLeaveDB();
     const notVerifiedUser = await db.getNotVerifiedUser(user.id);
@@ -22,6 +23,13 @@ export default (): void => {
     const member = await discord.members.getMember(user.id);
 
     if (!notVerifiedUser || notVerifiedUser.lock || !member) {
+      if (notVerifiedUser && notVerifiedUser.lock) {
+        Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:onMessageCreate");
+      }
+
+      if (!member) {
+        Stumper.warning(`Could not find memeber for ${user.id}!`, "joinLeave:onMessageCreate");
+      }
       return;
     }
 
@@ -29,7 +37,12 @@ export default (): void => {
       return;
     }
 
-    await db.lockUser(user.id);
+    // Lock the user to prevent processing multiple answers
+    const lockAcquired = await db.tryLockUser(user.id);
+    if (!lockAcquired) {
+      Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:onMessageCreate");
+      return;
+    }
 
     try {
       const questions = ConfigManager.getInstance().getConfig("JoinLeave").captchaQuestions;
@@ -117,24 +130,24 @@ export default (): void => {
             await discord.roles.removeRoleFromUser(member, notVerifiedRoleId);
             const leftUser = await db.getLeftUser(user.id);
 
-            const username = member.displayName || member.user.username;
-            const message = `<@${member.id}>\nWelcome${leftUser !== undefined ? " back" : ""} to the ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
-            const joinImageGenerator = new JoinImageGenerator(username, member.displayAvatarURL(), await discord.members.getNumberOfMembers());
-            let joinPhoto: Buffer;
-            try {
-              joinPhoto = await joinImageGenerator.getImage();
-            } catch (error) {
-              Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
-              return;
-            }
             const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
             void discord.messages.sendMessageToChannel(adminNotificationChannelId, `<@${user.id}> has verified!`);
 
-            await discord.messages.sendMessageAndImageBufferToChannel(
-              ConfigManager.getInstance().getConfig("JoinLeave").channelId,
-              message,
-              joinPhoto,
-            );
+            // Send the welcome message
+            const username = member.displayName || member.user.username;
+            const message = `<@${member.id}>\nWelcome${leftUser !== undefined ? " back" : ""} to the ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
+            const joinImageGenerator = new JoinImageGenerator(username, member.displayAvatarURL(), discord.members.getNumberOfMembers());
+            let joinPhoto: Buffer;
+            try {
+              joinPhoto = await joinImageGenerator.getImage();
+              await discord.messages.sendMessageAndImageBufferToChannel(
+                ConfigManager.getInstance().getConfig("JoinLeave").channelId,
+                message,
+                joinPhoto,
+              );
+            } catch (error) {
+              Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
+            }
 
             // If they were a previously left user add back their roles
             if (leftUser) {
@@ -163,7 +176,7 @@ export default (): void => {
           await message.reply("Correct!");
 
           // Send the next question
-          await sendCaptcha(user);
+          await sendCaptcha(user, true);
         }
       } else {
         await db.createAuditLog({

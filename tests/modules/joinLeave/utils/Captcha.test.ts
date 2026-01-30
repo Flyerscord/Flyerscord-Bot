@@ -42,7 +42,7 @@ jest.mock("stumper", () => ({
   default: {
     error: jest.fn(),
     info: jest.fn(),
-    warn: jest.fn(),
+    warning: jest.fn(),
     caughtError: jest.fn(),
   },
 }));
@@ -76,8 +76,9 @@ describe("Captcha", () => {
       addNotVerifiedUser: jest.fn(),
       deleteNotVerifiedUser: jest.fn(),
       incrementQuestionsAnswered: jest.fn(),
-      lockUser: jest.fn(),
-      unlockUser: jest.fn(),
+      unlockUser: jest.fn().mockResolvedValue(undefined),
+      tryLockUser: jest.fn().mockResolvedValue(true),
+      isUserLocked: jest.fn().mockResolvedValue(false),
       getNotVerifiedUsers: jest.fn(),
     } as unknown as jest.Mocked<JoinLeaveDB>;
 
@@ -85,6 +86,15 @@ describe("Captcha", () => {
   });
 
   describe("sendCaptcha", () => {
+    it("should not send captcha and log warning if user is already locked", async () => {
+      mockDb.tryLockUser.mockResolvedValue(false);
+
+      await sendCaptcha(mockUser, true);
+
+      expect(Stumper.warning).toHaveBeenCalledWith(expect.stringContaining("already locked"), "joinLeave:sendCaptcha");
+      expect(discord.messages.sendEmbedToThread).not.toHaveBeenCalled();
+    });
+
     it("should send the first captcha question when user has answered 0 questions", async () => {
       // Setup: user exists and hasn't answered any questions
       mockDb.getNotVerifiedUser.mockResolvedValue({

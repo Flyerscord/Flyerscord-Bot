@@ -1,12 +1,12 @@
 import { Channel, ChatInputCommandInteraction, TextChannel } from "discord.js";
-import SlashCommand, { PARAM_TYPES } from "@common/models/SlashCommand";
+import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
 import Stumper from "stumper";
 import { getPinEmbed } from "../../utils/Embeds";
 import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/managers/ConfigManager";
 import PinsDB from "../../db/PinsDB";
 
-export default class ImportPinsCommand extends SlashCommand {
+export default class ImportPinsCommand extends AdminSlashCommand {
   constructor() {
     super("importpins", "Import pins from a channel", { ephemeral: true });
 

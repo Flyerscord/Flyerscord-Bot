@@ -10,6 +10,12 @@ bot-db:
 db-backup:
 	docker compose -f docker-compose.yml -p flyerscord-discord-prod exec pgbackups /backup.sh
 
+config:
+	docker exec -it flyerscord-discord-prod-bot-1 pnpm run config:set
+
+config-view:
+	docker exec -it flyerscord-discord-prod-bot-1 pnpm run config:view
+
 dev-bot:
 	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up --build --force-recreate -d
 
@@ -24,3 +30,9 @@ dev-bot-clean:
 
 dev-bot-down:
 	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev down
+
+dev-config:
+	docker exec -it flyerscord-discord-dev-bot-1 pnpm run config:set
+
+dev-config-view:
+	docker exec -it flyerscord-discord-dev-bot-1 pnpm run config:view

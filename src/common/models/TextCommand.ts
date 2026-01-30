@@ -2,6 +2,7 @@ import { Message } from "discord.js";
 import ITextCommandOptions, { COMMAND_LOCATION } from "../interfaces/ITextCommandOptions";
 import Stumper from "stumper";
 import ConfigManager from "@common/managers/ConfigManager";
+import EnvManager from "../managers/EnvManager";
 
 export default abstract class TextCommand {
   readonly prefix: string;
@@ -114,5 +115,12 @@ export abstract class DMTextCommand extends TextCommand {
   constructor(prefix: string, name: string, command: string, options: ITextCommandOptions = {}) {
     options.allowedLocations = [COMMAND_LOCATION.DM];
     super(prefix, name, command, options);
+  }
+}
+
+export abstract class BotManagerDMTextCommand extends DMTextCommand {
+  constructor(prefix: string, name: string, command: string, options: Omit<ITextCommandOptions, "allowedUsers"> = {}) {
+    const fullOptions: ITextCommandOptions = { allowedUsers: EnvManager.getInstance().get("BOT_MANAGERS"), ...options };
+    super(prefix, name, command, fullOptions);
   }
 }

@@ -1,17 +1,14 @@
 import { Message } from "discord.js";
-import { DMTextCommand } from "@common/models/TextCommand";
+import { BotManagerDMTextCommand } from "@common/models/TextCommand";
 import { readAndRegisterCommands } from "../../utils/registerCommands";
 import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/managers/ConfigManager";
 import MyAuditLog from "@common/utils/MyAuditLog";
 import { AuditLogSeverity } from "@common/db/schema";
-import EnvManager from "@common/managers/EnvManager";
 
-export default class ReloadSlashCommandsCommand extends DMTextCommand {
+export default class ReloadSlashCommandsCommand extends BotManagerDMTextCommand {
   constructor() {
-    super(ConfigManager.getInstance().getConfig("Common").adminPrefix, "Reload Slash Commands", "reloadslashcommands", {
-      allowedUsers: EnvManager.getInstance().get("BOT_MANAGERS"),
-    });
+    super(ConfigManager.getInstance().getConfig("Common").adminPrefix, "Reload Slash Commands", "reloadslashcommands");
   }
 
   async execute(message: Message, _args: string[]): Promise<void> {

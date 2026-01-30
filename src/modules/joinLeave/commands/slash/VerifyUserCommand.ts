@@ -13,7 +13,7 @@ export default class VerifyUserCommand extends AdminSlashCommand {
     this.data
       .addUserOption((option) => option.setName("user").setDescription("The user to manually verify").setRequired(true))
       .addBooleanOption((option) =>
-        option.setName("sendWelcomeMessage").setDescription("Whether to send a welcome message to the general channel").setRequired(false),
+        option.setName("sendwelcomemessage").setDescription("Whether to send a welcome message to the general channel").setRequired(false),
       );
   }
 

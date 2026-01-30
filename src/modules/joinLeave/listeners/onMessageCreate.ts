@@ -135,15 +135,14 @@ export default (): void => {
             let joinPhoto: Buffer;
             try {
               joinPhoto = await joinImageGenerator.getImage();
+              await discord.messages.sendMessageAndImageBufferToChannel(
+                ConfigManager.getInstance().getConfig("JoinLeave").channelId,
+                message,
+                joinPhoto,
+              );
             } catch (error) {
               Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
-              return;
             }
-            await discord.messages.sendMessageAndImageBufferToChannel(
-              ConfigManager.getInstance().getConfig("JoinLeave").channelId,
-              message,
-              joinPhoto,
-            );
 
             // If they were a previously left user add back their roles
             if (leftUser) {

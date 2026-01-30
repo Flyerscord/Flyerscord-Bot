@@ -53,11 +53,10 @@ export default class VerifyUserCommand extends AdminSlashCommand {
       let joinPhoto: Buffer;
       try {
         joinPhoto = await joinImageGenerator.getImage();
+        await discord.messages.sendMessageAndImageBufferToChannel(ConfigManager.getInstance().getConfig("JoinLeave").channelId, message, joinPhoto);
       } catch (error) {
         Stumper.caughtError(error, "joinLeave:VerifyUserCommand");
-        return;
       }
-      await discord.messages.sendMessageAndImageBufferToChannel(ConfigManager.getInstance().getConfig("JoinLeave").channelId, message, joinPhoto);
     }
 
     const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;

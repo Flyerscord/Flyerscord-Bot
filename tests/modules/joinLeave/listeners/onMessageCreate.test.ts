@@ -292,7 +292,7 @@ describe("onMessageCreate", () => {
       expect(message.reply).toHaveBeenCalledWith("Correct!");
 
       // Should send next captcha
-      expect(sendCaptcha).toHaveBeenCalledWith(message.author);
+      expect(sendCaptcha).toHaveBeenCalledWith(message.author, true);
 
       // Should unlock user after processing
       expect(mockDb.unlockUser).toHaveBeenCalledWith("user-123");

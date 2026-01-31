@@ -5,16 +5,20 @@ import { count, sql, SQL } from "drizzle-orm";
 import { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import { AuditLog, NewAuditLog } from "../db/schema";
 import AL from "../utils/MyAuditLog";
+import { err, Result, ok } from "neverthrow";
+import Stumper from "stumper";
 
 export abstract class ModuleDatabase {
   protected readonly db: PostgresDB;
   protected readonly moduleName: Modules;
+  protected readonly stateTable: PgTable | undefined;
 
   /**
    * Constructor for ModuleDatabase base class
    * @param moduleName - The name of the module using this database
    */
-  constructor(moduleName: Modules) {
+  constructor(moduleName: Modules, stateTable?: PgTable) {
+    this.stateTable = stateTable;
     this.moduleName = moduleName;
     this.db = Database.getInstance().getDb();
   }
@@ -140,6 +144,20 @@ export abstract class ModuleDatabase {
    */
   protected decrement(column: PgColumn, amount = 1): SQL {
     return sql`${column} - ${amount}`;
+  }
+
+  protected async ensureStateExists(key: string, valueColumn: PgColumn, value: unknown): Promise<Result<void, string>> {
+    if (!this.stateTable) {
+      Stumper.error(`State table not defined for module ${this.moduleName}`, "common:ModuleDatabase:ensureStateExists");
+      return err("State table not defined for module");
+    }
+
+    const valueColumnName = valueColumn.name;
+    await this.db
+      .insert(this.stateTable)
+      .values({ key, [valueColumnName]: value })
+      .onConflictDoNothing();
+    return ok();
   }
 
   // Audit Log Methods

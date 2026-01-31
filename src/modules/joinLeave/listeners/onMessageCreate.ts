@@ -15,7 +15,6 @@ export default (): void => {
     const user = message.author;
     if (user.bot) return;
     if (!message.channel.isThread()) return;
-    Stumper.info("Hi there");
 
     const db = new JoinLeaveDB();
     const notVerifiedUser = await db.getNotVerifiedUser(user.id);
@@ -41,6 +40,15 @@ export default (): void => {
     const lockAcquired = await db.tryLockUser(user.id);
     if (!lockAcquired) {
       Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:onMessageCreate");
+      return;
+    }
+
+    // Check if raid protection is enabled
+    const raidProtectionActive = await db.getRaidProtectionActive();
+    if (raidProtectionActive.active && notVerifiedUser.addedAt >= raidProtectionActive.updatedAt) {
+      await message.reply({
+        content: "New members are currently not allowed due to a raid. Please wait until it is resolved to complete the captcha.",
+      });
       return;
     }
 

@@ -53,6 +53,9 @@ importers:
       jsdom:
         specifier: ^27.4.0
         version: 27.4.0(canvas@3.2.0)
+      neverthrow:
+        specifier: ^8.2.0
+        version: 8.2.0
       nhl-api-wrapper-ts:
         specifier: ^1.0.0
         version: 1.0.0
@@ -1364,6 +1367,11 @@ packages:
   '@pkgr/core@0.2.9':
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
+
+  '@rollup/rollup-linux-x64-gnu@4.57.1':
+    resolution: {integrity: sha512-ABca4ceT4N+Tv/GtotnWAeXZUZuM/9AQyCyKYyKnpk4yoA7QIAuBt6Hkgpw8kActYlew2mvckXkvx0FfoInnLg==}
+    cpu: [x64]
+    os: [linux]
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
@@ -3929,6 +3937,10 @@ packages:
   neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
 
+  neverthrow@8.2.0:
+    resolution: {integrity: sha512-kOCT/1MCPAxY5iUV3wytNFUMUolzuwd/VF/1KCx7kf6CutrOsTie+84zTGTpgQycjvfLdBBdvBvFLqFD2c0wkQ==}
+    engines: {node: '>=18'}
+
   nhl-api-wrapper-ts@1.0.0:
     resolution: {integrity: sha512-XaDvyL1waqgLdXeoIIvLr+MnzxW4U+WjCKpoIxAaGeXWfHTljPZbIjJ0XCh+BNA1vrC3MbD6vO9AyGVEHXj6sA==}
 
@@ -6303,6 +6315,9 @@ snapshots:
     optional: true
 
   '@pkgr/core@0.2.9': {}
+
+  '@rollup/rollup-linux-x64-gnu@4.57.1':
+    optional: true
 
   '@rtsao/scc@1.1.0': {}
 
@@ -9372,6 +9387,10 @@ snapshots:
   negotiator@1.0.0: {}
 
   neo-async@2.6.2: {}
+
+  neverthrow@8.2.0:
+    optionalDependencies:
+      '@rollup/rollup-linux-x64-gnu': 4.57.1
 
   nhl-api-wrapper-ts@1.0.0:
     dependencies:

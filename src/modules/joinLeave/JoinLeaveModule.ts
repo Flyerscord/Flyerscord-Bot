@@ -10,6 +10,7 @@ import KickNotVerifiedTask from "./tasks/KickNotVerifiedTask";
 import onReady from "./listeners/onReady";
 import onGuildMemberUpdate from "./listeners/onGuildMemberUpdate";
 import RetryAddToThreadTask from "./tasks/RetryAddToThreadTask";
+import JoinLeaveDB from "./db/JoinLeaveDB";
 
 export const joinLeaveConfigSchema = [
   {
@@ -131,6 +132,9 @@ export default class JoinLeaveModule extends Module {
   }
 
   protected async setup(): Promise<void> {
+    const db = new JoinLeaveDB();
+    await db.setupJoinLeaveState();
+
     await this.readInCommands<SlashCommand>(__dirname, "slash");
 
     this.registerListeners();

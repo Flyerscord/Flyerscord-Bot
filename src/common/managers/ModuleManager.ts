@@ -91,6 +91,8 @@ export default class ModuleManager extends Singleton {
     const result = await module.disable();
     if (!result) {
       Stumper.error(`Failed to disable module ${module.name}!`, "common:ModuleManager:disableModule");
+    } else {
+      Stumper.success(`Disabled module ${module.name}!`, "common:ModuleManager:disableModule");
     }
     return result;
   }

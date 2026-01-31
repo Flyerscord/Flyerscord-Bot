@@ -1,5 +1,6 @@
 import {
   ActionRowBuilder,
+  bold,
   ButtonBuilder,
   ButtonStyle,
   ChatInputCommandInteraction,
@@ -117,13 +118,13 @@ export default class LeaderboardCommand extends SlashCommand {
 
         embed.addFields({
           name: `${i + 1}) *${username}*`,
-          value: `**Level:** ${user.currentLevel} | **Total Messages:** ${getShortenedMessageCount(user.messageCount)} | **Total Exp:** ${formatExp(user.totalExperience)}`,
+          value: `${bold("Level:")} ${user.currentLevel} | ${bold("Total Messages:")} ${getShortenedMessageCount(user.messageCount)} | ${bold("Total Exp:")} ${formatExp(user.totalExperience)}`,
         });
       } else {
         const username = member.displayName || member.user.username;
         embed.addFields({
           name: `${i + 1}) ${username}`,
-          value: `**Level:** ${user.currentLevel} | **Total Messages:** ${getShortenedMessageCount(user.messageCount)} | **Total Exp:** ${formatExp(user.totalExperience)} | **Exp to next level:** ${formatExp((await db.getLevelExp(user.currentLevel + 1)) - user.totalExperience)}`,
+          value: `${bold("Level:")} ${user.currentLevel} | ${bold("Total Messages:")} ${getShortenedMessageCount(user.messageCount)} | ${bold("Total Exp:")} ${formatExp(user.totalExperience)} | ${bold("Exp to next level:")} ${formatExp((await db.getLevelExp(user.currentLevel + 1)) - user.totalExperience)}`,
         });
       }
     }

@@ -13,7 +13,7 @@ import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/managers/ConfigManager";
 import { sleepMs } from "@common/utils/sleep";
 import TextCommandManager from "@common/managers/TextCommandManager";
-import { Message } from "discord.js";
+import { bold, Message } from "discord.js";
 
 export interface IAuditLogInfo {
   oldText: string;
@@ -396,7 +396,7 @@ export default class CustomCommandsDB extends ModuleDatabase {
   }
 
   createCommandListMessages(commands: Omit<CustomCommand, "id">[]): string[] {
-    let output = `**Custom Commands (${commands.length} commands)**\n`;
+    let output = `${bold(`Custom Commands (${commands.length} commands)`)}\n`;
     const prefix = ConfigManager.getInstance().getConfig("CustomCommands").prefix;
 
     let outputStrings: string[] = [];

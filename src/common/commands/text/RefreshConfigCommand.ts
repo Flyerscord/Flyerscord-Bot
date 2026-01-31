@@ -1,16 +1,13 @@
 import { Message } from "discord.js";
 import ConfigManager from "../../managers/ConfigManager";
 import MyAuditLog from "../../utils/MyAuditLog";
-import { DMTextCommand } from "../../models/TextCommand";
+import { BotManagerDMTextCommand } from "../../models/TextCommand";
 import discord from "../../utils/discord/discord";
 import { AuditLogSeverity } from "../../db/schema";
-import EnvManager from "../../managers/EnvManager";
 
-export default class RefreshConfigCommand extends DMTextCommand {
+export default class RefreshConfigCommand extends BotManagerDMTextCommand {
   constructor() {
-    super(ConfigManager.getInstance().getConfig("Common").adminPrefix, "Refresh Config", "refreshconfig", {
-      allowedUsers: EnvManager.getInstance().get("BOT_MANAGERS"),
-    });
+    super(ConfigManager.getInstance().getConfig("Common").adminPrefix, "Refresh Config", "refreshconfig");
   }
 
   async execute(message: Message, _args: string[]): Promise<void> {

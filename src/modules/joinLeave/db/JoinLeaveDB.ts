@@ -1,10 +1,10 @@
 import { ModuleDatabase } from "@common/models/ModuleDatabase";
-import { LeftUser, leftUsers, NotVerifiedUser, notVerifiedUsers } from "./schema";
-import { and, eq, isNotNull } from "drizzle-orm";
+import { joinLeaveState, LeftUser, leftUsers, NotVerifiedUser, notVerifiedUsers } from "./schema";
+import { and, eq, isNotNull, lt } from "drizzle-orm";
 
 export default class JoinLeaveDB extends ModuleDatabase {
   constructor() {
-    super("JoinLeave");
+    super("JoinLeave", joinLeaveState);
   }
 
   async addNotVerifiedUser(userId: string): Promise<void> {
@@ -21,6 +21,10 @@ export default class JoinLeaveDB extends ModuleDatabase {
 
   async getNotVerifiedUser(userId: string): Promise<NotVerifiedUser | undefined> {
     return await this.getSingleRow(notVerifiedUsers, eq(notVerifiedUsers.userId, userId));
+  }
+
+  async getNotVerifiedUsersBeforeDate(date: Date): Promise<NotVerifiedUser[]> {
+    return await this.db.select().from(notVerifiedUsers).where(lt(notVerifiedUsers.addedAt, date));
   }
 
   async incrementQuestionsAnswered(userId: string): Promise<void> {
@@ -136,5 +140,24 @@ export default class JoinLeaveDB extends ModuleDatabase {
 
   async getLeftUser(userId: string): Promise<LeftUser | undefined> {
     return await this.getSingleRow(leftUsers, eq(leftUsers.userId, userId));
+  }
+
+  // JoinLeaveState
+
+  async setupJoinLeaveState(): Promise<void> {
+    await this.ensureStateExists("raidProtectionActive", joinLeaveState.booleanValue, false);
+  }
+
+  async getRaidProtectionActive(): Promise<{ active: boolean; updatedAt: Date }> {
+    const result = await this.getSingleRowWithFields(joinLeaveState, eq(joinLeaveState.key, "raidProtectionActive"), {
+      active: joinLeaveState.booleanValue,
+      updatedAt: joinLeaveState.updatedAt,
+    });
+
+    return result ?? { active: false, updatedAt: new Date() };
+  }
+
+  async setRaidProtectionActive(active: boolean): Promise<void> {
+    await this.db.update(joinLeaveState).set({ booleanValue: active, updatedAt: new Date() }).where(eq(joinLeaveState.key, "raidProtectionActive"));
   }
 }

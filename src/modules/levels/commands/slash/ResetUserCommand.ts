@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, userMention } from "discord.js";
 import Stumper from "stumper";
 import { AdminSlashCommand } from "@common/models/SlashCommand";
 import LevelsDB from "../../db/LevelsDB";
@@ -30,7 +30,7 @@ export default class ResetUserCommand extends AdminSlashCommand {
       );
 
       await db.resetUser(user.id);
-      await this.replies.reply(`Resetting exp for username: ${user.username} id: <@${user.id}>`);
+      await this.replies.reply(`Resetting exp for username: ${user.username} id: ${userMention(user.id)}`);
       return;
     }
 

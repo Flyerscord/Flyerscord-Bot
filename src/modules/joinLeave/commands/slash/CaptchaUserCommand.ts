@@ -1,7 +1,7 @@
 import { AdminSlashCommand } from "@common/models/SlashCommand";
 import ConfigManager from "@common/managers/ConfigManager";
 import discord from "@common/utils/discord/discord";
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, userMention } from "discord.js";
 import JoinLeaveDB from "../../db/JoinLeaveDB";
 import { sendCaptcha } from "../../utils/Captcha";
 
@@ -25,7 +25,7 @@ export default class CaptchaUserCommand extends AdminSlashCommand {
 
     const member = await discord.members.getMember(user.id, true);
     if (!member) {
-      await this.replies.reply(`User <@${user.id}> is not in the server!`);
+      await this.replies.reply(`User ${userMention(user.id)} is not in the server!`);
       return;
     }
 
@@ -33,7 +33,7 @@ export default class CaptchaUserCommand extends AdminSlashCommand {
 
     const notVerifiedUser = await db.getNotVerifiedUser(user.id);
     if (notVerifiedUser) {
-      await this.replies.reply(`User <@${user.id}> is already not verified!`);
+      await this.replies.reply(`User ${userMention(user.id)} is already not verified!`);
       return;
     }
 
@@ -45,9 +45,9 @@ export default class CaptchaUserCommand extends AdminSlashCommand {
     const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
     void discord.messages.sendMessageToChannel(
       adminNotificationChannelId,
-      `<@${user.id}> has been manually marked as not verified and a thread has been created!`,
+      `${userMention(user.id)} has been manually marked as not verified and a thread has been created!`,
     );
 
-    await this.replies.reply(`User <@${user.id}> has been marked as not verified and a thread has been created!`);
+    await this.replies.reply(`User ${userMention(user.id)} has been marked as not verified and a thread has been created!`);
   }
 }

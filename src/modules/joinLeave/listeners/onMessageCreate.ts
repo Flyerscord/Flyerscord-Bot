@@ -1,5 +1,5 @@
 import ClientManager from "@common/managers/ClientManager";
-import { Message, bold } from "discord.js";
+import { Colors, EmbedBuilder, Message, bold, userMention } from "discord.js";
 import JoinLeaveDB from "../db/JoinLeaveDB";
 import ConfigManager from "@common/managers/ConfigManager";
 import discord from "@common/utils/discord/discord";
@@ -15,7 +15,6 @@ export default (): void => {
     const user = message.author;
     if (user.bot) return;
     if (!message.channel.isThread()) return;
-    Stumper.info("Hi there");
 
     const db = new JoinLeaveDB();
     const notVerifiedUser = await db.getNotVerifiedUser(user.id);
@@ -45,6 +44,15 @@ export default (): void => {
     }
 
     try {
+      // Check if raid protection is enabled
+      const raidProtectionActive = await db.getRaidProtectionActive();
+      if (raidProtectionActive.active && notVerifiedUser.addedAt >= raidProtectionActive.updatedAt) {
+        await message.reply({
+          embeds: [createRaidProtectionThreadEmbed()],
+        });
+        return;
+      }
+
       const questions = ConfigManager.getInstance().getConfig("JoinLeave").captchaQuestions;
       if (questions.length <= notVerifiedUser.questionsAnswered) {
         return;
@@ -131,11 +139,11 @@ export default (): void => {
             const leftUser = await db.getLeftUser(user.id);
 
             const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
-            void discord.messages.sendMessageToChannel(adminNotificationChannelId, `<@${user.id}> has verified!`);
+            void discord.messages.sendMessageToChannel(adminNotificationChannelId, `${userMention(user.id)} has verified!`);
 
             // Send the welcome message
             const username = member.displayName || member.user.username;
-            const message = `<@${member.id}>\nWelcome${leftUser !== undefined ? " back" : ""} to the ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
+            const message = `${userMention(member.id)}\nWelcome${leftUser !== undefined ? " back" : ""} to ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
             const joinImageGenerator = new JoinImageGenerator(username, member.displayAvatarURL(), discord.members.getNumberOfMembers());
             let joinPhoto: Buffer;
             try {
@@ -248,3 +256,14 @@ export default (): void => {
     }
   });
 };
+
+function createRaidProtectionThreadEmbed(): EmbedBuilder {
+  const embed = new EmbedBuilder();
+
+  embed.setTitle("Raid Protection");
+  embed.setDescription("New members are currently not allowed due to a raid. Please wait until it is resolved to complete the captcha.");
+  embed.setColor(Colors.Red);
+  embed.setTimestamp(Date.now());
+
+  return embed;
+}

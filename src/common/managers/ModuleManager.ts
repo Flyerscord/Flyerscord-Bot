@@ -82,6 +82,19 @@ export default class ModuleManager extends Singleton {
     return result;
   }
 
+  async disableModule(name: Modules): Promise<boolean> {
+    const module = this.getModule(name);
+    if (!module) {
+      Stumper.error(`Module ${name} not found!`, "common:ModuleManager:disableModule");
+      return false;
+    }
+    const result = await module.disable();
+    if (!result) {
+      Stumper.error(`Failed to disable module ${module.name}!`, "common:ModuleManager:disableModule");
+    }
+    return result;
+  }
+
   async disableAllModules(): Promise<boolean> {
     Stumper.info(`Disabling ${this.modules.length} modules...`, "common:ModuleManager:disableAllModules");
     let result = true;

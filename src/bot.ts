@@ -82,7 +82,7 @@ async function startUp(): Promise<void> {
   moduleManager.addAllModules();
 
   // Disable any modules that you don't want to run with (none by default)
-  // moduleManager.disableModule("Admin");
+  // await moduleManager.disableModule("Admin");
 
   // Register all modules
   await moduleManager.registerAllModules();

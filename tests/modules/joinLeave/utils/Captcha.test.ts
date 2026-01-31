@@ -89,7 +89,7 @@ describe("Captcha", () => {
     it("should not send captcha and log warning if user is already locked", async () => {
       mockDb.tryLockUser.mockResolvedValue(false);
 
-      await sendCaptcha(mockUser, true);
+      await sendCaptcha(mockUser);
 
       expect(Stumper.warning).toHaveBeenCalledWith(expect.stringContaining("already locked"), "joinLeave:sendCaptcha");
       expect(discord.messages.sendEmbedToThread).not.toHaveBeenCalled();

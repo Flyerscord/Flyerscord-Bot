@@ -33,6 +33,15 @@ export const commonConfigSchema = [
     defaultValue: ".",
     schema: Zod.string({ min: 1, max: 1 }),
   },
+  {
+    key: "adminLoungeChannelId",
+    description: "The channel ID of the admin lounge channel",
+    required: true,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
 ] as const satisfies readonly IModuleConfigSchema[];
 
 export default class CommonModule extends Module {

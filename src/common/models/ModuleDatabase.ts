@@ -152,12 +152,32 @@ export abstract class ModuleDatabase {
       return err("State table not defined for module");
     }
 
-    const valueColumnName = valueColumn.name;
+    const valueColumnName = this.getColumnPropertyName(valueColumn);
+    Stumper.debug(`Value column name: ${valueColumnName}`, "common:ModuleDatabase:ensureStateExists");
+    if (!valueColumnName) {
+      Stumper.error(`Could not find property name for column ${valueColumn.name}`, "common:ModuleDatabase:ensureStateExists");
+      return err("Could not find property name for column");
+    }
+
     await this.db
       .insert(this.stateTable)
       .values({ key, [valueColumnName]: value })
       .onConflictDoNothing();
     return ok();
+  }
+
+  /**
+   * Gets the JavaScript property name for a column by looking up the drizzle:Columns symbol
+   * @param column - The column to get the property name for
+   * @returns The JS property name, or undefined if not found
+   */
+  private getColumnPropertyName(column: PgColumn): string | undefined {
+    const columnsSymbol = Object.getOwnPropertySymbols(column.table).find((s) => s.toString() === "Symbol(drizzle:Columns)");
+    if (!columnsSymbol) {
+      return undefined;
+    }
+    const columns = (column.table as unknown as Record<symbol, Record<string, PgColumn>>)[columnsSymbol];
+    return Object.entries(columns).find(([, c]) => c === column)?.[0];
   }
 
   // Audit Log Methods

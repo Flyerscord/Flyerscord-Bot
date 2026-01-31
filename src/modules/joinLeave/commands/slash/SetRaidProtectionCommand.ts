@@ -2,6 +2,8 @@ import { AdminSlashCommand } from "@common/models/SlashCommand";
 import { ChatInputCommandInteraction } from "discord.js";
 import JoinLeaveDB from "../../db/JoinLeaveDB";
 import discord from "@common/utils/discord/discord";
+import ConfigManager from "@common/managers/ConfigManager";
+import { AuditLogSeverity } from "@common/db/schema";
 
 export default class SetRaidProtectionCommand extends AdminSlashCommand {
   constructor() {
@@ -38,6 +40,17 @@ export default class SetRaidProtectionCommand extends AdminSlashCommand {
       await db.setRaidProtectionActive(true);
       await this.replies.reply({ content: "Raid protection enabled!" });
 
+      await discord.messages.sendMessageToChannel(
+        ConfigManager.getInstance().getConfig("Common").adminLoungeChannelId,
+        "Raid protection has been Enabled! Captcha answers will be disabled until the raid is resolved.",
+      );
+
+      void db.createAuditLog({
+        action: "raidProtectionEnabled",
+        userId: interaction.user.id,
+        severity: AuditLogSeverity.CRITICAL,
+      });
+
       // Send messages to the threads that will blocked from completing the captcha
       const notVerifiedUsers = await db.getNotVerifiedUsersBeforeDate(new Date());
       const message = "Your captcha has been disabled due to a raid. Please wait until it is resolved to complete the captcha.";
@@ -55,6 +68,17 @@ export default class SetRaidProtectionCommand extends AdminSlashCommand {
 
       await db.setRaidProtectionActive(false);
       await this.replies.reply({ content: "Raid protection disabled!" });
+
+      await discord.messages.sendMessageToChannel(
+        ConfigManager.getInstance().getConfig("Common").adminLoungeChannelId,
+        "Raid protection has been disabled! Captcha answers are being accepted again.",
+      );
+
+      void db.createAuditLog({
+        action: "raidProtectionDisabled",
+        userId: interaction.user.id,
+        severity: AuditLogSeverity.CRITICAL,
+      });
 
       // Send messages to the threads that were blocked from completing the captcha
       const notVerifiedUsers = await db.getNotVerifiedUsersBeforeDate(new Date());

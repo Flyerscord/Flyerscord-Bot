@@ -1,10 +1,10 @@
 # Testing Guide
 
-This document explains how to write tests for the Flyerscord Bot, particularly when working with Drizzle ORM database operations.
+This document explains the test suite for the Flyerscord Bot.
 
 ## Overview
 
-The project uses Jest as the testing framework with TypeScript support via `ts-jest`. Tests are located in the `tests/` directory and mirror the structure of the `src/` directory.
+The project uses Jest as the testing framework with TypeScript support via `ts-jest`. Tests are located in the `tests/` directory.
 
 ## Running Tests
 
@@ -16,195 +16,43 @@ pnpm run test
 pnpm run test:coverage
 
 # Run a specific test file
-pnpm run test -- tests/modules/customCommands/db/CustomCommandsDB.test.ts
+pnpm run test -- tests/cli/SchemaInspector.test.ts
 ```
 
-## Database Mocking with Drizzle
+## Test Structure
 
-Since our application uses Drizzle ORM with Neon PostgreSQL, we mock the database connection to avoid requiring a real database during tests.
-
-### Basic Setup
-
-Every test file that uses database classes needs to mock `getDb()`:
-
-```typescript
-import { getDb } from "@common/db/db";
-
-// Mock the database module
-jest.mock("@common/db/db");
-
-const mockGetDb = getDb as jest.MockedFunction<typeof getDb>;
+```
+tests/
+├── setup.ts                              # Jest global setup (auto-loaded)
+├── cli/
+│   ├── SchemaInspector.test.ts           # Zod schema introspection tests
+│   └── ConfigSetter.encryption.test.ts   # Encryption integration tests
+└── common/
+    ├── config/
+    │   └── ConfigManager.test.ts         # Configuration management tests
+    └── managers/
+        └── SecretManager.test.ts         # Encryption/decryption tests
 ```
 
-### Mocking Query Chains
+## Test Categories
 
-Drizzle uses method chaining for queries. Here's how to mock different query patterns:
+### CLI Tests
 
-#### SELECT Query
+- **SchemaInspector.test.ts**: Tests the Zod schema analysis utilities used by the config CLI tool
+- **ConfigSetter.encryption.test.ts**: Tests the integration between encrypted config schemas and the SecretManager
 
-```typescript
-// Mock: db.select().from(table).where(condition)
-mockDb.select.mockReturnValue({
-  from: jest.fn().mockReturnValue({
-    where: jest.fn().mockResolvedValue([{ id: 1, name: "test" }]),
-  }),
-});
-```
+### Common Tests
 
-#### INSERT Query
-
-```typescript
-// Mock: db.insert(table).values(data).returning()
-mockDb.insert.mockReturnValue({
-  values: jest.fn().mockReturnValue({
-    returning: jest.fn().mockResolvedValue([{ id: 1 }]),
-  }),
-});
-```
-
-#### UPDATE Query
-
-```typescript
-// Mock: db.update(table).set(data).where(condition)
-mockDb.update.mockReturnValue({
-  set: jest.fn().mockReturnValue({
-    where: jest.fn().mockResolvedValue([]),
-  }),
-});
-```
-
-#### DELETE Query
-
-```typescript
-// Mock: db.delete(table).where(condition)
-mockDb.delete.mockReturnValue({
-  where: jest.fn().mockResolvedValue([]),
-});
-```
-
-### Complete Test Example
-
-See [CustomCommandsDB.test.ts](./modules/customCommands/db/CustomCommandsDB.test.ts) for a complete example:
-
-```typescript
-import CustomCommandsDB from "@modules/customCommands/db/CustomCommandsDB";
-import { getDb } from "@common/db/db";
-import CustomCommandsModule from "@modules/customCommands/CustomCommandsModule";
-
-// Mock getDb
-jest.mock("@common/db/db");
-const mockGetDb = getDb as jest.MockedFunction<typeof getDb>;
-
-describe("CustomCommandsDB", () => {
-  let mockDb: any;
-
-  beforeEach(() => {
-    // Initialize module with test config
-    CustomCommandsModule.getInstance({
-      customcommands: {
-        prefix: "!",
-        // ... other config
-      },
-    });
-
-    // Create fresh mock database for each test
-    mockDb = {
-      select: jest.fn(),
-      insert: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      execute: jest.fn(),
-      $client: jest.fn(),
-    };
-
-    mockGetDb.mockReturnValue(mockDb);
-  });
-
-  it("should return command when it exists", async () => {
-    const mockCommand = {
-      id: 1,
-      name: "testcommand",
-      text: "test response",
-      createdBy: "user123",
-      createdOn: new Date(),
-    };
-
-    // Mock the query chain
-    mockDb.select.mockReturnValue({
-      from: jest.fn().mockReturnValue({
-        where: jest.fn().mockResolvedValue([mockCommand]),
-      }),
-    });
-
-    const db = new CustomCommandsDB();
-    const result = await db.getCommand("testcommand");
-
-    expect(result).toEqual(mockCommand);
-  });
-});
-```
-
-## Testing Pure Logic
-
-For testing pure business logic that doesn't interact with the database, you can test the methods directly without mocking:
-
-```typescript
-import CustomCommandsDB from "@modules/customCommands/db/CustomCommandsDB";
-
-describe("createCommandListMessages", () => {
-  it("should format commands correctly", () => {
-    const db = new CustomCommandsDB();
-    const commands = [{ name: "cmd1" }, { name: "cmd2" }];
-
-    const result = db.createCommandListMessages(commands);
-
-    expect(result[0]).toContain("!cmd1");
-    expect(result[0]).toContain("!cmd2");
-  });
-});
-```
+- **ConfigManager.test.ts**: Tests the database-driven configuration system including schema registration, config loading, and validation
+- **SecretManager.test.ts**: Tests AES-256-GCM encryption/decryption for sensitive configuration values
 
 ## Best Practices
 
-1. **Mock at the right level**: Mock `getDb()` rather than individual Drizzle methods
-2. **Reset mocks**: Use `beforeEach` to create fresh mocks for each test
-3. **Test behavior, not implementation**: Focus on what the method returns, not how it queries
-4. **Use TypeScript**: Let TypeScript catch errors in your mocks
-5. **Keep tests isolated**: Each test should be independent and not rely on others
-
-## Module Testing
-
-When testing modules that extend `Module` class, initialize them with test configuration:
-
-```typescript
-CustomCommandsModule.getInstance({
-  customcommands: {
-    prefix: "!",
-    commandTempChannelId: "",
-    customCommandListChannelId: "",
-    // ... other required config
-  },
-});
-```
-
-## Troubleshooting
-
-### "Database connection string format" error
-
-This means the database mock wasn't set up. Make sure you:
-1. Import and mock `getDb` at the top of your test file
-2. Set up the mock in `beforeEach`
-
-### "Property 'from' does not exist" TypeScript error
-
-Use `any` type for the mock database object to avoid TypeScript complaints about chainable methods.
-
-### Tests failing intermittently
-
-Make sure you're resetting mocks in `beforeEach` to avoid state leaking between tests.
+1. **Reset mocks**: Use `beforeEach` to create fresh mocks for each test
+2. **Clear singletons**: Reset singleton instances between tests to avoid state leakage
+3. **Test behavior, not implementation**: Focus on what the method returns, not internal details
+4. **Keep tests isolated**: Each test should be independent and not rely on others
 
 ## Additional Resources
 
 - [Jest Documentation](https://jestjs.io/)
-- [Drizzle ORM Documentation](https://orm.drizzle.team/)
-- [Testing Best Practices](https://testingjavascript.com/)

@@ -60,11 +60,19 @@ export async function sendCaptcha(user: User, skipLock: boolean = false): Promis
         attempts++;
       }
 
+      if (result) {
+        await db.setAddedToThread(user.id, true);
+      } else {
+        Stumper.error(`Failed to add user ${user.id} to thread ${thread.id}. Will retry later...`, "joinLeave:sendCaptcha");
+      }
+
       await db.setThreadId(user.id, thread.id);
       notVerifiedUser.threadId = thread.id;
 
-      // Ping the user
-      await discord.messages.sendMessageToThread(notVerifiedUser.threadId, `<@${user.id}>`);
+      if (result) {
+        // Ping the user
+        await discord.messages.sendMessageToThread(notVerifiedUser.threadId, `<@${user.id}>`);
+      }
     }
 
     if (notVerifiedUser.questionsAnswered >= questions.length) {

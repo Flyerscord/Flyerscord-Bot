@@ -106,6 +106,7 @@ describe("Captcha", () => {
         timedoutAt: null,
         timeOutCount: 0,
         threadId: "thread-123",
+        addedToThread: true,
       });
 
       await sendCaptcha(mockUser);
@@ -145,6 +146,7 @@ describe("Captcha", () => {
         timedoutAt: null,
         timeOutCount: 0,
         threadId: "thread-123",
+        addedToThread: true,
       });
 
       await sendCaptcha(mockUser);
@@ -175,6 +177,7 @@ describe("Captcha", () => {
         timedoutAt: null,
         timeOutCount: 0,
         threadId: "thread-123",
+        addedToThread: true,
       });
 
       await sendCaptcha(mockUser);
@@ -221,6 +224,7 @@ describe("Captcha", () => {
         timedoutAt: null,
         timeOutCount: 0,
         threadId: "thread-123",
+        addedToThread: true,
       });
 
       await sendCaptcha(mockUser);
@@ -243,6 +247,7 @@ describe("Captcha", () => {
         timedoutAt: null,
         timeOutCount: 0,
         threadId: "thread-123",
+        addedToThread: true,
       });
 
       await sendCaptcha(mockUser);
@@ -261,6 +266,7 @@ describe("Captcha", () => {
         timedoutAt: null,
         timeOutCount: 0,
         threadId: "thread-123",
+        addedToThread: true,
       });
 
       await sendCaptcha(mockUser);

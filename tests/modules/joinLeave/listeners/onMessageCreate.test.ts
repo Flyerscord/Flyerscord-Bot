@@ -187,7 +187,8 @@ describe("onMessageCreate", () => {
       incorrectAnswers: number;
       timedoutAt: Date | null;
       timeOutCount: number;
-      threadId: string;
+      threadId: string | null;
+      addedToThread: boolean;
     }> = {},
   ): {
     userId: string;
@@ -197,7 +198,8 @@ describe("onMessageCreate", () => {
     incorrectAnswers: number;
     timedoutAt: Date | null;
     timeOutCount: number;
-    threadId: string;
+    threadId: string | null;
+    addedToThread: boolean;
   } => ({
     userId: "user-123",
     questionsAnswered: 0,
@@ -207,6 +209,7 @@ describe("onMessageCreate", () => {
     timedoutAt: null,
     timeOutCount: 0,
     threadId: "thread-123",
+    addedToThread: true,
     ...overrides,
   });
 

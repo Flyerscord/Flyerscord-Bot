@@ -9,6 +9,7 @@ import SlashCommand from "@common/models/SlashCommand";
 import KickNotVerifiedTask from "./tasks/KickNotVerifiedTask";
 import onReady from "./listeners/onReady";
 import onGuildMemberUpdate from "./listeners/onGuildMemberUpdate";
+import RetryAddToThreadTask from "./tasks/RetryAddToThreadTask";
 
 export const joinLeaveConfigSchema = [
   {
@@ -148,5 +149,6 @@ export default class JoinLeaveModule extends Module {
 
   private registerSchedules(): void {
     KickNotVerifiedTask.getInstance().createScheduledJob();
+    RetryAddToThreadTask.getInstance().createScheduledJob();
   }
 }

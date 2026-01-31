@@ -8,6 +8,8 @@ import { sleepSec } from "@common/utils/sleep";
 export async function sendCaptcha(user: User, skipLock: boolean = false): Promise<void> {
   const db = new JoinLeaveDB();
 
+  let heldLock = false;
+
   if (!skipLock) {
     // Atomically try to acquire lock - returns false if already locked
     const lockAcquired = await db.tryLockUser(user.id);
@@ -15,6 +17,7 @@ export async function sendCaptcha(user: User, skipLock: boolean = false): Promis
       Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:sendCaptcha");
       return;
     }
+    heldLock = true;
   }
 
   try {
@@ -74,8 +77,10 @@ export async function sendCaptcha(user: User, skipLock: boolean = false): Promis
   } catch (error) {
     Stumper.caughtError(error, "joinLeave:sendCaptcha");
   } finally {
-    // Unlock the user
-    await db.unlockUser(user.id);
+    if (heldLock) {
+      // Unlock the user
+      await db.unlockUser(user.id);
+    }
   }
 }
 

@@ -18,7 +18,9 @@ export default class PlayerEmojisModule extends Module {
     this.registerSchedules();
   }
 
-  protected async cleanup(): Promise<void> {}
+  protected async cleanup(): Promise<void> {
+    EmojiCheckTask.getInstance().stopScheduledJob();
+  }
 
   private registerSchedules(): void {
     EmojiCheckTask.getInstance().createScheduledJob();

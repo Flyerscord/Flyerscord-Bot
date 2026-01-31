@@ -137,7 +137,10 @@ export default class JoinLeaveModule extends Module {
     this.registerSchedules();
   }
 
-  protected async cleanup(): Promise<void> {}
+  protected async cleanup(): Promise<void> {
+    KickNotVerifiedTask.getInstance().stopScheduledJob();
+    RetryAddToThreadTask.getInstance().stopScheduledJob();
+  }
 
   private registerListeners(): void {
     onGuildMemberUpdate();

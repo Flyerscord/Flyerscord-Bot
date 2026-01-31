@@ -79,7 +79,10 @@ export default class GameDayPostsModule extends Module {
     this.registerSchedules();
   }
 
-  protected async cleanup(): Promise<void> {}
+  protected async cleanup(): Promise<void> {
+    CreateGameDayPostTask.getInstance().stopScheduledJob();
+    CloseAndLockPostsTask.getInstance().stopScheduledJob();
+  }
 
   private registerSchedules(): void {
     // Run every day at 12:30 AM

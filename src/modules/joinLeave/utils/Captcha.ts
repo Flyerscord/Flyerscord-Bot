@@ -8,7 +8,7 @@ import { sleepSec } from "@common/utils/sleep";
 export async function sendCaptcha(user: User, skipLock: boolean = false): Promise<void> {
   const db = new JoinLeaveDB();
 
-  if (skipLock) {
+  if (!skipLock) {
     // Atomically try to acquire lock - returns false if already locked
     const lockAcquired = await db.tryLockUser(user.id);
     if (!lockAcquired) {

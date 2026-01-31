@@ -100,7 +100,10 @@ jobs:
       - name: Get package version
         if: github.event_name == 'push'
         id: version
-        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+        run: |
+          BASE_VERSION=$(node -p "require('./package.json').version")
+          FULL_VERSION="${BASE_VERSION}.${{ steps.commit-count.outputs.count }}"
+          echo "version=${FULL_VERSION}" >> $GITHUB_OUTPUT
 
       - name: Check if tag exists
         if: github.event_name == 'push'

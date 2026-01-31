@@ -1,0 +1,1 @@
+ALTER TABLE "joinleave__not_verified_users" ADD COLUMN "added_to_thread" boolean DEFAULT false NOT NULL;

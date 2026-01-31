@@ -1,6 +1,6 @@
 import { ModuleDatabase } from "@common/models/ModuleDatabase";
 import { LeftUser, leftUsers, NotVerifiedUser, notVerifiedUsers } from "./schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNotNull } from "drizzle-orm";
 
 export default class JoinLeaveDB extends ModuleDatabase {
   constructor() {
@@ -100,6 +100,25 @@ export default class JoinLeaveDB extends ModuleDatabase {
 
   async setThreadId(userId: string, threadId: string): Promise<void> {
     await this.db.update(notVerifiedUsers).set({ threadId }).where(eq(notVerifiedUsers.userId, userId));
+  }
+
+  async setAddedToThread(userId: string, addedToThread: boolean): Promise<void> {
+    await this.db.update(notVerifiedUsers).set({ addedToThread }).where(eq(notVerifiedUsers.userId, userId));
+  }
+
+  async isAddedToThread(userId: string): Promise<boolean> {
+    const result = await this.getSingleRowWithFields(notVerifiedUsers, eq(notVerifiedUsers.userId, userId), {
+      added: notVerifiedUsers.addedToThread,
+    });
+
+    return result?.added ?? false;
+  }
+
+  async getAllNotAddedToThread(): Promise<NotVerifiedUser[]> {
+    return await this.db
+      .select()
+      .from(notVerifiedUsers)
+      .where(and(eq(notVerifiedUsers.addedToThread, false), isNotNull(notVerifiedUsers.threadId), eq(notVerifiedUsers.lock, false)));
   }
 
   // Left Users

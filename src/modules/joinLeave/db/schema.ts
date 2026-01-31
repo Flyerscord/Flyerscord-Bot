@@ -12,6 +12,7 @@ export const notVerifiedUsers = createModuleTable(
     timedoutAt: timestamp("timedout_at"),
     timeOutCount: integer("time_out_count").default(0).notNull(),
     threadId: text("thread_id"),
+    addedToThread: boolean("added_to_thread").default(false).notNull(),
   },
   (table) => [index("joinleave_added_at_idx").on(table.addedAt), index("joinleave_timedout_at_idx").on(table.timedoutAt)],
 );

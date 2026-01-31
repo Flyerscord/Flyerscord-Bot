@@ -38,7 +38,9 @@ export default class StatsVoiceChannelModule extends Module {
     this.registerSchedules();
   }
 
-  protected async cleanup(): Promise<void> {}
+  protected async cleanup(): Promise<void> {
+    UpdateStatsChannelsTask.getInstance().stopScheduledJob();
+  }
 
   private registerSchedules(): void {
     UpdateStatsChannelsTask.getInstance().createScheduledJob();

@@ -60,7 +60,9 @@ export default class BlueSkyModule extends Module {
     this.registerSchedules();
   }
 
-  protected async cleanup(): Promise<void> {}
+  protected async cleanup(): Promise<void> {
+    CheckForNewPostsTask.getInstance().stopScheduledJob();
+  }
 
   private registerSchedules(): void {
     CheckForNewPostsTask.getInstance().createScheduledJob();

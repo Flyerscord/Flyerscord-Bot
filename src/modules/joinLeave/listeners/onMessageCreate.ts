@@ -1,5 +1,5 @@
 import ClientManager from "@common/managers/ClientManager";
-import { Message, bold } from "discord.js";
+import { Message, bold, userMention } from "discord.js";
 import JoinLeaveDB from "../db/JoinLeaveDB";
 import ConfigManager from "@common/managers/ConfigManager";
 import discord from "@common/utils/discord/discord";
@@ -139,11 +139,11 @@ export default (): void => {
             const leftUser = await db.getLeftUser(user.id);
 
             const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
-            void discord.messages.sendMessageToChannel(adminNotificationChannelId, `<@${user.id}> has verified!`);
+            void discord.messages.sendMessageToChannel(adminNotificationChannelId, `${userMention(user.id)} has verified!`);
 
             // Send the welcome message
             const username = member.displayName || member.user.username;
-            const message = `<@${member.id}>\nWelcome${leftUser !== undefined ? " back" : ""} to the ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
+            const message = `${userMention(member.id)}\nWelcome${leftUser !== undefined ? " back" : ""} to the ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
             const joinImageGenerator = new JoinImageGenerator(username, member.displayAvatarURL(), discord.members.getNumberOfMembers());
             let joinPhoto: Buffer;
             try {

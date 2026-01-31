@@ -1,5 +1,5 @@
 import ConfigManager from "@common/managers/ConfigManager";
-import { EmbedBuilder, User } from "discord.js";
+import { EmbedBuilder, User, userMention } from "discord.js";
 import JoinLeaveDB from "../db/JoinLeaveDB";
 import Stumper from "stumper";
 import discord from "@common/utils/discord/discord";
@@ -71,7 +71,7 @@ export async function sendCaptcha(user: User, skipLock: boolean = false): Promis
 
       if (result) {
         // Ping the user
-        await discord.messages.sendMessageToThread(notVerifiedUser.threadId, `<@${user.id}>`);
+        await discord.messages.sendMessageToThread(notVerifiedUser.threadId, `${userMention(user.id)}`);
       }
     }
 

@@ -4,6 +4,7 @@ import Stumper from "stumper";
 import ConfigManager from "@common/managers/ConfigManager";
 import JoinLeaveDB from "../db/JoinLeaveDB";
 import MyAuditLog from "@common/utils/MyAuditLog";
+import { userMention } from "discord.js";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
@@ -23,7 +24,7 @@ export default (): void => {
       Stumper.info(`User ${username} has joined the server!`, "joinLeave:onGuildMemberAdd");
 
       const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
-      void discord.messages.sendMessageToChannel(adminNotificationChannelId, `<@${user.id}> has joined the server!`);
+      void discord.messages.sendMessageToChannel(adminNotificationChannelId, `${userMention(user.id)} has joined the server!`);
 
       // Captcha
       const notVerifiedRoleId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedRoleId;

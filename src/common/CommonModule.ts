@@ -42,6 +42,15 @@ export const commonConfigSchema = [
     defaultValue: "",
     schema: Zod.string(),
   },
+  {
+    key: "adminRoleId",
+    description: "The role ID of the admin role",
+    required: true,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
 ] as const satisfies readonly IModuleConfigSchema[];
 
 export default class CommonModule extends Module {

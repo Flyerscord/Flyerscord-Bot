@@ -1,7 +1,7 @@
 import { AdminSlashCommand } from "@common/models/SlashCommand";
 import ConfigManager from "@common/managers/ConfigManager";
 import discord from "@common/utils/discord/discord";
-import { bold, ChatInputCommandInteraction } from "discord.js";
+import { bold, ChatInputCommandInteraction, userMention } from "discord.js";
 import JoinLeaveDB from "../../db/JoinLeaveDB";
 import JoinImageGenerator from "../../utils/JoinImageGenerator";
 import Stumper from "stumper";
@@ -23,7 +23,7 @@ export default class VerifyUserCommand extends AdminSlashCommand {
 
     const member = await discord.members.getMember(user.id, true);
     if (!member) {
-      await this.replies.reply(`User <@${user.id}> is not in the server!`);
+      await this.replies.reply(`User ${userMention(user.id)} is not in the server!`);
       return;
     }
 
@@ -31,7 +31,7 @@ export default class VerifyUserCommand extends AdminSlashCommand {
 
     const notVerifiedUser = await db.getNotVerifiedUser(user.id);
     if (!notVerifiedUser) {
-      await this.replies.reply(`User <@${user.id}> is already verified!`);
+      await this.replies.reply(`User ${userMention(user.id)} is already verified!`);
       return;
     }
 
@@ -48,7 +48,7 @@ export default class VerifyUserCommand extends AdminSlashCommand {
     // Send the welcome message
     if (sendWelcomeMessage) {
       const username = member.displayName || member.user.username;
-      const message = `<@${member.id}>\nWelcome${leftUser !== undefined ? " back" : ""} to the ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
+      const message = `${userMention(member.id)}\nWelcome${leftUser !== undefined ? " back" : ""} to the ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
       const joinImageGenerator = new JoinImageGenerator(username, member.displayAvatarURL(), discord.members.getNumberOfMembers());
       let joinPhoto: Buffer;
       try {
@@ -60,9 +60,9 @@ export default class VerifyUserCommand extends AdminSlashCommand {
     }
 
     const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
-    void discord.messages.sendMessageToChannel(adminNotificationChannelId, `<@${user.id}> has been manually verified!`);
+    void discord.messages.sendMessageToChannel(adminNotificationChannelId, `${userMention(user.id)} has been manually verified!`);
 
-    await this.replies.reply(`User <@${user.id}> has been verified!`);
+    await this.replies.reply(`User ${userMention(user.id)} has been verified!`);
 
     if (leftUser) {
       Stumper.info(`User ${user.id} was previously left, adding their roles back`, "joinLeave:VerifyUserCommand");

@@ -1,5 +1,5 @@
 import { AdminSlashCommand } from "@common/models/SlashCommand";
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, roleMention } from "discord.js";
 import JoinLeaveDB from "../../db/JoinLeaveDB";
 import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/managers/ConfigManager";
@@ -25,6 +25,8 @@ export default class SetRaidProtectionCommand extends AdminSlashCommand {
     const db = new JoinLeaveDB();
 
     const currentState = await db.getRaidProtectionActive();
+    const adminRoleId = ConfigManager.getInstance().getConfig("Common").adminRoleId;
+    const adminLoungeChannelId = ConfigManager.getInstance().getConfig("Common").adminLoungeChannelId;
 
     if (this.isSubCommand(interaction, "enable")) {
       if (currentState) {
@@ -41,8 +43,8 @@ export default class SetRaidProtectionCommand extends AdminSlashCommand {
       await this.replies.reply({ content: "Raid protection enabled!" });
 
       await discord.messages.sendMessageToChannel(
-        ConfigManager.getInstance().getConfig("Common").adminLoungeChannelId,
-        "Raid protection has been Enabled! Captcha answers will be disabled until the raid is resolved.",
+        adminLoungeChannelId,
+        `${roleMention(adminRoleId)}\nRaid protection has been Enabled! Captcha answers will be disabled until the raid is resolved.`,
       );
 
       void db.createAuditLog({
@@ -70,8 +72,8 @@ export default class SetRaidProtectionCommand extends AdminSlashCommand {
       await this.replies.reply({ content: "Raid protection disabled!" });
 
       await discord.messages.sendMessageToChannel(
-        ConfigManager.getInstance().getConfig("Common").adminLoungeChannelId,
-        "Raid protection has been disabled! Captcha answers are being accepted again.",
+        adminLoungeChannelId,
+        `${adminRoleId}\nRaid protection has been disabled! Captcha answers are being accepted again.`,
       );
 
       void db.createAuditLog({

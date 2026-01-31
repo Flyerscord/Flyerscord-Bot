@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       prod_code: ${{ steps.filter.outputs.prod_code }}
+      build_code: ${{ steps.filter.outputs.build_code }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -35,9 +36,20 @@ jobs:
               - 'Dockerfile'
               - 'tsconfig*.json'
               - '.dockerignore'
+            build_code:
+              - 'src/**'
+              - 'test/**'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - 'eslint.config.mjs'
+              - '.prettierrc.json'
+              - 'jest.config.js'
+              - 'drizzle.config.ts'
+              - 'tsconfig*.json'
 
   build:
-    if: github.event_name == 'push' || github.event.pull_request.draft == false
+    needs: changes
+    if: github.event_name == 'push' || (needs.changes.outputs.build_code == 'true' && github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

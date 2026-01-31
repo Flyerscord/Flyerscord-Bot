@@ -1,5 +1,5 @@
 import ClientManager from "@common/managers/ClientManager";
-import { Message, bold, userMention } from "discord.js";
+import { Colors, EmbedBuilder, Message, bold, userMention } from "discord.js";
 import JoinLeaveDB from "../db/JoinLeaveDB";
 import ConfigManager from "@common/managers/ConfigManager";
 import discord from "@common/utils/discord/discord";
@@ -47,7 +47,7 @@ export default (): void => {
     const raidProtectionActive = await db.getRaidProtectionActive();
     if (raidProtectionActive.active && notVerifiedUser.addedAt >= raidProtectionActive.updatedAt) {
       await message.reply({
-        content: "New members are currently not allowed due to a raid. Please wait until it is resolved to complete the captcha.",
+        embeds: [createRaidProtectionThreadEmbed()],
       });
       return;
     }
@@ -256,3 +256,14 @@ export default (): void => {
     }
   });
 };
+
+function createRaidProtectionThreadEmbed(): EmbedBuilder {
+  const embed = new EmbedBuilder();
+
+  embed.setTitle("Raid Protection");
+  embed.setDescription("New members are currently not allowed due to a raid. Please wait until it is resolved to complete the captcha.");
+  embed.setColor(Colors.Red);
+  embed.setTimestamp(Date.now());
+
+  return embed;
+}

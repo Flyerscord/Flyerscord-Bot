@@ -36,16 +36,6 @@ jobs:
               - 'tsconfig*.json'
               - '.dockerignore'
 
-  check-version:
-    needs: changes
-    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false && needs.changes.outputs.prod_code == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check if the version was updated
-        uses: Flyerscord/enforce-version-bump-action@v1.0.0
-        with:
-          base-ref: ${{ github.event.pull_request.base.ref }}
-
   build:
     if: github.event_name == 'push' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
@@ -103,6 +93,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Get commit count
+        id: commit-count
+        run: echo "count=$(git rev-list --count HEAD)" >> $GITHUB_OUTPUT
+
       - name: Get package version
         if: github.event_name == 'push'
         id: version
@@ -135,6 +129,8 @@ jobs:
         with:
           context: .
           push: false
+          build-args: |
+            COMMIT_COUNT=${{ steps.commit-count.outputs.count }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -144,6 +140,8 @@ jobs:
         with:
           context: .
           push: true
+          build-args: |
+            COMMIT_COUNT=${{ steps.commit-count.outputs.count }}
           tags: |
             ghcr.io/${{ steps.tag-check.outputs.repo }}:${{ steps.version.outputs.version }}
             ghcr.io/${{ steps.tag-check.outputs.repo }}:latest

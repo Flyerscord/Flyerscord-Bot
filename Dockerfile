@@ -12,6 +12,9 @@ RUN pnpm install --frozen-lockfile
 
 FROM node:24
 
+ARG COMMIT_COUNT=0
+ENV COMMIT_COUNT=${COMMIT_COUNT}
+
 RUN npm install -g pnpm
 
 # Set the timezone so that the logs are in the correct timezone

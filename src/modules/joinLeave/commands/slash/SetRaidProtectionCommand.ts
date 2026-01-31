@@ -1,5 +1,5 @@
 import { AdminSlashCommand } from "@common/models/SlashCommand";
-import { ChatInputCommandInteraction, roleMention } from "discord.js";
+import { ChatInputCommandInteraction, Colors, EmbedBuilder, roleMention } from "discord.js";
 import JoinLeaveDB from "../../db/JoinLeaveDB";
 import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/managers/ConfigManager";
@@ -29,7 +29,7 @@ export default class SetRaidProtectionCommand extends AdminSlashCommand {
     const adminLoungeChannelId = ConfigManager.getInstance().getConfig("Common").adminLoungeChannelId;
 
     if (this.isSubCommand(interaction, "enable")) {
-      if (currentState) {
+      if (currentState.active) {
         await this.replies.reply({ content: "Raid protection is already enabled!" });
         return;
       }
@@ -55,15 +55,15 @@ export default class SetRaidProtectionCommand extends AdminSlashCommand {
 
       // Send messages to the threads that will blocked from completing the captcha
       const notVerifiedUsers = await db.getNotVerifiedUsersBeforeDate(new Date());
-      const message = "Your captcha has been disabled due to a raid. Please wait until it is resolved to complete the captcha.";
+      const embed = this.createRaidProtectionThreadEmbed(true);
       await Promise.all(
         notVerifiedUsers.map(async (user) => {
           if (!user.threadId) return;
-          await discord.messages.sendMessageToThread(user.threadId, message);
+          await discord.messages.sendEmbedToThread(user.threadId, embed);
         }),
       );
     } else if (this.isSubCommand(interaction, "disable")) {
-      if (!currentState) {
+      if (!currentState.active) {
         await this.replies.reply({ content: "Raid protection is already disabled!" });
         return;
       }
@@ -73,7 +73,7 @@ export default class SetRaidProtectionCommand extends AdminSlashCommand {
 
       await discord.messages.sendMessageToChannel(
         adminLoungeChannelId,
-        `${adminRoleId}\nRaid protection has been disabled! Captcha answers are being accepted again.`,
+        `${roleMention(adminRoleId)}\nRaid protection has been disabled! Captcha answers are being accepted again.`,
       );
 
       void db.createAuditLog({
@@ -84,13 +84,29 @@ export default class SetRaidProtectionCommand extends AdminSlashCommand {
 
       // Send messages to the threads that were blocked from completing the captcha
       const notVerifiedUsers = await db.getNotVerifiedUsersBeforeDate(new Date());
-      const message = "Your captcha has been enabled again. Please complete the captcha to continue.";
+      const embed = this.createRaidProtectionThreadEmbed(false);
       await Promise.all(
         notVerifiedUsers.map(async (user) => {
           if (!user.threadId) return;
-          await discord.messages.sendMessageToThread(user.threadId, message);
+          await discord.messages.sendEmbedToThread(user.threadId, embed);
         }),
       );
     }
+  }
+
+  private createRaidProtectionThreadEmbed(isBeingEnabled: boolean): EmbedBuilder {
+    const embed = new EmbedBuilder();
+
+    embed.setTitle("Raid Protection");
+    if (isBeingEnabled) {
+      embed.setDescription("Your captcha has been disabled due to a raid. Please wait until it is resolved to complete the captcha.");
+      embed.setColor(Colors.Red);
+    } else {
+      embed.setDescription("Your captcha has been enabled again. Please complete the captcha to continue.");
+      embed.setColor(Colors.Green);
+    }
+    embed.setTimestamp(Date.now());
+
+    return embed;
   }
 }

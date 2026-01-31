@@ -1,6 +1,6 @@
 {
   "name": "flyerscord-helper",
-  "version": "4.4.10",
+  "version": "4.4.12",
   "description": "Flyers' Discord Helper Bot",
   "main": "src/bot.ts",
   "scripts": {

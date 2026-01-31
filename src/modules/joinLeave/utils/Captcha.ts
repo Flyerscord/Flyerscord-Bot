@@ -5,8 +5,21 @@ import Stumper from "stumper";
 import discord from "@common/utils/discord/discord";
 import { sleepSec } from "@common/utils/sleep";
 
-export async function sendCaptcha(user: User): Promise<void> {
+export async function sendCaptcha(user: User, skipLock: boolean = false): Promise<void> {
   const db = new JoinLeaveDB();
+
+  let heldLock = false;
+
+  if (!skipLock) {
+    // Atomically try to acquire lock - returns false if already locked
+    const lockAcquired = await db.tryLockUser(user.id);
+    if (!lockAcquired) {
+      Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:sendCaptcha");
+      return;
+    }
+    heldLock = true;
+  }
+
   try {
     const questions = ConfigManager.getInstance().getConfig("JoinLeave").captchaQuestions;
     const notVerifiedChannelId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedChannelId;
@@ -64,8 +77,10 @@ export async function sendCaptcha(user: User): Promise<void> {
   } catch (error) {
     Stumper.caughtError(error, "joinLeave:sendCaptcha");
   } finally {
-    // Unlock the user
-    await db.unlockUser(user.id);
+    if (heldLock) {
+      // Unlock the user
+      await db.unlockUser(user.id);
+    }
   }
 }
 

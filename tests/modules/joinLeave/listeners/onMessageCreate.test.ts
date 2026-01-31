@@ -63,7 +63,7 @@ jest.mock("@common/utils/discord/discord", () => ({
   members: {
     getMember: jest.fn(),
     banUser: jest.fn().mockResolvedValue(undefined),
-    getNumberOfMembers: jest.fn().mockResolvedValue(42),
+    getNumberOfMembers: jest.fn().mockReturnValue(42),
   },
   roles: {
     removeRoleFromUser: jest.fn().mockResolvedValue(undefined),
@@ -120,7 +120,7 @@ describe("onMessageCreate", () => {
       addNotVerifiedUser: jest.fn(),
       deleteNotVerifiedUser: jest.fn().mockResolvedValue(undefined),
       incrementQuestionsAnswered: jest.fn().mockResolvedValue(undefined),
-      lockUser: jest.fn().mockResolvedValue(undefined),
+      tryLockUser: jest.fn().mockResolvedValue(true),
       unlockUser: jest.fn().mockResolvedValue(undefined),
       getNotVerifiedUsers: jest.fn(),
       // New methods for timeout and incorrect answer tracking
@@ -245,7 +245,7 @@ describe("onMessageCreate", () => {
 
       await eventHandler(message);
 
-      expect(mockDb.lockUser).not.toHaveBeenCalled();
+      expect(mockDb.tryLockUser).not.toHaveBeenCalled();
       expect(mockDb.incrementQuestionsAnswered).not.toHaveBeenCalled();
     });
 
@@ -256,7 +256,7 @@ describe("onMessageCreate", () => {
 
       await eventHandler(message);
 
-      expect(mockDb.lockUser).not.toHaveBeenCalled();
+      expect(mockDb.tryLockUser).not.toHaveBeenCalled();
       expect(mockDb.incrementQuestionsAnswered).not.toHaveBeenCalled();
     });
 
@@ -267,7 +267,7 @@ describe("onMessageCreate", () => {
 
       await eventHandler(message);
 
-      expect(mockDb.lockUser).not.toHaveBeenCalled();
+      expect(mockDb.tryLockUser).not.toHaveBeenCalled();
       expect(mockDb.incrementQuestionsAnswered).not.toHaveBeenCalled();
     });
   });
@@ -283,7 +283,7 @@ describe("onMessageCreate", () => {
       await eventHandler(message);
 
       // Should lock user during processing
-      expect(mockDb.lockUser).toHaveBeenCalledWith("user-123");
+      expect(mockDb.tryLockUser).toHaveBeenCalledWith("user-123");
 
       // Should increment questions answered
       expect(mockDb.incrementQuestionsAnswered).toHaveBeenCalledWith("user-123");
@@ -292,7 +292,7 @@ describe("onMessageCreate", () => {
       expect(message.reply).toHaveBeenCalledWith("Correct!");
 
       // Should send next captcha
-      expect(sendCaptcha).toHaveBeenCalledWith(message.author);
+      expect(sendCaptcha).toHaveBeenCalledWith(message.author, true);
 
       // Should unlock user after processing
       expect(mockDb.unlockUser).toHaveBeenCalledWith("user-123");
@@ -312,7 +312,7 @@ describe("onMessageCreate", () => {
       await eventHandler(message);
 
       // Should lock user
-      expect(mockDb.lockUser).toHaveBeenCalledWith("user-123");
+      expect(mockDb.tryLockUser).toHaveBeenCalledWith("user-123");
 
       // Should increment questions answered
       expect(mockDb.incrementQuestionsAnswered).toHaveBeenCalledWith("user-123");
@@ -370,7 +370,7 @@ describe("onMessageCreate", () => {
       await eventHandler(message);
 
       // Should lock and unlock
-      expect(mockDb.lockUser).toHaveBeenCalledWith("user-123");
+      expect(mockDb.tryLockUser).toHaveBeenCalledWith("user-123");
       expect(mockDb.unlockUser).toHaveBeenCalledWith("user-123");
 
       // Should NOT increment questions answered
@@ -426,7 +426,7 @@ describe("onMessageCreate", () => {
       await eventHandler(message);
 
       // Should lock user
-      expect(mockDb.lockUser).toHaveBeenCalledWith("user-123");
+      expect(mockDb.tryLockUser).toHaveBeenCalledWith("user-123");
 
       // Should unlock user
       expect(mockDb.unlockUser).toHaveBeenCalledWith("user-123");
@@ -451,7 +451,7 @@ describe("onMessageCreate", () => {
       await eventHandler(message);
 
       // Lock should still be called
-      expect(mockDb.lockUser).toHaveBeenCalledWith("user-123");
+      expect(mockDb.tryLockUser).toHaveBeenCalledWith("user-123");
 
       // Unlock should be called in finally block
       expect(mockDb.unlockUser).toHaveBeenCalledWith("user-123");
@@ -482,7 +482,7 @@ describe("onMessageCreate", () => {
       await eventHandler(message);
 
       // Verify lock is called before other operations
-      const lockCallOrder = mockDb.lockUser.mock.invocationCallOrder[0];
+      const lockCallOrder = mockDb.tryLockUser.mock.invocationCallOrder[0];
       const incrementCallOrder = mockDb.incrementQuestionsAnswered.mock.invocationCallOrder[0];
 
       expect(lockCallOrder).toBeLessThan(incrementCallOrder);

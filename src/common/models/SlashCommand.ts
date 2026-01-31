@@ -43,10 +43,17 @@ export default abstract class SlashCommand extends Command {
    * @param defaultValue - The default value to return if val is null
    * @returns The value if not null, otherwise the default value
    */
-  protected returnParamValue<T>(val: T | null, defaultValue?: T): T {
+  protected returnParamValue<T>(paramName: string, val: T | null, defaultValue?: T): T {
     // If the value is null, this mean that that default value was provided\
     // If the default value was not provided, this mean that the value is not null
     if (val === null) {
+      if (defaultValue === undefined) {
+        Stumper.error(
+          `Implementation error: default value is undefined for not required parameter ${paramName}`,
+          "common:SlashCommand:returnParamValue",
+        );
+        throw new Error(`Implementation error: default value is undefined for not required parameter ${paramName}`);
+      }
       return defaultValue!;
     }
     return val;
@@ -60,8 +67,8 @@ export default abstract class SlashCommand extends Command {
    * @returns The string value of the parameter
    */
   protected getStringParamValue(interaction: ChatInputCommandInteraction, paramName: string, defaultValue?: string): string {
-    const val = interaction.options.getString(paramName, defaultValue !== undefined);
-    return this.returnParamValue(val, defaultValue);
+    const val = interaction.options.getString(paramName, defaultValue == undefined);
+    return this.returnParamValue(paramName, val, defaultValue);
   }
 
   /**
@@ -72,8 +79,8 @@ export default abstract class SlashCommand extends Command {
    * @returns The role value of the parameter
    */
   protected getRoleParamValue(interaction: ChatInputCommandInteraction, paramName: string, defaultValue?: RoleParamType): RoleParamType {
-    const val = interaction.options.getRole(paramName, defaultValue !== undefined);
-    return this.returnParamValue(val, defaultValue);
+    const val = interaction.options.getRole(paramName, defaultValue == undefined);
+    return this.returnParamValue(paramName, val, defaultValue);
   }
 
   /**
@@ -84,8 +91,8 @@ export default abstract class SlashCommand extends Command {
    * @returns The boolean value of the parameter
    */
   protected getBooleanParamValue(interaction: ChatInputCommandInteraction, paramName: string, defaultValue?: boolean): boolean {
-    const val = interaction.options.getBoolean(paramName, defaultValue !== undefined);
-    return this.returnParamValue(val, defaultValue);
+    const val = interaction.options.getBoolean(paramName, defaultValue == undefined);
+    return this.returnParamValue(paramName, val, defaultValue);
   }
 
   /**
@@ -96,8 +103,8 @@ export default abstract class SlashCommand extends Command {
    * @returns The channel value of the parameter
    */
   protected getChannelParamValue(interaction: ChatInputCommandInteraction, paramName: string, defaultValue?: ChannelParamType): ChannelParamType {
-    const val = interaction.options.getChannel(paramName, defaultValue !== undefined);
-    return this.returnParamValue(val, defaultValue);
+    const val = interaction.options.getChannel(paramName, defaultValue == undefined);
+    return this.returnParamValue(paramName, val, defaultValue);
   }
 
   /**
@@ -108,8 +115,8 @@ export default abstract class SlashCommand extends Command {
    * @returns The attachment value of the parameter
    */
   protected getAttachmentParamValue(interaction: ChatInputCommandInteraction, paramName: string, defaultValue?: Attachment): Attachment {
-    const val = interaction.options.getAttachment(paramName, defaultValue !== undefined);
-    return this.returnParamValue(val, defaultValue);
+    const val = interaction.options.getAttachment(paramName, defaultValue == undefined);
+    return this.returnParamValue(paramName, val, defaultValue);
   }
 
   /**
@@ -120,8 +127,8 @@ export default abstract class SlashCommand extends Command {
    * @returns The integer value of the parameter
    */
   protected getIntegerParamValue(interaction: ChatInputCommandInteraction, paramName: string, defaultValue?: number): number {
-    const val = interaction.options.getInteger(paramName, defaultValue !== undefined);
-    return this.returnParamValue(val, defaultValue);
+    const val = interaction.options.getInteger(paramName, defaultValue == undefined);
+    return this.returnParamValue(paramName, val, defaultValue);
   }
 
   /**
@@ -137,7 +144,7 @@ export default abstract class SlashCommand extends Command {
     defaultValue?: MemberParamType,
   ): MemberParamType | undefined {
     const val = interaction.options.getMember(paramName);
-    return this.returnParamValue(val, defaultValue);
+    return this.returnParamValue(paramName, val, defaultValue);
   }
 
   /**
@@ -148,8 +155,8 @@ export default abstract class SlashCommand extends Command {
    * @returns The user value of the parameter
    */
   protected getUserParamValue(interaction: ChatInputCommandInteraction, paramName: string, defaultValue?: User): User {
-    const val = interaction.options.getUser(paramName, defaultValue !== undefined);
-    return this.returnParamValue(val, defaultValue);
+    const val = interaction.options.getUser(paramName, defaultValue == undefined);
+    return this.returnParamValue(paramName, val, defaultValue);
   }
 
   /**
@@ -249,8 +256,8 @@ export abstract class AutocompleteSlashCommand extends SlashCommand {
    * @returns The string value of the option
    */
   protected getStringOptionValue(interaction: AutocompleteInteraction, paramName: string, defaultValue?: string): string {
-    const val = interaction.options.getString(paramName, defaultValue !== undefined);
-    return this.returnParamValue(val, defaultValue);
+    const val = interaction.options.getString(paramName, defaultValue == undefined);
+    return this.returnParamValue(paramName, val, defaultValue);
   }
 
   /**
@@ -261,8 +268,8 @@ export abstract class AutocompleteSlashCommand extends SlashCommand {
    * @returns The boolean value of the option
    */
   protected getBooleanOptionValue(interaction: AutocompleteInteraction, paramName: string, defaultValue?: boolean): boolean {
-    const val = interaction.options.getBoolean(paramName, defaultValue !== undefined);
-    return this.returnParamValue(val, defaultValue);
+    const val = interaction.options.getBoolean(paramName, defaultValue == undefined);
+    return this.returnParamValue(paramName, val, defaultValue);
   }
 
   /**
@@ -273,8 +280,8 @@ export abstract class AutocompleteSlashCommand extends SlashCommand {
    * @returns The integer value of the option
    */
   protected getIntegerOptionValue(interaction: AutocompleteInteraction, paramName: string, defaultValue?: number): number {
-    const val = interaction.options.getInteger(paramName, defaultValue !== undefined);
-    return this.returnParamValue(val, defaultValue);
+    const val = interaction.options.getInteger(paramName, defaultValue == undefined);
+    return this.returnParamValue(paramName, val, defaultValue);
   }
 
   /**

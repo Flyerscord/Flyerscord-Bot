@@ -1,5 +1,5 @@
 import { AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js";
-import { AdminAutocompleteSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { AdminAutocompleteSlashCommand } from "@common/models/SlashCommand";
 import { AccountAlreadyExistsException } from "../../exceptions/AccountAlreadyExistsException";
 import { AccountDoesNotExistException } from "../../exceptions/AccountDoesNotExistException";
 import Stumper from "stumper";
@@ -33,7 +33,8 @@ export default class BlueSkyCommand extends AdminAutocompleteSlashCommand {
     const bk = BlueSky.getInstance();
 
     if (this.isSubCommand(interaction, "add")) {
-      const account: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "account");
+      const account = this.getStringParamValue(interaction, "account");
+
       try {
         await bk.addAccountToList(account);
         await db.addAuditLog(BlueSkyActionType.ADD, interaction.user.id, { account: account });
@@ -47,7 +48,7 @@ export default class BlueSkyCommand extends AdminAutocompleteSlashCommand {
         }
       }
     } else if (this.isSubCommand(interaction, "remove")) {
-      const account: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "account");
+      const account = this.getStringParamValue(interaction, "account");
       try {
         await bk.removeAccountFromList(account);
         await db.addAuditLog(BlueSkyActionType.REMOVE, interaction.user.id, { account: account });

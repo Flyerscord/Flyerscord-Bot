@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import SlashCommand, { PARAM_TYPES } from "@common/models/SlashCommand";
+import SlashCommand from "@common/models/SlashCommand";
 import { events } from "../../models/DaysUntilEvents";
 import Time from "@common/utils/Time";
 import DaysUntilDB from "../../db/DaysUntilDB";
@@ -14,7 +14,7 @@ export default class DaysUntilCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const eventKey: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "event");
+    const eventKey = this.getStringParamValue(interaction, "event");
 
     const event = Object.values(events).find((event) => event.name == eventKey);
 

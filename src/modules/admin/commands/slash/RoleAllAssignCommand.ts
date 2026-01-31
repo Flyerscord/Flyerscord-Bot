@@ -1,5 +1,5 @@
-import { ChatInputCommandInteraction, Role } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { ChatInputCommandInteraction } from "discord.js";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import discord from "@common/utils/discord/discord";
 
 export default class RoleAllAssignCommand extends AdminSlashCommand {
@@ -14,8 +14,8 @@ export default class RoleAllAssignCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const role: Role = this.getParamValue(interaction, PARAM_TYPES.ROLE, "role");
-    const onlyNoRole: boolean = this.getParamValue(interaction, PARAM_TYPES.BOOLEAN, "onlynonrole") || false;
+    const role = this.getRoleParamValue(interaction, "role");
+    const onlyNoRole = this.getBooleanParamValue(interaction, "onlynonrole", false);
 
     const members = await discord.members.getMembers();
     if (!members) {

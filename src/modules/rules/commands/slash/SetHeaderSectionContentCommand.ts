@@ -1,8 +1,8 @@
 import ConfigManager from "@common/managers/ConfigManager";
-import { AdminAutocompleteSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { AdminAutocompleteSlashCommand } from "@common/models/SlashCommand";
 import discord from "@common/utils/discord/discord";
 import RulesDB from "@modules/rules/db/RulesDB";
-import { Attachment, AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js";
+import { AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js";
 
 export default class SetHeaderSectionContentCommand extends AdminAutocompleteSlashCommand {
   constructor() {
@@ -15,7 +15,7 @@ export default class SetHeaderSectionContentCommand extends AdminAutocompleteSla
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     const db = new RulesDB();
-    const name: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "name");
+    const name = this.getStringParamValue(interaction, "name");
 
     const section = await db.getSection(name);
     const config = ConfigManager.getInstance().getConfig("Rules");
@@ -26,7 +26,7 @@ export default class SetHeaderSectionContentCommand extends AdminAutocompleteSla
       return;
     }
 
-    const header: Attachment = this.getParamValue(interaction, PARAM_TYPES.ATTACHMENT, "header");
+    const header = this.getAttachmentParamValue(interaction, "header");
 
     await db.setHeaderUrl(name, header.url);
     if (section.headerMessageId != null && section.headerMessageId !== "") {

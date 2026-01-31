@@ -1,5 +1,5 @@
 import { AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js";
-import { AdminAutocompleteSlashCommand, OPTION_TYPES, PARAM_TYPES } from "@common/models/SlashCommand";
+import { AdminAutocompleteSlashCommand } from "@common/models/SlashCommand";
 import { events, getEventNames } from "../../models/DaysUntilEvents";
 import DaysUntilDB from "../../db/DaysUntilDB";
 
@@ -15,8 +15,8 @@ export default class EnableDisableCommand extends AdminAutocompleteSlashCommand 
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const eventName: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "event");
-    const setEnabled: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "setenabled");
+    const eventName = this.getStringParamValue(interaction, "event");
+    const setEnabled = this.getStringParamValue(interaction, "setenabled");
 
     const enable: boolean = setEnabled.toLowerCase() == "enable";
 
@@ -37,9 +37,7 @@ export default class EnableDisableCommand extends AdminAutocompleteSlashCommand 
     if (focusedName == "event") {
       return getEventNames();
     } else if (focusedName == "setenabled") {
-      const eventName = this.getOptionValue(interaction, OPTION_TYPES.STRING, "event");
-      if (!eventName) return undefined;
-      eventName as string;
+      const eventName = this.getStringOptionValue(interaction, "event");
 
       const event = Object.values(events).find((event) => event.name == eventName);
       if (event) {

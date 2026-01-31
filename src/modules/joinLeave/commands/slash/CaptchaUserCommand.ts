@@ -1,7 +1,7 @@
-import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import ConfigManager from "@common/managers/ConfigManager";
 import discord from "@common/utils/discord/discord";
-import { ChatInputCommandInteraction, User } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import JoinLeaveDB from "../../db/JoinLeaveDB";
 import { sendCaptcha } from "../../utils/Captcha";
 
@@ -15,8 +15,8 @@ export default class CaptchaUserCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const user = this.getParamValue(interaction, PARAM_TYPES.USER, "user") as User;
-    const confirmation = this.getParamValue(interaction, PARAM_TYPES.STRING, "confirmation") as string;
+    const user = this.getUserParamValue(interaction, "user");
+    const confirmation = this.getStringParamValue(interaction, "confirmation");
 
     if (confirmation != "CONFIRM") {
       await this.replies.reply("Incorrect confirmation! Please try again.");

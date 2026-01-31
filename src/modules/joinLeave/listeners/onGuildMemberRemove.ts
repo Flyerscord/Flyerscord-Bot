@@ -1,4 +1,4 @@
-import { AttachmentBuilder, bold } from "discord.js";
+import { AttachmentBuilder, bold, italic } from "discord.js";
 import ClientManager from "@common/managers/ClientManager";
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
@@ -12,7 +12,13 @@ export default (): void => {
   client.on("guildMemberRemove", async (member) => {
     const username = member.displayName || member.user.username;
 
-    let message = `${bold(username)} has just left the server! Typical Pens fan ${bold(username)}...`;
+    let leftBeforeStr = "";
+    const leftBefore = await MyAuditLog.getAuditLogsByUserAndAction("JoinLeave", member.user.id, "userLeft");
+    if (leftBefore.length > 0) {
+      leftBeforeStr = `${italic(bold("again"))}`;
+    }
+
+    let message = `${bold(username)} has just left the server${leftBeforeStr}! Typical Pens fan ${bold(username)}...`;
 
     const kickedForNotVerifiedALs = await MyAuditLog.getAuditLogsByUserAndAction("JoinLeave", member.user.id, "kickedNotVerifiedUser");
     if (kickedForNotVerifiedALs.length > 0) {
@@ -20,7 +26,7 @@ export default (): void => {
         const timeSinceKick = Time.timeSince(al.timestamp.getTime());
         // If the user was kicked for not verified within the last minute
         if (timeSinceKick <= 60_000) {
-          message = `${bold(username)} has just left the server! Guess they don't know what a puck is...`;
+          message = `${bold(username)} has just left the server${leftBeforeStr}! Guess they don't know what a puck is...`;
           break;
         }
       }

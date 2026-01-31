@@ -48,7 +48,7 @@ export default class VerifyUserCommand extends AdminSlashCommand {
     // Send the welcome message
     if (sendWelcomeMessage) {
       const username = member.displayName || member.user.username;
-      const message = `${userMention(member.id)}\nWelcome${leftUser !== undefined ? " back" : ""} to the ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
+      const message = `${userMention(member.id)}\nWelcome${leftUser !== undefined ? " back" : ""} to ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
       const joinImageGenerator = new JoinImageGenerator(username, member.displayAvatarURL(), discord.members.getNumberOfMembers());
       let joinPhoto: Buffer;
       try {

@@ -1,6 +1,6 @@
 import { AutocompleteInteraction, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 
-import { AdminAutocompleteSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { AdminAutocompleteSlashCommand } from "@common/models/SlashCommand";
 import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/managers/ConfigManager";
 import CustomCommandsDB from "../../db/CustomCommandsDB";
@@ -18,7 +18,7 @@ export default class InfoCommand extends AdminAutocompleteSlashCommand {
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     const db = new CustomCommandsDB();
 
-    const commandName: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "name");
+    const commandName = this.getStringParamValue(interaction, "name");
 
     const command = await db.getCommand(commandName);
 

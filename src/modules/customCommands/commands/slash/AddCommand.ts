@@ -1,5 +1,5 @@
-import { Attachment, ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { ChatInputCommandInteraction } from "discord.js";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import { InvalidImgurUrlException } from "../../exceptions/InvalidImgurUrlException";
 import { ErrorUploadingToImageKitException } from "../../exceptions/ErrorUploadingToImageKitException";
 import Stumper from "stumper";
@@ -48,14 +48,14 @@ export default class AddCommand extends AdminSlashCommand {
     let isTextOnly: boolean = false;
 
     if (this.isSubCommand(interaction, "image")) {
-      name = (this.getParamValue(interaction, PARAM_TYPES.STRING, "name") as string).toLowerCase();
-      text = (this.getParamValue(interaction, PARAM_TYPES.ATTACHMENT, "image") as Attachment).url;
+      name = this.getStringParamValue(interaction, "name").toLowerCase();
+      text = this.getAttachmentParamValue(interaction, "image").url;
     } else if (this.isSubCommand(interaction, "imagelink")) {
-      name = (this.getParamValue(interaction, PARAM_TYPES.STRING, "name") as string).toLowerCase();
-      text = this.getParamValue(interaction, PARAM_TYPES.STRING, "link") as string;
+      name = this.getStringParamValue(interaction, "name").toLowerCase();
+      text = this.getStringParamValue(interaction, "link");
     } else if (this.isSubCommand(interaction, "text")) {
-      name = (this.getParamValue(interaction, PARAM_TYPES.STRING, "name") as string).toLowerCase();
-      text = this.getParamValue(interaction, PARAM_TYPES.STRING, "text");
+      name = this.getStringParamValue(interaction, "name").toLowerCase();
+      text = this.getStringParamValue(interaction, "text");
       isTextOnly = true;
     }
 

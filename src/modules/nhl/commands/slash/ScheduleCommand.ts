@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, EmbedBuilder, time, TimestampStyles } from "discord.js";
 import nhlApi from "nhl-api-wrapper-ts";
 
-import SlashCommand, { PARAM_TYPES } from "@common/models/SlashCommand";
+import SlashCommand from "@common/models/SlashCommand";
 import { TEAM_TRI_CODE } from "nhl-api-wrapper-ts/dist/interfaces/Common";
 import { IClubScheduleNowOutput } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubScheduleNow";
 import { NHL_EMOJI_GUILD_ID } from "@common/utils/discord/emojis";
@@ -19,7 +19,7 @@ export default class ScheduleCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const numberOfGames: number = this.getParamValue(interaction, PARAM_TYPES.INTEGER, "number") || 5;
+    const numberOfGames = this.getIntegerParamValue(interaction, "number", 5);
 
     const scheduleResponse = await nhlApi.teams.schedule.getCurrentTeamSchedule({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
 

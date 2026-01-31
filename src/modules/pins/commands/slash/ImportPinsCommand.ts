@@ -1,5 +1,5 @@
-import { Channel, ChatInputCommandInteraction, TextChannel } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { ChatInputCommandInteraction, TextChannel } from "discord.js";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import Stumper from "stumper";
 import { getPinEmbed } from "../../utils/Embeds";
 import discord from "@common/utils/discord/discord";
@@ -14,7 +14,7 @@ export default class ImportPinsCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const channel: Channel = this.getParamValue(interaction, PARAM_TYPES.CHANNEL, "channel");
+    const channel = this.getChannelParamValue(interaction, "channel");
     const db = new PinsDB();
     const config = ConfigManager.getInstance().getConfig("Pins");
 

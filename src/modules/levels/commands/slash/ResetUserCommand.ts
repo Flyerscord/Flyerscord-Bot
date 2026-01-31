@@ -1,6 +1,6 @@
-import { ChatInputCommandInteraction, User } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import Stumper from "stumper";
-import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import LevelsDB from "../../db/LevelsDB";
 
 export default class ResetUserCommand extends AdminSlashCommand {
@@ -18,8 +18,8 @@ export default class ResetUserCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const confirmation: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "confirm");
-    const user: User = this.getParamValue(interaction, PARAM_TYPES.USER, "user");
+    const confirmation = this.getStringParamValue(interaction, "confirm");
+    const user = this.getUserParamValue(interaction, "user");
 
     const db = new LevelsDB();
 

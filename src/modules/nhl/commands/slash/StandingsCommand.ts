@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import nhlApi from "nhl-api-wrapper-ts";
 
-import SlashCommand, { PARAM_TYPES } from "@common/models/SlashCommand";
+import SlashCommand from "@common/models/SlashCommand";
 import { IStandingsByDateOutput_standings } from "nhl-api-wrapper-ts/dist/interfaces/standings/StandingsByDate";
 import discord from "@common/utils/discord/discord";
 import { NHL_EMOJI_GUILD_ID } from "@common/utils/discord/emojis";
@@ -61,14 +61,14 @@ export default class StandingsCommand extends SlashCommand {
     if (res.status == 200) {
       const standings = res.data;
       if (this.isSubCommand(interaction, "division")) {
-        const division: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "division");
+        const division = this.getStringParamValue(interaction, "division");
 
         const divStandings = this.getDivisionStandings(standings.standings, division);
 
         const embed = await this.createDivisionEmbed(division, divStandings);
         await this.replies.reply({ embeds: [embed] });
       } else if (this.isSubCommand(interaction, "conference")) {
-        const conference: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "conference");
+        const conference = this.getStringParamValue(interaction, "conference");
 
         const confStandings = this.getConferenceStandings(standings.standings, conference);
 
@@ -80,7 +80,7 @@ export default class StandingsCommand extends SlashCommand {
         const embeds = await this.createLeagueEmbeds(leagueStandings);
         await this.replies.reply({ embeds: embeds });
       } else if (this.isSubCommand(interaction, "wildcard")) {
-        const conference: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "conference");
+        const conference = this.getStringParamValue(interaction, "conference");
 
         const wildcardStandings = this.getConferenceStandings(standings.standings, conference);
 

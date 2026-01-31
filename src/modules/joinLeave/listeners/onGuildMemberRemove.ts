@@ -48,7 +48,8 @@ export default (): void => {
       await db.deleteNotVerifiedUser(member.user.id);
     }
 
-    const roles = discord.roles.getUserRoles(member);
+    const everyoneRoleId = discord.guilds.getGuild()?.roles.everyone.id;
+    const roles = discord.roles.getUserRoles(member).filter((role) => role !== everyoneRoleId);
     await db.addLeftUser(member.user.id, roles);
 
     void MyAuditLog.createAuditLog("JoinLeave", {

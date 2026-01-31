@@ -3,6 +3,7 @@ import { eq, and, desc, asc, gt, sql } from "drizzle-orm";
 import { rulesSections, rulesMessages, rulesSectionMessages, rulesState, RulesSectionTypeEnum, RuleSectionDTO, RuleContentPageDTO } from "./schema";
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
+import { italic } from "discord.js";
 
 export default class RulesDB extends ModuleDatabase {
   constructor() {
@@ -310,7 +311,7 @@ export default class RulesDB extends ModuleDatabase {
     // Create new placeholder messages
     let success = true;
     for (let i = 0; i < targetCount; i++) {
-      const message = await discord.messages.sendMessageToChannel(channelId, "*Placeholder... Please wait*");
+      const message = await discord.messages.sendMessageToChannel(channelId, `${italic("Placeholder... Please wait")}`);
 
       if (message) {
         await this.addMessage(message.id);

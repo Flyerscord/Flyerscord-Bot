@@ -43,16 +43,16 @@ export default (): void => {
       return;
     }
 
-    // Check if raid protection is enabled
-    const raidProtectionActive = await db.getRaidProtectionActive();
-    if (raidProtectionActive.active && notVerifiedUser.addedAt >= raidProtectionActive.updatedAt) {
-      await message.reply({
-        embeds: [createRaidProtectionThreadEmbed()],
-      });
-      return;
-    }
-
     try {
+      // Check if raid protection is enabled
+      const raidProtectionActive = await db.getRaidProtectionActive();
+      if (raidProtectionActive.active && notVerifiedUser.addedAt >= raidProtectionActive.updatedAt) {
+        await message.reply({
+          embeds: [createRaidProtectionThreadEmbed()],
+        });
+        return;
+      }
+
       const questions = ConfigManager.getInstance().getConfig("JoinLeave").captchaQuestions;
       if (questions.length <= notVerifiedUser.questionsAnswered) {
         return;

@@ -1,7 +1,7 @@
-import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import ConfigManager from "@common/managers/ConfigManager";
 import discord from "@common/utils/discord/discord";
-import { bold, ChatInputCommandInteraction, User } from "discord.js";
+import { bold, ChatInputCommandInteraction } from "discord.js";
 import JoinLeaveDB from "../../db/JoinLeaveDB";
 import JoinImageGenerator from "../../utils/JoinImageGenerator";
 import Stumper from "stumper";
@@ -18,8 +18,8 @@ export default class VerifyUserCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const user = this.getParamValue(interaction, PARAM_TYPES.USER, "user") as User;
-    const sendWelcomeMessage = (this.getParamValue(interaction, PARAM_TYPES.BOOLEAN, "sendwelcomemessage") as boolean | null) ?? true;
+    const user = this.getUserParamValue(interaction, "user");
+    const sendWelcomeMessage = this.getBooleanParamValue(interaction, "sendwelcomemessage", true);
 
     const member = await discord.members.getMember(user.id, true);
     if (!member) {

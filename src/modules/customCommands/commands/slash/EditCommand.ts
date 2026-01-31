@@ -1,5 +1,5 @@
 import { AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js";
-import { AdminAutocompleteSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { AdminAutocompleteSlashCommand } from "@common/models/SlashCommand";
 import { InvalidImgurUrlException } from "../../exceptions/InvalidImgurUrlException";
 import { ErrorUploadingToImageKitException } from "../../exceptions/ErrorUploadingToImageKitException";
 import Stumper from "stumper";
@@ -25,10 +25,8 @@ export default class EditCommand extends AdminAutocompleteSlashCommand {
 
     const db = new CustomCommandsDB();
 
-    let name: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "name");
-    const newResponse: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "newresponse");
-
-    name = name.toLowerCase();
+    const name = this.getStringParamValue(interaction, "name").toLowerCase();
+    const newResponse = this.getStringParamValue(interaction, "newresponse");
 
     if (!(await db.hasCommand(name))) {
       await this.replies.reply(`Command ${prefix}${name} does not exist!`);

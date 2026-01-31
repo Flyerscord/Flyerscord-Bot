@@ -1,6 +1,5 @@
-import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import RuleFile from "@modules/rules/utils/RuleFile";
-import { Attachment } from "discord.js";
 import { ChatInputCommandInteraction } from "discord.js";
 
 export default class UpdateRulesCommand extends AdminSlashCommand {
@@ -33,7 +32,7 @@ export default class UpdateRulesCommand extends AdminSlashCommand {
         content: `Here is the current rules file. Edit it with your text editor and then run \`/rulesupdate set\` to update the rules.\nEach section's header is marked with \`///HEADER_NAME///\`\nYou can manually add message breaks with \`---BREAK---\`\n\nFor more information on how to format your rules, see the [Discord Markdown Guide](${markdownLink}).`,
       });
     } else if (this.isSubCommand(interaction, "set")) {
-      const file = this.getParamValue(interaction, PARAM_TYPES.ATTACHMENT, "file") as Attachment;
+      const file = this.getAttachmentParamValue(interaction, "file");
 
       if (!file.name.endsWith(".txt")) {
         await this.replies.reply({ content: "Error: File must be a .txt file!" });

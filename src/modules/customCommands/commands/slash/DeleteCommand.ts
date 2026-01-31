@@ -1,5 +1,5 @@
 import { AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js";
-import { AdminAutocompleteSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { AdminAutocompleteSlashCommand } from "@common/models/SlashCommand";
 import ConfigManager from "@common/managers/ConfigManager";
 import CustomCommandsDB from "../../db/CustomCommandsDB";
 
@@ -17,9 +17,7 @@ export default class DeleteCommand extends AdminAutocompleteSlashCommand {
 
     const db = new CustomCommandsDB();
 
-    let name: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "name");
-
-    name = name.toLowerCase();
+    const name = this.getStringParamValue(interaction, "name").toLowerCase();
 
     if (!(await db.hasCommand(name))) {
       await this.replies.reply(`Command ${prefix}${name} does not exist!`);

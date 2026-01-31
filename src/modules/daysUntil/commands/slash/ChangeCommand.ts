@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import { events } from "../../models/DaysUntilEvents";
 import Time from "@common/utils/Time";
 import DaysUntilDB from "../../db/DaysUntilDB";
@@ -18,8 +18,8 @@ export default class ChangeCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const dateStr = this.getParamValue(interaction, PARAM_TYPES.STRING, "date");
-    const eventKey: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "event");
+    const dateStr = this.getStringParamValue(interaction, "date");
+    const eventKey = this.getStringParamValue(interaction, "event");
 
     const event = Object.values(events).find((event) => event.name == eventKey);
     if (!event) {

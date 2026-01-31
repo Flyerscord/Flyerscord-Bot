@@ -1,5 +1,5 @@
-import { Channel, ChatInputCommandInteraction, User } from "discord.js";
-import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { ChatInputCommandInteraction } from "discord.js";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import CommandImporter from "../../utils/CommandImporter";
 
 export default class CommandImportCommand extends AdminSlashCommand {
@@ -22,9 +22,9 @@ export default class CommandImportCommand extends AdminSlashCommand {
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     if (this.isSubCommand(interaction, "start")) {
-      const channel: Channel = this.getParamValue(interaction, PARAM_TYPES.CHANNEL, "channel");
-      const botUser: User = this.getParamValue(interaction, PARAM_TYPES.USER, "botuser");
-      const prefix: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "prefix");
+      const channel = this.getChannelParamValue(interaction, "channel");
+      const botUser = this.getUserParamValue(interaction, "botuser");
+      const prefix = this.getStringParamValue(interaction, "prefix");
 
       CommandImporter.getInstance().enable(channel.id, interaction.user.id, botUser.id, prefix);
 

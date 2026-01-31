@@ -1,4 +1,4 @@
-import { AdminSlashCommand, PARAM_TYPES } from "@common/models/SlashCommand";
+import { AdminSlashCommand } from "@common/models/SlashCommand";
 import RulesDB from "@modules/rules/db/RulesDB";
 import ConfigManager from "@common/managers/ConfigManager";
 import discord from "@common/utils/discord/discord";
@@ -12,7 +12,7 @@ export default class DeleteAllRulesCommand extends AdminSlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const confirm: string = this.getParamValue(interaction, PARAM_TYPES.STRING, "confirm");
+    const confirm = this.getStringParamValue(interaction, "confirm");
 
     if (confirm == "CONFIRM") {
       const db = new RulesDB();

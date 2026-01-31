@@ -1,5 +1,5 @@
-import { AttachmentBuilder, ChatInputCommandInteraction, User } from "discord.js";
-import SlashCommand, { PARAM_TYPES } from "@common/models/SlashCommand";
+import { AttachmentBuilder, ChatInputCommandInteraction } from "discord.js";
+import SlashCommand from "@common/models/SlashCommand";
 import RankImageGenerator from "../../utils/RankImageGenerator";
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
@@ -13,14 +13,7 @@ export default class RankCommand extends SlashCommand {
   }
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    const userInput: User | undefined = this.getParamValue(interaction, PARAM_TYPES.USER, "user");
-
-    let user: User;
-    if (userInput) {
-      user = userInput;
-    } else {
-      user = interaction.user;
-    }
+    const user = this.getUserParamValue(interaction, "user", interaction.user);
 
     const member = await discord.members.getMember(user.id);
     if (!member) {

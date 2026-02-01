@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Colors, EmbedBuilder, GuildMember, Message, User, userMention } from "discord.js";
 
 import Stumper from "stumper";
 import ClientManager from "@common/managers/ClientManager";
@@ -12,36 +12,63 @@ export default (): void => {
 };
 
 async function checkForQuoteCreation(message: Message): Promise<boolean> {
-  let ub3rBotUserId: string | undefined;
-  try {
-    ub3rBotUserId = ConfigManager.getInstance().getConfig("Admin")["ub3rBot.userId"];
-  } catch (_error: unknown) {
-    Stumper.warning("ub3rbot user id not set!", "checkForQuoteCreation");
-  }
-  if (!ub3rBotUserId || !message.author.bot || message.author.id !== ub3rBotUserId) return false;
+  const ub3rBotUserId = ConfigManager.getInstance().getConfig("Admin")["ub3rBot.userId"];
+  if (!message.author.bot || message.author.id !== ub3rBotUserId) return false;
 
-  const regex = /^New quote added by (.+) as #([0-9]+) \((https:\/\/discordapp.com\/channels\/.+)\)$/;
+  const regex = /^New quote added by (.+) as #([0-9]+) \(<(https:\/\/discordapp\.com\/channels\/\d+\/(\d+)\/(\d+))>\)$/;
   const match = regex.exec(message.content);
 
   if (!match) return false;
 
   Stumper.info(`Quote creation detected!`, "Admin:onMessageCreate:checkForQuoteCreation");
 
-  const [, creatorUserId, quoteNumber, quotedMessageLink] = match;
+  const [, quotedByUsername, quoteNumber, quotedMessageLink, channelId, messageId] = match;
 
-  const creator = await discord.members.getMember(creatorUserId);
-
-  let creatorUsername: string;
-  if (!creator) {
-    Stumper.error(`Could not find user with id ${creatorUserId}`, "Admin:onMessageCreate:checkForQuoteCreation");
-    creatorUsername = "Unknown";
-  } else {
-    creatorUsername = creator.displayName || creator.user.username;
+  const quotedMessage = await discord.messages.getMessage(channelId, messageId);
+  if (!quotedMessage) {
+    Stumper.error(`Quoted message not found!`, "Admin:onMessageCreate:checkForQuoteCreation");
+    return false;
   }
 
-  const alertMessage = `New quote #${quoteNumber} added by ${creatorUsername} (${creatorUserId})\nQuoted message: ${quotedMessageLink}\nQuote created message: ${message.url}`;
+  const quotedByUser = await discord.members.getMemberByUsername(quotedByUsername);
+
+  if (!quotedByUser) {
+    Stumper.error(`Quoted by user not found!`, "Admin:onMessageCreate:checkForQuoteCreation");
+    return false;
+  }
+
+  const embed = getQuoteCreationEmbed(quotedByUser, quotedMessage.author, quoteNumber, quotedMessageLink, message.url);
 
   const alertChannelId = ConfigManager.getInstance().getConfig("Admin")["ub3rBot.alertChannelId"];
-  await discord.messages.sendMessageToChannel(alertChannelId, alertMessage);
+  await discord.messages.sendEmbedToChannel(alertChannelId, embed);
   return true;
+}
+
+function getQuoteCreationEmbed(
+  quotedBy: GuildMember,
+  ogMessageAuthor: User,
+  quoteNumber: string,
+  quotedMessageLink: string,
+  quoteCreatedMessageLink: string,
+): EmbedBuilder {
+  const embed = new EmbedBuilder();
+
+  embed.setTitle(`New Quote #${quoteNumber} Created!`);
+  embed.setDescription(`Quoted by ${userMention(quotedBy.user.id)}\nOG message author: ${userMention(ogMessageAuthor.id)}`);
+  embed.addFields(
+    {
+      name: "Quoted Message",
+      value: quotedMessageLink,
+      inline: true,
+    },
+    {
+      name: "Quote Created Message",
+      value: quoteCreatedMessageLink,
+      inline: true,
+    },
+  );
+  embed.setColor(Colors.Yellow);
+  embed.setTimestamp(new Date());
+
+  return embed;
 }

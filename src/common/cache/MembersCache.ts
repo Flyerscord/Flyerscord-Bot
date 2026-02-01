@@ -23,6 +23,10 @@ export default class MembersCache extends Cache<Collection<string, GuildMember> 
     return this.cache?.get(userId);
   }
 
+  getMemberByUsername(username: string): GuildMember | undefined {
+    return this.cache?.find((member) => member.user.username === username);
+  }
+
   private async forceGetMembers(): Promise<Collection<string, GuildMember> | undefined> {
     try {
       const guild = getGuild();

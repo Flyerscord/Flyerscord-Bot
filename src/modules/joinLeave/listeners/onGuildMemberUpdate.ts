@@ -18,6 +18,10 @@ export default (): void => {
 
       // Only proceed if user is in notVerifiedUsers and doesn't have a thread yet
       if (notVerifiedUser && !notVerifiedUser.threadId && !notVerifiedUser.lock) {
+        void db.createAuditLog({
+          action: "userCompletedOnboarding",
+          userId: user.id,
+        });
         Stumper.info(`User ${user.id} completed onboarding, sending captcha`, "joinLeave:onGuildMemberUpdate");
         await sendCaptcha(user);
       }

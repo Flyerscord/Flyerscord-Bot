@@ -17,6 +17,18 @@ export async function getMember(userId: string, force: boolean = true): Promise<
   }
 }
 
+export async function getMemberByUsername(username: string, force: boolean = false): Promise<GuildMember | undefined> {
+  if (force) {
+    const guild = getGuild();
+    if (!guild) return undefined;
+    await guild.members.fetch();
+
+    return guild.members.cache.find((member) => member.user.username === username);
+  }
+  const membersCache = MembersCache.getInstance();
+  return membersCache.getMemberByUsername(username);
+}
+
 export async function getMembers(force: boolean = false): Promise<Collection<string, GuildMember> | undefined> {
   try {
     const membersCache = MembersCache.getInstance();

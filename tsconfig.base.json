@@ -16,7 +16,7 @@
     },
 
     /* Type Declarations */
-    "typeRoots": ["src/common/types", "node_modules/@types"],
+    "typeRoots": ["src/common/types"],
     "resolveJsonModule": true,
 
     /* Output */
@@ -26,6 +26,10 @@
 
     /* Strictness */
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+
+    /* Performance */
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo"
   }
 }

@@ -1,3 +1,4 @@
+import * as auditLog from "./auditLog";
 import * as messages from "./messages";
 import * as reactions from "./reactions";
 import * as emojis from "./emojis";
@@ -11,6 +12,7 @@ import * as interactions from "./InteractionReplies";
 import * as threads from "./threads";
 
 export default {
+  auditLog: auditLog,
   messages: messages,
   reactions: reactions,
   emojis: emojis,

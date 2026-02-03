@@ -38,6 +38,7 @@ import RegisterCommandsModule from "./registerCommands/RegisterCommandsModule";
 import RulesModule from "./rules/RulesModule";
 import StatsVoiceChannelModule from "./statsVoiceChannel/StatsVoiceChannelModule";
 import VisitorRoleModule from "./visitorRole/VisitorRoleModule";
+import ModerationModule, { moderationConfigSchema } from "./moderation/ModerationModule";
 
 export type Modules =
   | "Common"
@@ -51,6 +52,7 @@ export type Modules =
   | "JoinLeave"
   | "Levels"
   | "Misc"
+  | "Moderation"
   | "NHL"
   | "Pins"
   | "PlayerEmojis"
@@ -72,6 +74,7 @@ export const ModuleMap: Record<Modules, Module> = {
   JoinLeave: JoinLeaveModule.getInstance(),
   Levels: LevelsModule.getInstance(),
   Misc: MiscModule.getInstance(),
+  Moderation: ModerationModule.getInstance(),
   NHL: NHLModule.getInstance(),
   Pins: PinsModule.getInstance(),
   PlayerEmojis: PlayerEmojisModule.getInstance(),
@@ -108,6 +111,7 @@ export type ModuleConfigMap = {
   JoinLeave: ConfigFromSchemas<typeof joinLeaveConfigSchema>;
   Levels: ConfigFromSchemas<typeof levelsConfigSchema>;
   Misc: ConfigFromSchemas<typeof miscConfigSchema>;
+  Moderation: ConfigFromSchemas<typeof moderationConfigSchema>;
   NHL: ConfigFromSchemas<typeof nhlConfigSchema>;
   Pins: ConfigFromSchemas<typeof pinsConfigSchema>;
   PlayerEmojis: ConfigFromSchemas<typeof playerEmojisConfigSchema>;

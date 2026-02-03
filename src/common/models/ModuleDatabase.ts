@@ -28,7 +28,11 @@ export abstract class ModuleDatabase {
    * @param table - The Drizzle ORM table to count rows from
    * @returns The total count of rows in the table
    */
-  async getRowsCount(table: PgTable): Promise<number> {
+  async getRowsCount(table: PgTable, where?: SQL): Promise<number> {
+    if (where) {
+      const result = await this.db.select({ count: count() }).from(table).where(where);
+      return result[0]?.count ?? 0;
+    }
     const result = await this.db.select({ count: count() }).from(table);
     return result[0]?.count ?? 0;
   }

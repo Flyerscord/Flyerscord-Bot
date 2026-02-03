@@ -10,3 +10,4 @@ coverage
 .env
 backups/
 src/common/config/seeding/Seeds.ts
+.tsbuildinfo

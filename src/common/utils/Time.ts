@@ -54,7 +54,13 @@ export default abstract class Time {
     return number;
   }
 
-  static timeSince(time: number): number {
+  static timeSince(time: Date): number;
+  static timeSince(time: number): number;
+  static timeSince(time: number | Date): number | string {
+    if (time instanceof Date) {
+      time = time.getTime();
+    }
+
     const currTime = this.getCurrentTime().getTime();
     const diff = currTime - time;
     if (diff < 0) {
@@ -63,7 +69,12 @@ export default abstract class Time {
     return diff;
   }
 
-  static timeUntil(time: number): number {
+  static timeUntil(time: Date): number;
+  static timeUntil(time: number): number;
+  static timeUntil(time: number | Date): number {
+    if (time instanceof Date) {
+      time = time.getTime();
+    }
     const currTime = this.getCurrentTime().getTime();
     const diff = time - currTime;
     if (diff < 0) {
@@ -137,5 +148,9 @@ export default abstract class Time {
     if (milliseconds) parts.push(`${milliseconds}ms`);
 
     return parts.join(" ");
+  }
+
+  static addSecondsToDate(date: Date, seconds: number): Date {
+    return new Date(date.getTime() + seconds * 1000);
   }
 }

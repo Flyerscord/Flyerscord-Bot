@@ -1,4 +1,4 @@
-import { TextChannel, EmbedBuilder, Message, Attachment } from "discord.js";
+import { TextChannel, EmbedBuilder, Message, Attachment, ActionRowBuilder, MessageActionRowComponentBuilder } from "discord.js";
 
 import Stumper from "stumper";
 import { AttachmentBuilder } from "discord.js";
@@ -76,6 +76,18 @@ export async function sendMessageAndAttachmentToChannel(
   if (channel) {
     Stumper.debug(`Sending message and attachment to channel: ${channelId}`, "common:messages:sendMessageAndAttachmentToChannel");
     return await channel.send({ content: message, files: [attachment] });
+  }
+}
+
+export async function sendEmbedAndButtonsToChannel(
+  channelId: string,
+  embed: EmbedBuilder,
+  buttonRow: ActionRowBuilder<MessageActionRowComponentBuilder>,
+): Promise<Message | undefined> {
+  const channel = await getTextChannel(channelId);
+  if (channel) {
+    Stumper.debug(`Sending message and buttons to channel: ${channelId}`, "common:messages:sendMessageAndButtonsToChannel");
+    return await channel.send({ embeds: [embed], components: [buttonRow] });
   }
 }
 

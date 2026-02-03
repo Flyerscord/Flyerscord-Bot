@@ -42,6 +42,7 @@ import VisitorRoleModule from "./visitorRole/VisitorRoleModule";
 export type Modules =
   | "Common"
   | "Admin"
+  | "AnonymousTips"
   | "BlueSky"
   | "CustomCommands"
   | "DaysUntil"
@@ -63,6 +64,7 @@ export type Modules =
 export const ModuleMap: Record<Modules, Module> = {
   Common: CommonModule.getInstance(),
   Admin: AdminModule.getInstance(),
+  AnonymousTips: AnonymousTipsModule.getInstance(),
   BlueSky: BlueSkyModule.getInstance(),
   CustomCommands: CustomCommandsModule.getInstance(),
   DaysUntil: DaysUntilModule.getInstance(),
@@ -99,6 +101,7 @@ export const ModuleMap: Record<Modules, Module> = {
 export type ModuleConfigMap = {
   Common: ConfigFromSchemas<typeof commonConfigSchema>;
   Admin: ConfigFromSchemas<typeof adminConfigSchema>;
+  AnonymousTips: ConfigFromSchemas<typeof anonymousTipsConfigSchema>;
   BlueSky: ConfigFromSchemas<typeof blueSkyConfigSchema>;
   CustomCommands: ConfigFromSchemas<typeof customCommandsConfigSchema>;
   DaysUntil: ConfigFromSchemas<typeof daysUntilConfigSchema>;

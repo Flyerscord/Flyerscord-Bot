@@ -4,7 +4,6 @@ import ConfigManager from "@common/managers/ConfigManager";
 import Stumper from "stumper";
 import discord from "@common/utils/discord/discord";
 import { RuleContentPageDTO } from "../db/schema";
-import https from "node:https";
 
 export default class RuleFile {
   static async getRulesFile(): Promise<AttachmentBuilder> {
@@ -142,21 +141,6 @@ export default class RuleFile {
   }
 
   static async getImageAttachmentFromUrl(url: string, filename: string): Promise<AttachmentBuilder> {
-    const buffer = await this.downloadImageBuffer(url);
-    return new AttachmentBuilder(buffer, { name: filename });
-  }
-
-  private static downloadImageBuffer(url: string): Promise<Buffer> {
-    return new Promise((resolve, reject) => {
-      https
-        .get(url, (res) => {
-          const chunks: Uint8Array[] = [];
-
-          res.on("data", (chunk) => chunks.push(chunk));
-          res.on("end", () => resolve(Buffer.concat(chunks)));
-          res.on("error", reject);
-        })
-        .on("error", reject);
-    });
+    return new AttachmentBuilder(url, { name: filename });
   }
 }

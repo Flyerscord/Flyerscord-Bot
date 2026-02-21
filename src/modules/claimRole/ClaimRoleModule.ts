@@ -4,7 +4,6 @@ import Zod from "@common/utils/ZodWrapper";
 import session from "express-session";
 import ConfigManager from "@common/managers/ConfigManager";
 import EnvManager from "@common/managers/EnvManager";
-import schema from "./db/schema";
 import pageHandler from "./handlers/pageHandler";
 import oauthStartHandler from "./handlers/oauthStartHandler";
 import oauthCallbackHandler from "./handlers/oauthCallbackHandler";
@@ -70,7 +69,7 @@ export default class ClaimRoleModule extends Module {
   protected readonly CONFIG_SCHEMA = claimRoleConfigSchema;
 
   constructor() {
-    super("ClaimRole", { schema });
+    super("ClaimRole");
   }
 
   protected async setup(): Promise<void> {

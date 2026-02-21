@@ -2,6 +2,7 @@ import type { ConfigFromSchemas } from "@common/managers/ConfigManager";
 import type { commonConfigSchema } from "@common/CommonModule";
 import type { adminConfigSchema } from "./admin/AdminModule";
 import type { blueSkyConfigSchema } from "./bluesky/BlueSkyModule";
+import type { claimRoleConfigSchema } from "./claimRole/ClaimRoleModule";
 import type { customCommandsConfigSchema } from "./customCommands/CustomCommandsModule";
 import type { daysUntilConfigSchema } from "./daysUntil/DaysUntilModule";
 import type { gameDayPostsConfigSchema } from "./gamedayPosts/GameDayPostsModule";
@@ -22,6 +23,7 @@ import type Module from "../common/models/Module";
 import CommonModule from "@common/CommonModule";
 import AdminModule from "./admin/AdminModule";
 import BlueSkyModule from "./bluesky/BlueSkyModule";
+import ClaimRoleModule from "./claimRole/ClaimRoleModule";
 import CustomCommandsModule from "./customCommands/CustomCommandsModule";
 import DaysUntilModule from "./daysUntil/DaysUntilModule";
 import GameDayPostsModule from "./gamedayPosts/GameDayPostsModule";
@@ -43,6 +45,7 @@ export type Modules =
   | "Common"
   | "Admin"
   | "BlueSky"
+  | "ClaimRole"
   | "CustomCommands"
   | "DaysUntil"
   | "GameDayPosts"
@@ -64,6 +67,7 @@ export const ModuleMap: Record<Modules, Module> = {
   Common: CommonModule.getInstance(),
   Admin: AdminModule.getInstance(),
   BlueSky: BlueSkyModule.getInstance(),
+  ClaimRole: ClaimRoleModule.getInstance(),
   CustomCommands: CustomCommandsModule.getInstance(),
   DaysUntil: DaysUntilModule.getInstance(),
   GameDayPosts: GameDayPostsModule.getInstance(),
@@ -100,6 +104,7 @@ export type ModuleConfigMap = {
   Common: ConfigFromSchemas<typeof commonConfigSchema>;
   Admin: ConfigFromSchemas<typeof adminConfigSchema>;
   BlueSky: ConfigFromSchemas<typeof blueSkyConfigSchema>;
+  ClaimRole: ConfigFromSchemas<typeof claimRoleConfigSchema>;
   CustomCommands: ConfigFromSchemas<typeof customCommandsConfigSchema>;
   DaysUntil: ConfigFromSchemas<typeof daysUntilConfigSchema>;
   GameDayPosts: ConfigFromSchemas<typeof gameDayPostsConfigSchema>;

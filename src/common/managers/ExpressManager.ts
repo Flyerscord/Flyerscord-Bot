@@ -17,6 +17,15 @@ export default class ExpressManager extends Singleton {
     });
   }
 
+  addMiddleware(middleware: RequestHandler, path?: string): void {
+    Stumper.debug(`Adding middleware`, "common:ExpressManager:addMiddleware");
+    if (path) {
+      this.app.use(path, middleware);
+    } else {
+      this.app.use(middleware);
+    }
+  }
+
   addRoute(route: string, callback: RequestHandler): void {
     Stumper.debug(`Adding route: ${route}`, "common:ExpressManager:addRoute");
     this.app.get(route, callback);

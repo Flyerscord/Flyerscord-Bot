@@ -71,6 +71,13 @@
       "when": 1771700241428,
       "tag": "0009_black_emma_frost",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1771710439693,
+      "tag": "0010_sturdy_blade",
+      "breakpoints": true
     }
   ]
 }

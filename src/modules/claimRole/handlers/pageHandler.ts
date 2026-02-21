@@ -38,9 +38,11 @@ function renderLandingPage(inviteUrl: string): string {
     .logo {
       width: 120px;
       height: 120px;
-      object-fit: contain;
+      object-fit: cover;
       display: block;
       margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      clip-path: circle(50%);
     }
     h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
     p { color: #b9bbbe; margin-bottom: 2rem; line-height: 1.5; }
@@ -65,11 +67,11 @@ function renderLandingPage(inviteUrl: string): string {
 </head>
 <body>
   <div class="card">
-    <img src="/proxy/server-logo.gif" alt="Gritty" class="logo" />
-    <h1>Flyerscord</h1>
-    <p>Welcome! Join our Philadelphia Flyers Discord community or claim your member role below.</p>
-    <a href="${inviteUrl}" class="btn btn-join">Join the Server</a>
-    <a href="/claim/auth" class="btn btn-role">Claim Your Role</a>
+    <img src="https://ik.imagekit.io/flyerzrule/server-logo.gif" alt="Gritty" class="logo" />
+    <h1>Hi there!</h1>
+    <p>Thank you for being a part of the <strong>First Official Flyerscord Meetup</strong>!<br>You can claim your <strong>special</strong> role below, or join the server if you aren't already a part of it.</p>
+    <a href="${inviteUrl}" class="btn btn-join">Join Flyerscord</a>
+    <a href="/claim/auth" class="btn btn-role">Claim Your Special Role!</a>
   </div>
 </body>
 </html>`;

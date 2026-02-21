@@ -30,7 +30,13 @@ export default async function oauthCallbackHandler(req: Request, res: Response):
     const isAllowed = await db.isUserAllowed(userId);
 
     if (!isAllowed) {
-      res.send(renderResult("Not Eligible", "You are not on the list to claim this role.", false));
+      res.send(
+        renderResult(
+          "Not Eligible",
+          "You are not eligible to claim this role. If you believe this is incorrect, please open a ticket in the server.",
+          false,
+        ),
+      );
       return;
     }
 

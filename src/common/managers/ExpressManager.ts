@@ -10,6 +10,7 @@ export default class ExpressManager extends Singleton {
   constructor() {
     super();
     this.app = express();
+    this.app.set("trust proxy", 1);
     this.port = EnvManager.getInstance().getVar("PORT") || "3000";
 
     this.app.listen(parseInt(this.port), () => {

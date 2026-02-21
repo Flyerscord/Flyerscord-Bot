@@ -1,0 +1,1 @@
+DROP TABLE "claimrole__allowlist" CASCADE;

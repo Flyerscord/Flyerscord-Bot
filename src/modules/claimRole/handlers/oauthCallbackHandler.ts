@@ -3,7 +3,7 @@ import Stumper from "stumper";
 import ConfigManager from "@common/managers/ConfigManager";
 import { getGuild } from "@common/utils/discord/guilds";
 import { exchangeCode, getDiscordUserId } from "../utils/discordOAuth";
-import ClaimRoleDB from "../db/ClaimRoleDB";
+import MyAuditLog from "@common/utils/MyAuditLog";
 
 export default async function oauthCallbackHandler(req: Request, res: Response): Promise<void> {
   const { code, state } = req.query;
@@ -26,20 +26,6 @@ export default async function oauthCallbackHandler(req: Request, res: Response):
     const accessToken = await exchangeCode(code, config.clientId, config.clientSecret, config.callbackUrl);
     const userId = await getDiscordUserId(accessToken);
 
-    const db = new ClaimRoleDB();
-    const isAllowed = await db.isUserAllowed(userId);
-
-    if (!isAllowed) {
-      res.send(
-        renderResult(
-          "Not Eligible",
-          "You are not eligible to claim this role. If you believe this is incorrect, please open a ticket in the server.",
-          false,
-        ),
-      );
-      return;
-    }
-
     const guild = getGuild();
     if (!guild) {
       res.status(500).send(renderResult("Server Error", "Could not connect to the server. Please try again later.", false));
@@ -54,6 +40,12 @@ export default async function oauthCallbackHandler(req: Request, res: Response):
     }
 
     await member.roles.add(config.roleId);
+
+    void MyAuditLog.createAuditLog("ClaimRole", {
+      action: "RoleGranted",
+      userId: userId,
+      details: { roleId: config.roleId },
+    });
 
     res.send(renderResult("Success!", "Your role has been added. Welcome to the community!", true));
   } catch (error) {

@@ -3,6 +3,7 @@ import ExpressManager from "@common/managers/ExpressManager";
 import Zod from "@common/utils/ZodWrapper";
 import session from "express-session";
 import ConfigManager from "@common/managers/ConfigManager";
+import EnvManager from "@common/managers/EnvManager";
 import schema from "./db/schema";
 import pageHandler from "./handlers/pageHandler";
 import oauthStartHandler from "./handlers/oauthStartHandler";
@@ -81,7 +82,7 @@ export default class ClaimRoleModule extends Module {
         secret: config.sessionSecret,
         resave: false,
         saveUninitialized: false,
-        cookie: { secure: false, httpOnly: true, maxAge: 10 * 60 * 1000 },
+        cookie: { secure: EnvManager.getInstance().get("PRODUCTION_MODE"), httpOnly: true, maxAge: 10 * 60 * 1000 },
       }),
     );
 

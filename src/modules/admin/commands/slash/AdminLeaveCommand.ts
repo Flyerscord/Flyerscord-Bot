@@ -1,7 +1,9 @@
-import { AttachmentBuilder, bold, ChatInputCommandInteraction } from "discord.js";
+import { bold, ChatInputCommandInteraction, userMention } from "discord.js";
 import { AdminSlashCommand } from "@common/models/SlashCommand";
 import discord from "@common/utils/discord/discord";
 import ConfigManager from "@common/managers/ConfigManager";
+import JoinImageGenerator from "@modules/joinLeave/utils/JoinImageGenerator";
+import Stumper from "stumper";
 
 export default class AdminLeaveCommand extends AdminSlashCommand {
   constructor() {
@@ -40,19 +42,21 @@ export default class AdminLeaveCommand extends AdminSlashCommand {
         continue;
       }
       const username = member.displayName || member.user.username;
-      const message = `${bold(username)} has just left the server! Typical Pens fan ${bold(username)}...`;
-
-      await discord.messages.sendMessageAndAttachmentToChannel(
-        ConfigManager.getInstance().getConfig("JoinLeave").channelId,
-        message,
-        new AttachmentBuilder("https://i.imgur.com/dDrkXV6.gif"),
-      );
+      const message = `${userMention(member.id)}\nWelcome back to ${bold("Go Flyers")}!! Rule #1: Fuck the Pens!`;
+      const joinImageGenerator = new JoinImageGenerator(username, member.displayAvatarURL(), discord.members.getNumberOfMembers());
+      let joinPhoto: Buffer;
+      try {
+        joinPhoto = await joinImageGenerator.getImage();
+        await discord.messages.sendMessageAndImageBufferToChannel(ConfigManager.getInstance().getConfig("JoinLeave").channelId, message, joinPhoto);
+      } catch (error) {
+        Stumper.caughtError(error, "admin:AdminLeaveCommand");
+      }
     }
 
     if (failed.length > 0) {
-      await this.replies.reply(`Failed to send the leave message for the following admins: ${failed.join(", ")}`);
+      await this.replies.reply(`Failed to send the join message for the following admins: ${failed.join(", ")}`);
     } else {
-      await this.replies.reply("Successfully sent the leave message for all the admins");
+      await this.replies.reply("Successfully sent the join message for all the admins");
     }
   }
 }

@@ -53,9 +53,9 @@ export async function checkForGameDay(): Promise<void> {
           titlePrefix = `Preseason ${gameNumber}`;
         } else if (game.gameType == GAME_TYPE.REGULAR_SEASON) {
           titlePrefix = `Game ${gameNumber}`;
-        } else if (game.gameType == GAME_TYPE.POSTSEASON) {
-          // TODO: #99 Implement logic for playoff rounds
-          titlePrefix = `Postseason ${gameNumber}`;
+        } else if (game.gameType == GAME_TYPE.POSTSEASON && game.seriesStatus) {
+          const seriesStatus = game.seriesStatus;
+          titlePrefix = `${seriesStatus.seriesTitle} - Game ${seriesStatus.gameNumberOfSeries}`;
         }
 
         const post = await discord.forums.createPost(

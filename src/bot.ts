@@ -83,6 +83,7 @@ async function startUp(): Promise<void> {
 
   // Remove any modules that you don't want to run with (none by default)
   // moduleManager.removeModule("Admin");
+  // moduleManager.removeModule(["Admin", "JoinLeave"]);
 
   // Register all modules
   await moduleManager.registerAllModules();

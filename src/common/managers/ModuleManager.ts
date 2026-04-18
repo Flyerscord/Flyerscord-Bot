@@ -29,9 +29,10 @@ export default class ModuleManager extends Singleton {
     }
   }
 
-  removeModule(module: Modules): void {
-    this.modules = this.modules.filter((m) => m.name !== module);
-    Stumper.info(`Removed module ${module}`, "common:ModuleManager:removeModule");
+  removeModule(module: Modules | Modules[]): void {
+    const toRemove = Array.isArray(module) ? module : [module];
+    this.modules = this.modules.filter((m) => !toRemove.includes(m.name));
+    Stumper.info(`Removed module(s) ${toRemove.join(", ")}`, "common:ModuleManager:removeModule");
   }
 
   getModules(): Module[] {

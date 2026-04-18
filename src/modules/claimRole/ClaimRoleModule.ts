@@ -69,7 +69,7 @@ export default class ClaimRoleModule extends Module {
   protected readonly CONFIG_SCHEMA = claimRoleConfigSchema;
 
   constructor() {
-    super("ClaimRole");
+    super("ClaimRole", { prodOnly: true });
   }
 
   protected async setup(): Promise<void> {

@@ -128,7 +128,7 @@ export default class JoinLeaveModule extends Module {
   protected readonly CONFIG_SCHEMA = joinLeaveConfigSchema;
 
   constructor() {
-    super("JoinLeave", { schema });
+    super("JoinLeave", { schema, loadPriority: 49 });
   }
 
   protected async setup(): Promise<void> {

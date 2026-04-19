@@ -19,7 +19,7 @@ export default function oauthStartHandler(req: Request, res: Response): void {
 
   req.session.save((err) => {
     if (err) {
-      Stumper.caughtError(err, "claimRole:oauthStartHandler");
+      Stumper.caughtError(err, "claimRole:oauthStartHandler:oauthStartHandler");
       res.status(500).send("Unable to start OAuth flow. Please try again.");
       return;
     }

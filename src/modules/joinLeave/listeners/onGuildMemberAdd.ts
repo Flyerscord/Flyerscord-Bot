@@ -21,7 +21,7 @@ export default (): void => {
       const username = member.displayName || member.user.username;
       const user = member.user;
 
-      Stumper.info(`User ${username} has joined the server!`, "joinLeave:onGuildMemberAdd");
+      Stumper.info(`User ${username} has joined the server!`, "joinLeave:onGuildMemberAdd:onGuildMemberAdd");
 
       const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
       void discord.messages.sendMessageToChannel(adminNotificationChannelId, `${userMention(user.id)} has joined the server!`);
@@ -32,7 +32,7 @@ export default (): void => {
       await discord.roles.addRoleToUser(member, notVerifiedRoleId);
       await db.addNotVerifiedUser(user.id);
     } catch (error) {
-      Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
+      Stumper.caughtError(error, "joinLeave:onGuildMemberAdd:onGuildMemberAdd");
     } finally {
       void MyAuditLog.createAuditLog("JoinLeave", {
         action: "userJoined",

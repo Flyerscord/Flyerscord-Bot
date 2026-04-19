@@ -154,7 +154,7 @@ export default abstract class Module extends Singleton {
     try {
       await this.setup();
     } catch (error) {
-      Stumper.caughtError(error, `module:${this.name}:enable`);
+      Stumper.caughtError(error, `common:Module:${this.name}:enable`);
       return false;
     }
 
@@ -167,7 +167,7 @@ export default abstract class Module extends Singleton {
     try {
       await this.cleanup();
     } catch (error) {
-      Stumper.caughtError(error, `module:${this.name}:disable`);
+      Stumper.caughtError(error, `common:Module:${this.name}:disable`);
       return false;
     }
     Stumper.success(`${this.name} module disabled!`, `common:Module:${this.name}:disable`);
@@ -225,7 +225,7 @@ export default abstract class Module extends Singleton {
   private validateConfig(): boolean {
     const configManager = ConfigManager.getInstance();
     if (!configManager.validateModule(this.name)) {
-      Stumper.error(`Module ${this.name} has invalid configs`, "common:Module:${this.name}:validateConfig");
+      Stumper.error(`Module ${this.name} has invalid configs`, `common:Module:${this.name}:validateConfig`);
       return false;
     }
     return true;

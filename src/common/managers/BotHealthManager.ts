@@ -11,7 +11,7 @@ export default class BotHealthManager extends Singleton {
     super();
     this.healthy = false;
     this.requiresRestart = false;
-    Stumper.warning("Bot is NOT healthy!", "common:BotHealthManager");
+    Stumper.warning("Bot is NOT healthy!", "common:BotHealthManager:constructor");
   }
 
   isHealthy(): boolean {

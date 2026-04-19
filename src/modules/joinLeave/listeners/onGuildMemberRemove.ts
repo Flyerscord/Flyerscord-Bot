@@ -43,7 +43,7 @@ export default (): void => {
       const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
       void discord.messages.sendMessageToChannel(adminNotificationChannelId, message);
     }
-    Stumper.info(`User ${username} has left the server!`, "joinLeave:onGuildMemberRemove");
+    Stumper.info(`User ${username} has left the server!`, "joinLeave:onGuildMemberRemove:onGuildMemberRemove");
 
     const db = new JoinLeaveDB();
     let notVerifiedUser = await db.getNotVerifiedUser(member.user.id);

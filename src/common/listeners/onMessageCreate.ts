@@ -21,9 +21,9 @@ async function checkForNormalTextCommand(message: Message): Promise<boolean> {
     prefix = configManager.getConfig("CustomCommands")?.prefix ?? "!";
   } catch (error) {
     if (EnvManager.getInstance().get("PRODUCTION_MODE")) {
-      Stumper.caughtError(error, "onMessageCreate:checkForNormalTextCommand");
+      Stumper.caughtError(error, "common:onMessageCreate:checkForNormalTextCommand");
     } else {
-      Stumper.warning("Custom Commands config not loaded! This is normal in development mode.", "onMessageCreate:checkForNormalTextCommand");
+      Stumper.warning("Custom Commands config not loaded! This is normal in development mode.", "common:onMessageCreate:checkForNormalTextCommand");
     }
     prefix = "!";
   }

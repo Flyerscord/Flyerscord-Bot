@@ -23,11 +23,11 @@ export async function createPublicThread(
 ): Promise<PublicThreadChannel | undefined> {
   const channel = await getTextChannel(parentChannelId);
   if (!channel) {
-    Stumper.error(`Channel ${parentChannelId} not found!`, "common:channels:createPublicThread");
+    Stumper.error(`Channel ${parentChannelId} not found!`, "common:threads:createPublicThread");
     return undefined;
   }
 
-  Stumper.info(`Creating public thread ${name} in channel ${parentChannelId}`, "common:channels:createPublicThread");
+  Stumper.info(`Creating public thread ${name} in channel ${parentChannelId}`, "common:threads:createPublicThread");
   const thread = (await channel.threads.create({
     name,
     type: ChannelType.PublicThread,
@@ -39,7 +39,7 @@ export async function createPublicThread(
   })) as PublicThreadChannel;
 
   if (!thread) {
-    Stumper.error(`Thread ${name} not created!`, "common:channels:createPublicThread");
+    Stumper.error(`Thread ${name} not created!`, "common:threads:createPublicThread");
     return undefined;
   }
 
@@ -59,11 +59,11 @@ export async function createPrivateThread(
 ): Promise<PrivateThreadChannel | undefined> {
   const channel = await getTextChannel(parentChannelId);
   if (!channel) {
-    Stumper.error(`Channel ${parentChannelId} not found!`, "common:channels:createPrivateThread");
+    Stumper.error(`Channel ${parentChannelId} not found!`, "common:threads:createPrivateThread");
     return undefined;
   }
 
-  Stumper.info(`Creating private thread ${name} in channel ${parentChannelId}`, "common:channels:createPrivateThread");
+  Stumper.info(`Creating private thread ${name} in channel ${parentChannelId}`, "common:threads:createPrivateThread");
   const thread = (await channel.threads.create({
     name,
     type: ChannelType.PrivateThread,
@@ -75,7 +75,7 @@ export async function createPrivateThread(
   })) as PrivateThreadChannel;
 
   if (!thread) {
-    Stumper.error(`Thread ${name} not created!`, "common:channels:createPrivateThread");
+    Stumper.error(`Thread ${name} not created!`, "common:threads:createPrivateThread");
     return undefined;
   }
 
@@ -85,83 +85,83 @@ export async function createPrivateThread(
 export async function getThread(threadId: string): Promise<ThreadChannel | undefined> {
   const channel = await getChannel(threadId);
   if (!channel) {
-    Stumper.error(`Channel ${threadId} not found!`, "common:channels:getThread");
+    Stumper.error(`Channel ${threadId} not found!`, "common:threads:getThread");
     return undefined;
   }
 
   if (channel instanceof ThreadChannel) {
     return channel;
   }
-  Stumper.error(`Channel ${threadId} is not a thread!`, "common:channels:getThread");
+  Stumper.error(`Channel ${threadId} is not a thread!`, "common:threads:getThread");
   return undefined;
 }
 
 export async function archiveThread(threadId: string, reason?: string): Promise<void> {
   const thread = await getThread(threadId);
   if (!thread) {
-    Stumper.error(`Thread ${threadId} not found!`, "common:channels:archiveThread");
+    Stumper.error(`Thread ${threadId} not found!`, "common:threads:archiveThread");
     return;
   }
 
   await thread.setArchived(true, reason);
-  Stumper.info(`Thread ${threadId} archived!`, "common:channels:archiveThread");
+  Stumper.info(`Thread ${threadId} archived!`, "common:threads:archiveThread");
 }
 
 export async function unarchiveThread(threadId: string, reason?: string): Promise<void> {
   const thread = await getThread(threadId);
   if (!thread) {
-    Stumper.error(`Thread ${threadId} not found!`, "common:channels:unarchiveThread");
+    Stumper.error(`Thread ${threadId} not found!`, "common:threads:unarchiveThread");
     return;
   }
 
   await thread.setArchived(false, reason);
-  Stumper.info(`Thread ${threadId} unarchived!`, "common:channels:unarchiveThread");
+  Stumper.info(`Thread ${threadId} unarchived!`, "common:threads:unarchiveThread");
 }
 
 export async function lockThread(threadId: string, reason?: string): Promise<void> {
   const thread = await getThread(threadId);
   if (!thread) {
-    Stumper.error(`Thread ${threadId} not found!`, "common:channels:lockThread");
+    Stumper.error(`Thread ${threadId} not found!`, "common:threads:lockThread");
     return;
   }
 
   await thread.setLocked(true, reason);
-  Stumper.info(`Thread ${threadId} locked!`, "common:channels:lockThread");
+  Stumper.info(`Thread ${threadId} locked!`, "common:threads:lockThread");
 }
 
 export async function unlockThread(threadId: string, reason?: string): Promise<void> {
   const thread = await getThread(threadId);
   if (!thread) {
-    Stumper.error(`Thread ${threadId} not found!`, "common:channels:unlockThread");
+    Stumper.error(`Thread ${threadId} not found!`, "common:threads:unlockThread");
     return;
   }
 
   await thread.setLocked(false, reason);
-  Stumper.info(`Thread ${threadId} unlocked!`, "common:channels:unlockThread");
+  Stumper.info(`Thread ${threadId} unlocked!`, "common:threads:unlockThread");
 }
 
 export async function deleteThread(threadId: string, reason?: string): Promise<void> {
   const thread = await getThread(threadId);
   if (!thread) {
-    Stumper.error(`Thread ${threadId} not found!`, "common:channels:deleteThread");
+    Stumper.error(`Thread ${threadId} not found!`, "common:threads:deleteThread");
     return;
   }
 
   await thread.delete(reason);
-  Stumper.info(`Thread ${threadId} deleted!`, "common:channels:deleteThread");
+  Stumper.info(`Thread ${threadId} deleted!`, "common:threads:deleteThread");
 }
 
 export async function addThreadMember(threadId: string, userId: string): Promise<boolean> {
   const thread = await getThread(threadId);
   if (!thread) {
-    Stumper.error(`Thread ${threadId} not found!`, "common:channels:addThreadMember");
+    Stumper.error(`Thread ${threadId} not found!`, "common:threads:addThreadMember");
     return false;
   }
   try {
     await thread.members.add(userId);
-    Stumper.info(`Member ${userId} added to thread ${threadId}!`, "common:channels:addThreadMember");
+    Stumper.info(`Member ${userId} added to thread ${threadId}!`, "common:threads:addThreadMember");
   } catch (error) {
-    Stumper.caughtError(error, "common:channels:addThreadMember");
+    Stumper.caughtError(error, "common:threads:addThreadMember");
     return false;
   }
   return true;
@@ -170,10 +170,10 @@ export async function addThreadMember(threadId: string, userId: string): Promise
 export async function removeThreadMember(threadId: string, userId: string): Promise<void> {
   const thread = await getThread(threadId);
   if (!thread) {
-    Stumper.error(`Thread ${threadId} not found!`, "common:channels:removeThreadMember");
+    Stumper.error(`Thread ${threadId} not found!`, "common:threads:removeThreadMember");
     return;
   }
 
   await thread.members.remove(userId);
-  Stumper.info(`Member ${userId} removed from thread ${threadId}!`, "common:channels:removeThreadMember");
+  Stumper.info(`Member ${userId} removed from thread ${threadId}!`, "common:threads:removeThreadMember");
 }

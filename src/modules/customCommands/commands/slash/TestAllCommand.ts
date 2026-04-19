@@ -35,7 +35,7 @@ export default class TestAllCommand extends AdminSlashCommand {
 
           if (url) {
             text = url;
-            Stumper.debug(`Converted image kit url to proxy url: ${text}`, "customCommands:onMessageCreate:checkForCustomTextCommand");
+            Stumper.debug(`Converted image kit url to proxy url: ${text}`, "customCommands:TestAllCommand:execute");
           }
         }
 

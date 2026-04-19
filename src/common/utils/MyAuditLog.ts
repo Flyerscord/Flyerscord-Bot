@@ -29,7 +29,7 @@ export default class MyAuditLog {
       try {
         await insertAuditLog();
       } catch (error) {
-        Stumper.error(`Failed to create audit log: ${error}`, `Common::MyAuditLog::createAuditLog`);
+        Stumper.error(`Failed to create audit log: ${error}`, "common:MyAuditLog:createAuditLog");
       }
     } else {
       await insertAuditLog();

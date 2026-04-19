@@ -63,7 +63,7 @@ export default class CustomCommandsDB extends ModuleDatabase {
 
       return await this.addCommandSkippingUpload(name, text, userId);
     }
-    Stumper.error(`Command ${name} already exists!`, "CustomCommands:CustomCommandsDB:addCommand");
+    Stumper.error(`Command ${name} already exists!`, "customCommands:CustomCommandsDB:addCommand");
     return false;
   }
 
@@ -97,7 +97,7 @@ export default class CustomCommandsDB extends ModuleDatabase {
     const oldCommand = (await this.getCommand(name))!;
 
     await this.db.delete(customCommandsCommands).where(eq(customCommandsCommands.name, name.toLowerCase()));
-    Stumper.info(`Custom Command removed! Command: ${name}  By user: ${userId}`, "customCommands:CustomCommandsDB:deleteCommand");
+    Stumper.info(`Custom Command removed! Command: ${name}  By user: ${userId}`, "customCommands:CustomCommandsDB:removeCommand");
 
     await this.addDeleteAuditLog(name, oldCommand.text, userId, oldCommand.id);
 

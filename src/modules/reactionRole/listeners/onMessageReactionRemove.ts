@@ -26,14 +26,14 @@ export default (): void => {
       .reactionRoles.find((reactionRole) => reactionRole.name == reactionName);
 
     if (!reactionRole) {
-      Stumper.error(`Reaction role not found with name ${reactionName}`, "reactionRole:onMessageReactionRemove");
+      Stumper.error(`Reaction role not found with name ${reactionName}`, "reactionRole:onMessageReactionRemove:onMessageReactionRemove");
       return;
     }
 
     const member = await discord.members.getMember(user.id);
 
     if (!member) {
-      Stumper.error(`Error finding member for user ${user.id}`, "reactionRole:onMessageReactionRemove");
+      Stumper.error(`Error finding member for user ${user.id}`, "reactionRole:onMessageReactionRemove:onMessageReactionRemove");
       return;
     }
 
@@ -50,7 +50,10 @@ export default (): void => {
       });
 
       await discord.roles.removeRoleFromUser(member, reactionRole.roleId);
-      Stumper.debug(`Reaction removed from reaction role ${reactionName} by user ${user.id}`, "reactionRole:onMessageReactionRemove");
+      Stumper.debug(
+        `Reaction removed from reaction role ${reactionName} by user ${user.id}`,
+        "reactionRole:onMessageReactionRemove:onMessageReactionRemove",
+      );
     }
   });
 };

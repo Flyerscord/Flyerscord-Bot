@@ -14,7 +14,7 @@ export default class ExpressManager extends Singleton {
     this.port = EnvManager.getInstance().getVar("PORT") || "3000";
 
     this.app.listen(parseInt(this.port), () => {
-      Stumper.info(`Express server is running on port ${this.port}`, "common:ExpressManager:ExpressManager");
+      Stumper.info(`Express server is running on port ${this.port}`, "common:ExpressManager:constructor");
     });
   }
 

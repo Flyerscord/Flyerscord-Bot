@@ -11,7 +11,7 @@ export default class TotalMembersStatChannel extends StatsVoiceChannel {
     const guild = discord.guilds.getGuild();
 
     if (!guild) {
-      Stumper.error("Error finding guild", "statsVoiceChannel:TotalMembersStatChannel:update");
+      Stumper.error("Error finding guild", "statsVoiceChannel:TotalMembersStatChannel:getNewValue");
       return null;
     }
 

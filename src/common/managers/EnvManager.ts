@@ -94,7 +94,7 @@ export default class EnvManager extends Singleton {
     }
 
     if (errors.length > 0) {
-      Stumper.error(`Missing environment variables: ${errors.join(", ")}`, "common:EnvManager:validate");
+      Stumper.error(`Missing environment variables: ${errors.join(", ")}`, "common:EnvManager:read");
       return false;
     }
 

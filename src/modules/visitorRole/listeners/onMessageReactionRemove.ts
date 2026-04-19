@@ -24,7 +24,7 @@ export default (): void => {
     const member = await discord.members.getMember(user.id);
 
     if (!member) {
-      Stumper.error(`Error finding member for user ${user.id}`, "visitorRole:onMessageReactionRemove");
+      Stumper.error(`Error finding member for user ${user.id}`, "visitorRole:onMessageReactionRemove:onMessageReactionRemove");
       return;
     }
 
@@ -47,7 +47,10 @@ export default (): void => {
 
       await discord.roles.removeRoleFromUser(member, visitorRoleId);
       await discord.roles.addRoleToUser(member, memberRoleId);
-      Stumper.debug(`Reaction removed from message ${reaction.message.id} by user ${user.id}`, "visitorRole:onMessageReactionRemove");
+      Stumper.debug(
+        `Reaction removed from message ${reaction.message.id} by user ${user.id}`,
+        "visitorRole:onMessageReactionRemove:onMessageReactionRemove",
+      );
     }
   });
 };

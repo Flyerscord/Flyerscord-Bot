@@ -31,13 +31,13 @@ export default class MembersCache extends Cache<Collection<string, GuildMember> 
     try {
       const guild = getGuild();
       if (!guild) {
-        Stumper.error("Error finding guild", "common:members:forceGetMembers");
+        Stumper.error("Error finding guild", "common:MembersCache:forceGetMembers");
         return undefined;
       }
       guild.members.cache.clear();
       return await guild.members.fetch();
     } catch (error) {
-      Stumper.caughtError(error, "common:members:forceGetMembers");
+      Stumper.caughtError(error, "common:MembersCache:forceGetMembers");
       return undefined;
     }
   }

@@ -14,7 +14,7 @@ export async function sendCaptcha(user: User, skipLock: boolean = false): Promis
     // Atomically try to acquire lock - returns false if already locked
     const lockAcquired = await db.tryLockUser(user.id);
     if (!lockAcquired) {
-      Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:sendCaptcha");
+      Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:Captcha:sendCaptcha");
       return;
     }
     heldLock = true;
@@ -29,7 +29,7 @@ export async function sendCaptcha(user: User, skipLock: boolean = false): Promis
     if (!notVerifiedUser) {
       Stumper.error(
         `User ${user.id} is not in the not verified users table! They are either already verified or there is another error!`,
-        "joinLeave:sendCaptcha",
+        "joinLeave:Captcha:sendCaptcha",
       );
       return;
     }
@@ -42,7 +42,7 @@ export async function sendCaptcha(user: User, skipLock: boolean = false): Promis
       });
 
       if (!thread) {
-        Stumper.error(`Error creating thread for user ${user.id}`, "joinLeave:sendCaptcha");
+        Stumper.error(`Error creating thread for user ${user.id}`, "joinLeave:Captcha:sendCaptcha");
         return;
       }
 
@@ -53,7 +53,7 @@ export async function sendCaptcha(user: User, skipLock: boolean = false): Promis
       while (!result && attempts < maxAttempts) {
         Stumper.warning(
           `Failed to add user ${user.id} to thread ${thread.id}, retrying... (${attempts + 1}/${maxAttempts})`,
-          "joinLeave:sendCaptcha",
+          "joinLeave:Captcha:sendCaptcha",
         );
         await sleepSec(5);
         result = await discord.threads.addThreadMember(thread.id, user.id);
@@ -63,7 +63,7 @@ export async function sendCaptcha(user: User, skipLock: boolean = false): Promis
       if (result) {
         await db.setAddedToThread(user.id, true);
       } else {
-        Stumper.error(`Failed to add user ${user.id} to thread ${thread.id}. Will retry later...`, "joinLeave:sendCaptcha");
+        Stumper.error(`Failed to add user ${user.id} to thread ${thread.id}. Will retry later...`, "joinLeave:Captcha:sendCaptcha");
       }
 
       await db.setThreadId(user.id, thread.id);
@@ -76,14 +76,14 @@ export async function sendCaptcha(user: User, skipLock: boolean = false): Promis
     }
 
     if (notVerifiedUser.questionsAnswered >= questions.length) {
-      Stumper.error(`User ${user.id} has already answered all the questions!`, "joinLeave:sendCaptcha");
+      Stumper.error(`User ${user.id} has already answered all the questions!`, "joinLeave:Captcha:sendCaptcha");
       return;
     }
 
     const embed = getCaptchaEmbed(questions[notVerifiedUser.questionsAnswered].question);
     await discord.messages.sendEmbedToThread(notVerifiedUser.threadId, embed);
   } catch (error) {
-    Stumper.caughtError(error, "joinLeave:sendCaptcha");
+    Stumper.caughtError(error, "joinLeave:Captcha:sendCaptcha");
   } finally {
     if (heldLock) {
       // Unlock the user

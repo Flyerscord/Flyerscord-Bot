@@ -19,7 +19,7 @@ export async function addMessage(message: Message): Promise<void> {
   const userLevel = await db.addNewUser(userId);
   Stumper.debug(
     `Time since last message: ${Time.timeSince(userLevel.timeOfLastMessage.getTime())} true? ${Time.timeSince(userLevel.timeOfLastMessage.getTime()) >= MESSAGE_THRESHOLD}`,
-    "levels:Levels:addMessage",
+    "levels:leveling:addMessage",
   );
 
   if (Time.timeSince(userLevel.timeOfLastMessage.getTime()) >= MESSAGE_THRESHOLD) {
@@ -90,7 +90,7 @@ async function makeRequest(pNum: number): Promise<string | undefined> {
 
     return results.join("\n");
   } catch (error) {
-    Stumper.caughtError(error, "levels:Levels:getPlayerNumMessage");
+    Stumper.caughtError(error, "levels:leveling:makeRequest");
   }
   return undefined;
 }

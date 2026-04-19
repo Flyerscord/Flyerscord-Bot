@@ -13,7 +13,7 @@ export default class SchemaManager extends Singleton {
   register(tables: TableEnumRecord): boolean {
     for (const [key, table] of Object.entries(tables)) {
       if (this.tables[key]) {
-        Stumper.error(`Table ${key} already registered!`, "SchemaManager:register");
+        Stumper.error(`Table ${key} already registered!`, "common:SchemaManager:register");
         return false;
       }
       this.tables[key] = table;
@@ -40,12 +40,12 @@ export default class SchemaManager extends Singleton {
       const rawTableName = `raw_${tableName}`;
 
       if (this.tables[rawTableName]) {
-        Stumper.error(`Raw table ${rawTableName} already registered!`, "SchemaManager:registerRawTables");
+        Stumper.error(`Raw table ${rawTableName} already registered!`, "common:SchemaManager:registerRawTables");
         return false;
       }
 
       rawTables[rawTableName] = this.createRawTable(tableName);
-      Stumper.info(`Generated raw table schema for: ${rawTableName}`, "SchemaManager:registerRawTables");
+      Stumper.info(`Generated raw table schema for: ${rawTableName}`, "common:SchemaManager:registerRawTables");
     }
 
     return this.register(rawTables);

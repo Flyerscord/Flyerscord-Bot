@@ -42,7 +42,7 @@ export default class Database extends Singleton {
 
   getDb(): PostgresDB {
     if (!this.db) {
-      Stumper.error("Database is closed!", "Common::Database::getDb");
+      Stumper.error("Database is closed!", "common:db:getDb");
       throw new Error("Database is closed!");
     }
     return this.db;

@@ -45,7 +45,7 @@ export default class SecretManager extends Singleton {
 
       return decrypted;
     } catch (error) {
-      Stumper.caughtError(error, "Common::SecretManager::decrypt");
+      Stumper.caughtError(error, "common:SecretManager:decrypt");
       throw new Error(`Failed to decrypt value: ${value}`);
     }
   }

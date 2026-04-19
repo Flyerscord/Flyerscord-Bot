@@ -22,7 +22,7 @@ export default (): void => {
           action: "userCompletedOnboarding",
           userId: user.id,
         });
-        Stumper.info(`User ${user.id} completed onboarding, sending captcha`, "joinLeave:onGuildMemberUpdate");
+        Stumper.info(`User ${user.id} completed onboarding, sending captcha`, "joinLeave:onGuildMemberUpdate:onGuildMemberUpdate");
         await sendCaptcha(user);
       }
     }

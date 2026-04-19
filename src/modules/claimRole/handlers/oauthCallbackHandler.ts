@@ -49,7 +49,7 @@ export default async function oauthCallbackHandler(req: Request, res: Response):
 
     res.send(renderResult("Success!", "Your role has been added. Welcome to the community!", true));
   } catch (error) {
-    Stumper.caughtError(error, "claimRole:oauthCallbackHandler");
+    Stumper.caughtError(error, "claimRole:oauthCallbackHandler:oauthCallbackHandler");
     res.status(500).send(renderResult("Error", "An unexpected error occurred. Please try again later.", false));
   }
 }

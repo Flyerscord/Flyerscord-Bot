@@ -8,7 +8,7 @@ export async function getPinEmbed(pin: Pin): Promise<EmbedBuilder | undefined> {
 
   const message = await discord.messages.getMessage(pin.ogChannelId, pin.ogMessageId);
   if (message == null) {
-    Stumper.debug(`Channel id ${pin.ogChannelId} and message id ${pin.ogMessageId}. Message not found!`, "pins:getPinEmbed");
+    Stumper.debug(`Channel id ${pin.ogChannelId} and message id ${pin.ogMessageId}. Message not found!`, "pins:Embeds:getPinEmbed");
     return undefined;
   }
 

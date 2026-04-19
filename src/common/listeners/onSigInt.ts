@@ -4,13 +4,13 @@ import Database from "../db/db";
 
 export default (): void => {
   process.on("SIGINT", async () => {
-    Stumper.warning("Received SIGINT signal, shutting down...", "common:onSigInt");
+    Stumper.warning("Received SIGINT signal, shutting down...", "common:onSigInt:onSigInt");
 
     const result = await ModuleManager.getInstance().disableAllModules();
     if (result) {
-      Stumper.success("Successfully disabled all modules!", "common:onSigInt");
+      Stumper.success("Successfully disabled all modules!", "common:onSigInt:onSigInt");
     } else {
-      Stumper.warning("Failed to disable all modules! Check the logs above for more details.", "common:onSigInt");
+      Stumper.warning("Failed to disable all modules! Check the logs above for more details.", "common:onSigInt:onSigInt");
     }
 
     await Database.getInstance().closeDb();

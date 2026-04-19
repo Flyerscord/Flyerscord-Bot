@@ -55,7 +55,7 @@ export default class VerifyUserCommand extends AdminSlashCommand {
         joinPhoto = await joinImageGenerator.getImage();
         await discord.messages.sendMessageAndImageBufferToChannel(ConfigManager.getInstance().getConfig("JoinLeave").channelId, message, joinPhoto);
       } catch (error) {
-        Stumper.caughtError(error, "joinLeave:VerifyUserCommand");
+        Stumper.caughtError(error, "joinLeave:VerifyUserCommand:execute");
       }
     }
 
@@ -65,14 +65,14 @@ export default class VerifyUserCommand extends AdminSlashCommand {
     await this.replies.reply(`User ${userMention(user.id)} has been verified!`);
 
     if (leftUser) {
-      Stumper.info(`User ${user.id} was previously left, adding their roles back`, "joinLeave:VerifyUserCommand");
+      Stumper.info(`User ${user.id} was previously left, adding their roles back`, "joinLeave:VerifyUserCommand:execute");
       const roles = leftUser.roles;
       for (const role of roles) {
         if (role === notVerifiedRoleId) {
-          Stumper.warning(`User ${user.id} had previously left with the not verified role, skipping`, "joinLeave:VerifyUserCommand");
+          Stumper.warning(`User ${user.id} had previously left with the not verified role, skipping`, "joinLeave:VerifyUserCommand:execute");
           continue;
         }
-        Stumper.info(`Adding back role ${role} to user ${user.id}`, "joinLeave:VerifyUserCommand");
+        Stumper.info(`Adding back role ${role} to user ${user.id}`, "joinLeave:VerifyUserCommand:execute");
         await discord.roles.addRoleToUser(member, role);
       }
       await db.deleteLeftUser(user.id);

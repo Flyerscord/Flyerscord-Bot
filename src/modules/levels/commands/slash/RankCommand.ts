@@ -18,7 +18,7 @@ export default class RankCommand extends SlashCommand {
     const member = await discord.members.getMember(user.id);
     if (!member) {
       await this.replies.reply({ content: "Error finding member!", ephemeral: true });
-      Stumper.error(`Error finding member for user ${user.id}`, "levels:RankCommand:createEmbed");
+      Stumper.error(`Error finding member for user ${user.id}`, "levels:RankCommand:execute");
       return;
     }
 
@@ -32,7 +32,7 @@ export default class RankCommand extends SlashCommand {
 
     if (rank == -1) {
       await this.replies.reply({ content: "Error finding rank! You may need to send a message first!", ephemeral: true });
-      Stumper.error(`Error finding rank for user ${user.id}`, "levels:RankCommand:createEmbed");
+      Stumper.error(`Error finding rank for user ${user.id}`, "levels:RankCommand:execute");
       return;
     }
 

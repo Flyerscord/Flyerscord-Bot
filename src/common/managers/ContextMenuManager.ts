@@ -19,7 +19,7 @@ export default class ContextMenuCommandManager extends Singleton {
 
   addCommand(command: ContextMenuCommand): void {
     if (this.hasCommand(command)) {
-      Stumper.warning(`ContextMenuCommand ${command.name} already exists`, "common:ContextMenuCommandManager:addCommand");
+      Stumper.warning(`ContextMenuCommand ${command.name} already exists`, "common:ContextMenuManager:addCommand");
       return;
     }
     this.commands.set(command.name, command);

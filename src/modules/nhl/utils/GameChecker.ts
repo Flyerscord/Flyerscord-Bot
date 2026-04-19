@@ -8,17 +8,28 @@ import { GuildForumTag, time, TimestampStyles } from "discord.js";
 import { IClubScheduleOutput_games } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubSchedule";
 import CombinedTeamInfoCache from "@common/cache/CombinedTeamInfoCache";
 import ConfigManager from "@common/managers/ConfigManager";
-import GameDayPostsDB from "../db/GameDayPostsDB";
+import GameDayPostsDB from "../db/NHLDB";
+import GameStartTask from "../tasks/GameStartTask";
+import CurrentGameManager from "../managers/CurrentGameManager";
 
 export async function checkForGameDay(): Promise<void> {
   const res = await nhlApi.teams.schedule.getCurrentTeamSchedule({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
   const db = new GameDayPostsDB();
-  const config = ConfigManager.getInstance().getConfig("GameDayPosts");
+  const config = ConfigManager.getInstance().getConfig("NHL");
 
   if (res.status == 200) {
     const game = res.data.games.find((game) => Time.isSameDay(new Date(), new Date(game.startTimeUTC)));
 
     if (game) {
+      const gameStartTask = GameStartTask.getInstance();
+      if (!gameStartTask.isActive()) {
+        const gameStartTime = new Date(game.startTimeUTC);
+        gameStartTime.setMinutes(gameStartTime.getMinutes() - 10);
+        gameStartTask.setDate(gameStartTime);
+
+        CurrentGameManager.getInstance().setGame(game.id, gameStartTime);
+      }
+
       // Don't create a post if one already exists
       if (await db.hasPostByGameId(game.id)) {
         Stumper.info(`Game ${game.id} already has a post`, "gameDayPosts:GameChecker:checkForGameDay");
@@ -85,7 +96,7 @@ export async function checkForGameDay(): Promise<void> {
 export async function closeAndLockOldPosts(): Promise<void> {
   const db = new GameDayPostsDB();
   const gameDayPosts = await db.getAllPost();
-  const config = ConfigManager.getInstance().getConfig("GameDayPosts");
+  const config = ConfigManager.getInstance().getConfig("NHL");
 
   for (const post of gameDayPosts) {
     const gameInfoResp = await nhlApi.games.events.getGameLandingPage({ gameId: post.gameId });
@@ -136,7 +147,7 @@ async function getGameNumber(gameId: number): Promise<number | undefined> {
 }
 
 async function getCurrentSeasonTagId(game: IClubScheduleOutput_games): Promise<GuildForumTag | undefined> {
-  const config = ConfigManager.getInstance().getConfig("GameDayPosts");
+  const config = ConfigManager.getInstance().getConfig("NHL");
   const availableTags = await discord.forums.getAvailableTags(config.channelId);
 
   const seasonTags = config["tagIds.seasons"];

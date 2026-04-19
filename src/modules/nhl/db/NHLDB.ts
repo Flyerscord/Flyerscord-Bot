@@ -2,9 +2,9 @@ import { ModuleDatabase } from "@common/models/ModuleDatabase";
 import { GameDayPost, gamedayPostsPosts } from "./schema";
 import { eq } from "drizzle-orm";
 
-export default class GameDayPostsDB extends ModuleDatabase {
+export default class NHLDB extends ModuleDatabase {
   constructor() {
-    super("GameDayPosts");
+    super("NHL");
   }
 
   async addPost(gameId: number, postId: string): Promise<void> {
@@ -50,4 +50,6 @@ export default class GameDayPostsDB extends ModuleDatabase {
   async getAllPostIds(): Promise<string[]> {
     return (await this.db.select({ channelId: gamedayPostsPosts.channelId }).from(gamedayPostsPosts)).map((post) => post.channelId);
   }
+
+  // Live Data
 }

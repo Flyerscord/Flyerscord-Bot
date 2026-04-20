@@ -16,14 +16,15 @@ enum PeriodType {
 }
 
 export default class LiveDataTask extends Task {
+  private db: NHLDB;
   constructor() {
     // Run every 15 seconds
     super("PeriodNotifications", "*/15 * * * * *");
+    this.db = new NHLDB();
   }
 
   protected async execute(): Promise<void> {
-    const db = new NHLDB();
-    const liveData = await db.getCurrentLiveData();
+    const liveData = await this.db.getCurrentLiveData();
     if (!liveData) {
       Stumper.error("No live data found, not running task", "nhl:LiveDataTask:execute");
       return;
@@ -40,13 +41,13 @@ export default class LiveDataTask extends Task {
     if (res.status == 200) {
       const gameInfo = res.data;
 
-      if (gameInfo.gameState == "OFF") {
+      if (gameInfo.gameState === "OFF") {
         // Game is over, disable the task and clear out the data
         Stumper.info(`Game ${gameId} is over, disabling task and clearing out data`, "nhl:LiveDataTask:execute");
-        await db.clearLiveData();
+        await this.db.clearLiveData();
 
         this.stopScheduledJob();
-      } else if (gameInfo.gameState == "LIVE") {
+      } else if (gameInfo.gameState === "LIVE") {
         const period = gameInfo.periodDescriptor.number;
         const timeOnClock = gameInfo.clock.secondsRemaining;
         const isPlayoff = gameInfo.gameType == GAME_TYPE.POSTSEASON;
@@ -55,7 +56,7 @@ export default class LiveDataTask extends Task {
           return;
         }
 
-        const currentGameDayThread = await db.getPostByGameId(gameId);
+        const currentGameDayThread = await this.db.getPostByGameId(gameId);
         if (!currentGameDayThread) {
           Stumper.error(`Could not find thread for game ${gameId}`, "nhl:LiveDataTask:execute");
           return;
@@ -67,22 +68,22 @@ export default class LiveDataTask extends Task {
 
           if (period <= 3 && timeOnClock < 1200) {
             // If it is a regulation period and the clock is not 20:00
-            await db.setCurrentPeriod(period);
+            await this.db.setCurrentPeriod(period);
             Stumper.info(`Period ${period} has just started, setting current period to ${period}`, "nhl:LiveDataTask:execute");
             await this.sendPeriodNotification(currentGameDayThreadId, period, PeriodType.REG);
           } else if (period == 4 && !isPlayoff && timeOnClock < 300) {
             // If it is a non playoff overtime period and the clock is not 5:00
-            await db.setCurrentPeriod(period);
+            await this.db.setCurrentPeriod(period);
             Stumper.info(`Period ${period} has just started, setting current period to ${period}`, "nhl:LiveDataTask:execute");
             await this.sendPeriodNotification(currentGameDayThreadId, period, PeriodType.OT);
           } else if (period == 5 && gameInfo.shootoutInUse && !gameInfo.clock.inIntermission) {
-            // TODO: Get Live Data for this case, I'm not sure how the clock is handled for shootouts
-            await db.setCurrentPeriod(period);
+            // TODO: #238 Get Live Data for this case, I'm not sure how the clock is handled for shootouts
+            await this.db.setCurrentPeriod(period);
             Stumper.info(`Period ${period} has just started, setting current period to ${period}`, "nhl:LiveDataTask:execute");
             await this.sendPeriodNotification(currentGameDayThreadId, period, PeriodType.SHOOTOUT);
           } else if (period > 3 && isPlayoff && timeOnClock < 1200) {
             // If it is a playoff overtime period and the clock is not 20:00
-            await db.setCurrentPeriod(period);
+            await this.db.setCurrentPeriod(period);
             const otPeriod = period - 3;
             Stumper.info(`OT Period ${otPeriod} has just started, setting current period to ${period}`, "nhl:LiveDataTask:execute");
             await this.sendPeriodNotification(currentGameDayThreadId, otPeriod, PeriodType.PLAYOFF_OT);

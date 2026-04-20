@@ -42,6 +42,7 @@ export default abstract class EphemeralTask extends Singleton {
       return;
     }
     this.date = date;
+    this.removeScheduledJob();
     this.createScheduledJob();
   }
 

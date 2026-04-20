@@ -1,6 +1,6 @@
 import Stumper from "stumper";
 import { getChannel, getTextChannel } from "./channels";
-import { ChannelType, MessageResolvable, PrivateThreadChannel, PublicThreadChannel, ThreadChannel } from "discord.js";
+import { ChannelType, DiscordAPIError, MessageResolvable, PrivateThreadChannel, PublicThreadChannel, ThreadChannel } from "discord.js";
 
 interface ICreateThreadOptions {
   autoArchiveDuration?: 60 | 1440 | 4320 | 10080;
@@ -161,7 +161,11 @@ export async function addThreadMember(threadId: string, userId: string): Promise
     await thread.members.add(userId);
     Stumper.info(`Member ${userId} added to thread ${threadId}!`, "common:threads:addThreadMember");
   } catch (error) {
-    Stumper.caughtError(error, "common:threads:addThreadMember");
+    if (error instanceof DiscordAPIError && error.code == 50001) {
+      Stumper.error(`Missing Access! Member ${userId} not added to thread ${threadId}!`, "common:threads:addThreadMember");
+    } else {
+      Stumper.caughtError(error, "common:threads:addThreadMember");
+    }
     return false;
   }
   return true;

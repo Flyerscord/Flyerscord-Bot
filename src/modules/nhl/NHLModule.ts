@@ -8,6 +8,8 @@ import CreateGameDayPostTask from "./tasks/CreateGameDayPostTask";
 import CloseAndLockPostsTask from "./tasks/CloseAndLockPostsTask";
 import onReady from "./listeners/onReady";
 import NHLDB from "./db/NHLDB";
+import GameStartTask from "./tasks/GameStartTask";
+import LiveDataTask from "./tasks/LiveDataTask";
 
 export const nhlConfigSchema = [
   {
@@ -97,6 +99,8 @@ export default class NHLModule extends Module {
   protected async cleanup(): Promise<void> {
     CreateGameDayPostTask.getInstance().stopScheduledJob();
     CloseAndLockPostsTask.getInstance().stopScheduledJob();
+    GameStartTask.getInstance().removeScheduledJob();
+    LiveDataTask.getInstance().stopScheduledJob();
   }
 
   private registerTasks(): void {

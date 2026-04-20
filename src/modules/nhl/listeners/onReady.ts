@@ -10,11 +10,11 @@ export default (): void => {
   client.on("clientReady", async () => {
     const res = await nhlApi.teams.schedule.getCurrentTeamSchedule({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
 
-    if (res.status == 200) {
+    if (res.status === 200) {
       const game = res.data.games.find((game) => Time.isSameDay(new Date(), new Date(game.startTimeUTC)));
 
       if (game) {
-        await setupLiveData(game);
+        await setupLiveData(game, true);
       }
     }
   });

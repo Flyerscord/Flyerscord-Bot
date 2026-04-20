@@ -57,7 +57,7 @@ export default class LiveDataTask extends Task {
 
         const currentGameDayThread = await db.getPostByGameId(gameId);
         if (!currentGameDayThread) {
-          Stumper.error(`Cound not find thread for game ${gameId}`, "nhl:LiveDataTask:execute");
+          Stumper.error(`Could not find thread for game ${gameId}`, "nhl:LiveDataTask:execute");
           return;
         }
         const currentGameDayThreadId = currentGameDayThread.channelId;
@@ -94,12 +94,12 @@ export default class LiveDataTask extends Task {
     }
   }
 
-  async sendPeriodNotification(threadId: string, period: number, type: PeriodType): Promise<void> {
+  private async sendPeriodNotification(threadId: string, period: number, type: PeriodType): Promise<void> {
     const periodNotificationRoleId = ConfigManager.getInstance().getConfig("NHL")["livedata.periodNotificationRoleId"];
     let message = `${roleMention(periodNotificationRoleId)}\n`;
 
     switch (type) {
-      case PeriodType.REG:
+      case PeriodType.REG: {
         let periodString = "";
         if (period == 1) {
           periodString = "1st";
@@ -110,6 +110,7 @@ export default class LiveDataTask extends Task {
         }
         message += `The ${periodString} period has just started!`;
         break;
+      }
       case PeriodType.OT:
         message += `OT has just started!`;
         break;

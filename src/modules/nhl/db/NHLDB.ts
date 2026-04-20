@@ -65,7 +65,7 @@ export default class NHLDB extends ModuleDatabase {
   }
 
   async clearLiveData(): Promise<void> {
-    await this.db.update(liveData).set({ gameId: undefined, gameStartTime: undefined, currentPeriod: undefined }).where(eq(liveData.id, 1));
+    await this.db.update(liveData).set({ gameId: null, gameStartTime: null, currentPeriod: null }).where(eq(liveData.id, 1));
   }
 
   async getCurrentLiveData(): Promise<LiveData | undefined> {

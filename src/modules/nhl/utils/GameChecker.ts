@@ -10,6 +10,7 @@ import CombinedTeamInfoCache from "@common/cache/CombinedTeamInfoCache";
 import ConfigManager from "@common/managers/ConfigManager";
 import NHLDB from "../db/NHLDB";
 import GameStartTask from "../tasks/GameStartTask";
+import LiveDataTask from "../tasks/LiveDataTask";
 
 export async function checkForGameDay(): Promise<void> {
   const res = await nhlApi.teams.schedule.getCurrentTeamSchedule({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
@@ -157,8 +158,8 @@ async function getCurrentSeasonTagId(game: IClubScheduleOutput_games): Promise<G
   return undefined;
 }
 
-export async function setupLiveData(game: IClubScheduleOutput_games): Promise<void> {
-  if (game.gameState === "FUT") {
+export async function setupLiveData(game: IClubScheduleOutput_games, onStartup: boolean = false): Promise<void> {
+  if (game.gameState === "FUT" || (onStartup && game.gameState === "LIVE")) {
     const db = new NHLDB();
     const gameStartTask = GameStartTask.getInstance();
     const gameStartTime = new Date(game.startTimeUTC);
@@ -166,7 +167,13 @@ export async function setupLiveData(game: IClubScheduleOutput_games): Promise<vo
     if (!gameStartTask.isActive()) {
       // Start the task 10 minutes before the game starts
       gameStartTime.setMinutes(gameStartTime.getMinutes() - 10);
-      gameStartTask.setDate(gameStartTime);
+
+      if (gameStartTime < new Date() && onStartup) {
+        Stumper.warning(`Game start time is in the past! Game ID: ${game.id}. Starting LiveDataTask immediately...`, "nhl:GameChecker:setupLiveData");
+        LiveDataTask.getInstance().createScheduledJob();
+      } else {
+        gameStartTask.setDate(gameStartTime);
+      }
     }
     await db.setCurrentGame(game.id, new Date(game.startTimeUTC));
   }

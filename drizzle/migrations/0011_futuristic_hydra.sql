@@ -3,7 +3,10 @@ INSERT INTO "common__config" ("module_name", "key", "value", "updated_at")
 SELECT 'NHL', "key", "value", "updated_at"
 FROM "common__config"
 WHERE "module_name" = 'GameDayPosts'
-ON CONFLICT ("module_name", "key") DO NOTHING;
+ON CONFLICT ("module_name", "key") DO UPDATE
+SET
+	"value" = EXCLUDED."value",
+	"updated_at" = EXCLUDED."updated_at";
 --> statement-breakpoint
 DELETE FROM "common__config"
 WHERE "module_name" = 'GameDayPosts';

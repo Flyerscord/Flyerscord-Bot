@@ -15,10 +15,15 @@ export default abstract class EphemeralTask extends Singleton {
   }
 
   private async run(): Promise<void> {
-    Stumper.info(`Running EphemeralTask: ${this.name}`, "common:EphemeralTask:run");
-    await this.execute();
-    Stumper.info(`Finished EphemeralTask: ${this.name}`, "common:EphemeralTask:run");
-    this.removeScheduledJob();
+    try {
+      Stumper.info(`Running EphemeralTask: ${this.name}`, "common:EphemeralTask:run");
+      await this.execute();
+      Stumper.info(`Finished EphemeralTask: ${this.name}`, "common:EphemeralTask:run");
+    } catch (error) {
+      Stumper.caughtError(error, "common:EphemeralTask:run");
+    } finally {
+      this.removeScheduledJob();
+    }
   }
 
   protected abstract execute(): Promise<void>;
@@ -32,6 +37,10 @@ export default abstract class EphemeralTask extends Singleton {
   }
 
   setDate(date: Date): void {
+    if (date.getTime() < Date.now()) {
+      Stumper.error(`Cannot set date to a date in the past! Date: ${date}`, "common:EphemeralTask:setDate");
+      return;
+    }
     this.date = date;
     this.createScheduledJob();
   }
@@ -48,19 +57,15 @@ export default abstract class EphemeralTask extends Singleton {
   }
 
   private createScheduledJob(): void {
-    if (!this.job) {
-      if (!this.date) {
-        Stumper.error(
-          `Cannot create scheduled job for EphemeralTask: ${this.name} because date is undefined!`,
-          "common:EphemeralTask:createScheduledJob",
-        );
-        return;
-      }
-      Stumper.debug(`Creating scheduled job for EphemeralTask: ${this.name} to run at ${this.date}`, "common:EphemeralTask:createScheduledJob");
-      this.job = schedule.scheduleJob(this.date, this.run.bind(this));
-    } else {
-      Stumper.debug(`Scheduled job for EphemeralTask: ${this.name} already exists!`, "common:EphemeralTask:createScheduledJob");
+    if (!this.date) {
+      Stumper.error(
+        `Cannot create scheduled job for EphemeralTask: ${this.name} because date is undefined!`,
+        "common:EphemeralTask:createScheduledJob",
+      );
+      return;
     }
+    Stumper.debug(`Creating scheduled job for EphemeralTask: ${this.name} to run at ${this.date}`, "common:EphemeralTask:createScheduledJob");
+    this.job = schedule.scheduleJob(this.date, this.run.bind(this));
   }
 
   removeScheduledJob(): void {

@@ -84,23 +84,23 @@ async function startUp(): Promise<void> {
 
   // Remove any modules that you don't want to run with (none by default)
   // moduleManager.removeModule("Admin");
-  moduleManager.removeModule([
-    "Admin",
-    "BlueSky",
-    "CustomCommands",
-    "ClaimRole",
-    "DaysUntil",
-    "ImageProxy",
-    "JoinLeave",
-    "Levels",
-    "Misc",
-    "Pins",
-    "PlayerEmojis",
-    "ReactionRole",
-    "Rules",
-    "StatsVoiceChannel",
-    "VisitorRole",
-  ]);
+  // moduleManager.removeModule([
+  //   "Admin",
+  //   "BlueSky",
+  //   "CustomCommands",
+  //   "ClaimRole",
+  //   "DaysUntil",
+  //   "ImageProxy",
+  //   "JoinLeave",
+  //   "Levels",
+  //   "Misc",
+  //   "Pins",
+  //   "PlayerEmojis",
+  //   "ReactionRole",
+  //   "Rules",
+  //   "StatsVoiceChannel",
+  //   "VisitorRole",
+  // ]);
 
   // Register all modules
   await moduleManager.registerAllModules();

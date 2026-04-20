@@ -17,10 +17,12 @@ config-view:
 	docker exec -it flyerscord-discord-prod-bot-1 pnpm run config:view
 
 dev-bot:
+	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev run --build --rm migrate
 	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up --build --force-recreate -d
 
 dev-bot-bot:
-	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up --build --force-recreate -d bot migrate
+	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev run --build --rm migrate
+	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up --build --force-recreate -d bot
 
 dev-bot-db:
 	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up -d adminer pgbouncer

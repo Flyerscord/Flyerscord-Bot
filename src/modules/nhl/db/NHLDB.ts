@@ -1,5 +1,5 @@
 import { ModuleDatabase } from "@common/models/ModuleDatabase";
-import { GameDayPost, gamedayPostsPosts } from "./schema";
+import { GameDayPost, gamedayPostsPosts, LiveData, liveData } from "./schema";
 import { eq } from "drizzle-orm";
 
 export default class NHLDB extends ModuleDatabase {
@@ -52,4 +52,23 @@ export default class NHLDB extends ModuleDatabase {
   }
 
   // Live Data
+  async ensureLiveDataRowExists(): Promise<void> {
+    await this.db.insert(liveData).values({ id: 1 }).onConflictDoNothing();
+  }
+
+  async setCurrentGame(gameId: number, gameStartTime: Date): Promise<void> {
+    await this.db.update(liveData).set({ gameId, gameStartTime }).where(eq(liveData.id, 1));
+  }
+
+  async setCurrentPeriod(period: number): Promise<void> {
+    await this.db.update(liveData).set({ currentPeriod: period }).where(eq(liveData.id, 1));
+  }
+
+  async clearLiveData(): Promise<void> {
+    await this.db.update(liveData).set({ gameId: undefined, gameStartTime: undefined, currentPeriod: undefined }).where(eq(liveData.id, 1));
+  }
+
+  async getCurrentLiveData(): Promise<LiveData | undefined> {
+    return this.getSingleRow<LiveData>(liveData, eq(liveData.id, 1));
+  }
 }

@@ -8,26 +8,23 @@ import { GuildForumTag, time, TimestampStyles } from "discord.js";
 import { IClubScheduleOutput_games } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubSchedule";
 import CombinedTeamInfoCache from "@common/cache/CombinedTeamInfoCache";
 import ConfigManager from "@common/managers/ConfigManager";
-import GameDayPostsDB from "../db/NHLDB";
+import NHLDB from "../db/NHLDB";
 import GameStartTask from "../tasks/GameStartTask";
-import CurrentGameManager from "../managers/CurrentGameManager";
 
 export async function checkForGameDay(): Promise<void> {
   const res = await nhlApi.teams.schedule.getCurrentTeamSchedule({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
-  const db = new GameDayPostsDB();
+  const db = new NHLDB();
   const config = ConfigManager.getInstance().getConfig("NHL");
 
   if (res.status == 200) {
     const game = res.data.games.find((game) => Time.isSameDay(new Date(), new Date(game.startTimeUTC)));
 
     if (game) {
-      const gameStartTask = GameStartTask.getInstance();
-      if (!gameStartTask.isActive()) {
-        const gameStartTime = new Date(game.startTimeUTC);
-        gameStartTime.setMinutes(gameStartTime.getMinutes() - 10);
-        gameStartTask.setDate(gameStartTime);
-
-        CurrentGameManager.getInstance().setGame(game.id, gameStartTime);
+      try {
+        await setupLiveData(game);
+      } catch (error) {
+        Stumper.error(`Failed to setup live data for game ${game.id}`, "nhl:GameChecker:checkForGameDay");
+        Stumper.caughtError(error, "nhl:GameChecker:checkForGameDay");
       }
 
       // Don't create a post if one already exists
@@ -94,7 +91,7 @@ export async function checkForGameDay(): Promise<void> {
 }
 
 export async function closeAndLockOldPosts(): Promise<void> {
-  const db = new GameDayPostsDB();
+  const db = new NHLDB();
   const gameDayPosts = await db.getAllPost();
   const config = ConfigManager.getInstance().getConfig("NHL");
 
@@ -158,4 +155,19 @@ async function getCurrentSeasonTagId(game: IClubScheduleOutput_games): Promise<G
     }
   }
   return undefined;
+}
+
+export async function setupLiveData(game: IClubScheduleOutput_games): Promise<void> {
+  if (game.gameState === "FUT") {
+    const db = new NHLDB();
+    const gameStartTask = GameStartTask.getInstance();
+    const gameStartTime = new Date(game.startTimeUTC);
+
+    if (!gameStartTask.isActive()) {
+      // Start the task 10 minutes before the game starts
+      gameStartTime.setMinutes(gameStartTime.getMinutes() - 10);
+      gameStartTask.setDate(gameStartTime);
+    }
+    await db.setCurrentGame(game.id, new Date(game.startTimeUTC));
+  }
 }

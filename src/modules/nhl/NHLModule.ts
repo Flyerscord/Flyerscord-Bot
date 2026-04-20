@@ -7,6 +7,7 @@ import schema from "./db/schema";
 import CreateGameDayPostTask from "./tasks/CreateGameDayPostTask";
 import CloseAndLockPostsTask from "./tasks/CloseAndLockPostsTask";
 import onReady from "./listeners/onReady";
+import NHLDB from "./db/NHLDB";
 
 export const nhlConfigSchema = [
   {
@@ -66,6 +67,15 @@ export const nhlConfigSchema = [
         }),
     ),
   },
+  {
+    key: "livedata.periodNotificationRoleId",
+    description: "The role ID of the role to send period notifications to",
+    required: true,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: "",
+    schema: Zod.string(),
+  },
 ] as const satisfies readonly IModuleConfigSchema[];
 
 export default class NHLModule extends Module {
@@ -76,6 +86,9 @@ export default class NHLModule extends Module {
   }
 
   protected async setup(): Promise<void> {
+    const db = new NHLDB();
+    await db.ensureLiveDataRowExists();
+
     await this.readInCommands<SlashCommand>(__dirname, "slash");
     this.registerTasks();
     this.registerListeners();

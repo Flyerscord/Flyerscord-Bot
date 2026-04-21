@@ -19,7 +19,7 @@ export default class LiveDataTask extends Task {
   private db: NHLDB;
   constructor() {
     // Run every 15 seconds
-    super("PeriodNotifications", "*/15 * * * * *");
+    super("LiveData", "*/15 * * * * *");
     this.db = new NHLDB();
   }
 
@@ -41,7 +41,7 @@ export default class LiveDataTask extends Task {
     if (res.status == 200) {
       const gameInfo = res.data;
 
-      if (gameInfo.gameState === "OFF") {
+      if (gameInfo.gameState === "OFF" || gameInfo.gameState === "FINAL") {
         // Game is over, disable the task and clear out the data
         Stumper.info(`Game ${gameId} is over, disabling task and clearing out data`, "nhl:LiveDataTask:execute");
         await this.db.clearLiveData();

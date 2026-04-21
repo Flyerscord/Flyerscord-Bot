@@ -49,6 +49,8 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: no
+    stdin_open: true
+    tty: true
     command: pnpm run db:push
     environment:
       DATABASE_URL_SINGLE: postgresql://postgres:flyerscord-dev-db@postgres:5432/flyerscord

@@ -5,7 +5,6 @@ import type { blueSkyConfigSchema } from "./bluesky/BlueSkyModule";
 import type { claimRoleConfigSchema } from "./claimRole/ClaimRoleModule";
 import type { customCommandsConfigSchema } from "./customCommands/CustomCommandsModule";
 import type { daysUntilConfigSchema } from "./daysUntil/DaysUntilModule";
-import type { gameDayPostsConfigSchema } from "./gamedayPosts/GameDayPostsModule";
 import type { healthCheckConfigSchema } from "./healthcheck/HealthCheckModule";
 import type { imageProxyConfigSchema } from "./imageProxy/ImageProxyModule";
 import type { joinLeaveConfigSchema } from "./joinLeave/JoinLeaveModule";
@@ -26,7 +25,6 @@ import BlueSkyModule from "./bluesky/BlueSkyModule";
 import ClaimRoleModule from "./claimRole/ClaimRoleModule";
 import CustomCommandsModule from "./customCommands/CustomCommandsModule";
 import DaysUntilModule from "./daysUntil/DaysUntilModule";
-import GameDayPostsModule from "./gamedayPosts/GameDayPostsModule";
 import HealthCheckModule from "./healthcheck/HealthCheckModule";
 import ImageProxyModule from "./imageProxy/ImageProxyModule";
 import JoinLeaveModule from "./joinLeave/JoinLeaveModule";
@@ -48,7 +46,6 @@ export type Modules =
   | "ClaimRole"
   | "CustomCommands"
   | "DaysUntil"
-  | "GameDayPosts"
   | "HealthCheck"
   | "ImageProxy"
   | "JoinLeave"
@@ -70,7 +67,6 @@ export const ModuleMap: Record<Modules, Module> = {
   ClaimRole: ClaimRoleModule.getInstance(),
   CustomCommands: CustomCommandsModule.getInstance(),
   DaysUntil: DaysUntilModule.getInstance(),
-  GameDayPosts: GameDayPostsModule.getInstance(),
   HealthCheck: HealthCheckModule.getInstance(),
   ImageProxy: ImageProxyModule.getInstance(),
   JoinLeave: JoinLeaveModule.getInstance(),
@@ -107,7 +103,6 @@ export type ModuleConfigMap = {
   ClaimRole: ConfigFromSchemas<typeof claimRoleConfigSchema>;
   CustomCommands: ConfigFromSchemas<typeof customCommandsConfigSchema>;
   DaysUntil: ConfigFromSchemas<typeof daysUntilConfigSchema>;
-  GameDayPosts: ConfigFromSchemas<typeof gameDayPostsConfigSchema>;
   HealthCheck: ConfigFromSchemas<typeof healthCheckConfigSchema>;
   ImageProxy: ConfigFromSchemas<typeof imageProxyConfigSchema>;
   JoinLeave: ConfigFromSchemas<typeof joinLeaveConfigSchema>;

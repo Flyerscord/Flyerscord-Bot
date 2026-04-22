@@ -103,16 +103,16 @@ export const joinLeaveConfigSchema = [
     defaultValue: "",
     schema: Zod.string(),
   },
+  {
+    key: "brandNewAccountThreshold",
+    description: "The number of days old a user's account must be older than to be not considered brand new",
+    required: false,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: 3,
+    schema: Zod.number({ min: 1, max: 365 }),
+  },
   // Might be useful later, we will see if the captcha stops spam bots
-  // {
-  //   key: "brandNewAccountThreshold",
-  //   description: "The number of days old a user's account must be older than to be not considered brand new",
-  //   required: false,
-  //   secret: false,
-  //   requiresRestart: false,
-  //   defaultValue: 3,
-  //   schema: Zod.number({ min: 1, max: 365 }),
-  // },
   // {
   //   key: "brandNewAccountTimeoutLength",
   //   description: "The number of days a user's account is timed out for being brand new",

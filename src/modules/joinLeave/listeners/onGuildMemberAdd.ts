@@ -4,7 +4,8 @@ import Stumper from "stumper";
 import ConfigManager from "@common/managers/ConfigManager";
 import JoinLeaveDB from "../db/JoinLeaveDB";
 import MyAuditLog from "@common/utils/MyAuditLog";
-import { userMention } from "discord.js";
+import { roleMention, userMention } from "discord.js";
+import Time from "@common/utils/Time";
 
 export default (): void => {
   const client = ClientManager.getInstance().client;
@@ -21,10 +22,20 @@ export default (): void => {
       const username = member.displayName || member.user.username;
       const user = member.user;
 
-      Stumper.info(`User ${username} has joined the server!`, "joinLeave:onGuildMemberAdd:onGuildMemberAdd");
-
       const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
-      void discord.messages.sendMessageToChannel(adminNotificationChannelId, `${userMention(user.id)} has joined the server!`);
+      const brandNewAccountThreshold = ConfigManager.getInstance().getConfig("JoinLeave").brandNewAccountThreshold;
+      if (user.createdTimestamp > Date.now() - brandNewAccountThreshold * 24 * 60 * 60 * 1000) {
+        // Check if the account is brand new
+        const adminRoleId = ConfigManager.getInstance().getConfig("Common").adminRoleId;
+        Stumper.info(`User ${username} has joined the server, but their account is brand new!`, "joinLeave:onGuildMemberAdd:onGuildMemberAdd");
+        void discord.messages.sendMessageToChannel(
+          adminNotificationChannelId,
+          `${roleMention(adminRoleId)}\n ${userMention(user.id)} has joined the server, but their account is ${Time.timeSince(user.createdTimestamp) / 1000 / 60 / 60} hours old!`,
+        );
+      } else {
+        Stumper.info(`User ${username} has joined the server!`, "joinLeave:onGuildMemberAdd:onGuildMemberAdd");
+        void discord.messages.sendMessageToChannel(adminNotificationChannelId, `${userMention(user.id)} has joined the server!`);
+      }
 
       // Captcha
       const notVerifiedRoleId = ConfigManager.getInstance().getConfig("JoinLeave").notVerifiedRoleId;

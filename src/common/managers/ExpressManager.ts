@@ -10,11 +10,21 @@ export default class ExpressManager extends Singleton {
   constructor() {
     super();
     this.app = express();
+    this.app.set("trust proxy", 1);
     this.port = EnvManager.getInstance().getVar("PORT") || "3000";
 
     this.app.listen(parseInt(this.port), () => {
-      Stumper.info(`Express server is running on port ${this.port}`, "common:ExpressManager:ExpressManager");
+      Stumper.info(`Express server is running on port ${this.port}`, "common:ExpressManager:constructor");
     });
+  }
+
+  addMiddleware(middleware: RequestHandler, path?: string): void {
+    Stumper.debug(`Adding middleware`, "common:ExpressManager:addMiddleware");
+    if (path) {
+      this.app.use(path, middleware);
+    } else {
+      this.app.use(middleware);
+    }
   }
 
   addRoute(route: string, callback: RequestHandler): void {

@@ -9,7 +9,7 @@ import { AuditLogSeverity } from "../../db/schema";
 import { getThread } from "./threads";
 
 export async function getMessage(channelId: string, messageId: string): Promise<Message | undefined> {
-  const channel = await getTextChannel(channelId);
+  const channel = (await getTextChannel(channelId)) ?? (await getThread(channelId));
   if (channel) {
     try {
       return await channel.messages.fetch(messageId);

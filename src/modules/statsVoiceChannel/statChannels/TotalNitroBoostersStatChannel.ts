@@ -11,7 +11,7 @@ export default class TotalNitroBoostersStatChannel extends StatsVoiceChannel {
     const guild = discord.guilds.getGuild();
 
     if (!guild) {
-      Stumper.error("Error finding guild", "statsVoiceChannel:TotalMembersStatChannel:update");
+      Stumper.error("Error finding guild", "statsVoiceChannel:TotalNitroBoostersStatChannel:getNewValue");
       return null;
     }
 

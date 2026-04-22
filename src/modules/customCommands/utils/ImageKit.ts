@@ -60,10 +60,10 @@ export default class MyImageKit extends Singleton {
     const resp = await this.client.getFileDetails(fileId);
 
     if (resp.$ResponseMetadata.statusCode == 200) {
-      Stumper.debug(`Image type: ${resp.mime}`, "customCommands:ImageKit:getImageType");
+      Stumper.debug(`Image type: ${resp.mime}`, "customCommands:ImageKit:getImageMimeType");
       return resp.mime;
     } else {
-      Stumper.error(`Error getting image type for image ${url}`, "customCommands:ImageKit:getImageType");
+      Stumper.error(`Error getting image type for image ${url}`, "customCommands:ImageKit:getImageMimeType");
       return undefined;
     }
   }

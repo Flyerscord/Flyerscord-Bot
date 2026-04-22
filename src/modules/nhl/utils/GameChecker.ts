@@ -8,17 +8,26 @@ import { GuildForumTag, time, TimestampStyles } from "discord.js";
 import { IClubScheduleOutput_games } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubSchedule";
 import CombinedTeamInfoCache from "@common/cache/CombinedTeamInfoCache";
 import ConfigManager from "@common/managers/ConfigManager";
-import GameDayPostsDB from "../db/GameDayPostsDB";
+import NHLDB from "../db/NHLDB";
+import GameStartTask from "../tasks/GameStartTask";
+import LiveDataTask from "../tasks/LiveDataTask";
 
 export async function checkForGameDay(): Promise<void> {
   const res = await nhlApi.teams.schedule.getCurrentTeamSchedule({ team: TEAM_TRI_CODE.PHILADELPHIA_FLYERS });
-  const db = new GameDayPostsDB();
-  const config = ConfigManager.getInstance().getConfig("GameDayPosts");
+  const db = new NHLDB();
+  const config = ConfigManager.getInstance().getConfig("NHL");
 
   if (res.status == 200) {
     const game = res.data.games.find((game) => Time.isSameDay(new Date(), new Date(game.startTimeUTC)));
 
     if (game) {
+      try {
+        await setupLiveData(game);
+      } catch (error) {
+        Stumper.error(`Failed to setup live data for game ${game.id}`, "nhl:GameChecker:checkForGameDay");
+        Stumper.caughtError(error, "nhl:GameChecker:checkForGameDay");
+      }
+
       // Don't create a post if one already exists
       if (await db.hasPostByGameId(game.id)) {
         Stumper.info(`Game ${game.id} already has a post`, "gameDayPosts:GameChecker:checkForGameDay");
@@ -53,9 +62,9 @@ export async function checkForGameDay(): Promise<void> {
           titlePrefix = `Preseason ${gameNumber}`;
         } else if (game.gameType == GAME_TYPE.REGULAR_SEASON) {
           titlePrefix = `Game ${gameNumber}`;
-        } else if (game.gameType == GAME_TYPE.POSTSEASON) {
-          // TODO: #99 Implement logic for playoff rounds
-          titlePrefix = `Postseason ${gameNumber}`;
+        } else if (game.gameType == GAME_TYPE.POSTSEASON && game.seriesStatus) {
+          const seriesStatus = game.seriesStatus;
+          titlePrefix = `${seriesStatus.seriesTitle} - Game ${seriesStatus.gameNumberOfSeries}`;
         }
 
         const post = await discord.forums.createPost(
@@ -83,9 +92,9 @@ export async function checkForGameDay(): Promise<void> {
 }
 
 export async function closeAndLockOldPosts(): Promise<void> {
-  const db = new GameDayPostsDB();
+  const db = new NHLDB();
   const gameDayPosts = await db.getAllPost();
-  const config = ConfigManager.getInstance().getConfig("GameDayPosts");
+  const config = ConfigManager.getInstance().getConfig("NHL");
 
   for (const post of gameDayPosts) {
     const gameInfoResp = await nhlApi.games.events.getGameLandingPage({ gameId: post.gameId });
@@ -136,7 +145,7 @@ async function getGameNumber(gameId: number): Promise<number | undefined> {
 }
 
 async function getCurrentSeasonTagId(game: IClubScheduleOutput_games): Promise<GuildForumTag | undefined> {
-  const config = ConfigManager.getInstance().getConfig("GameDayPosts");
+  const config = ConfigManager.getInstance().getConfig("NHL");
   const availableTags = await discord.forums.getAvailableTags(config.channelId);
 
   const seasonTags = config["tagIds.seasons"];
@@ -147,4 +156,25 @@ async function getCurrentSeasonTagId(game: IClubScheduleOutput_games): Promise<G
     }
   }
   return undefined;
+}
+
+export async function setupLiveData(game: IClubScheduleOutput_games, onStartup: boolean = false): Promise<void> {
+  if (game.gameState === "FUT" || (onStartup && game.gameState === "LIVE")) {
+    const db = new NHLDB();
+    const gameStartTask = GameStartTask.getInstance();
+    const gameStartTime = new Date(game.startTimeUTC);
+
+    if (!gameStartTask.isActive()) {
+      // Start the task 10 minutes before the game starts
+      gameStartTime.setMinutes(gameStartTime.getMinutes() - 10);
+
+      if (gameStartTime < new Date() && onStartup) {
+        Stumper.warning(`Game start time is in the past! Game ID: ${game.id}. Starting LiveDataTask immediately...`, "nhl:GameChecker:setupLiveData");
+        LiveDataTask.getInstance().createScheduledJob();
+      } else {
+        gameStartTask.setDate(gameStartTime);
+      }
+    }
+    await db.setCurrentGame(game.id, new Date(game.startTimeUTC));
+  }
 }

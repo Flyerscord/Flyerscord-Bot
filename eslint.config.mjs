@@ -4,6 +4,7 @@ import typescriptEslintPlugin from "@typescript-eslint/eslint-plugin";
 import typescriptEslintParser from "@typescript-eslint/parser";
 import eslintPluginImport from "eslint-plugin-import";
 import eslintPluginN from "eslint-plugin-n";
+import { localRulesPlugin } from "./eslint-local-rules.mjs";
 
 export default [
   {
@@ -24,6 +25,7 @@ export default [
       "@typescript-eslint": typescriptEslintPlugin,
       "import": eslintPluginImport,
       "n": eslintPluginN,
+      "local": localRulesPlugin,
     },
     rules: {
       // TypeScript rules
@@ -71,6 +73,9 @@ export default [
       ],
 
       "n/prefer-node-protocol": "error",
+
+      // Local rules
+      "local/stumper-tag-format": "error",
 
       // Prettier integration
       "prettier/prettier": "error",

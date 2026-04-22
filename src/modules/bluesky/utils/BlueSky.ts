@@ -122,7 +122,7 @@ export default class BlueSky extends Singleton {
         }
       }
     } catch (error) {
-      Stumper.caughtError(error, "blueSky:BlueSky:checkAccountForNewPosts");
+      Stumper.caughtError(error, "blueSky:BlueSky:checkForNewPosts");
       return [];
     }
 

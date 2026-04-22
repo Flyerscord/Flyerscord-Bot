@@ -12,8 +12,8 @@ export async function checkForNewEmojis(): Promise<void> {
   if (rosterRes.status == 200) {
     const roster = rosterRes.data;
 
-    if (!checkForNewPlayers(roster)) {
-      Stumper.info("No new players found", "playerEmojis:EmojiCheckTask:checkForNewEmojis");
+    if (!(await checkForNewPlayers(roster))) {
+      Stumper.info("No new players found", "playerEmojis:PlayerEmojis:checkForNewEmojis");
       return;
     }
 

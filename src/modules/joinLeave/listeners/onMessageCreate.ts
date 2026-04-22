@@ -23,11 +23,11 @@ export default (): void => {
 
     if (!notVerifiedUser || notVerifiedUser.lock || !member) {
       if (notVerifiedUser && notVerifiedUser.lock) {
-        Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:onMessageCreate");
+        Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:onMessageCreate:onMessageCreate");
       }
 
       if (!member) {
-        Stumper.warning(`Could not find memeber for ${user.id}!`, "joinLeave:onMessageCreate");
+        Stumper.warning(`Could not find memeber for ${user.id}!`, "joinLeave:onMessageCreate:onMessageCreate");
       }
       return;
     }
@@ -39,7 +39,7 @@ export default (): void => {
     // Lock the user to prevent processing multiple answers
     const lockAcquired = await db.tryLockUser(user.id);
     if (!lockAcquired) {
-      Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:onMessageCreate");
+      Stumper.warning(`User ${user.id} is already locked!`, "joinLeave:onMessageCreate:onMessageCreate");
       return;
     }
 
@@ -76,7 +76,7 @@ export default (): void => {
           });
           Stumper.warning(
             `User ${user.id} has to wait ${timeoutCooldown - timeUntilTimeoutSec} seconds before answering again`,
-            "joinLeave:onMessageCreate",
+            "joinLeave:onMessageCreate:onMessageCreate",
           );
           await message.reply(`You have to wait ${timeoutCooldown - timeUntilTimeoutSec} seconds before answering again.`);
           return;
@@ -130,7 +130,7 @@ export default (): void => {
           if (!member) {
             Stumper.error(
               `User ${user.id} is not in the server, skipping removal of not verified role and adding back roles`,
-              "joinLeave:onMessageCreate",
+              "joinLeave:onMessageCreate:onMessageCreate",
             );
           } else {
             // Remove the role from the user
@@ -154,19 +154,22 @@ export default (): void => {
                 joinPhoto,
               );
             } catch (error) {
-              Stumper.caughtError(error, "joinLeave:onGuildMemberAdd");
+              Stumper.caughtError(error, "joinLeave:onMessageCreate:onMessageCreate");
             }
 
             // If they were a previously left user add back their roles
             if (leftUser) {
-              Stumper.info(`User ${user.id} was previously left, adding their roles back`, "joinLeave:onMessageCreate");
+              Stumper.info(`User ${user.id} was previously left, adding their roles back`, "joinLeave:onMessageCreate:onMessageCreate");
               const roles = leftUser.roles;
               for (const role of roles) {
                 if (role === notVerifiedRoleId) {
-                  Stumper.warning(`User ${user.id} had previously left with the not verified role, skipping`, "joinLeave:onMessageCreate");
+                  Stumper.warning(
+                    `User ${user.id} had previously left with the not verified role, skipping`,
+                    "joinLeave:onMessageCreate:onMessageCreate",
+                  );
                   continue;
                 }
-                Stumper.info(`Adding back role ${role} to user ${user.id}`, "joinLeave:onMessageCreate");
+                Stumper.info(`Adding back role ${role} to user ${user.id}`, "joinLeave:onMessageCreate:onMessageCreate");
                 await discord.roles.addRoleToUser(member, role);
               }
               await db.deleteLeftUser(user.id);
@@ -250,7 +253,7 @@ export default (): void => {
         }
       }
     } catch (error) {
-      Stumper.caughtError(error, "joinLeave:onMessageCreate");
+      Stumper.caughtError(error, "joinLeave:onMessageCreate:onMessageCreate");
     } finally {
       await db.unlockUser(user.id);
     }

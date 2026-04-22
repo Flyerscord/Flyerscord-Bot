@@ -1,3 +1,4 @@
+/* eslint-disable local/stumper-tag-format */
 /* -------------------------------------------------------------------------- */
 /*                                   Imports                                  */
 /* -------------------------------------------------------------------------- */
@@ -81,8 +82,25 @@ async function startUp(): Promise<void> {
   // Add all of the modules (in order of load priority)
   moduleManager.addAllModules();
 
-  // Disable any modules that you don't want to run with (none by default)
-  // await moduleManager.disableModule("Admin");
+  // Remove any modules that you don't want to run with (none by default)
+  // moduleManager.removeModule("Admin");
+  // moduleManager.removeModule([
+  //   "Admin",
+  //   "BlueSky",
+  //   "CustomCommands",
+  //   "ClaimRole",
+  //   "DaysUntil",
+  //   "ImageProxy",
+  //   "JoinLeave",
+  //   "Levels",
+  //   "Misc",
+  //   "Pins",
+  //   "PlayerEmojis",
+  //   "ReactionRole",
+  //   "Rules",
+  //   "StatsVoiceChannel",
+  //   "VisitorRole",
+  // ]);
 
   // Register all modules
   await moduleManager.registerAllModules();

@@ -1,10 +1,10 @@
 import { ModuleDatabase } from "@common/models/ModuleDatabase";
-import { GameDayPost, gamedayPostsPosts } from "./schema";
+import { GameDayPost, gamedayPostsPosts, LiveData, liveData } from "./schema";
 import { eq } from "drizzle-orm";
 
-export default class GameDayPostsDB extends ModuleDatabase {
+export default class NHLDB extends ModuleDatabase {
   constructor() {
-    super("GameDayPosts");
+    super("NHL");
   }
 
   async addPost(gameId: number, postId: string): Promise<void> {
@@ -49,5 +49,26 @@ export default class GameDayPostsDB extends ModuleDatabase {
 
   async getAllPostIds(): Promise<string[]> {
     return (await this.db.select({ channelId: gamedayPostsPosts.channelId }).from(gamedayPostsPosts)).map((post) => post.channelId);
+  }
+
+  // Live Data
+  async ensureLiveDataRowExists(): Promise<void> {
+    await this.db.insert(liveData).values({ id: 1 }).onConflictDoNothing();
+  }
+
+  async setCurrentGame(gameId: number, gameStartTime: Date): Promise<void> {
+    await this.db.update(liveData).set({ gameId, gameStartTime }).where(eq(liveData.id, 1));
+  }
+
+  async setCurrentPeriod(period: number): Promise<void> {
+    await this.db.update(liveData).set({ currentPeriod: period }).where(eq(liveData.id, 1));
+  }
+
+  async clearLiveData(): Promise<void> {
+    await this.db.update(liveData).set({ gameId: null, gameStartTime: null, currentPeriod: null }).where(eq(liveData.id, 1));
+  }
+
+  async getCurrentLiveData(): Promise<LiveData | undefined> {
+    return this.getSingleRow<LiveData>(liveData, eq(liveData.id, 1));
   }
 }

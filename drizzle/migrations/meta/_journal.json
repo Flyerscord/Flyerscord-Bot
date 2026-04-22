@@ -64,6 +64,27 @@
       "when": 1769897766465,
       "tag": "0008_jazzy_dormammu",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1771700241428,
+      "tag": "0009_black_emma_frost",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1771710439693,
+      "tag": "0010_sturdy_blade",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1776667729313,
+      "tag": "0011_futuristic_hydra",
+      "breakpoints": true
     }
   ]
 }

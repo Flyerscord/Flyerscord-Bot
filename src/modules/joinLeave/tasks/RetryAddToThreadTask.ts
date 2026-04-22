@@ -19,12 +19,12 @@ export default class RetryAddToThreadTask extends Task {
       return;
     }
 
-    Stumper.info(`Retrying to add ${notAddedToThread.length} users to threads...`, "joinLeave:RetryAddToThreadTask");
+    Stumper.info(`Retrying to add ${notAddedToThread.length} users to threads...`, "joinLeave:RetryAddToThreadTask:execute");
 
     await Promise.all(
       notAddedToThread.map(async (user) => {
         if (!user.threadId) {
-          Stumper.error(`User ${user.userId} does not have a thread associated with them!`, "joinLeave:RetryAddToThreadTask");
+          Stumper.error(`User ${user.userId} does not have a thread associated with them!`, "joinLeave:RetryAddToThreadTask:execute");
           const adminNotificationChannelId = ConfigManager.getInstance().getConfig("JoinLeave").joinLeaveAdminNotificationChannelId;
           await discord.messages.sendMessageToChannel(
             adminNotificationChannelId,
@@ -37,9 +37,12 @@ export default class RetryAddToThreadTask extends Task {
 
         if (result) {
           await db.setAddedToThread(user.userId, true);
-          Stumper.success(`User ${user.userId} added to thread ${user.threadId}!`, "joinLeave:RetryAddToThreadTask");
+          Stumper.success(`User ${user.userId} added to thread ${user.threadId}!`, "joinLeave:RetryAddToThreadTask:execute");
         } else {
-          Stumper.error(`Failed to add user ${user.userId} to thread ${user.threadId}. Will retry later...`, "joinLeave:RetryAddToThreadTask");
+          Stumper.error(
+            `Failed to add user ${user.userId} to thread ${user.threadId}. Will retry later...`,
+            "joinLeave:RetryAddToThreadTask:execute",
+          );
         }
       }),
     );
@@ -48,7 +51,7 @@ export default class RetryAddToThreadTask extends Task {
     if (failedUsers.length > 0) {
       Stumper.error(
         `Failed to add ${failedUsers.length}/${notAddedToThread.length} users to threads. Will retry later...`,
-        "joinLeave:RetryAddToThreadTask",
+        "joinLeave:RetryAddToThreadTask:execute",
       );
     }
   }

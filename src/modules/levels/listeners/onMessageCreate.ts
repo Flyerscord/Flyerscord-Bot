@@ -3,6 +3,7 @@ import { Message } from "discord.js";
 import ClientManager from "@common/managers/ClientManager";
 import { addMessage } from "../utils/leveling";
 import ConfigManager from "@common/managers/ConfigManager";
+import JoinLeaveDB from "@modules/joinLeave/db/JoinLeaveDB";
 
 export default (): void => {
   ClientManager.getInstance().client.on("messageCreate", async (message: Message) => {
@@ -10,6 +11,13 @@ export default (): void => {
     if (!message.channel.isTextBased()) return;
     if (message.channel.isDMBased()) return;
     if (message.guild?.id != ConfigManager.getInstance().getConfig("Common").masterGuildId) return;
+
+    // Don't count messages from unverified users
+    const joinLeaveDB = new JoinLeaveDB();
+    const notVerifiedUser = await joinLeaveDB.getNotVerifiedUser(message.author.id);
+    if (notVerifiedUser) {
+      return;
+    }
 
     await addMessage(message);
   });

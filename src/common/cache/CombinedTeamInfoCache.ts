@@ -20,7 +20,10 @@ export default class CombinedTeamInfoCache extends Cache<ICombinedTeamInfo[]> {
     if (teamsResponse.status == 200) {
       this.teamsCache = teamsResponse.data;
     } else {
-      Stumper.error(`Error fetching the team data from the NHL API! Status code: ${teamsResponse.status}`, "common:TeamInfoCache:updateCache");
+      Stumper.error(
+        `Error fetching the team data from the NHL API! Status code: ${teamsResponse.status}`,
+        "common:CombinedTeamInfoCache:updateCache",
+      );
       throw new FailedToUpdateCacheException();
     }
 
@@ -30,7 +33,7 @@ export default class CombinedTeamInfoCache extends Cache<ICombinedTeamInfo[]> {
     } else {
       Stumper.error(
         `Error fetching the franchise data from the NHL API! Status code: ${franchisesResponse.status}`,
-        "common:TeamInfoCache:updateCache",
+        "common:CombinedTeamInfoCache:updateCache",
       );
       throw new FailedToUpdateCacheException();
     }

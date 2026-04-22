@@ -10,7 +10,7 @@ export default class LevelsModule extends Module {
   protected readonly CONFIG_SCHEMA = levelsConfigSchema;
 
   constructor() {
-    super("Levels", { schema });
+    super("Levels", { schema, dependsOn: ["JoinLeave"] });
   }
 
   protected async setup(): Promise<void> {

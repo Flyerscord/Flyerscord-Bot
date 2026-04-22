@@ -26,6 +26,11 @@ export default class AddPinContext extends AdminMessageContextMenuCommand {
       return;
     }
 
+    if (await db.hasPin(message.id)) {
+      await this.replies.reply({ content: "Message is already pinned!", ephemeral: true });
+      return;
+    }
+
     const pin = await db.addPin(message.id, message.channelId, message.createdAt, interaction.user.id);
     if (!pin) {
       Stumper.error(`Failed to add pin for message ${message.id}. Message is already pinned!`, "pins:AddPinContext:execute");

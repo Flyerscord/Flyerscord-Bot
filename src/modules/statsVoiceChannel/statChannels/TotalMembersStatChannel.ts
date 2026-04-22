@@ -11,7 +11,7 @@ export default class TotalMembersStatChannel extends StatsVoiceChannel {
     const guild = discord.guilds.getGuild();
 
     if (!guild) {
-      Stumper.error("Error finding guild", "statsVoiceChannel:TotalMembersStatChannel:update");
+      Stumper.error("Error finding guild", "statsVoiceChannel:TotalMembersStatChannel:getNewValue");
       return null;
     }
 
@@ -26,7 +26,7 @@ export default class TotalMembersStatChannel extends StatsVoiceChannel {
     } else if (num < 1000000) {
       const wholeNumber = Math.floor(num / 1000);
       const remainder = num % 1000;
-      return `${wholeNumber}.${remainder.toString().slice(0, 2)}K`;
+      return `${wholeNumber}.${remainder.toString().padStart(3, "0").slice(0, 2)}K`;
     } else {
       const wholeNumber = Math.floor(num / 1000000);
       const remainder = num % 1000000;

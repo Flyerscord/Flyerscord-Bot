@@ -20,20 +20,20 @@ async function checkForQuoteCreation(message: Message): Promise<boolean> {
 
   if (!match) return false;
 
-  Stumper.info(`Quote creation detected!`, "Admin:onMessageCreate:checkForQuoteCreation");
+  Stumper.info(`Quote creation detected!`, "admin:onMessageCreate:checkForQuoteCreation");
 
   const [, quotedByUsername, quoteNumber, quotedMessageLink, channelId, messageId] = match;
 
   const quotedMessage = await discord.messages.getMessage(channelId, messageId);
   if (!quotedMessage) {
-    Stumper.error(`Quoted message not found!`, "Admin:onMessageCreate:checkForQuoteCreation");
+    Stumper.error(`Quoted message not found!`, "admin:onMessageCreate:checkForQuoteCreation");
     return false;
   }
 
   const quotedByUser = await discord.members.getMemberByUsername(quotedByUsername);
 
   if (!quotedByUser) {
-    Stumper.error(`Quoted by user not found!`, "Admin:onMessageCreate:checkForQuoteCreation");
+    Stumper.error(`Quoted by user not found!`, "admin:onMessageCreate:checkForQuoteCreation");
     return false;
   }
 

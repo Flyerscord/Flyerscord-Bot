@@ -1,12 +1,14 @@
 import discord from "@common/utils/discord/discord";
 import { EmbedBuilder } from "discord.js";
 import { Pin } from "../db/schema";
+import Stumper from "stumper";
 
 export async function getPinEmbed(pin: Pin): Promise<EmbedBuilder | undefined> {
   const embed = new EmbedBuilder();
 
   const message = await discord.messages.getMessage(pin.ogChannelId, pin.ogMessageId);
   if (message == null) {
+    Stumper.debug(`Channel id ${pin.ogChannelId} and message id ${pin.ogMessageId}. Message not found!`, "pins:Embeds:getPinEmbed");
     return undefined;
   }
 

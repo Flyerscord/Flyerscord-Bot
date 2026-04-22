@@ -41,7 +41,7 @@ export default class PinsDB extends ModuleDatabase {
   }
 
   async updateMessageId(originalMessageId: string, messageId: string): Promise<boolean> {
-    const result = await this.db.update(pinsPins).set({ ogMessageId: messageId }).where(eq(pinsPins.ogMessageId, originalMessageId)).returning();
+    const result = await this.db.update(pinsPins).set({ messageId }).where(eq(pinsPins.ogMessageId, originalMessageId)).returning();
 
     if (result.length === 0) {
       return false;

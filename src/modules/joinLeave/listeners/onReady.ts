@@ -14,10 +14,10 @@ export default (): void => {
       if (!user.threadId) {
         const discordUser = await discord.users.getUser(user.userId, true);
         if (!discordUser) {
-          Stumper.error(`User ${user.userId} not found!`, "joinLeave:onReady");
+          Stumper.error(`User ${user.userId} not found!`, "joinLeave:onReady:onReady");
           continue;
         }
-        Stumper.info(`User ${user.userId} doesn't have a captcha thread, creating one!`, "joinLeave:onReady");
+        Stumper.info(`User ${user.userId} doesn't have a captcha thread, creating one!`, "joinLeave:onReady:onReady");
         void sendCaptcha(discordUser);
         void db.createAuditLog({
           action: "createdCaptchaThreadOnStartup",

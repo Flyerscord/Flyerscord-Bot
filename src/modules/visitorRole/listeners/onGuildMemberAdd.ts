@@ -22,7 +22,7 @@ export default (): void => {
         },
       });
 
-      Stumper.info(`Adding member role to user: ${member.displayName}`, "visitorRole:onGuildMemberAdd");
+      Stumper.info(`Adding member role to user: ${member.displayName}`, "visitorRole:onGuildMemberAdd:onGuildMemberAdd");
       await member.roles.add(memberRoleId);
     }
   });

@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       prod_code: ${{ steps.filter.outputs.prod_code }}
+      web_code: ${{ steps.filter.outputs.web_code }}
       build_code: ${{ steps.filter.outputs.build_code }}
     steps:
       - name: Checkout repository
@@ -30,22 +31,25 @@ jobs:
         with:
           filters: |
             prod_code:
-              - 'src/**'
-              - 'drizzle/**'
-              - 'package.json'
-              - 'Dockerfile'
-              - 'tsconfig*.json'
+              - 'packages/bot/src/**'
+              - 'packages/bot/drizzle/**'
+              - 'packages/bot/package.json'
+              - 'Dockerfile.bot'
+              - 'packages/bot/tsconfig*.json'
               - '.dockerignore'
+            web_code:
+              - 'packages/web-server/**'
+              - 'packages/web-client/**'
+              - 'Dockerfile.web'
             build_code:
-              - 'src/**'
-              - 'test/**'
-              - 'package.json'
+              - 'packages/bot/src/**'
+              - 'packages/bot/tests/**'
+              - 'packages/bot/package.json'
               - 'pnpm-lock.yaml'
-              - 'eslint.config.mjs'
-              - '.prettierrc.json'
-              - 'jest.config.js'
-              - 'drizzle.config.ts'
-              - 'tsconfig*.json'
+              - 'packages/bot/eslint.config.mjs'
+              - 'packages/bot/jest.config.js'
+              - 'packages/bot/drizzle.config.ts'
+              - 'packages/bot/tsconfig*.json'
 
   build:
     needs: changes
@@ -70,31 +74,31 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build project
-        run: pnpm run build
+        run: pnpm --filter @flyerscord/bot build
 
       - name: Build tests
-        run: pnpm run build:test
+        run: pnpm --filter @flyerscord/bot build:test
 
       - name: Run linting
-        run: pnpm run lint
+        run: pnpm --filter @flyerscord/bot lint
 
       - name: Check DB migrations
         run: |
-          pnpm run db:generate
-          if [ -n "$(git status --porcelain drizzle/migrations/)" ]; then
+          pnpm --filter @flyerscord/bot db:generate
+          if [ -n "$(git status --porcelain packages/bot/drizzle/migrations/)" ]; then
             echo "Error: Database schema changes detected but migrations not generated!"
-            echo "Please run 'pnpm run db:generate' and commit the migration files."
-            git status drizzle/migrations/
+            echo "Please run 'pnpm --filter @flyerscord/bot db:generate' and commit the migration files."
+            git status packages/bot/drizzle/migrations/
             exit 1
           fi
 
       - name: Run circular deps check
-        run: pnpm run circular-deps
+        run: pnpm --filter @flyerscord/bot circular-deps
 
       - name: Run tests without coverage
-        run: pnpm run test
+        run: pnpm --filter @flyerscord/bot test
 
-  docker-build:
+  docker-build-bot:
     needs: changes
     if: needs.changes.outputs.prod_code == 'true' && (github.event_name == 'push' || github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
@@ -115,7 +119,7 @@ jobs:
         if: github.event_name == 'push'
         id: version
         run: |
-          BASE_VERSION=$(node -p "require('./package.json').version")
+          BASE_VERSION=$(node -p "require('./packages/bot/package.json').version")
           FULL_VERSION="${BASE_VERSION}.${{ steps.commit-count.outputs.count }}"
           echo "version=${FULL_VERSION}" >> $GITHUB_OUTPUT
 
@@ -145,6 +149,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: Dockerfile.bot
           push: false
           build-args: |
             COMMIT_COUNT=${{ steps.commit-count.outputs.count }}
@@ -156,6 +161,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: Dockerfile.bot
           push: true
           build-args: |
             COMMIT_COUNT=${{ steps.commit-count.outputs.count }}
@@ -170,6 +176,84 @@ jobs:
         uses: sarisia/actions-status-discord@v1.16.0
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          title: "Docker Image Published"
+          title: "Bot Docker Image Published"
           description: "Version **${{ steps.version.outputs.version }}** has been built and pushed to `ghcr.io/${{ steps.tag-check.outputs.repo }}`"
+          color: 0x2ea043
+
+  docker-build-web:
+    needs: changes
+    if: (needs.changes.outputs.web_code == 'true' || needs.changes.outputs.prod_code == 'true') && (github.event_name == 'push' || github.event.pull_request.draft == false)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Get commit count
+        id: commit-count
+        run: echo "count=$(git rev-list --count HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Get package version
+        if: github.event_name == 'push'
+        id: version
+        run: |
+          BASE_VERSION=$(node -p "require('./packages/bot/package.json').version")
+          FULL_VERSION="${BASE_VERSION}.${{ steps.commit-count.outputs.count }}"
+          echo "version=${FULL_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        if: github.event_name == 'push'
+        id: tag-check
+        run: |
+          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          if docker manifest inspect ghcr.io/${REPO_LOWER}-web:${{ steps.version.outputs.version }} > /dev/null 2>&1; then
+            echo "Tag ${{ steps.version.outputs.version }} already exists, skipping push"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+          echo "repo=${REPO_LOWER}" >> $GITHUB_OUTPUT
+
+      - name: Log in to GitHub Container Registry
+        if: github.event_name == 'push' && steps.tag-check.outputs.exists == 'false'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image (PR validation)
+        if: github.event_name == 'pull_request'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.web
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push Docker image
+        if: github.event_name == 'push' && steps.tag-check.outputs.exists == 'false'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.web
+          push: true
+          tags: |
+            ghcr.io/${{ steps.tag-check.outputs.repo }}-web:${{ steps.version.outputs.version }}
+            ghcr.io/${{ steps.tag-check.outputs.repo }}-web:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Send Discord notification
+        if: github.event_name == 'push' && steps.tag-check.outputs.exists == 'false'
+        uses: sarisia/actions-status-discord@v1.16.0
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          title: "Web Docker Image Published"
+          description: "Version **${{ steps.version.outputs.version }}** has been built and pushed to `ghcr.io/${{ steps.tag-check.outputs.repo }}-web`"
           color: 0x2ea043

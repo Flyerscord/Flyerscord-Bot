@@ -49,7 +49,7 @@ services:
   migrate:
     image: ghcr.io/flyerscord/flyerscord-bot:latest
     restart: no
-    command: pnpm run db:migrate
+    command: pnpm --filter @flyerscord/bot db:migrate
     environment:
       DATABASE_URL_SINGLE: postgresql://postgres:${DB_PASSWORD}@postgres:5432/flyerscord
     depends_on:
@@ -93,6 +93,38 @@ services:
         condition: service_healthy
       pgbouncer:
         condition: service_started
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+
+  web:
+    image: ghcr.io/flyerscord/flyerscord-bot-web:latest
+    restart: unless-stopped
+    environment:
+      DATABASE_URL_POOLED: postgresql://postgres:${DB_PASSWORD}@pgbouncer:5432/flyerscord
+      DISCORD_TOKEN: ${DISCORD_TOKEN}
+      WEB_CLIENT_ID: ${WEB_CLIENT_ID}
+      WEB_CLIENT_SECRET: ${WEB_CLIENT_SECRET}
+      WEB_CALLBACK_URL: ${WEB_CALLBACK_URL}
+      WEB_SESSION_SECRET: ${WEB_SESSION_SECRET}
+      ADMIN_ROLE_ID: ${ADMIN_ROLE_ID}
+      GUILD_ID: ${GUILD_ID}
+      PORT: 4000
+    ports:
+      - 4000:4000
+    depends_on:
+      pgbouncer:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:4000/health || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
 

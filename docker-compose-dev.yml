@@ -47,11 +47,11 @@ services:
   migrate:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.bot
     restart: no
     stdin_open: true
     tty: true
-    command: pnpm run db:push
+    command: pnpm --filter @flyerscord/bot db:push
     environment:
       DATABASE_URL_SINGLE: postgresql://postgres:flyerscord-dev-db@postgres:5432/flyerscord
     depends_on:
@@ -67,7 +67,7 @@ services:
   bot:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.bot
     restart: unless-stopped
     environment:
       PRODUCTION_MODE: false
@@ -91,6 +91,33 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: 5
+        compress: "true"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    restart: unless-stopped
+    environment:
+      DATABASE_URL_POOLED: postgresql://postgres:flyerscord-dev-db@pgbouncer:5432/flyerscord
+      DISCORD_TOKEN: ${DISCORD_TOKEN}
+      WEB_CLIENT_ID: ${WEB_CLIENT_ID}
+      WEB_CLIENT_SECRET: ${WEB_CLIENT_SECRET}
+      WEB_CALLBACK_URL: ${WEB_CALLBACK_URL}
+      WEB_SESSION_SECRET: ${WEB_SESSION_SECRET}
+      ADMIN_ROLE_ID: ${ADMIN_ROLE_ID}
+      GUILD_ID: ${GUILD_ID}
+      PORT: 4000
+    ports:
+      - 4444:4000
+    depends_on:
+      pgbouncer:
+        condition: service_started
     logging:
       driver: local
       options:

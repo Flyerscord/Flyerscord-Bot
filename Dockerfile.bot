@@ -7,6 +7,7 @@ RUN npm install -g pnpm
 COPY package.json .
 COPY pnpm-lock.yaml .
 COPY pnpm-workspace.yaml .
+COPY packages/bot/package.json ./packages/bot/package.json
 
 RUN pnpm install --frozen-lockfile
 
@@ -24,7 +25,10 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 WORKDIR /usr/src/app
 
 COPY --from=dependencies /usr/src/app/node_modules ./node_modules
+COPY --from=dependencies /usr/src/app/packages/bot/node_modules ./packages/bot/node_modules
 
-COPY . .
+COPY package.json .
+COPY pnpm-workspace.yaml .
+COPY packages/bot/ ./packages/bot/
 
-CMD ["pnpm", "start"]
+CMD ["pnpm", "--filter", "@flyerscord/bot", "start"]

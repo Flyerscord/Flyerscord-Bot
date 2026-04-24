@@ -1,0 +1,25 @@
+FROM node:24 AS builder
+WORKDIR /usr/src/app
+RUN npm install -g pnpm
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .
+COPY packages/bot/package.json ./packages/bot/package.json
+COPY packages/web-server/package.json ./packages/web-server/package.json
+COPY packages/web-client/package.json ./packages/web-client/package.json
+RUN pnpm install --frozen-lockfile
+COPY packages/ ./packages/
+RUN pnpm --filter @flyerscord/web-client build
+
+FROM node:24
+WORKDIR /usr/src/app
+RUN npm install -g pnpm
+ENV TZ=America/New_York
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .
+COPY packages/bot/package.json ./packages/bot/package.json
+COPY packages/web-server/package.json ./packages/web-server/package.json
+COPY packages/web-client/package.json ./packages/web-client/package.json
+RUN pnpm install --frozen-lockfile --prod
+COPY packages/bot/src ./packages/bot/src
+COPY packages/web-server/src ./packages/web-server/src
+COPY --from=builder /usr/src/app/packages/web-client/dist ./packages/web-client/dist
+CMD ["pnpm", "--filter", "@flyerscord/web-server", "start"]

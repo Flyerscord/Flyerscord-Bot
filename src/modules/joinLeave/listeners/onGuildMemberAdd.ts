@@ -28,9 +28,10 @@ export default (): void => {
         // Check if the account is brand new
         const adminRoleId = ConfigManager.getInstance().getConfig("Common").adminRoleId;
         Stumper.info(`User ${username} has joined the server, but their account is brand new!`, "joinLeave:onGuildMemberAdd:onGuildMemberAdd");
+        const hoursOld = Time.timeSince(user.createdTimestamp) / 1000 / 60 / 60;
         void discord.messages.sendMessageToChannel(
           adminNotificationChannelId,
-          `${roleMention(adminRoleId)}\n ${userMention(user.id)} has joined the server, but their account is ${Time.timeSince(user.createdTimestamp) / 1000 / 60 / 60} hours old!`,
+          `${roleMention(adminRoleId)}\n ${userMention(user.id)} has joined the server, but their account is ${hoursOld.toFixed(2)} hours old!`,
         );
       } else {
         Stumper.info(`User ${username} has joined the server!`, "joinLeave:onGuildMemberAdd:onGuildMemberAdd");

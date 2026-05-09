@@ -10,7 +10,7 @@ import Time from "@common/utils/Time";
 export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("guildMemberAdd", async (member) => {
-    let details: { roles?: string[] } = {};
+    let details: { roles?: string[]; timedOutFor?: number } = {};
     try {
       const db = new JoinLeaveDB();
 
@@ -27,11 +27,19 @@ export default (): void => {
       if (user.createdTimestamp > Date.now() - brandNewAccountThreshold * 24 * 60 * 60 * 1000) {
         // Check if the account is brand new
         const adminRoleId = ConfigManager.getInstance().getConfig("Common").adminRoleId;
-        Stumper.info(`User ${username} has joined the server, but their account is brand new!`, "joinLeave:onGuildMemberAdd:onGuildMemberAdd");
         const hoursOld = Time.timeSince(user.createdTimestamp) / 1000 / 60 / 60;
         void discord.messages.sendMessageToChannel(
           adminNotificationChannelId,
-          `${roleMention(adminRoleId)}\n ${userMention(user.id)} has joined the server, but their account is ${hoursOld.toFixed(2)} hours old!`,
+          `${roleMention(adminRoleId)}\n${userMention(user.id)} has joined the server, but their account is ${hoursOld.toFixed(2)} hours old!`,
+        );
+
+        const MAX_TIMEOUT_MS = 28 * 24 * 60 * 60 * 1000;
+        details.timedOutFor = Math.min(brandNewAccountThreshold * 24 * 60 * 60 * 1000 - Time.timeSince(user.createdTimestamp), MAX_TIMEOUT_MS);
+        // Timeout user for the amount of time they have left until they are no longer brand new
+        await member.timeout(details.timedOutFor, "JoinLeave: User is brand new");
+        Stumper.info(
+          `User ${username} has joined the server, but their account is brand new! Timing out them for ${(details.timedOutFor / 1000 / 60 / 60).toFixed(2)} hours!`,
+          "joinLeave:onGuildMemberAdd:onGuildMemberAdd",
         );
       } else {
         Stumper.info(`User ${username} has joined the server!`, "joinLeave:onGuildMemberAdd:onGuildMemberAdd");

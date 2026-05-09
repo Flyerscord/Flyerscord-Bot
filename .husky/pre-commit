@@ -1,5 +1,7 @@
 set -e
 
+export PATH="$HOME/.local/share/mise/shims:$PATH"
+
 pnpm run format
 
 # Add files that were already staged and modified by the formatter to staging

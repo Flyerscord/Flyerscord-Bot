@@ -2,7 +2,7 @@ FROM node:24 AS dependencies
 
 WORKDIR /usr/src/app
 
-RUN npm install -g pnpm
+RUN npm install -g pnpm@10
 
 COPY package.json .
 COPY pnpm-lock.yaml .
@@ -15,7 +15,7 @@ FROM node:24
 ARG COMMIT_COUNT=0
 ENV COMMIT_COUNT=${COMMIT_COUNT}
 
-RUN npm install -g pnpm
+RUN npm install -g pnpm@10
 
 # Set the timezone so that the logs are in the correct timezone
 ENV TZ=America/New_York

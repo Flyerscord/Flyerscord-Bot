@@ -88,7 +88,7 @@ export async function sendCaptcha(user: User, skipLock: boolean = false): Promis
     if (member && member.communicationDisabledUntilTimestamp) {
       await discord.messages.sendMessageToThread(
         notVerifiedUser.threadId,
-        `You have been timed out for ${(member.communicationDisabledUntilTimestamp - Date.now() / 1000 / 60 / 60).toFixed(2)} hours due to this account being brand new. If you feel this was an error, please contact an admin.`,
+        `You have been timed out for ${((member.communicationDisabledUntilTimestamp - Date.now()) / 1000 / 60 / 60).toFixed(2)} hours due to this account being brand new. If you feel this was an error, please contact an admin.`,
       );
     }
   } catch (error) {

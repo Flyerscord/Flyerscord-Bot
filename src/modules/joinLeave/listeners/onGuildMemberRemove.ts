@@ -15,7 +15,7 @@ export default (): void => {
     let leftBeforeStr = "";
     const leftBefore = await MyAuditLog.getAuditLogsByUserAndAction("JoinLeave", member.user.id, "userLeft");
     if (leftBefore.length > 0) {
-      leftBeforeStr = `${italic(bold("again"))}`;
+      leftBeforeStr = ` ${italic(bold("again"))}`;
     }
 
     let message = `${bold(username)} has just left the server${leftBeforeStr}! Typical Pens fan ${bold(username)}...`;

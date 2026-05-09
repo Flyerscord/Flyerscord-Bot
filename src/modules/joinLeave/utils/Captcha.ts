@@ -82,6 +82,15 @@ export async function sendCaptcha(user: User, skipLock: boolean = false): Promis
 
     const embed = getCaptchaEmbed(questions[notVerifiedUser.questionsAnswered].question);
     await discord.messages.sendEmbedToThread(notVerifiedUser.threadId, embed);
+
+    // Check if the user has been timed out
+    const member = await discord.members.getMember(user.id, true);
+    if (member && member.communicationDisabledUntilTimestamp) {
+      await discord.messages.sendMessageToThread(
+        notVerifiedUser.threadId,
+        `You have been timed out for ${((member.communicationDisabledUntilTimestamp - Date.now()) / 1000 / 60 / 60).toFixed(2)} hours due to this account being brand new. If you feel this was an error, please contact an admin.`,
+      );
+    }
   } catch (error) {
     Stumper.caughtError(error, "joinLeave:Captcha:sendCaptcha");
   } finally {

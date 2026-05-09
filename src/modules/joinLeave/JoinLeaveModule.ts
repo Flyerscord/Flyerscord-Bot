@@ -112,16 +112,6 @@ export const joinLeaveConfigSchema = [
     defaultValue: 3,
     schema: Zod.number({ min: 1, max: 365 }),
   },
-  // Might be useful later, we will see if the captcha stops spam bots
-  // {
-  //   key: "brandNewAccountTimeoutLength",
-  //   description: "The number of days a user's account is timed out for being brand new",
-  //   required: false,
-  //   secret: false,
-  //   requiresRestart: false,
-  //   defaultValue: 3,
-  //   schema: Zod.number({ min: 1, max: 365 }),
-  // },
 ] as const satisfies readonly IModuleConfigSchema[];
 
 export default class JoinLeaveModule extends Module {

@@ -112,6 +112,15 @@ export const joinLeaveConfigSchema = [
     defaultValue: 3,
     schema: Zod.number({ min: 1, max: 365 }),
   },
+  {
+    key: "enableAdminPingOnNewUserJoin",
+    description: "Whether to enable the admin ping on brand new user join",
+    required: false,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: true,
+    schema: Zod.boolean(),
+  },
 ] as const satisfies readonly IModuleConfigSchema[];
 
 export default class JoinLeaveModule extends Module {

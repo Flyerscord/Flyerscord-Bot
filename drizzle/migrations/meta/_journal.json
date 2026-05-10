@@ -85,6 +85,13 @@
       "when": 1776667729313,
       "tag": "0011_futuristic_hydra",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1778455403250,
+      "tag": "0012_curly_lenny_balinger",
+      "breakpoints": true
     }
   ]
 }

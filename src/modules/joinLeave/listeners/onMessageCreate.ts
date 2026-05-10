@@ -5,7 +5,6 @@ import ConfigManager from "@common/managers/ConfigManager";
 import discord from "@common/utils/discord/discord";
 import { sendCaptcha } from "../utils/Captcha";
 import Stumper from "stumper";
-import Time from "@common/utils/Time";
 import { AuditLogSeverity } from "@common/db/schema";
 import JoinImageGenerator from "../utils/JoinImageGenerator";
 
@@ -56,39 +55,6 @@ export default (): void => {
       const questions = ConfigManager.getInstance().getConfig("JoinLeave").captchaQuestions;
       if (questions.length <= notVerifiedUser.questionsAnswered) {
         return;
-      }
-
-      const currentTimeout = await db.getTimeout(user.id);
-      const timeoutCooldown = ConfigManager.getInstance().getConfig("JoinLeave").incorrectAnswersTimeout;
-      if (currentTimeout) {
-        const timeSinceTimeoutMilli = Time.timeSince(currentTimeout.getTime());
-        const timeUntilTimeoutSec = Math.floor(timeSinceTimeoutMilli / 1000);
-        if (timeUntilTimeoutSec < timeoutCooldown) {
-          void db.createAuditLog({
-            action: "messageSentWhileTimedOut",
-            userId: user.id,
-            severity: AuditLogSeverity.WARNING,
-            details: {
-              messageId: message.id,
-              content: message.content,
-              timeUntilTimeoutSec,
-            },
-          });
-          Stumper.warning(
-            `User ${user.id} has to wait ${timeoutCooldown - timeUntilTimeoutSec} seconds before answering again`,
-            "joinLeave:onMessageCreate:onMessageCreate",
-          );
-          await message.reply(`You have to wait ${timeoutCooldown - timeUntilTimeoutSec} seconds before answering again.`);
-          return;
-        } else {
-          await db.createAuditLog({
-            action: "timeOutRemoved",
-            userId: user.id,
-            severity: AuditLogSeverity.INFO,
-          });
-          await db.removeTimeout(user.id);
-          await db.resetIncorrectAnswers(user.id);
-        }
       }
 
       const content = message.content.toLowerCase();
@@ -243,9 +209,10 @@ export default (): void => {
                 maxTimeOuts,
               },
             });
-            await db.startTimeout(user.id);
+            await member.timeout(timeoutLength * 1000, "Too many incorrect captcha answers");
             await db.incrementTimeOutCount(user.id);
-            await message.reply(`Wrong! You have reached the maximum number of incorrect answers! Try again in ${timeoutHours} hours.`);
+            await db.resetIncorrectAnswers(user.id);
+            await message.reply(`Wrong! You have reached the maximum number of incorrect answers! Try again in ${timeoutHours.toFixed(1)} hours.`);
           }
         } else {
           // Incorrect answer, but the user has not reached the maximum number of wrong answers

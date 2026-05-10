@@ -209,14 +209,22 @@ export default (): void => {
                 maxTimeOuts,
               },
             });
-            await member.timeout(timeoutLength * 1000, "Too many incorrect captcha answers");
+            if (member.moderatable) {
+              await member.timeout(timeoutLength * 1000, "Too many incorrect captcha answers");
+            } else {
+              Stumper.warning(`User ${user.id} is not moderatable, skipping timeout...`, "joinLeave:onMessageCreate:onMessageCreate");
+            }
             await db.incrementTimeOutCount(user.id);
             await db.resetIncorrectAnswers(user.id);
             await message.reply(`Wrong! You have reached the maximum number of incorrect answers! Try again in ${timeoutHours.toFixed(1)} hours.`);
           }
         } else {
           // Incorrect answer, but the user has not reached the maximum number of wrong answers
-          await member.timeout(2 * 1000, "Incorrect captcha answer");
+          if (member.moderatable) {
+            await member.timeout(2 * 1000, "Incorrect captcha answer");
+          } else {
+            Stumper.warning(`User ${user.id} is not moderatable, skipping timeout...`, "joinLeave:onMessageCreate:onMessageCreate");
+          }
           await message.reply("Incorrect! Try again.");
         }
       }

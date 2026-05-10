@@ -216,6 +216,7 @@ export default (): void => {
           }
         } else {
           // Incorrect answer, but the user has not reached the maximum number of wrong answers
+          await member.timeout(2 * 1000, "Incorrect captcha answer");
           await message.reply("Incorrect! Try again.");
         }
       }

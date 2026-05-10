@@ -9,12 +9,11 @@ export const notVerifiedUsers = createModuleTable(
     questionsAnswered: integer("questions_answered").default(0).notNull(),
     lock: boolean("lock").default(false).notNull(),
     incorrectAnswers: integer("incorrect_answers").default(0).notNull(),
-    timedoutAt: timestamp("timedout_at"),
     timeOutCount: integer("time_out_count").default(0).notNull(),
     threadId: text("thread_id"),
     addedToThread: boolean("added_to_thread").default(false).notNull(),
   },
-  (table) => [index("joinleave_added_at_idx").on(table.addedAt), index("joinleave_timedout_at_idx").on(table.timedoutAt)],
+  (table) => [index("joinleave_added_at_idx").on(table.addedAt)],
 );
 
 export const leftUsers = createModuleTable("joinleave__left_users", {

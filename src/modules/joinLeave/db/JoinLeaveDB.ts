@@ -71,22 +71,6 @@ export default class JoinLeaveDB extends ModuleDatabase {
     return result?.incorrect ?? 0;
   }
 
-  async startTimeout(userId: string): Promise<void> {
-    await this.db.update(notVerifiedUsers).set({ timedoutAt: new Date() }).where(eq(notVerifiedUsers.userId, userId));
-  }
-
-  async removeTimeout(userId: string): Promise<void> {
-    await this.db.update(notVerifiedUsers).set({ timedoutAt: null }).where(eq(notVerifiedUsers.userId, userId));
-  }
-
-  async getTimeout(userId: string): Promise<Date | undefined> {
-    const result = await this.getSingleRowWithFields(notVerifiedUsers, eq(notVerifiedUsers.userId, userId), {
-      timeout: notVerifiedUsers.timedoutAt,
-    });
-
-    return result?.timeout ?? undefined;
-  }
-
   async getTimeOutCount(userId: string): Promise<number> {
     const result = await this.getSingleRowWithFields(notVerifiedUsers, eq(notVerifiedUsers.userId, userId), {
       count: notVerifiedUsers.timeOutCount,

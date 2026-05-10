@@ -2,6 +2,10 @@ import { ModalBuilder, ModalSubmitInteraction } from "discord.js";
 import Stumper from "stumper";
 import Command from "./Command";
 
+export interface ITextInputOptions {
+  required?: boolean;
+}
+
 export default abstract class ModalMenu extends Command {
   readonly data: ModalBuilder;
 
@@ -42,4 +46,6 @@ export default abstract class ModalMenu extends Command {
     }
     return undefined;
   }
+
+  protected createTextInputWithLabel(id: number, label: string, description: string);
 }

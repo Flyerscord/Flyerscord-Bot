@@ -7,12 +7,11 @@
     "lib": ["ES2021"],
 
     /* Paths and Module Resolution */
-    "baseUrl": "./",
     "paths": {
-      "@root/*": ["*"],
-      "@common/*": ["src/common/*"],
-      "@modules/*": ["src/modules/*"],
-      "@cli/*": ["src/cli/*"]
+      "@root/*": ["./*"],
+      "@common/*": ["./src/common/*"],
+      "@modules/*": ["./src/modules/*"],
+      "@cli/*": ["./src/cli/*"]
     },
 
     /* Type Declarations */

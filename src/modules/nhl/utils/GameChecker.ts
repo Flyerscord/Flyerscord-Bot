@@ -70,8 +70,9 @@ export async function checkForGameDay(): Promise<void> {
         const post = await discord.forums.createPost(
           config.channelId,
           `${titlePrefix} - ${awayTeam.franchise.teamCommonName} @ ${homeTeam.franchise.teamCommonName}`,
-          `${time(new Date(game.startTimeUTC), TimestampStyles.RelativeTime)}`,
+          { content: `${time(new Date(game.startTimeUTC), TimestampStyles.RelativeTime)}` },
           tags,
+          "Auto created post for Flyers Game Day",
         );
 
         if (post) {

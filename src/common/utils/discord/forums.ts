@@ -1,18 +1,19 @@
-import { ForumThreadChannel, GuildForumTag } from "discord.js";
+import { ForumThreadChannel, GuildForumTag, GuildForumThreadMessageCreateOptions, MessagePayload } from "discord.js";
 import { getForumChannel, getForumPostChannel } from "./channels";
 
 export async function createPost(
   forumChannelId: string,
   postName: string,
-  postContent: string,
+  postContent: GuildForumThreadMessageCreateOptions | MessagePayload,
   tags: GuildForumTag[],
+  reason: string = "",
 ): Promise<ForumThreadChannel | undefined> {
   const forumChannel = await getForumChannel(forumChannelId);
   if (forumChannel) {
     return await forumChannel.threads.create({
       name: postName,
-      message: { content: postContent },
-      reason: "Auto created post for Flyers Game Day",
+      message: postContent,
+      reason: reason,
       appliedTags: tags.map((tag) => tag.id),
     });
   }
@@ -27,18 +28,22 @@ export async function getAvailableTags(forumChannelId: string): Promise<GuildFor
   return [];
 }
 
-export async function setLockPost(forumChannelId: string, postChannelId: string, locked: boolean): Promise<void> {
+export async function setLockPost(forumChannelId: string, postChannelId: string, locked: boolean): Promise<boolean> {
   const postChannel = await getForumPostChannel(forumChannelId, postChannelId);
   if (postChannel) {
     await postChannel.setLocked(locked);
+    return true;
   }
+  return false;
 }
 
-export async function setClosedPost(forumChannelId: string, postChannelId: string, closed: boolean): Promise<void> {
+export async function setClosedPost(forumChannelId: string, postChannelId: string, closed: boolean): Promise<boolean> {
   const postChannel = await getForumPostChannel(forumChannelId, postChannelId);
   if (postChannel) {
     await postChannel.setArchived(closed);
+    return true;
   }
+  return false;
 }
 
 export async function isClosed(forumChannelId: string, postChannelId: string): Promise<boolean> {
@@ -53,6 +58,15 @@ export async function isLocked(forumChannelId: string, postChannelId: string): P
   const postChannel = await getForumPostChannel(forumChannelId, postChannelId);
   if (postChannel) {
     return postChannel.locked || false;
+  }
+  return false;
+}
+
+export async function pinPost(forumChannelId: string, postChannelId: string): Promise<boolean> {
+  const postChannel = await getForumPostChannel(forumChannelId, postChannelId);
+  if (postChannel) {
+    await postChannel.pin();
+    return true;
   }
   return false;
 }

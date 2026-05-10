@@ -1,4 +1,4 @@
-import { TextChannel, EmbedBuilder, Message, Attachment } from "discord.js";
+import { TextChannel, EmbedBuilder, Message, Attachment, MessagePayload, MessageCreateOptions } from "discord.js";
 
 import Stumper from "stumper";
 import { AttachmentBuilder } from "discord.js";
@@ -204,6 +204,15 @@ export async function sendEmbedToThread(threadId: string, embed: EmbedBuilder): 
   if (thread) {
     Stumper.debug(`Sending embed to thread: ${threadId}`, "common:messages:sendEmbedToThread");
     return await thread.send({ embeds: [embed] });
+  }
+  return undefined;
+}
+
+export async function sendCustomToThread(threadId: string, content: string | MessagePayload | MessageCreateOptions): Promise<Message | undefined> {
+  const thread = await getThread(threadId);
+  if (thread) {
+    Stumper.debug(`Sending custom to thread: ${threadId}`, "common:messages:sendCustomToThread");
+    return await thread.send(content);
   }
   return undefined;
 }

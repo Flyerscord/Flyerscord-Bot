@@ -149,12 +149,9 @@ export default class JoinLeaveDB extends ModuleDatabase {
   }
 
   async getRaidProtectionActive(): Promise<{ active: boolean; updatedAt: Date }> {
-    const result = await this.getSingleRowWithFields(joinLeaveState, eq(joinLeaveState.key, "raidProtectionActive"), {
-      active: joinLeaveState.booleanValue,
-      updatedAt: joinLeaveState.updatedAt,
-    });
-
-    return result ?? { active: false, updatedAt: new Date() };
+    const result = await this.getStateValue("raidProtectionActive");
+    const { value, updatedAt } = result.unwrapOr(undefined) ?? { value: false, updatedAt: new Date() };
+    return { active: value as boolean, updatedAt };
   }
 
   async setRaidProtectionActive(active: boolean): Promise<void> {

@@ -1,4 +1,4 @@
-import { createModuleTable } from "@common/db/schema-types";
+import { createModuleTable, createStateTable } from "@common/db/schema-types";
 import { boolean, index, integer, text, timestamp } from "drizzle-orm/pg-core";
 
 export const notVerifiedUsers = createModuleTable(
@@ -23,11 +23,7 @@ export const leftUsers = createModuleTable("joinleave__left_users", {
   roles: text("roles").array().notNull().default([]),
 });
 
-export const joinLeaveState = createModuleTable("joinleave__state", {
-  key: text("key").primaryKey(),
-  booleanValue: boolean("boolean_value").notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+export const joinLeaveState = createStateTable("joinleave", ["boolean"]);
 
 export default {
   notVerifiedUsers,

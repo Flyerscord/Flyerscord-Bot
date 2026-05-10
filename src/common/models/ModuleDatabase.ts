@@ -1,7 +1,8 @@
 import { Modules } from "@modules/Modules";
 import Database, { PostgresDB } from "../db/db";
 import { PgColumn, PgTable, SelectedFields } from "drizzle-orm/pg-core";
-import { count, sql, SQL } from "drizzle-orm";
+import { StateTable } from "../db/schema-types";
+import { count, eq, sql, SQL } from "drizzle-orm";
 import { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import { AuditLog, NewAuditLog } from "../db/schema";
 import AL from "../utils/MyAuditLog";
@@ -11,13 +12,13 @@ import Stumper from "stumper";
 export abstract class ModuleDatabase {
   protected readonly db: PostgresDB;
   protected readonly moduleName: Modules;
-  protected readonly stateTable: PgTable | undefined;
+  protected readonly stateTable: StateTable | undefined;
 
   /**
    * Constructor for ModuleDatabase base class
    * @param moduleName - The name of the module using this database
    */
-  constructor(moduleName: Modules, stateTable?: PgTable) {
+  constructor(moduleName: Modules, stateTable?: StateTable) {
     this.stateTable = stateTable;
     this.moduleName = moduleName;
     this.db = Database.getInstance().getDb();
@@ -164,6 +165,49 @@ export abstract class ModuleDatabase {
       .values({ key, [valueColumnName]: value })
       .onConflictDoNothing();
     return ok();
+  }
+
+  protected async setStateValue(key: string, valueColumn: PgColumn, value: unknown): Promise<Result<void, string>> {
+    if (!this.stateTable) {
+      Stumper.error(`State table not defined for module ${this.moduleName}`, "common:ModuleDatabase:setStateValue");
+      return err("State table not defined for module");
+    }
+
+    const valueColumnName = this.getColumnPropertyName(valueColumn);
+    if (!valueColumnName) {
+      Stumper.error(`Could not find property name for column ${valueColumn.name}`, "common:ModuleDatabase:setStateValue");
+      return err("Could not find property name for column");
+    }
+
+    await this.db
+      .insert(this.stateTable)
+      .values({ key, [valueColumnName]: value })
+      .onConflictDoUpdate({
+        target: this.stateTable.key,
+        set: { [valueColumnName]: value, updatedAt: sql`now()` },
+      });
+    return ok();
+  }
+
+  protected async getStateValue(key: string): Promise<Result<{ value: unknown; updatedAt: Date } | undefined, string>> {
+    if (!this.stateTable) {
+      Stumper.error(`State table not defined for module ${this.moduleName}`, "common:ModuleDatabase:getStateValue");
+      return err("State table not defined for module");
+    }
+
+    const results = await this.db.select().from(this.stateTable).where(eq(this.stateTable.key, key));
+    if (results.length === 0) {
+      return ok(undefined);
+    }
+
+    const row = results[0] as Record<string, unknown>;
+    for (const [col, val] of Object.entries(row)) {
+      if (col.endsWith("_value") && val !== null && val !== undefined) {
+        return ok({ value: val, updatedAt: row.updatedAt as Date });
+      }
+    }
+
+    return ok(undefined);
   }
 
   /**

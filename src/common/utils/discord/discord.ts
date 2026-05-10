@@ -9,6 +9,7 @@ import * as members from "./members";
 import * as forums from "./forums";
 import * as interactions from "./InteractionReplies";
 import * as threads from "./threads";
+import * as buttons from "./buttons";
 
 export default {
   messages: messages,
@@ -22,4 +23,5 @@ export default {
   forums: forums,
   interactions: interactions,
   threads: threads,
+  buttons: buttons,
 };

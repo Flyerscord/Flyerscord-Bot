@@ -26,11 +26,20 @@ export const privateThreads = createModuleTable(
   ],
 );
 
-export const modalFields = createModuleTable("ticketexchange__modal_fields", {
-  userId: text("user_id").primaryKey(),
-  fields: jsonb("fields").notNull(),
-  submittedAt: timestamp("submitted_at").notNull().defaultNow(),
-});
+export const modalFields = createModuleTable(
+  "ticketexchange__modal_fields",
+  {
+    userId: text("user_id").notNull(),
+    modalId: text("modal_id").notNull(),
+    fields: jsonb("fields").notNull(),
+    submittedAt: timestamp("submitted_at").notNull().defaultNow(),
+  },
+  (table) => [
+    primaryKey({
+      columns: [table.userId, table.modalId],
+    }),
+  ],
+);
 
 export default {
   ticketExchangeState,

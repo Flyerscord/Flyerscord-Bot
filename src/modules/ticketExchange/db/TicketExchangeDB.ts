@@ -1,7 +1,7 @@
 import { ModuleDatabase } from "@common/models/ModuleDatabase";
-import { PrivateThread, privateThreads, PrivateThreadType, ticketExchangeState } from "./schema";
+import { ModalFields, modalFields, PrivateThread, privateThreads, PrivateThreadType, ticketExchangeState } from "./schema";
 import { Result, ok, err } from "neverthrow";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 
 export default class TicketExchangeDB extends ModuleDatabase {
   constructor() {
@@ -54,5 +54,23 @@ export default class TicketExchangeDB extends ModuleDatabase {
       return true;
     }
     return false;
+  }
+
+  async setUserModalValues(userId: string, modalId: string, fields: Record<string, string>): Promise<void> {
+    await this.db
+      .insert(modalFields)
+      .values({ userId, modalId, fields })
+      .onConflictDoUpdate({
+        target: [modalFields.userId, modalFields.modalId],
+        set: { fields, submittedAt: sql`now()` },
+      });
+  }
+
+  async getUserModalValues(userId: string, modalId: string): Promise<Record<string, string> | undefined> {
+    const results = await this.getSingleRow<ModalFields>(modalFields, and(eq(modalFields.userId, userId), eq(modalFields.modalId, modalId))!);
+    if (!results) {
+      return undefined;
+    }
+    return results.fields as Record<string, string>;
   }
 }

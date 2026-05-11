@@ -1,15 +1,37 @@
-import { ModalBuilder, ModalSubmitInteraction } from "discord.js";
+import {
+  LabelBuilder,
+  ModalBuilder,
+  ModalSubmitInteraction,
+  StringSelectMenuBuilder,
+  StringSelectMenuOptionBuilder,
+  TextDisplayBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+} from "discord.js";
 import Stumper from "stumper";
 import Command from "./Command";
 
 export interface ITextInputOptions {
   required?: boolean;
+  inputPlaceholder?: string;
+  inputValue?: string;
+  minLength?: number;
+  maxLength?: number;
+}
+
+export interface IStringSelectOptions {
+  required?: boolean;
+  minSelections?: number;
+  maxSelections?: number;
+  placeholder?: string;
 }
 
 export default abstract class ModalMenu extends Command {
   readonly data: ModalBuilder;
 
   readonly title: string;
+
+  protected currentId = 0;
 
   constructor(name: string, title: string) {
     super(name, true, true);
@@ -35,17 +57,70 @@ export default abstract class ModalMenu extends Command {
     return interaction.fields.getTextInputValue(customId);
   }
 
-  getIdWithoutData(id: string): string {
-    return id.split("-")[0];
+  protected getStringSelectValue(interaction: ModalSubmitInteraction, customId: string): string[] {
+    return interaction.fields.getStringSelectValues(customId) as string[];
   }
 
-  getDataFromId(id: string): string | undefined {
-    const idSplit = id.split("-");
-    if (idSplit.length > 1) {
-      return idSplit[1];
+  protected createTextInputWithLabel(
+    id: string,
+    label: string,
+    description: string,
+    style: TextInputStyle,
+    options: ITextInputOptions = {},
+  ): LabelBuilder {
+    const { required = false } = options;
+    const input = new TextInputBuilder().setCustomId(id).setStyle(style).setRequired(required);
+
+    if (options.inputPlaceholder) {
+      input.setPlaceholder(options.inputPlaceholder);
     }
-    return undefined;
+
+    if (options.inputValue) {
+      input.setValue(options.inputValue);
+    }
+
+    if (options.minLength) {
+      input.setMinLength(options.minLength);
+    }
+
+    if (options.maxLength) {
+      input.setMaxLength(options.maxLength);
+    }
+
+    return new LabelBuilder().setId(this.currentId++).setLabel(label).setDescription(description).setTextInputComponent(input);
   }
 
-  protected createTextInputWithLabel(id: number, label: string, description: string);
+  protected createTextDisplay(content: string): TextDisplayBuilder {
+    return new TextDisplayBuilder().setId(this.currentId++).setContent(content);
+  }
+
+  protected createStringSelectWithLabel(
+    id: string,
+    label: string,
+    description: string,
+    choices: string[],
+    options: IStringSelectOptions = {},
+  ): LabelBuilder {
+    const input = new StringSelectMenuBuilder().setCustomId(id);
+
+    if (options.required) {
+      input.setRequired(options.required);
+    }
+
+    if (options.minSelections) {
+      input.setMinValues(options.minSelections);
+    }
+
+    if (options.maxSelections) {
+      input.setMaxValues(options.maxSelections);
+    }
+
+    if (options.placeholder) {
+      input.setPlaceholder(options.placeholder);
+    }
+
+    input.addOptions(choices.map((choice) => new StringSelectMenuOptionBuilder().setLabel(choice).setValue(choice)));
+
+    return new LabelBuilder().setId(this.currentId++).setLabel(label).setDescription(description).setStringSelectMenuComponent(input);
+  }
 }

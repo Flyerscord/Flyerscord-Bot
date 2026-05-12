@@ -44,6 +44,11 @@ describe("SchemaInspector", () => {
       expect(SchemaInspector.getSchemaType(schema)).toBe("string");
     });
 
+    it("should detect ZodWrapper.boolean() (preprocess pipe) as boolean", () => {
+      const schema = ZodWrapper.boolean();
+      expect(SchemaInspector.getSchemaType(schema)).toBe("boolean");
+    });
+
     it("should return unknown for unsupported types", () => {
       const schema = z.any();
       expect(SchemaInspector.getSchemaType(schema)).toBe("unknown");
@@ -278,6 +283,11 @@ describe("SchemaInspector", () => {
 
     it("should return false for boolean schemas", () => {
       const schema = z.boolean();
+      expect(SchemaInspector.isEncryptedString(schema)).toBe(false);
+    });
+
+    it("should return false for ZodWrapper.boolean() schemas", () => {
+      const schema = ZodWrapper.boolean();
       expect(SchemaInspector.isEncryptedString(schema)).toBe(false);
     });
 

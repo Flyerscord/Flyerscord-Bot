@@ -32,9 +32,17 @@ export class SchemaInspector {
     }
 
     if (type === "pipe" || type === "transform") {
-      const innerType = (def.in || def.schema || def.innerType) as unknown;
-      if (isZodType(innerType)) {
-        return this.getSchemaType(innerType);
+      const inType = (def.in || def.schema || def.innerType) as unknown;
+      if (isZodType(inType)) {
+        const inSchemaType = this.getSchemaType(inType);
+        if (inSchemaType !== "unknown") {
+          return inSchemaType;
+        }
+      }
+      // in-type is unknown (e.g. preprocess transform) — check out for the real type
+      const outType = def.out as unknown;
+      if (isZodType(outType)) {
+        return this.getSchemaType(outType);
       }
     }
 

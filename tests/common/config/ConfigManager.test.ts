@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { Modules } from "@modules/Modules";
 import type { IModuleConfigSchema } from "@common/models/Module";
+import ZodWrapper from "@common/utils/ZodWrapper";
 
 // Mock dependencies
 const mockDb = {
@@ -37,6 +38,25 @@ jest.mock("stumper", () => mockStumper);
 // Mock the schema to avoid import errors
 jest.mock("@common/db/schema", () => ({
   config: {},
+}));
+
+jest.mock("@common/managers/EnvManager", () => ({
+  __esModule: true,
+  default: {
+    getInstance: jest.fn(() => ({
+      get: jest.fn(() => "test-encryption-key"),
+    })),
+  },
+}));
+
+jest.mock("@common/managers/SecretManager", () => ({
+  __esModule: true,
+  default: {
+    getInstance: jest.fn(() => ({
+      encrypt: jest.fn((val: string) => val),
+      decrypt: jest.fn((val: string) => val),
+    })),
+  },
 }));
 
 describe("ConfigManager", () => {
@@ -369,6 +389,46 @@ describe("ConfigManager", () => {
 
       expect(isValid).toBe(true);
     });
+
+    it("should return true when required boolean config has value false", async () => {
+      const configManager = ConfigManager.getInstance();
+      const schema: IModuleConfigSchema = {
+        key: "enabled",
+        schema: ZodWrapper.boolean(),
+        defaultValue: true,
+        required: true,
+        description: "Feature enabled",
+        secret: false,
+        requiresRestart: false,
+      };
+
+      await configManager.addNewConfigSchema("Common", schema);
+      mockDb.where.mockResolvedValue([{ moduleName: "Common" as Modules, key: "enabled", value: "false", updatedAt: new Date() }]);
+      await configManager.refreshConfig();
+
+      const isValid = configManager.validateModule("Common");
+      expect(isValid).toBe(true);
+    });
+
+    it("should include boolean false values in getConfig result", async () => {
+      const configManager = ConfigManager.getInstance();
+      const schema: IModuleConfigSchema = {
+        key: "enabled",
+        schema: ZodWrapper.boolean(),
+        defaultValue: true,
+        required: false,
+        description: "Feature enabled",
+        secret: false,
+        requiresRestart: false,
+      };
+
+      await configManager.addNewConfigSchema("Common", schema);
+      mockDb.where.mockResolvedValue([{ moduleName: "Common" as Modules, key: "enabled", value: "false", updatedAt: new Date() }]);
+      await configManager.refreshConfig();
+
+      const config = configManager.getConfig("Common");
+      expect(config).toHaveProperty("enabled", false);
+    });
   });
 
   describe("getConfig", () => {
@@ -690,6 +750,48 @@ describe("ConfigManager", () => {
       expect(config.enabled).toBe(true);
       // @ts-expect-error - Testing dynamic config not in type map
       expect(typeof config.enabled).toBe("boolean");
+    });
+
+    it("should parse ZodWrapper.boolean() 'true' string as boolean true", async () => {
+      const configManager = ConfigManager.getInstance();
+      const schema: IModuleConfigSchema = {
+        key: "enabled",
+        schema: ZodWrapper.boolean(),
+        defaultValue: false,
+        required: false,
+        description: "Feature enabled",
+        secret: false,
+        requiresRestart: false,
+      };
+
+      await configManager.addNewConfigSchema("Common", schema);
+      mockDb.where.mockResolvedValue([{ moduleName: "Common" as Modules, key: "enabled", value: "true", updatedAt: new Date() }]);
+      await configManager.refreshConfig();
+
+      const config = configManager.getConfig("Common");
+      // @ts-expect-error - Testing dynamic config not in type map
+      expect(config.enabled).toBe(true);
+    });
+
+    it("should parse ZodWrapper.boolean() 'false' string as boolean false", async () => {
+      const configManager = ConfigManager.getInstance();
+      const schema: IModuleConfigSchema = {
+        key: "enabled",
+        schema: ZodWrapper.boolean(),
+        defaultValue: true,
+        required: false,
+        description: "Feature enabled",
+        secret: false,
+        requiresRestart: false,
+      };
+
+      await configManager.addNewConfigSchema("Common", schema);
+      mockDb.where.mockResolvedValue([{ moduleName: "Common" as Modules, key: "enabled", value: "false", updatedAt: new Date() }]);
+      await configManager.refreshConfig();
+
+      const config = configManager.getConfig("Common");
+      // @ts-expect-error - Testing dynamic config not in type map
+      expect(config.enabled).toBe(false);
     });
 
     it("should handle schemas with custom transformations", async () => {

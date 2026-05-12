@@ -207,7 +207,7 @@ export default class ConfigManager extends Singleton {
     }
 
     for (const config of moduleConfigs) {
-      if (!config.value) {
+      if (config.required && (config.value === undefined || config.value === null)) {
         Stumper.error(`Config ${module}_${config.key} is required but has no value`, "common:ConfigManager:validateModule");
         return false;
       }

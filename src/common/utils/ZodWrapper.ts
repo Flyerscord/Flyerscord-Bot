@@ -62,7 +62,12 @@ export default class ZodWrapper {
     return baseType;
   }
 
-  static boolean(): z.ZodBoolean {
-    return z.coerce.boolean();
+  static boolean(): z.ZodPipe<z.ZodTransform<boolean, unknown>, z.ZodBoolean> {
+    return z.preprocess((val): boolean => {
+      if (typeof val === "boolean") return val;
+      if (val === "true") return true;
+      if (val === "false") return false;
+      return Boolean(val);
+    }, z.boolean());
   }
 }

@@ -40,6 +40,40 @@ Never commit or write code directly on `master`. Before starting any change, cre
 - `pnpm run db:migrate` - Run Drizzle migrations
 - `pnpm run db:push` - Push schema changes to database
 
+## Git Worktrees
+
+This repo is checked out as a bare repo plus worktrees, not a single working directory:
+
+```
+Flyerscord-Bot/
+  .bare/            # bare git dir (all refs, remotes, local branches)
+  .git               # file: "gitdir: ./.bare"
+  worktrees/
+    master/          # a normal checkout, one per branch
+    <branch>/
+```
+
+- Add a worktree for a branch: `git worktree add worktrees/<branch> <branch>` (or `-b <branch>` for a new one), run from `Flyerscord-Bot/`.
+- Each worktree needs its own `pnpm install` and its own `.env` (copy `.env.example`); these are gitignored and not shared between worktrees.
+- Remove a worktree: `git worktree remove worktrees/<branch>` once its branch is merged/deleted.
+- All worktrees share one dev database stack; see below.
+
+### Shared Dev Database Stack
+
+`docker-compose-dev.yml` only runs the dev database infra (postgres, pgbouncer, adminer) - it no longer runs the bot in Docker. Bring it up once, from whichever worktree you use as your main checkout:
+
+- `make dev-infra` - start postgres/pgbouncer/adminer (shared across all worktrees)
+- `make dev-infra-down` - stop it
+- `make dev-infra-clean` - stop it and wipe volumes/images
+
+Every worktree's bot runs on the host against that same stack:
+
+- `pnpm run start:dev` - build and run the bot for that worktree's code
+- `pnpm run db:push` / `db:generate` / `db:migrate` - schema management, also against the shared stack
+- `pnpm run config:set` / `config:view` (or `make dev-config` / `dev-config-view`) - configuration, no longer via `docker exec`
+
+`DATABASE_URL_POOLED` (via pgbouncer, host port 6432) and `DATABASE_URL_SINGLE` (direct to postgres, host port 5433) point at the shared stack and are set per-worktree in each `.env` - see `.env.example`. Because every worktree talks to the same database, running two worktrees' bots at once means two bot processes on the same config/data; only run one at a time unless you know that's what you want.
+
 ## Architecture Overview
 
 ### Core Structure

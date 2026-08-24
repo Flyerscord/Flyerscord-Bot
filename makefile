@@ -16,25 +16,20 @@ config:
 config-view:
 	docker exec -it flyerscord-discord-prod-bot-1 pnpm run config:view
 
-dev-bot:
-	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev run --build --rm migrate
-	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up --build --force-recreate -d
+# Shared dev infra (postgres/pgbouncer/adminer). Run this once from the
+# worktree you use as the main checkout; every worktree's bot runs on the
+# host (pnpm run start:dev) against this same stack via DATABASE_URL_POOLED.
+dev-infra:
+	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up --force-recreate -d
 
-dev-bot-bot:
-	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev run --build --rm migrate
-	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up --build --force-recreate -d bot
-
-dev-bot-db:
-	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev up -d adminer pgbouncer
-
-dev-bot-clean:
+dev-infra-clean:
 	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev down --volumes --rmi all
 
-dev-bot-down:
+dev-infra-down:
 	docker compose -f docker-compose-dev.yml -p flyerscord-discord-dev down
 
 dev-config:
-	docker exec -it flyerscord-discord-dev-bot-1 pnpm run config:set
+	pnpm run config:set
 
 dev-config-view:
-	docker exec -it flyerscord-discord-dev-bot-1 pnpm run config:view
+	pnpm run config:view

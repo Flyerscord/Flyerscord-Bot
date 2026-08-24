@@ -6,6 +6,7 @@ import {
   AttachmentBuilder,
   AttachmentPayload,
   BufferResolvable,
+  ButtonInteraction,
   CommandInteraction,
   EmbedBuilder,
   JSONEncodable,
@@ -20,13 +21,13 @@ import Stream from "node:stream";
 import Stumper from "stumper";
 
 export class InteractionReplies {
-  private interaction?: CommandInteraction | ModalSubmitInteraction;
+  private interaction?: CommandInteraction | ModalSubmitInteraction | ButtonInteraction;
   private ephemeral: boolean;
   private source: string;
 
   private readonly defaults: Required<IInteractionReplieOptions>;
 
-  constructor(interaction: CommandInteraction | ModalSubmitInteraction | undefined, source: string, ephemeral: boolean = false) {
+  constructor(interaction: CommandInteraction | ModalSubmitInteraction | ButtonInteraction | undefined, source: string, ephemeral: boolean = false) {
     this.interaction = interaction;
     this.ephemeral = ephemeral;
     this.source = source;
@@ -119,7 +120,7 @@ export class InteractionReplies {
     return this.interaction?.replied ?? false;
   }
 
-  setInteraction(interaction: CommandInteraction | ModalSubmitInteraction): void {
+  setInteraction(interaction: CommandInteraction | ModalSubmitInteraction | ButtonInteraction): void {
     this.interaction = interaction;
   }
 

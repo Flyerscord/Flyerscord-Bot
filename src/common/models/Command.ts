@@ -1,6 +1,6 @@
 import discord from "@common/utils/discord/discord";
 import type { InteractionReplies } from "@common/utils/discord/InteractionReplies";
-import { CommandInteraction, ModalSubmitInteraction } from "discord.js";
+import { ButtonInteraction, CommandInteraction, ModalSubmitInteraction } from "discord.js";
 
 export default abstract class Command {
   readonly name: string;
@@ -17,7 +17,7 @@ export default abstract class Command {
     this.replies = discord.interactions.createReplies(this.name, this.ephemeral);
   }
 
-  protected async setupReplies(interaction: CommandInteraction | ModalSubmitInteraction): Promise<void> {
+  protected async setupReplies(interaction: CommandInteraction | ModalSubmitInteraction | ButtonInteraction): Promise<void> {
     this.replies.setInteraction(interaction);
     if (this.deferReply) {
       await this.replies.deferReply();

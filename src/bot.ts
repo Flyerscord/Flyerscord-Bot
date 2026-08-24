@@ -19,6 +19,7 @@ import SlashCommandManager from "@common/managers/SlashCommandManager";
 import TextCommandManager from "@common/managers/TextCommandManager";
 import ContextMenuCommandManager from "@common/managers/ContextMenuManager";
 import ModalMenuManager from "@common/managers/ModalMenuManager";
+import ButtonHandlerManager from "@common/managers/ButtonHandlerManager";
 import ModuleManager from "@common/managers/ModuleManager";
 import BotHealthManager from "@common/managers/BotHealthManager";
 import SecretManager from "./common/managers/SecretManager";
@@ -90,6 +91,7 @@ async function startUp(): Promise<void> {
   //   "CustomCommands",
   //   "ClaimRole",
   //   "DaysUntil",
+  //   "Fantasy",
   //   "ImageProxy",
   //   "JoinLeave",
   //   "Levels",
@@ -131,6 +133,7 @@ async function startUp(): Promise<void> {
   client.slashCommands = new Collection();
   client.textCommands = new Collection();
   client.modals = new Collection();
+  client.buttons = new Collection();
   client.contextMenus = new Collection();
 
   // Setup Discord Error Handling
@@ -142,6 +145,7 @@ async function startUp(): Promise<void> {
   SlashCommandManager.getInstance();
   ContextMenuCommandManager.getInstance();
   ModalMenuManager.getInstance();
+  ButtonHandlerManager.getInstance();
   TextCommandManager.getInstance();
 
   // Enable All Modules

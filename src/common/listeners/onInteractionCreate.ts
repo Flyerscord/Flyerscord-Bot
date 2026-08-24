@@ -5,12 +5,14 @@ import {
   ChatInputCommandInteraction,
   UserContextMenuCommandInteraction,
   MessageContextMenuCommandInteraction,
+  ButtonInteraction,
   CommandInteraction,
   ApplicationCommandType,
 } from "discord.js";
 
 import Stumper from "stumper";
 import ModalMenu from "../models/ModalMenu";
+import ButtonHandler from "../models/ButtonHandler";
 import { MessageContextMenuCommand, UserContextMenuCommand } from "../models/ContextMenuCommand";
 import SlashCommand from "@common/models/SlashCommand";
 import MyAuditLog from "../utils/MyAuditLog";
@@ -24,6 +26,7 @@ export default (client: Client): void => {
 
     await onSlashCommand(client, interaction as ChatInputCommandInteraction);
     await onModalSubmit(client, interaction as ModalSubmitInteraction);
+    await onButtonClick(client, interaction as ButtonInteraction);
     await onUserContextMenuCommand(client, interaction as UserContextMenuCommandInteraction);
     await onMessageContextMenuCommand(client, interaction as MessageContextMenuCommandInteraction);
   });
@@ -72,6 +75,30 @@ async function onModalSubmit(client: Client, interaction: ModalSubmitInteraction
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onModalSubmit");
     await modal.replies.reply({ content: "There was an error while executing this modal submit!", ephemeral: true });
+  }
+}
+
+async function onButtonClick(client: Client, interaction: ButtonInteraction): Promise<void> {
+  if (!interaction.isButton()) return;
+
+  const idWithoutData = interaction.customId.split("-")[0];
+
+  const button: ButtonHandler | undefined = client.buttons.find((button: ButtonHandler) => button.name.startsWith(idWithoutData));
+  if (!button) return;
+  try {
+    void MyAuditLog.createAuditLog("Common", {
+      action: "ButtonClicked",
+      userId: interaction.user.id,
+      details: {
+        id: idWithoutData,
+        name: button.name,
+        channelId: interaction.channelId,
+      },
+    });
+    await button.run(interaction);
+  } catch (error) {
+    Stumper.caughtError(error, "common:onInteractionCreate:onButtonClick");
+    await button.replies.reply({ content: "There was an error while handling this button click!", ephemeral: true });
   }
 }
 

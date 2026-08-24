@@ -33,22 +33,45 @@ const SKILL_LEVEL_PREFERRED_TEAM_SIZES: Record<SkillLevel, readonly number[]> = 
 };
 
 /**
+ * Builds a skill level's full team-size priority order, most-preferred first: its preferred sizes
+ * (see `SKILL_LEVEL_PREFERRED_TEAM_SIZES`), followed by the remaining valid sizes ordered by how close
+ * they are to the preferred range (nearest first, ties broken by size). This keeps a skill level from
+ * reaching for a size far outside its range (e.g. Beginner jumping to 16) when a nearer non-preferred
+ * size (e.g. 12) would also work.
+ */
+function getTeamSizePriority(skillLevel: SkillLevel): readonly number[] {
+  const preferred = SKILL_LEVEL_PREFERRED_TEAM_SIZES[skillLevel];
+  const remaining = VALID_TEAM_SIZES.filter((size) => !preferred.includes(size));
+  const distanceToPreferred = (size: number): number => Math.min(...preferred.map((p) => Math.abs(p - size)));
+  const remainingByDistance = [...remaining].sort((a, b) => distanceToPreferred(a) - distanceToPreferred(b) || a - b);
+
+  return [...preferred, ...remainingByDistance];
+}
+
+/**
  * Recursively searches for a set of team sizes (drawn from `sizesByPriority`, each usable any number
- * of times) that sums exactly to `total`, trying to use as many of the highest-priority size as
- * possible before falling back to lower-priority sizes for the remainder.
+ * of times) that sums exactly to `total`, minimizing use of the lowest-priority size first (only
+ * reaching for it if no combination of higher-priority sizes covers the remainder), then the
+ * next-lowest, and so on. This avoids picking a solution that overuses a low-priority size just
+ * because a higher-priority size was greedily maximized first.
  * @returns the chosen team sizes (e.g. [10, 10, 8]), or undefined if no combination sums exactly to `total`
  */
 function solveTeamSizes(sizesByPriority: readonly number[], total: number): number[] | undefined {
-  const [size, ...rest] = sizesByPriority;
+  const sizesLeastToMostPreferred = [...sizesByPriority].reverse();
+  return solveLeastPreferredFirst(sizesLeastToMostPreferred, total);
+}
 
-  if (rest.length === 0) {
+function solveLeastPreferredFirst(sizesLeastToMostPreferred: readonly number[], total: number): number[] | undefined {
+  const [size, ...morePreferred] = sizesLeastToMostPreferred;
+
+  if (morePreferred.length === 0) {
     return total % size === 0 ? Array(total / size).fill(size) : undefined;
   }
 
-  for (let count = Math.floor(total / size); count >= 0; count--) {
-    const remainder = solveTeamSizes(rest, total - count * size);
-    if (remainder) {
-      return [...Array(count).fill(size), ...remainder];
+  for (let count = 0; count <= Math.floor(total / size); count++) {
+    const rest = solveLeastPreferredFirst(morePreferred, total - count * size);
+    if (rest) {
+      return [...Array(count).fill(size), ...rest];
     }
   }
 
@@ -57,20 +80,14 @@ function solveTeamSizes(sizesByPriority: readonly number[], total: number): numb
 
 /**
  * Splits a skill level's signup total into a set of team sizes, preferring that skill level's
- * preferred sizes (see `SKILL_LEVEL_PREFERRED_TEAM_SIZES`) and only reaching for other valid sizes if
- * no combination of preferred sizes works. Teams within a skill level don't have to be the same size.
+ * preferred sizes (see `SKILL_LEVEL_PREFERRED_TEAM_SIZES`) and only reaching for other valid sizes,
+ * nearest first, if no combination of preferred sizes works. Teams within a skill level don't have to
+ * be the same size.
  * @returns the chosen team sizes (e.g. [10, 10, 8]), or undefined if no combination of valid team
  * sizes sums exactly to the signup total
  */
 export function computeTeamSizes(signupCount: number, skillLevel: SkillLevel): number[] | undefined {
-  const preferred = SKILL_LEVEL_PREFERRED_TEAM_SIZES[skillLevel];
-  const preferredResult = solveTeamSizes(preferred, signupCount);
-  if (preferredResult) {
-    return preferredResult;
-  }
-
-  const fallbackSizes = [...preferred, ...VALID_TEAM_SIZES.filter((size) => !preferred.includes(size))];
-  return solveTeamSizes(fallbackSizes, signupCount);
+  return solveTeamSizes(getTeamSizePriority(skillLevel), signupCount);
 }
 
 /**

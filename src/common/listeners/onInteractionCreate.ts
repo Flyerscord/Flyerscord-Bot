@@ -8,6 +8,7 @@ import {
   ButtonInteraction,
   CommandInteraction,
   ApplicationCommandType,
+  MessageFlagsBitField,
 } from "discord.js";
 
 import Stumper from "stumper";
@@ -32,6 +33,21 @@ export default (client: Client): void => {
   });
 };
 
+/**
+ * Replies to `interaction` directly with an error message, bypassing the failed handler's shared
+ * `InteractionReplies`, since by the time a handler's `run` has thrown, the interaction is no longer
+ * bound in that handler's async context.
+ * @param interaction - The interaction to reply to
+ * @param content - The error message to send
+ */
+async function replyWithError(interaction: CommandInteraction | ModalSubmitInteraction | ButtonInteraction, content: string): Promise<void> {
+  if (interaction.deferred) {
+    await interaction.editReply({ content });
+  } else if (!interaction.replied) {
+    await interaction.reply({ content, flags: MessageFlagsBitField.Flags.Ephemeral });
+  }
+}
+
 async function onSlashCommand(client: Client, interaction: ChatInputCommandInteraction): Promise<void> {
   if (!interaction.isCommand()) return;
 
@@ -50,7 +66,7 @@ async function onSlashCommand(client: Client, interaction: ChatInputCommandInter
     await command.run(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onSlashCommand");
-    await command.replies.reply({ content: "There was an error while executing this command!", ephemeral: true });
+    await replyWithError(interaction, "There was an error while executing this command!");
   }
 }
 
@@ -74,7 +90,7 @@ async function onModalSubmit(client: Client, interaction: ModalSubmitInteraction
     await modal.run(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onModalSubmit");
-    await modal.replies.reply({ content: "There was an error while executing this modal submit!", ephemeral: true });
+    await replyWithError(interaction, "There was an error while executing this modal submit!");
   }
 }
 
@@ -98,7 +114,7 @@ async function onButtonClick(client: Client, interaction: ButtonInteraction): Pr
     await button.run(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onButtonClick");
-    await button.replies.reply({ content: "There was an error while handling this button click!", ephemeral: true });
+    await replyWithError(interaction, "There was an error while handling this button click!");
   }
 }
 
@@ -120,7 +136,7 @@ async function onUserContextMenuCommand(client: Client, interaction: UserContext
     await userContextMenu.run(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onUserContextMenuCommand");
-    await userContextMenu.replies.reply({ content: "There was an error while executing this user context menu command!", ephemeral: true });
+    await replyWithError(interaction, "There was an error while executing this user context menu command!");
   }
 }
 
@@ -142,6 +158,6 @@ async function onMessageContextMenuCommand(client: Client, interaction: MessageC
     await messageContextMenu.run(interaction);
   } catch (error) {
     Stumper.caughtError(error, "common:onInteractionCreate:onMessageContextMenuCommand");
-    await messageContextMenu.replies.reply({ content: "There was an error while executing this message context menu command!", ephemeral: true });
+    await replyWithError(interaction, "There was an error while executing this message context menu command!");
   }
 }

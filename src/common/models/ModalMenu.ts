@@ -16,9 +16,7 @@ export default abstract class ModalMenu extends Command {
 
   async run(interaction: ModalSubmitInteraction): Promise<void> {
     Stumper.info(`Running modal submit for ${this.name.split("-")[0]}`, "common:ModalMenu:run");
-    this.replies.setInteraction(interaction);
-    await this.replies.deferReply();
-    await this.execute(interaction);
+    await this.setupReplies(interaction, () => this.execute(interaction));
   }
 
   protected abstract execute(interaction: ModalSubmitInteraction): Promise<void>;

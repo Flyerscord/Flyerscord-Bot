@@ -17,18 +17,20 @@ import {
   ModalSubmitInteraction,
   TopLevelComponentData,
 } from "discord.js";
+import { AsyncLocalStorage } from "node:async_hooks";
 import Stream from "node:stream";
 import Stumper from "stumper";
 
+type RepliableInteraction = CommandInteraction | ModalSubmitInteraction | ButtonInteraction;
+
 export class InteractionReplies {
-  private interaction?: CommandInteraction | ModalSubmitInteraction | ButtonInteraction;
+  private readonly interactionStore = new AsyncLocalStorage<RepliableInteraction>();
   private ephemeral: boolean;
   private source: string;
 
   private readonly defaults: Required<IInteractionReplieOptions>;
 
-  constructor(interaction: CommandInteraction | ModalSubmitInteraction | ButtonInteraction | undefined, source: string, ephemeral: boolean = false) {
-    this.interaction = interaction;
+  constructor(source: string, ephemeral: boolean = false) {
     this.ephemeral = ephemeral;
     this.source = source;
 
@@ -41,22 +43,36 @@ export class InteractionReplies {
     };
   }
 
-  async deferReply(): Promise<void> {
-    if (!this.interaction) return;
+  /**
+   * Runs `callback` with `interaction` bound as the active interaction for this instance, scoped to
+   * the current async context. This keeps concurrent invocations (e.g. two overlapping button clicks
+   * handled by the same singleton handler) from clobbering each other's interaction.
+   * @param interaction - The interaction to bind for the duration of `callback`
+   * @param callback - The work to run with `interaction` bound
+   * @returns Whatever `callback` resolves to
+   */
+  async run<T>(interaction: RepliableInteraction, callback: () => Promise<T>): Promise<T> {
+    return this.interactionStore.run(interaction, callback);
+  }
 
-    if (!this.interaction.deferred) {
+  async deferReply(): Promise<void> {
+    const interaction = this.getInteraction();
+    if (!interaction) return;
+
+    if (!interaction.deferred) {
       if (this.ephemeral) {
-        await this.interaction.deferReply({ flags: MessageFlagsBitField.Flags.Ephemeral });
+        await interaction.deferReply({ flags: MessageFlagsBitField.Flags.Ephemeral });
       } else {
-        await this.interaction.deferReply();
+        await interaction.deferReply();
       }
     } else {
-      Stumper.error(`Interaction ${this.interaction.id} is already deferred!`, this.source);
+      Stumper.error(`Interaction ${interaction.id} is already deferred!`, this.source);
     }
   }
 
   async reply(content: string | IInteractionReplieOptions = {}): Promise<Message | undefined> {
-    if (!this.interaction) return;
+    const interaction = this.getInteraction();
+    if (!interaction) return;
 
     let options: IInteractionReplieOptions;
     if (typeof content === "string") {
@@ -74,9 +90,9 @@ export class InteractionReplies {
 
     const addEphemeral = this.ephemeral || opts.ephemeral;
 
-    if (!this.isDeferred()) {
+    if (!interaction.deferred) {
       if (addEphemeral) {
-        await this.interaction.reply({
+        await interaction.reply({
           components: opts.components,
           files: opts.files,
           embeds: opts.embeds,
@@ -84,7 +100,7 @@ export class InteractionReplies {
           flags: MessageFlagsBitField.Flags.Ephemeral,
         });
       } else {
-        await this.interaction.reply({
+        await interaction.reply({
           components: opts.components,
           files: opts.files,
           embeds: opts.embeds,
@@ -94,13 +110,13 @@ export class InteractionReplies {
       return;
     }
 
-    if (this.isReplied()) {
-      Stumper.error(`Interaction ${this.interaction.id} has already replied!`, this.source);
+    if (interaction.replied) {
+      Stumper.error(`Interaction ${interaction.id} has already replied!`, this.source);
       return;
     }
 
     if (addEphemeral) {
-      return await this.interaction.followUp({
+      return await interaction.followUp({
         components: opts.components,
         files: opts.files,
         embeds: opts.embeds,
@@ -109,19 +125,19 @@ export class InteractionReplies {
       });
     }
 
-    return await this.interaction.editReply({ components: opts.components, files: opts.files, embeds: opts.embeds, content: opts.content });
+    return await interaction.editReply({ components: opts.components, files: opts.files, embeds: opts.embeds, content: opts.content });
   }
 
   isDeferred(): boolean {
-    return this.interaction?.deferred ?? false;
+    return this.getInteraction()?.deferred ?? false;
   }
 
   isReplied(): boolean {
-    return this.interaction?.replied ?? false;
+    return this.getInteraction()?.replied ?? false;
   }
 
-  setInteraction(interaction: CommandInteraction | ModalSubmitInteraction | ButtonInteraction): void {
-    this.interaction = interaction;
+  private getInteraction(): RepliableInteraction | undefined {
+    return this.interactionStore.getStore();
   }
 
   private getDefaultOptions(input: IInteractionReplieOptions): Required<IInteractionReplieOptions> {
@@ -143,7 +159,7 @@ export class InteractionReplies {
 }
 
 export function createReplies(source: string, ephemeral: boolean = false): InteractionReplies {
-  return new InteractionReplies(undefined, source, ephemeral);
+  return new InteractionReplies(source, ephemeral);
 }
 
 export interface IInteractionReplieOptions {

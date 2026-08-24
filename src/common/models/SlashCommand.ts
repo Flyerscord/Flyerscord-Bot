@@ -31,8 +31,7 @@ export default abstract class SlashCommand extends Command {
 
   async run(interaction: ChatInputCommandInteraction): Promise<void> {
     Stumper.info(`Running command: ${this.name} User: ${interaction.user.id}`, "common:SlashCommand:run");
-    await this.setupReplies(interaction);
-    await this.execute(interaction);
+    await this.setupReplies(interaction, () => this.execute(interaction));
   }
 
   protected abstract execute(interaction: ChatInputCommandInteraction): Promise<void>;

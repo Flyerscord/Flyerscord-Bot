@@ -27,7 +27,7 @@ function shuffle<T>(items: T[]): T[] {
  * an odd-shaped signup count, but `computeTeamSizes` avoids it unless required.
  */
 const SKILL_LEVEL_PREFERRED_TEAM_SIZES: Record<SkillLevel, readonly number[]> = {
-  [SkillLevel.BEGINNER]: [8, 10],
+  [SkillLevel.BEGINNER]: [10, 8],
   [SkillLevel.INTERMEDIATE]: [10, 12],
   [SkillLevel.EXPERT]: [12, 14, 16],
 };

@@ -56,7 +56,7 @@ describe("computeTeamSizes", () => {
   describe("skill level preferences", () => {
     it("sticks to 8 and 10-player teams for Beginner when they divide evenly", () => {
       expect(computeTeamSizes(16, SkillLevel.BEGINNER)).toEqual([8, 8]);
-      expect(computeTeamSizes(18, SkillLevel.BEGINNER)).toEqual([8, 10]);
+      expect(computeTeamSizes(18, SkillLevel.BEGINNER)).toEqual([10, 8]);
     });
 
     it("sticks to 12, 14, and 16-player teams for Expert when they divide evenly", () => {
@@ -68,6 +68,12 @@ describe("computeTeamSizes", () => {
       // 14 signups can't split into any combination of Beginner's preferred 8/10-player teams, so it
       // falls back to a single team of 14 even though that's not a Beginner-preferred size
       expect(computeTeamSizes(14, SkillLevel.BEGINNER)).toEqual([14]);
+    });
+
+    it("prefers 10-player teams over 8-player teams for Beginner when falling back", () => {
+      // 22 doesn't split into any combination of Beginner's preferred 8/10-player teams alone, so it
+      // falls back to a 12-player team, but still pairs it with a 10 rather than an 8
+      expect(computeTeamSizes(22, SkillLevel.BEGINNER)).toEqual([10, 12]);
     });
 
     it("avoids 8-player teams for Expert unless no other combination works", () => {

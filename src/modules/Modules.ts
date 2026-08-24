@@ -5,6 +5,7 @@ import type { blueSkyConfigSchema } from "./bluesky/BlueSkyModule";
 import type { claimRoleConfigSchema } from "./claimRole/ClaimRoleModule";
 import type { customCommandsConfigSchema } from "./customCommands/CustomCommandsModule";
 import type { daysUntilConfigSchema } from "./daysUntil/DaysUntilModule";
+import type { eventLoggingConfigSchema } from "./eventLogging/EventLoggingModule";
 import type { fantasyConfigSchema } from "./fantasy/FantasyModule";
 import type { healthCheckConfigSchema } from "./healthcheck/HealthCheckModule";
 import type { imageProxyConfigSchema } from "./imageProxy/ImageProxyModule";
@@ -26,6 +27,7 @@ import BlueSkyModule from "./bluesky/BlueSkyModule";
 import ClaimRoleModule from "./claimRole/ClaimRoleModule";
 import CustomCommandsModule from "./customCommands/CustomCommandsModule";
 import DaysUntilModule from "./daysUntil/DaysUntilModule";
+import EventLoggingModule from "./eventLogging/EventLoggingModule";
 import FantasyModule from "./fantasy/FantasyModule";
 import HealthCheckModule from "./healthcheck/HealthCheckModule";
 import ImageProxyModule from "./imageProxy/ImageProxyModule";
@@ -48,6 +50,7 @@ export type Modules =
   | "ClaimRole"
   | "CustomCommands"
   | "DaysUntil"
+  | "EventLogging"
   | "Fantasy"
   | "HealthCheck"
   | "ImageProxy"
@@ -70,6 +73,7 @@ export const ModuleMap: Record<Modules, Module> = {
   ClaimRole: ClaimRoleModule.getInstance(),
   CustomCommands: CustomCommandsModule.getInstance(),
   DaysUntil: DaysUntilModule.getInstance(),
+  EventLogging: EventLoggingModule.getInstance(),
   Fantasy: FantasyModule.getInstance(),
   HealthCheck: HealthCheckModule.getInstance(),
   ImageProxy: ImageProxyModule.getInstance(),
@@ -107,6 +111,7 @@ export type ModuleConfigMap = {
   ClaimRole: ConfigFromSchemas<typeof claimRoleConfigSchema>;
   CustomCommands: ConfigFromSchemas<typeof customCommandsConfigSchema>;
   DaysUntil: ConfigFromSchemas<typeof daysUntilConfigSchema>;
+  EventLogging: ConfigFromSchemas<typeof eventLoggingConfigSchema>;
   Fantasy: ConfigFromSchemas<typeof fantasyConfigSchema>;
   HealthCheck: ConfigFromSchemas<typeof healthCheckConfigSchema>;
   ImageProxy: ConfigFromSchemas<typeof imageProxyConfigSchema>;

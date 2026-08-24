@@ -125,8 +125,15 @@ async function startUp(): Promise<void> {
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildMessageReactions,
       GatewayIntentBits.DirectMessages,
+      GatewayIntentBits.GuildModeration,
+      GatewayIntentBits.GuildVoiceStates,
+      GatewayIntentBits.GuildInvites,
+      GatewayIntentBits.GuildExpressions,
+      GatewayIntentBits.GuildWebhooks,
+      GatewayIntentBits.GuildScheduledEvents,
+      GatewayIntentBits.AutoModerationExecution,
     ],
-    partials: [Partials.Message, Partials.Reaction, Partials.User, Partials.Channel],
+    partials: [Partials.Message, Partials.Reaction, Partials.User, Partials.Channel, Partials.GuildMember],
   });
 
   // Setup Collections for Commands

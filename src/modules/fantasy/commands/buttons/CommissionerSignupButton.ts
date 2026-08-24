@@ -12,7 +12,8 @@ export default class CommissionerSignupButton extends ButtonHandler {
   }
 
   /**
-   * Signs the clicking user up as a Fantasy commissioner for the current season.
+   * Signs the clicking user up as a Fantasy commissioner for the current season. Requires already
+   * being signed up for a skill level.
    */
   protected async execute(interaction: ButtonInteraction): Promise<void> {
     const db = new FantasyDB();
@@ -26,6 +27,11 @@ export default class CommissionerSignupButton extends ButtonHandler {
     const levelsUser = await new LevelsDB().getUser(interaction.user.id);
     if (!levelsUser || levelsUser.currentLevel < config.minLevel) {
       await this.replies.reply({ content: `You must be at least level ${config.minLevel} to sign up for Fantasy!`, ephemeral: true });
+      return;
+    }
+
+    if (!(await db.hasSignedUp(season.id, interaction.user.id))) {
+      await this.replies.reply({ content: "You must sign up for a skill level before signing up as a commissioner!", ephemeral: true });
       return;
     }
 

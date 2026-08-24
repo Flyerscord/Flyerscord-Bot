@@ -13,7 +13,7 @@ export function getSignupEmbed(season: FantasySeason, signupCountsBySkillLevel: 
   lines.push(`**Commissioners**: ${commissionerCount} signed up`);
 
   embed.setDescription(
-    `Click a button below to sign up for a skill level, or sign up to be a commissioner. Click "Leave" to remove your signup.\n\n` +
+    `Click a button below to sign up for a skill level. Once you're signed up, you can also sign up to be a commissioner. Click "Leave" to remove your signup.\n\n` +
       `⚠️ **Only sign up if you're serious about playing.** Make sure you have role mentions enabled for this server, since there will be more announcements after signups close. If you sign up and then go MIA, it messes up the team you were placed on, and you risk a warning or ban.\n\n` +
       `${lines.join("\n")}\n\nSignups close: ${time(season.signupDeadline, TimestampStyles.RelativeTime)}`,
   );

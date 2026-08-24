@@ -103,54 +103,14 @@ A modular Discord bot built for the [Philadelphia Flyer's Discord Server](https:
 
    Create a `.env` file in the root directory using the `.env.example` file as a template.
 
-4. **Initialize the database**
+4. **Start the shared dev database stack**
+
+   `docker-compose-dev.yml` runs PostgreSQL, PgBouncer, and Adminer in Docker; the bot itself always runs on the host.
 
    ```bash
-   make dev-bot-db
+   make dev-infra
    ```
 
-5. **Configure the bot**
-
-   ```bash
-   pnpm run config:set
-   ```
-
-   This will launch an interactive CLI to set required configuration values. See [Configuration Management](#configuration-management) for details.
-
-6. **Build and start the bot**
-   ```bash
-   pnpm run start:dev
-   ```
-
-### Docker Development Setup
-
-Docker Compose provides a complete development environment including PostgreSQL, PgBouncer, the bot, and Adminer for database management.
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/Flyerscord/Flyerscord-Bot.git
-   cd Flyerscord-Bot
-   ```
-
-2. **Set up environment variables**
-
-   Create a `.env` file in the root directory using the `.env.example` file as a template.
-
-3. **Start the development stack**
-
-   ```bash
-   make dev-bot
-   ```
-
-4. **Configure the bot**
-
-   ```bash
-   docker exec -it flyerscord-discord-dev-bot-1 pnpm run config:set
-   ```
-
-5. **Access services**
-   - Bot health check: http://localhost:3333/health
    - Adminer (database UI): http://localhost:6678
      - System: PostgreSQL
      - Server: postgres
@@ -158,16 +118,34 @@ Docker Compose provides a complete development environment including PostgreSQL,
      - Password: flyerscord-dev-db
      - Database: flyerscord
 
-6. **View logs**
+5. **Push the database schema**
 
    ```bash
-   docker compose -f docker-compose-dev.yml logs -f bot
+   pnpm run db:push
    ```
 
-7. **Stop the stack**
+6. **Configure the bot**
+
    ```bash
-   make dev-bot-down
+   pnpm run config:set
    ```
+
+   This will launch an interactive CLI to set required configuration values. See [Configuration Management](#configuration-management) for details.
+
+7. **Build and start the bot**
+
+   ```bash
+   pnpm run start:dev
+   ```
+
+8. **Stop the stack** (when you're done)
+   ```bash
+   make dev-infra-down
+   ```
+
+### Git Worktrees
+
+This repo is checked out as a bare repo with one worktree per branch under `worktrees/<branch>`, rather than a single working directory per clone. All worktrees share the one dev database stack above. See the "Git Worktrees" section in `CLAUDE.md` for the layout and commands to add/remove a worktree.
 
 ## Development
 
@@ -271,7 +249,7 @@ Flyerscord-Bot/
 │       └── ...                # Other modules
 ├── drizzle/                   # Database migrations
 ├── tests/                     # Jest test files
-├── docker-compose-dev.yml     # Development Docker setup
+├── docker-compose-dev.yml     # Shared dev DB stack (postgres/pgbouncer/adminer)
 ├── Dockerfile                 # Production Docker image
 ├── package.json               # Dependencies and scripts
 ├── tsconfig.json              # TypeScript configuration
@@ -306,14 +284,9 @@ pnpm run config:set
 pnpm run config:set --module Common --key guildId
 ```
 
-**Docker Usage:**
+**Production Docker Usage:**
 
 ```bash
-# Development container
-docker exec -it flyerscord-discord-dev-bot-1 pnpm run config:view
-docker exec -it flyerscord-discord-dev-bot-1 pnpm run config:set
-
-# Production container
 docker exec -it flyerscord-discord-prod-bot-1 pnpm run config:view
 docker exec -it flyerscord-discord-prod-bot-1 pnpm run config:set
 ```

@@ -4,7 +4,7 @@ import ConfigManager from "@common/managers/ConfigManager";
 import discord from "@common/utils/discord/discord";
 import { getGuild } from "@common/utils/discord/guilds";
 import FantasyDB from "../db/FantasyDB";
-import { FantasySignup, SeasonStatus, SkillLevel } from "../db/schema";
+import { FantasySignup, SeasonStatus, SkillLevel, VALID_TEAM_SIZES } from "../db/schema";
 import { BlockedSkillLevel, getBlockedWarningEmbed, getPendingApprovalEmbed, getResultsEmbed, TeamRosterResult } from "./Embeds";
 
 /**
@@ -20,31 +20,57 @@ function shuffle<T>(items: T[]): T[] {
   return shuffled;
 }
 
-// Team size preferred first, then next-preferred, etc.; see computeTeamSizes.
-const PREFERRED_TEAM_SIZE_ORDER = [10, 12, 8] as const;
+/**
+ * Team sizes each skill level prefers, in priority order (most-preferred first). Sizes outside this
+ * list are still used as a fallback if no combination of preferred sizes sums to the signup total, so
+ * e.g. an Expert skill level can still fall back to an 8-player team if that's the only way to split
+ * an odd-shaped signup count, but `computeTeamSizes` avoids it unless required.
+ */
+const SKILL_LEVEL_PREFERRED_TEAM_SIZES: Record<SkillLevel, readonly number[]> = {
+  [SkillLevel.BEGINNER]: [8, 10],
+  [SkillLevel.INTERMEDIATE]: [10, 12],
+  [SkillLevel.EXPERT]: [12, 14, 16],
+};
 
 /**
- * Splits a skill level's signup total into a set of team sizes (each 8, 10, or 12), preferring as
- * many size-10 teams as possible, then filling the remainder preferring 12s over 8s. Teams within a
- * skill level don't have to be the same size.
- * @returns the chosen team sizes (e.g. [10, 10, 8]), or undefined if no combination of 8/10/12-player
- * teams sums exactly to the signup total
+ * Recursively searches for a set of team sizes (drawn from `sizesByPriority`, each usable any number
+ * of times) that sums exactly to `total`, trying to use as many of the highest-priority size as
+ * possible before falling back to lower-priority sizes for the remainder.
+ * @returns the chosen team sizes (e.g. [10, 10, 8]), or undefined if no combination sums exactly to `total`
  */
-export function computeTeamSizes(signupCount: number): number[] | undefined {
-  const [preferred, second, third] = PREFERRED_TEAM_SIZE_ORDER;
+function solveTeamSizes(sizesByPriority: readonly number[], total: number): number[] | undefined {
+  const [size, ...rest] = sizesByPriority;
 
-  for (let a = Math.floor(signupCount / preferred); a >= 0; a--) {
-    const remainderAfterPreferred = signupCount - a * preferred;
-    for (let b = Math.floor(remainderAfterPreferred / second); b >= 0; b--) {
-      const remainderAfterSecond = remainderAfterPreferred - b * second;
-      if (remainderAfterSecond % third === 0) {
-        const c = remainderAfterSecond / third;
-        return [...Array(a).fill(preferred), ...Array(b).fill(second), ...Array(c).fill(third)];
-      }
+  if (rest.length === 0) {
+    return total % size === 0 ? Array(total / size).fill(size) : undefined;
+  }
+
+  for (let count = Math.floor(total / size); count >= 0; count--) {
+    const remainder = solveTeamSizes(rest, total - count * size);
+    if (remainder) {
+      return [...Array(count).fill(size), ...remainder];
     }
   }
 
   return undefined;
+}
+
+/**
+ * Splits a skill level's signup total into a set of team sizes, preferring that skill level's
+ * preferred sizes (see `SKILL_LEVEL_PREFERRED_TEAM_SIZES`) and only reaching for other valid sizes if
+ * no combination of preferred sizes works. Teams within a skill level don't have to be the same size.
+ * @returns the chosen team sizes (e.g. [10, 10, 8]), or undefined if no combination of valid team
+ * sizes sums exactly to the signup total
+ */
+export function computeTeamSizes(signupCount: number, skillLevel: SkillLevel): number[] | undefined {
+  const preferred = SKILL_LEVEL_PREFERRED_TEAM_SIZES[skillLevel];
+  const preferredResult = solveTeamSizes(preferred, signupCount);
+  if (preferredResult) {
+    return preferredResult;
+  }
+
+  const fallbackSizes = [...preferred, ...VALID_TEAM_SIZES.filter((size) => !preferred.includes(size))];
+  return solveTeamSizes(fallbackSizes, signupCount);
 }
 
 /**
@@ -102,7 +128,7 @@ async function finalizeSkillLevel(db: FantasyDB, seasonId: number, skillLevel: S
     return undefined;
   }
 
-  const teamSizes = computeTeamSizes(unassigned.length);
+  const teamSizes = computeTeamSizes(unassigned.length, skillLevel);
   if (!teamSizes) {
     return { skillLevel, signupCount: unassigned.length };
   }
@@ -192,8 +218,8 @@ async function findMissingCommissionerRole(commissionerCount: number, commission
 }
 
 /**
- * Finalizes as many skill levels of a season as currently have a valid 8/10/12-player team-size
- * combination for their signup total, then posts the proposed rosters to the admin channel for
+ * Finalizes as many skill levels of a season as currently have a valid team-size combination for
+ * their signup total, then posts the proposed rosters to the admin channel for
  * approval. Does NOT create or assign any Discord roles; that only happens once an admin runs
  * `/fantasyseason approve`. Safe to call repeatedly (e.g. after `/fantasyseason move` fixes an
  * unsplittable count). Callers triggering this before the season's deadline are responsible for

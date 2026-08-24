@@ -35,7 +35,7 @@ export function getBlockedWarningEmbed(blocked: BlockedSkillLevel[]): EmbedBuild
 
   const lines = blocked.map(
     (b) =>
-      `**${b.skillLevel}**: ${b.signupCount} signed up, but no combination of 8, 10, or 12-player teams adds up to that. ` +
+      `**${b.skillLevel}**: ${b.signupCount} signed up, but no combination of valid team sizes adds up to that. ` +
       `Use \`/fantasyseason move\` to move a player to or from this skill level before it can be finalized.`,
   );
 

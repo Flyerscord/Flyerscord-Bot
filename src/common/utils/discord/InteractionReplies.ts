@@ -115,16 +115,9 @@ export class InteractionReplies {
       return;
     }
 
-    if (addEphemeral) {
-      return await interaction.followUp({
-        components: opts.components,
-        files: opts.files,
-        embeds: opts.embeds,
-        content: opts.content,
-        flags: MessageFlagsBitField.Flags.Ephemeral,
-      });
-    }
-
+    // The interaction is deferred but not yet replied, so this call is completing that deferred
+    // placeholder. editReply() inherits the ephemeral flag already baked into it by deferReply(),
+    // so no separate ephemeral branch is needed here.
     return await interaction.editReply({ components: opts.components, files: opts.files, embeds: opts.embeds, content: opts.content });
   }
 

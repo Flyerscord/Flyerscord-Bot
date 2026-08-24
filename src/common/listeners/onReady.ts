@@ -3,6 +3,7 @@ import { ActivityType, Client, RESTPostAPIChatInputApplicationCommandsJSONBody, 
 import Stumper from "stumper";
 import TextCommandManager from "../managers/TextCommandManager";
 import ModalMenuManager from "../managers/ModalMenuManager";
+import ButtonHandlerManager from "../managers/ButtonHandlerManager";
 import BotHealthManager from "../managers/BotHealthManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
 import SlashCommandManager from "../managers/SlashCommandManager";
@@ -16,6 +17,7 @@ export default (client: Client): void => {
     await readContextMenus(client);
     readTextCommands(client);
     readModals(client);
+    readButtons(client);
 
     await setupBot(client);
 
@@ -67,6 +69,15 @@ function readModals(client: Client): void {
   });
 
   Stumper.success(`Successfully loaded ${client.modals.size} modals!`, "common:onReady:readModals");
+}
+
+function readButtons(client: Client): void {
+  const buttonHandlers = ButtonHandlerManager.getInstance().getCommands();
+  buttonHandlers.forEach((command) => {
+    client.buttons.set(command.name, command);
+  });
+
+  Stumper.success(`Successfully loaded ${client.buttons.size} button handlers!`, "common:onReady:readButtons");
 }
 
 async function readSlashCommands(client: Client): Promise<void> {

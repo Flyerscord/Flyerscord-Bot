@@ -1,11 +1,13 @@
 import Stumper from "stumper";
 import SlashCommand from "./SlashCommand";
 import ModalMenu from "./ModalMenu";
+import ButtonHandler from "./ButtonHandler";
 import TextCommand from "./TextCommand";
 import ContextMenuCommand from "./ContextMenuCommand";
 import fs from "node:fs";
 import SlashCommandManager from "../managers/SlashCommandManager";
 import ModalMenuManager from "../managers/ModalMenuManager";
+import ButtonHandlerManager from "../managers/ButtonHandlerManager";
 import TextCommandManager from "../managers/TextCommandManager";
 import ContextMenuCommandManager from "../managers/ContextMenuManager";
 import { Singleton } from "./Singleton";
@@ -198,6 +200,8 @@ export default abstract class Module extends Singleton {
         Stumper.debug(`Read in context menu: ${command.name}`, `common:Module:${this.name}:readInCommands`);
       } else if (command instanceof ModalMenu) {
         Stumper.debug(`Read in modal: ${command.name}`, `common:Module:${this.name}:readInCommands`);
+      } else if (command instanceof ButtonHandler) {
+        Stumper.debug(`Read in button handler: ${command.name}`, `common:Module:${this.name}:readInCommands`);
       }
 
       commands.push(command);
@@ -216,6 +220,8 @@ export default abstract class Module extends Singleton {
         TextCommandManager.getInstance().addCommands(commands as TextCommand[]);
       } else if (firstCommand instanceof ModalMenu) {
         ModalMenuManager.getInstance().addCommands(commands as ModalMenu[]);
+      } else if (firstCommand instanceof ButtonHandler) {
+        ButtonHandlerManager.getInstance().addCommands(commands as ButtonHandler[]);
       } else if (firstCommand instanceof ContextMenuCommand) {
         ContextMenuCommandManager.getInstance().addCommands(commands as ContextMenuCommand[]);
       }

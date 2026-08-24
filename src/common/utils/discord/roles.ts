@@ -1,5 +1,6 @@
 import { Role, GuildMember, PartialGuildMember } from "discord.js";
 import Stumper from "stumper";
+import { getGuild } from "./guilds";
 
 /**
  * Adds a role to a guild member if the member does not already have it.
@@ -56,4 +57,18 @@ export function userHasAnyRole(member: GuildMember): boolean {
 
 export function getUserRoles(member: GuildMember | PartialGuildMember): string[] {
   return member.roles.cache.map((role: Role) => role.id);
+}
+
+/**
+ * Checks whether a role still exists in the guild (e.g. hasn't been deleted since being registered
+ * in config or a module's database).
+ */
+export async function roleExists(roleId: string): Promise<boolean> {
+  const guild = getGuild();
+  if (!guild) {
+    return false;
+  }
+
+  const role = await guild.roles.fetch(roleId).catch(() => undefined);
+  return role !== null && role !== undefined;
 }

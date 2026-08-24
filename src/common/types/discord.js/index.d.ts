@@ -1,4 +1,5 @@
 import ModalMenu from "../../models/ModalMenu";
+import ButtonHandler from "../../models/ButtonHandler";
 import SlashCommand from "../../models/SlashCommand";
 import TextCommand from "../../models/TextCommand";
 import { ContextMenuCommand } from "../../models/ContextMenuCommand";
@@ -10,6 +11,7 @@ declare module "discord.js" {
     slashCommands: Collection<string, SlashCommand>;
     textCommands: Collection<string, TextCommand>;
     modals: Collection<string, ModalMenu>;
+    buttons: Collection<string, ButtonHandler>;
     contextMenus: Collection<string, ContextMenuCommand>;
   }
 }

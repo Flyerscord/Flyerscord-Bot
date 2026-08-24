@@ -125,14 +125,27 @@ export function getMemberAddEmbed(member: GuildMember): EmbedBuilder {
 }
 
 /**
- * Builds the embed for a member leave event.
- * @param member - The member who left, possibly partial
+ * Builds the embed for a member leave or kick event.
+ * @param member - The member who left/was kicked, possibly partial
+ * @param kick - The kick's executor/reason if this leave was a kick (per an audit log match), otherwise undefined for a voluntary leave
  * @returns The built embed
  */
-export function getMemberRemoveEmbed(member: GuildMember | PartialGuildMember): EmbedBuilder {
-  return baseEmbed(EVENT_COLORS.delete, "Member Left")
+export function getMemberRemoveEmbed(
+  member: GuildMember | PartialGuildMember,
+  kick?: { executor: User | PartialUser | null; reason: string | null },
+): EmbedBuilder {
+  const embed = baseEmbed(EVENT_COLORS.delete, kick ? "Member Kicked" : "Member Left")
     .setAuthor({ name: member.user.username, iconURL: member.user.displayAvatarURL() })
     .setFooter({ text: `User ID: ${member.id}` });
+  if (kick) {
+    if (kick.executor) {
+      embed.addFields({ name: "Kicked By", value: kick.executor.username ?? "Unknown User", inline: true });
+    }
+    if (kick.reason) {
+      embed.addFields({ name: "Reason", value: kick.reason });
+    }
+  }
+  return embed;
 }
 
 /**

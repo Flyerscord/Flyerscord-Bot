@@ -25,9 +25,7 @@ export default abstract class ButtonHandler extends Command {
    */
   async run(interaction: ButtonInteraction): Promise<void> {
     Stumper.info(`Running button click for ${this.getIdWithoutData(interaction.customId)}`, "common:ButtonHandler:run");
-    this.replies.setInteraction(interaction);
-    await this.replies.deferReply();
-    await this.execute(interaction);
+    await this.setupReplies(interaction, () => this.execute(interaction));
   }
 
   protected abstract execute(interaction: ButtonInteraction): Promise<void>;

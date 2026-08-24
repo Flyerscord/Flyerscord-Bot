@@ -27,8 +27,7 @@ export abstract class UserContextMenuCommand extends ContextMenuCommand {
 
   async run(interaction: UserContextMenuCommandInteraction): Promise<void> {
     Stumper.info(`Running user context menu command for ${this.name}`, "common:ContextMenuCommand:run");
-    await this.setupReplies(interaction);
-    await this.execute(interaction);
+    await this.setupReplies(interaction, () => this.execute(interaction));
   }
 
   protected abstract execute(interaction: UserContextMenuCommandInteraction): Promise<void>;
@@ -51,8 +50,7 @@ export abstract class MessageContextMenuCommand extends ContextMenuCommand {
 
   async run(interaction: MessageContextMenuCommandInteraction): Promise<void> {
     Stumper.info(`Running message context menu command for ${this.name}`, "common:ContextMenuCommand:run");
-    await this.setupReplies(interaction);
-    await this.execute(interaction);
+    await this.setupReplies(interaction, () => this.execute(interaction));
   }
 
   protected abstract execute(interaction: MessageContextMenuCommandInteraction): Promise<void>;

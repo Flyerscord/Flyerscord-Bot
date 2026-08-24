@@ -17,11 +17,24 @@ export default abstract class Command {
     this.replies = discord.interactions.createReplies(this.name, this.ephemeral);
   }
 
-  protected async setupReplies(interaction: CommandInteraction | ModalSubmitInteraction | ButtonInteraction): Promise<void> {
-    this.replies.setInteraction(interaction);
-    if (this.deferReply) {
-      await this.replies.deferReply();
-    }
+  /**
+   * Binds `interaction` to `this.replies` for the duration of `callback`, scoped to the current async
+   * context, then defers the reply if this command is configured to. Scoping the interaction per call
+   * (instead of storing it on a shared field) keeps overlapping invocations of the same singleton
+   * handler from clobbering each other's interaction.
+   * @param interaction - The interaction to bind
+   * @param callback - The work to run with the interaction bound, typically `() => this.execute(interaction)`
+   */
+  protected async setupReplies<T>(
+    interaction: CommandInteraction | ModalSubmitInteraction | ButtonInteraction,
+    callback: () => Promise<T>,
+  ): Promise<T> {
+    return this.replies.run(interaction, async () => {
+      if (this.deferReply) {
+        await this.replies.deferReply();
+      }
+      return await callback();
+    });
   }
 }
 

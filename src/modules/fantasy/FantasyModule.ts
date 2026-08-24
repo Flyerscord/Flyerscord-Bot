@@ -6,6 +6,7 @@ import schema from "./db/schema";
 import FantasyDB from "./db/FantasyDB";
 import SeasonCloseTask from "./tasks/SeasonCloseTask";
 import { closeSeason } from "./utils/closeSeason";
+import onGuildMemberRemove from "./listeners/onGuildMemberRemove";
 import Stumper from "stumper";
 
 export const fantasyConfigSchema = [
@@ -66,6 +67,8 @@ export default class FantasyModule extends Module {
   protected async setup(): Promise<void> {
     await this.readInCommands<SlashCommand>(__dirname, "slash");
     await this.readInCommands<ButtonHandler>(__dirname, "buttons");
+
+    onGuildMemberRemove();
 
     await this.rearmSeasonCloseTask();
   }

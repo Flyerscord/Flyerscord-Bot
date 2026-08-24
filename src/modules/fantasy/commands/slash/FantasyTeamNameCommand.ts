@@ -24,7 +24,7 @@ export default class FantasyTeamNameCommand extends SlashCommand {
     const signup = await db.getSignup(season.id, interaction.user.id);
     if (!signup || signup.assignedTeamNumber === null) {
       await this.replies.reply({
-        content: "You're not on a Fantasy team this season yet - teams are assigned once signups close.",
+        content: "You're not on a Fantasy team this season yet, teams are assigned once signups close.",
         ephemeral: true,
       });
       return;

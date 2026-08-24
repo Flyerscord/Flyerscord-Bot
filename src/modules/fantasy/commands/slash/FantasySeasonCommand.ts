@@ -5,7 +5,8 @@ import ConfigManager from "@common/managers/ConfigManager";
 import Time from "@common/utils/Time";
 import FantasyDB from "../../db/FantasyDB";
 import { SeasonStatus, SkillLevel, VALID_TEAM_SIZES } from "../../db/schema";
-import { getSignupButtonsRow, getSignupEmbed } from "../../utils/Embeds";
+import { getSignupEmbed } from "../../utils/Embeds";
+import { getSignupButtonsRow } from "../../utils/signupButtonsRow";
 import { applyApprovedRoles, closeSeason, computeTeamSizes } from "../../utils/closeSeason";
 import SeasonCloseTask from "../../tasks/SeasonCloseTask";
 

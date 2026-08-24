@@ -1,4 +1,4 @@
-import { ButtonInteraction } from "discord.js";
+import { ButtonInteraction, ButtonStyle } from "discord.js";
 import ButtonHandler from "@common/models/ButtonHandler";
 import ConfigManager from "@common/managers/ConfigManager";
 import discord from "@common/utils/discord/discord";
@@ -8,7 +8,7 @@ import { updateSignupMessage } from "../../utils/signupMessage";
 
 export default class CommissionerSignupButton extends ButtonHandler {
   constructor() {
-    super("fantasy_commissioner", true);
+    super("fantasy_commissioner", "Sign Up As Commissioner", ButtonStyle.Secondary);
   }
 
   /**

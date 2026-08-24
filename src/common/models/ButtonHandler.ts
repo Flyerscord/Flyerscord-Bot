@@ -1,15 +1,23 @@
-import { ButtonInteraction } from "discord.js";
+import { ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import Stumper from "stumper";
 import Command from "./Command";
 
 /**
- * Base class for handling persistent button interactions, mirroring `ModalMenu`. The button's
- * customId is expected to follow the `"name-data"` convention, so it can be looked up by `name`
- * after a bot restart and any trailing data can be recovered with `getDataFromId`.
+ * Base class for handling persistent button interactions, mirroring `ModalMenu`. Each handler owns
+ * its own `ButtonBuilder`, built from the same customId/label/style it's constructed with, so a
+ * button's appearance and its click behavior live in one place instead of being split between a
+ * handler class and a separate embed-building function.
+ *
+ * The customId is used as-is for lookup after a bot restart. It may still follow the `"name-data"`
+ * convention if a handler backs several visually distinct buttons that share one customId prefix; use
+ * `getDataFromId` to recover the trailing data in that case.
  */
 export default abstract class ButtonHandler extends Command {
-  constructor(name: string, ephemeral: boolean = true) {
-    super(name, ephemeral, true);
+  readonly button: ButtonBuilder;
+
+  constructor(customId: string, label: string, style: ButtonStyle, ephemeral: boolean = true) {
+    super(customId, ephemeral, true);
+    this.button = new ButtonBuilder().setCustomId(customId).setLabel(label).setStyle(style);
   }
 
   /**

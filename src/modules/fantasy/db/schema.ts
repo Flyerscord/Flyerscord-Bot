@@ -43,7 +43,7 @@ export const fantasySignups = createModuleTable(
     skillLevel: fantasySkillLevel("skill_level").notNull(),
     /**
      * The team a signup was finalized onto, numbered 1..N within its (seasonId, skillLevel). Not a
-     * foreign key - teams are computed at close time from signup totals rather than pre-registered.
+     * foreign key: teams are computed at close time from signup totals rather than pre-registered.
      */
     assignedTeamNumber: integer("assigned_team_number"),
     signedUpAt: timestamp("signed_up_at").notNull().defaultNow(),

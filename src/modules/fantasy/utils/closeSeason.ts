@@ -20,7 +20,7 @@ function shuffle<T>(items: T[]): T[] {
   return shuffled;
 }
 
-// Team size preferred first, then next-preferred, etc. - see computeTeamSizes.
+// Team size preferred first, then next-preferred, etc.; see computeTeamSizes.
 const PREFERRED_TEAM_SIZE_ORDER = [10, 12, 8] as const;
 
 /**
@@ -156,7 +156,7 @@ async function getFinalizedTeamRosters(db: FantasyDB, seasonId: number): Promise
 
 /**
  * Grants the commissioner role to everyone who signed up as a commissioner this season. Additive
- * only - existing holders of the role are never removed.
+ * only: existing holders of the role are never removed.
  * @returns the user IDs of the commissioners
  */
 async function grantCommissionerRoles(db: FantasyDB, seasonId: number, commissionerRoleId: string): Promise<string[]> {
@@ -194,7 +194,7 @@ async function findMissingCommissionerRole(commissionerCount: number, commission
 /**
  * Finalizes as many skill levels of a season as currently have a valid 8/10/12-player team-size
  * combination for their signup total, then posts the proposed rosters to the admin channel for
- * approval. Does NOT create or assign any Discord roles - that only happens once an admin runs
+ * approval. Does NOT create or assign any Discord roles; that only happens once an admin runs
  * `/fantasyseason approve`. Safe to call repeatedly (e.g. after `/fantasyseason move` fixes an
  * unsplittable count). Callers triggering this before the season's deadline are responsible for
  * cancelling `SeasonCloseTask` themselves.

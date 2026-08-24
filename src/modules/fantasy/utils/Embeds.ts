@@ -1,9 +1,9 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, MessageActionRowComponentBuilder, time, TimestampStyles } from "discord.js";
+import { EmbedBuilder, time, TimestampStyles } from "discord.js";
 import { FantasySeason, SkillLevel } from "../db/schema";
 
 /**
  * Builds the embed posted alongside the signup buttons, showing current signup counts per skill
- * level and the signup deadline. There's no capacity shown - team counts and sizes are computed from
+ * level and the signup deadline. There's no capacity shown; team counts and sizes are computed from
  * the final signup totals once signups close.
  */
 export function getSignupEmbed(season: FantasySeason, signupCountsBySkillLevel: Record<SkillLevel, number>, commissionerCount: number): EmbedBuilder {
@@ -19,32 +19,6 @@ export function getSignupEmbed(season: FantasySeason, signupCountsBySkillLevel: 
   );
 
   return embed;
-}
-
-/**
- * Builds the row of signup buttons (one per skill level, plus commissioner and leave) posted with the
- * signup embed.
- */
-export function getSignupButtonsRow(): ActionRowBuilder<MessageActionRowComponentBuilder> {
-  const beginnerButton = new ButtonBuilder().setCustomId(`fantasy_signup-${SkillLevel.BEGINNER}`).setLabel("Beginner").setStyle(ButtonStyle.Success);
-  const intermediateButton = new ButtonBuilder()
-    .setCustomId(`fantasy_signup-${SkillLevel.INTERMEDIATE}`)
-    .setLabel("Intermediate")
-    .setStyle(ButtonStyle.Primary);
-  const expertButton = new ButtonBuilder().setCustomId(`fantasy_signup-${SkillLevel.EXPERT}`).setLabel("Expert").setStyle(ButtonStyle.Danger);
-  const commissionerButton = new ButtonBuilder()
-    .setCustomId("fantasy_commissioner")
-    .setLabel("Sign Up As Commissioner")
-    .setStyle(ButtonStyle.Secondary);
-  const leaveButton = new ButtonBuilder().setCustomId("fantasy_leave").setLabel("Leave").setStyle(ButtonStyle.Secondary);
-
-  return new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
-    beginnerButton,
-    intermediateButton,
-    expertButton,
-    commissionerButton,
-    leaveButton,
-  );
 }
 
 export interface BlockedSkillLevel {
@@ -116,7 +90,7 @@ export function getPendingApprovalEmbed(proposedTeams: TeamRosterResult[], missi
 
   if (missingRoles.length > 0) {
     embed.addFields({
-      name: "⚠️ Missing Roles - Create These Before Approving",
+      name: "⚠️ Missing Roles: Create These Before Approving",
       value: missingRoles.map((role) => `- ${role}`).join("\n"),
     });
   }

@@ -71,7 +71,7 @@ export default class FantasyDB extends ModuleDatabase {
 
   /**
    * Deletes a season and all of its signups, commissioner signups, and team names. Does not touch
-   * Discord state (roles, the posted signup message) - callers are responsible for that.
+   * Discord state (roles, the posted signup message); callers are responsible for that.
    */
   async deleteSeason(seasonId: number): Promise<void> {
     await this.db.delete(fantasySignups).where(eq(fantasySignups.seasonId, seasonId));

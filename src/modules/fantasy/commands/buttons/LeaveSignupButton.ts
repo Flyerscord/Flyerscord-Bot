@@ -1,4 +1,4 @@
-import { ButtonInteraction } from "discord.js";
+import { ButtonInteraction, ButtonStyle } from "discord.js";
 import ButtonHandler from "@common/models/ButtonHandler";
 import ConfigManager from "@common/managers/ConfigManager";
 import discord from "@common/utils/discord/discord";
@@ -7,7 +7,7 @@ import { updateSignupMessage } from "../../utils/signupMessage";
 
 export default class LeaveSignupButton extends ButtonHandler {
   constructor() {
-    super("fantasy_leave", true);
+    super("fantasy_leave", "Leave", ButtonStyle.Secondary);
   }
 
   /**

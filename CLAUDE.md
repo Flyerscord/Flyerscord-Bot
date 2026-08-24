@@ -88,9 +88,9 @@ Modules register their schemas during initialization, providing type-safe config
 `src/common/` holds building blocks shared across modules (base classes, managers, `src/common/utils/discord/*` helpers, etc.). When writing or reviewing module code, if a function or a piece of logic is generic (not tied to that module's specific domain/schema) and could plausibly be reused by another module, it belongs in `src/common/` instead of buried in the module.
 
 - Example: a helper that checks whether a Discord role ID still exists in the guild belongs in `src/common/utils/discord/roles.ts`, not duplicated inside a module's utils file.
-- Example: a domain-specific calculation (e.g. how a specific module shuffles signups into teams) stays in that module - it isn't reusable outside its own feature.
+- Example: a domain-specific calculation (e.g. how a specific module shuffles signups into teams) stays in that module: it isn't reusable outside its own feature.
 
-Don't be aggressive about this. Move something to `common` when the logic itself is genuinely generic (not tied to one module's domain/schema), even if only one module uses it today. But don't extract a one-line wrapper or bolt on parameters/options to a common helper just to make it "more flexible" for a use case that doesn't exist yet - that's over-abstracting the API, not generalizing the logic. Over-abstracting or over-simplifying prematurely makes the code harder to follow than just leaving the logic where it is.
+Don't be aggressive about this. Move something to `common` when the logic itself is genuinely generic (not tied to one module's domain/schema), even if only one module uses it today. But don't extract a one-line wrapper or bolt on parameters/options to a common helper just to make it "more flexible" for a use case that doesn't exist yet; that's over-abstracting the API, not generalizing the logic. Over-abstracting or over-simplifying prematurely makes the code harder to follow than just leaving the logic where it is.
 
 ### JSDoc Comments
 
@@ -365,7 +365,7 @@ When you modify a schema:
 
 For development, you can use `pnpm run db:push` to push schema changes directly without generating migrations.
 
-**One migration per feature branch**: a feature branch should produce a single migration file, not one per schema-editing session. If the schema changes again before the branch merges (including edits made in response to review feedback partway through building the feature), delete the previous migration (its `.sql` file and its `meta/<n>_snapshot.json`), revert `meta/_journal.json` to drop its entry (`git checkout -- drizzle/migrations/meta/_journal.json` if nothing has been committed yet, otherwise re-edit it by hand), and re-run `pnpm run db:generate` to produce one fresh migration reflecting the final schema. Only keep multiple migrations on one branch when truly necessary - e.g. a data backfill that must run as its own step, or a migration that was already applied to a shared database and can no longer be edited.
+**One migration per feature branch**: a feature branch should produce a single migration file, not one per schema-editing session. If the schema changes again before the branch merges (including edits made in response to review feedback partway through building the feature), delete the previous migration (its `.sql` file and its `meta/<n>_snapshot.json`), revert `meta/_journal.json` to drop its entry (`git checkout -- drizzle/migrations/meta/_journal.json` if nothing has been committed yet, otherwise re-edit it by hand), and re-run `pnpm run db:generate` to produce one fresh migration reflecting the final schema. Only keep multiple migrations on one branch when truly necessary, e.g. a data backfill that must run as its own step, or a migration that was already applied to a shared database and can no longer be edited.
 
 ### Database Access
 

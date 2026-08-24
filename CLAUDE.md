@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Git Workflow
+
+Never commit or write code directly on `master`. Before starting any change, create a new branch off `master` first, then work there.
+
 ## Essential Development Commands
 
 ### Build and Type Checking

@@ -1,4 +1,6 @@
-import { bold, EmbedBuilder } from "discord.js";
+import { bold, EmbedBuilder, time, TimestampStyles } from "discord.js";
+import { TEAM_TRI_CODE } from "nhl-api-wrapper-ts/dist/interfaces/Common";
+import { IClubScheduleOutput_games } from "nhl-api-wrapper-ts/dist/interfaces/club/schedule/ClubSchedule";
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
 import { PeriodType } from "../db/schema";
@@ -25,6 +27,24 @@ const PERIOD_TYPE_LABEL: Record<PeriodType, string> = {
   [PeriodType.OVERTIME]: "Overtime",
   [PeriodType.SHOOTOUT]: "Shootout",
 };
+
+/**
+ * Builds the embed posted when predictions open for the next Flyers game: the matchup and the
+ * time predictions lock (puck drop).
+ */
+export function buildAnnouncementEmbed(game: IClubScheduleOutput_games): EmbedBuilder {
+  const isFlyersHome = game.homeTeam.abbrev === TEAM_TRI_CODE.PHILADELPHIA_FLYERS;
+  const opponentAbbrev = isFlyersHome ? game.awayTeam.abbrev : game.homeTeam.abbrev;
+  const matchup = isFlyersHome ? `${opponentAbbrev} @ PHI` : `PHI @ ${opponentAbbrev}`;
+
+  return new EmbedBuilder()
+    .setTitle("Predictions are open!")
+    .setDescription(
+      `${bold(matchup)}\nUse \`/predict submit\` to predict the score before puck drop, ${time(new Date(game.startTimeUTC), TimestampStyles.RelativeTime)}.`,
+    )
+    .setColor("Random")
+    .setTimestamp(Date.now());
+}
 
 /**
  * Builds the embed posted to the results channel once a predicted game finishes, listing every

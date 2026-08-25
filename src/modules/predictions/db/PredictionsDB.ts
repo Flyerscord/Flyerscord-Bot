@@ -118,11 +118,18 @@ export default class PredictionsDB extends ModuleDatabase {
   }
 
   async setState(gameId: number, season: number, gameStartTime: Date): Promise<void> {
-    await this.db.update(predictionsState).set({ gameId, season, gameStartTime }).where(eq(predictionsState.id, 1));
+    await this.db.update(predictionsState).set({ gameId, season, gameStartTime, announced: false }).where(eq(predictionsState.id, 1));
   }
 
   async clearState(): Promise<void> {
-    await this.db.update(predictionsState).set({ gameId: null, season: null, gameStartTime: null }).where(eq(predictionsState.id, 1));
+    await this.db
+      .update(predictionsState)
+      .set({ gameId: null, season: null, gameStartTime: null, announced: false })
+      .where(eq(predictionsState.id, 1));
+  }
+
+  async setAnnounced(): Promise<void> {
+    await this.db.update(predictionsState).set({ announced: true }).where(eq(predictionsState.id, 1));
   }
 
   async getState(): Promise<PredictionsState | undefined> {

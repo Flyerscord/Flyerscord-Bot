@@ -3,6 +3,7 @@ import SlashCommand from "@common/models/SlashCommand";
 import Zod from "@common/utils/ZodWrapper";
 import schema from "./db/schema";
 import PredictionsDB from "./db/PredictionsDB";
+import AnnounceGameTask from "./tasks/AnnounceGameTask";
 import ResolveGameTask from "./tasks/ResolveGameTask";
 import PollGameResultTask from "./tasks/PollGameResultTask";
 import onReady from "./listeners/onReady";
@@ -59,10 +60,14 @@ export default class PredictionsModule extends Module {
 
     await this.readInCommands<SlashCommand>(__dirname, "slash");
 
+    // Run every day at 9:00 AM
+    AnnounceGameTask.getInstance().createScheduledJob();
+
     onReady();
   }
 
   protected async cleanup(): Promise<void> {
+    AnnounceGameTask.getInstance().stopScheduledJob();
     ResolveGameTask.getInstance().removeScheduledJob();
     PollGameResultTask.getInstance().stopScheduledJob();
   }

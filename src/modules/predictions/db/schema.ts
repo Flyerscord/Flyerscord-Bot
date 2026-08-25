@@ -47,6 +47,7 @@ export const predictionsState = createModuleTable("predictions__state", {
   gameId: integer("game_id"),
   season: integer("season"),
   gameStartTime: timestamp("game_start_time"),
+  announced: boolean("announced").notNull().default(false),
 });
 
 export default {

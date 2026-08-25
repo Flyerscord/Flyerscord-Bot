@@ -1,5 +1,5 @@
 {
-  "id": "ff91149a-f84f-4b28-a255-59038d8510ac",
+  "id": "46350716-5a2f-40bf-8b57-80908eddb3ca",
   "prevId": "013a1aa2-907d-4e9e-a81f-342dec964a98",
   "version": "7",
   "dialect": "postgresql",
@@ -1238,6 +1238,13 @@
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false
+        },
+        "announced": {
+          "name": "announced",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         }
       },
       "indexes": {},

@@ -56,7 +56,7 @@ async function onSlashCommand(client: Client, interaction: ChatInputCommandInter
   try {
     void MyAuditLog.createAuditLog("Common", {
       action: "SlashCommandRan",
-      userId: interaction.user.id,
+      userId: command.omitUserIdFromAuditLog ? undefined : interaction.user.id,
       details: {
         command: command.name,
         channelId: interaction.channelId,
@@ -80,7 +80,7 @@ async function onModalSubmit(client: Client, interaction: ModalSubmitInteraction
   try {
     void MyAuditLog.createAuditLog("Common", {
       action: "ModalSubmitted",
-      userId: interaction.user.id,
+      userId: modal.omitUserIdFromAuditLog ? undefined : interaction.user.id,
       details: {
         id: idWithoutData,
         name: modal.name,
@@ -104,7 +104,7 @@ async function onButtonClick(client: Client, interaction: ButtonInteraction): Pr
   try {
     void MyAuditLog.createAuditLog("Common", {
       action: "ButtonClicked",
-      userId: interaction.user.id,
+      userId: button.omitUserIdFromAuditLog ? undefined : interaction.user.id,
       details: {
         id: idWithoutData,
         name: button.name,

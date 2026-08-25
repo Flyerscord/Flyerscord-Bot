@@ -7,8 +7,8 @@ export default abstract class ModalMenu extends Command {
 
   readonly title: string;
 
-  constructor(name: string, title: string) {
-    super(name, true, true);
+  constructor(name: string, title: string, omitUserIdFromAuditLog: boolean = false) {
+    super(name, true, true, omitUserIdFromAuditLog);
     this.title = title;
 
     this.data = new ModalBuilder().setCustomId(this.name).setTitle(this.title);

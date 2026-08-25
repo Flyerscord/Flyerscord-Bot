@@ -60,7 +60,7 @@ export default class PredictionsModule extends Module {
 
     await this.readInCommands<SlashCommand>(__dirname, "slash");
 
-    // Run every day at 9:00 AM
+    // Run every day at 12:30 AM, same time as CreateGameDayPostTask
     AnnounceGameTask.getInstance().createScheduledJob();
 
     onReady();

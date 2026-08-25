@@ -9,8 +9,8 @@ import { buildAnnouncementEmbed } from "../utils/Embeds";
 
 export default class AnnounceGameTask extends Task {
   constructor() {
-    // Run every day at 9:00 AM
-    super("AnnounceGame", "0 0 9 * * *");
+    // Run every day at 12:30 AM, same time as CreateGameDayPostTask
+    super("AnnounceGame", "0 30 0 * * *");
   }
 
   protected async execute(): Promise<void> {

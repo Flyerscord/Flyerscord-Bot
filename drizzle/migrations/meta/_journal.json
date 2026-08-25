@@ -99,6 +99,13 @@
       "when": 1787544293635,
       "tag": "0013_naive_menace",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1787637767339,
+      "tag": "0014_elite_shatterstar",
+      "breakpoints": true
     }
   ]
 }

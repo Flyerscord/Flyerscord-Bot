@@ -18,6 +18,7 @@ import type { reactionRoleConfigSchema } from "./reactionRole/ReactionRoleModule
 import type { registerCommandsConfigSchema } from "./registerCommands/RegisterCommandsModule";
 import type { rulesConfigSchema } from "./rules/RulesModule";
 import type { statsVoiceChannelConfigSchema } from "./statsVoiceChannel/StatsVoiceChannelModule";
+import type { ticketsConfigSchema } from "./tickets/TicketsModule";
 import type { visitorRoleConfigSchema } from "./visitorRole/VisitorRoleModule";
 import type Module from "../common/models/Module";
 import CommonModule from "@common/CommonModule";
@@ -39,6 +40,7 @@ import ReactionRoleModule from "./reactionRole/ReactionRoleModule";
 import RegisterCommandsModule from "./registerCommands/RegisterCommandsModule";
 import RulesModule from "./rules/RulesModule";
 import StatsVoiceChannelModule from "./statsVoiceChannel/StatsVoiceChannelModule";
+import TicketsModule from "./tickets/TicketsModule";
 import VisitorRoleModule from "./visitorRole/VisitorRoleModule";
 
 export type Modules =
@@ -61,6 +63,7 @@ export type Modules =
   | "RegisterCommands"
   | "Rules"
   | "StatsVoiceChannel"
+  | "Tickets"
   | "VisitorRole";
 
 export const ModuleMap: Record<Modules, Module> = {
@@ -83,6 +86,7 @@ export const ModuleMap: Record<Modules, Module> = {
   RegisterCommands: RegisterCommandsModule.getInstance(),
   Rules: RulesModule.getInstance(),
   StatsVoiceChannel: StatsVoiceChannelModule.getInstance(),
+  Tickets: TicketsModule.getInstance(),
   VisitorRole: VisitorRoleModule.getInstance(),
 };
 
@@ -120,5 +124,6 @@ export type ModuleConfigMap = {
   RegisterCommands: ConfigFromSchemas<typeof registerCommandsConfigSchema>;
   Rules: ConfigFromSchemas<typeof rulesConfigSchema>;
   StatsVoiceChannel: ConfigFromSchemas<typeof statsVoiceChannelConfigSchema>;
+  Tickets: ConfigFromSchemas<typeof ticketsConfigSchema>;
   VisitorRole: ConfigFromSchemas<typeof visitorRoleConfigSchema>;
 };

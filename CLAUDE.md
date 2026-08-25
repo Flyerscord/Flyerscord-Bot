@@ -99,8 +99,8 @@ The bot uses a centralized ModuleManager that loads modules in a specific order:
 
 Each module follows the singleton pattern and extends the base `Module` class.
 
-**Active Modules (19 total):**
-Common, Admin, BlueSky, CustomCommands, DaysUntil, GameDayPosts, HealthCheck, ImageProxy, JoinLeave, Levels, Misc, NHL, Pins, PlayerEmojis, ReactionRole, RegisterCommands, Rules, StatsVoiceChannel, VisitorRole
+**Active Modules (20 total):**
+Common, Admin, BlueSky, CustomCommands, DaysUntil, GameDayPosts, HealthCheck, ImageProxy, JoinLeave, Levels, Misc, NHL, Pins, PlayerEmojis, ReactionRole, RegisterCommands, Rules, StatsVoiceChannel, Tickets, VisitorRole
 
 **Module Configuration Pattern:**
 Each module exports a `configSchema` array that defines its configuration using Zod validators:

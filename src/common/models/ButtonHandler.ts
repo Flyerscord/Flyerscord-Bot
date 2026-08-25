@@ -15,8 +15,13 @@ import Command from "./Command";
 export default abstract class ButtonHandler extends Command {
   readonly button: ButtonBuilder;
 
-  constructor(customId: string, label: string, style: ButtonStyle, ephemeral: boolean = true) {
-    super(customId, ephemeral, true);
+  constructor(
+    customId: string,
+    label: string,
+    style: ButtonStyle,
+    options: { ephemeral?: boolean; deferReply?: boolean; omitUserIdFromAuditLog?: boolean } = {},
+  ) {
+    super(customId, options.ephemeral ?? true, options.deferReply ?? true, options.omitUserIdFromAuditLog ?? false);
     this.button = new ButtonBuilder().setCustomId(customId).setLabel(label).setStyle(style);
   }
 

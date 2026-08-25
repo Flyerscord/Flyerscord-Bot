@@ -6,13 +6,20 @@ export default abstract class Command {
   readonly name: string;
   protected readonly ephemeral: boolean;
   protected readonly deferReply: boolean;
+  /**
+   * When true, the shared interaction pipeline (`onInteractionCreate.ts`) omits the invoking user's ID
+   * from the audit log entry it writes for this command. Used by commands that must not retain a
+   * plaintext link between the audit trail and the submitter's identity.
+   */
+  readonly omitUserIdFromAuditLog: boolean;
 
   replies: InteractionReplies;
 
-  constructor(name: string, ephemeral: boolean, deferReply: boolean) {
+  constructor(name: string, ephemeral: boolean, deferReply: boolean, omitUserIdFromAuditLog: boolean = false) {
     this.name = name;
     this.ephemeral = ephemeral;
     this.deferReply = deferReply;
+    this.omitUserIdFromAuditLog = omitUserIdFromAuditLog;
 
     this.replies = discord.interactions.createReplies(this.name, this.ephemeral);
   }
@@ -41,4 +48,5 @@ export default abstract class Command {
 export interface ICommandConfig {
   ephemeral?: boolean;
   deferReply?: boolean;
+  omitUserIdFromAuditLog?: boolean;
 }

@@ -14,6 +14,7 @@ import type { miscConfigSchema } from "./misc/MiscModule";
 import type { nhlConfigSchema } from "./nhl/NHLModule";
 import type { pinsConfigSchema } from "./pins/PinsModule";
 import type { playerEmojisConfigSchema } from "./playerEmojis/PlayerEmojisModule";
+import type { predictionsConfigSchema } from "./predictions/PredictionsModule";
 import type { reactionRoleConfigSchema } from "./reactionRole/ReactionRoleModule";
 import type { registerCommandsConfigSchema } from "./registerCommands/RegisterCommandsModule";
 import type { rulesConfigSchema } from "./rules/RulesModule";
@@ -35,6 +36,7 @@ import MiscModule from "./misc/MiscModule";
 import NHLModule from "./nhl/NHLModule";
 import PinsModule from "./pins/PinsModule";
 import PlayerEmojisModule from "./playerEmojis/PlayerEmojisModule";
+import PredictionsModule from "./predictions/PredictionsModule";
 import ReactionRoleModule from "./reactionRole/ReactionRoleModule";
 import RegisterCommandsModule from "./registerCommands/RegisterCommandsModule";
 import RulesModule from "./rules/RulesModule";
@@ -57,6 +59,7 @@ export type Modules =
   | "NHL"
   | "Pins"
   | "PlayerEmojis"
+  | "Predictions"
   | "ReactionRole"
   | "RegisterCommands"
   | "Rules"
@@ -79,6 +82,7 @@ export const ModuleMap: Record<Modules, Module> = {
   NHL: NHLModule.getInstance(),
   Pins: PinsModule.getInstance(),
   PlayerEmojis: PlayerEmojisModule.getInstance(),
+  Predictions: PredictionsModule.getInstance(),
   ReactionRole: ReactionRoleModule.getInstance(),
   RegisterCommands: RegisterCommandsModule.getInstance(),
   Rules: RulesModule.getInstance(),
@@ -116,6 +120,7 @@ export type ModuleConfigMap = {
   NHL: ConfigFromSchemas<typeof nhlConfigSchema>;
   Pins: ConfigFromSchemas<typeof pinsConfigSchema>;
   PlayerEmojis: ConfigFromSchemas<typeof playerEmojisConfigSchema>;
+  Predictions: ConfigFromSchemas<typeof predictionsConfigSchema>;
   ReactionRole: ConfigFromSchemas<typeof reactionRoleConfigSchema>;
   RegisterCommands: ConfigFromSchemas<typeof registerCommandsConfigSchema>;
   Rules: ConfigFromSchemas<typeof rulesConfigSchema>;

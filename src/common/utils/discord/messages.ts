@@ -59,6 +59,20 @@ export async function sendEmbedToChannel(channelId: string, embed: EmbedBuilder)
   return undefined;
 }
 
+/**
+ * Sends multiple embeds to a channel in a single message.
+ * @param channelId - The ID of the channel to send to
+ * @param embeds - The embeds to include in the message
+ */
+export async function sendEmbedsToChannel(channelId: string, embeds: EmbedBuilder[]): Promise<Message | undefined> {
+  const channel = await getTextChannel(channelId);
+  if (channel) {
+    Stumper.debug(`Sending ${embeds.length} embeds to channel: ${channelId}`, "common:messages:sendEmbedsToChannel");
+    return await channel.send({ embeds });
+  }
+  return undefined;
+}
+
 export async function sendMessageAndImageBufferToChannel(channelId: string, message: string, attachment: Buffer): Promise<Message | undefined> {
   const channel = await getTextChannel(channelId);
   if (channel) {

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Git Workflow
 
-Never commit or write code directly on `master`. Before starting any change, create a new branch off `master` first, then work there.
+Never commit or write code directly on `master`. Before starting any change, create a new branch off `master` first, then work there, in its own git worktree.
 
 ## Essential Development Commands
 

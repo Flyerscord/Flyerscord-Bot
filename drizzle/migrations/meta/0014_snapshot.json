@@ -1,5 +1,5 @@
 {
-  "id": "95ea2123-2a85-488c-a609-b6e059573445",
+  "id": "ff91149a-f84f-4b28-a255-59038d8510ac",
   "prevId": "013a1aa2-907d-4e9e-a81f-342dec964a98",
   "version": "7",
   "dialect": "postgresql",
@@ -1114,6 +1114,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "predicted_period_type": {
+          "name": "predicted_period_type",
+          "type": "predictions__period_type_type",
+          "primaryKey": false,
+          "notNull": true
+        },
         "actual_home_score": {
           "name": "actual_home_score",
           "type": "integer",
@@ -1123,6 +1129,12 @@
         "actual_away_score": {
           "name": "actual_away_score",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "actual_period_type": {
+          "name": "actual_period_type",
+          "type": "predictions__period_type_type",
           "primaryKey": false,
           "notNull": false
         },
@@ -1480,6 +1492,11 @@
       "name": "fantasy__skill_level_type",
       "schema": "public",
       "values": ["Beginner", "Intermediate", "Expert"]
+    },
+    "public.predictions__period_type_type": {
+      "name": "predictions__period_type_type",
+      "schema": "public",
+      "values": ["REG", "OT", "SO"]
     },
     "public.rules__section_type": {
       "name": "rules__section_type",

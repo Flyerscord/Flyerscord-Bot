@@ -4,6 +4,13 @@ import SlashCommand from "@common/models/SlashCommand";
 import { getNextPredictableGame } from "../../utils/GameLookup";
 import { armResolutionForGame } from "../../utils/armResolution";
 import PredictionsDB from "../../db/PredictionsDB";
+import { PeriodType } from "../../db/schema";
+
+const PERIOD_TYPE_LABEL: Record<PeriodType, string> = {
+  [PeriodType.REGULATION]: "Regulation",
+  [PeriodType.OVERTIME]: "Overtime",
+  [PeriodType.SHOOTOUT]: "Shootout",
+};
 
 export default class PredictCommand extends SlashCommand {
   constructor() {
@@ -15,7 +22,18 @@ export default class PredictCommand extends SlashCommand {
           .setName("submit")
           .setDescription("Submit or update your prediction for the next Flyers game")
           .addIntegerOption((option) => option.setName("flyers-score").setDescription("Predicted Flyers goals").setRequired(true).setMinValue(0))
-          .addIntegerOption((option) => option.setName("opponent-score").setDescription("Predicted opponent goals").setRequired(true).setMinValue(0)),
+          .addIntegerOption((option) => option.setName("opponent-score").setDescription("Predicted opponent goals").setRequired(true).setMinValue(0))
+          .addStringOption((option) =>
+            option
+              .setName("ending")
+              .setDescription("How the game ends")
+              .setRequired(true)
+              .addChoices(
+                { name: "Regulation", value: PeriodType.REGULATION },
+                { name: "Overtime", value: PeriodType.OVERTIME },
+                { name: "Shootout", value: PeriodType.SHOOTOUT },
+              ),
+          ),
       )
       .addSubcommand((subcommand) => subcommand.setName("view").setDescription("View your current prediction for the next Flyers game"));
   }
@@ -48,6 +66,7 @@ export default class PredictCommand extends SlashCommand {
 
     const flyersScore = this.getIntegerParamValue(interaction, "flyers-score");
     const opponentScore = this.getIntegerParamValue(interaction, "opponent-score");
+    const periodType = this.getStringParamValue(interaction, "ending") as PeriodType;
 
     const isFlyersHome = game.homeTeam.abbrev === TEAM_TRI_CODE.PHILADELPHIA_FLYERS;
     const predictedHomeScore = isFlyersHome ? flyersScore : opponentScore;
@@ -55,11 +74,11 @@ export default class PredictCommand extends SlashCommand {
     const opponentAbbrev = isFlyersHome ? game.awayTeam.abbrev : game.homeTeam.abbrev;
 
     const db = new PredictionsDB();
-    await db.upsertPrediction(game.id, interaction.user.id, game.season, predictedHomeScore, predictedAwayScore);
+    await db.upsertPrediction(game.id, interaction.user.id, game.season, predictedHomeScore, predictedAwayScore, periodType);
     await armResolutionForGame(game);
 
     await this.replies.reply(
-      `Prediction saved! Flyers ${flyersScore} - ${opponentScore} ${opponentAbbrev}. Locks ${time(new Date(game.startTimeUTC), TimestampStyles.RelativeTime)}.`,
+      `Prediction saved! Flyers ${flyersScore} - ${opponentScore} ${opponentAbbrev} (${PERIOD_TYPE_LABEL[periodType]}). Locks ${time(new Date(game.startTimeUTC), TimestampStyles.RelativeTime)}.`,
     );
   }
 
@@ -86,7 +105,7 @@ export default class PredictCommand extends SlashCommand {
     const opponentAbbrev = isFlyersHome ? game.awayTeam.abbrev : game.homeTeam.abbrev;
 
     await this.replies.reply({
-      content: `Your prediction: Flyers ${flyersScore} - ${opponentScore} ${opponentAbbrev}. Locks ${time(new Date(game.startTimeUTC), TimestampStyles.RelativeTime)}.`,
+      content: `Your prediction: Flyers ${flyersScore} - ${opponentScore} ${opponentAbbrev} (${PERIOD_TYPE_LABEL[prediction.predictedPeriodType]}). Locks ${time(new Date(game.startTimeUTC), TimestampStyles.RelativeTime)}.`,
       ephemeral: true,
     });
   }

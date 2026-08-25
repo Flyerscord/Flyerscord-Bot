@@ -4,6 +4,7 @@ import Stumper from "stumper";
 import ConfigManager from "@common/managers/ConfigManager";
 import discord from "@common/utils/discord/discord";
 import PredictionsDB from "../db/PredictionsDB";
+import { PeriodType } from "../db/schema";
 import { calculatePoints, getPredictionOutcome } from "../utils/scoring";
 import { buildResultsEmbed, ResolvedPredictionResult } from "../utils/Embeds";
 
@@ -42,21 +43,30 @@ export default class PollGameResultTask extends Task {
 
     const actualHomeScore = gameInfo.homeTeam.score;
     const actualAwayScore = gameInfo.awayTeam.score;
+    const actualPeriodType = gameInfo.periodDescriptor.periodType as PeriodType;
     const config = ConfigManager.getInstance().getConfig("Predictions");
 
     const predictions = await this.db.getUnresolvedPredictionsForGame(gameId);
     const results: ResolvedPredictionResult[] = [];
 
     for (const prediction of predictions) {
-      const outcome = getPredictionOutcome(prediction.predictedHomeScore, prediction.predictedAwayScore, actualHomeScore, actualAwayScore);
-      const points = calculatePoints(outcome, config.exactScorePoints, config.correctWinnerPoints);
+      const outcome = getPredictionOutcome(
+        prediction.predictedHomeScore,
+        prediction.predictedAwayScore,
+        prediction.predictedPeriodType,
+        actualHomeScore,
+        actualAwayScore,
+        actualPeriodType,
+      );
+      const points = calculatePoints(outcome, config.exactPoints, config.exactScorePoints, config.correctWinnerPoints);
 
-      await this.db.resolvePrediction(prediction.id, actualHomeScore, actualAwayScore, points);
+      await this.db.resolvePrediction(prediction.id, actualHomeScore, actualAwayScore, actualPeriodType, points);
 
       results.push({
         userId: prediction.userId,
         predictedHomeScore: prediction.predictedHomeScore,
         predictedAwayScore: prediction.predictedAwayScore,
+        predictedPeriodType: prediction.predictedPeriodType,
         outcome,
         points,
       });
@@ -70,7 +80,14 @@ export default class PollGameResultTask extends Task {
       return;
     }
 
-    const embed = await buildResultsEmbed(gameInfo.homeTeam.abbrev, gameInfo.awayTeam.abbrev, actualHomeScore, actualAwayScore, results);
+    const embed = await buildResultsEmbed(
+      gameInfo.homeTeam.abbrev,
+      gameInfo.awayTeam.abbrev,
+      actualHomeScore,
+      actualAwayScore,
+      actualPeriodType,
+      results,
+    );
     await channel.send({ embeds: [embed] });
   }
 }

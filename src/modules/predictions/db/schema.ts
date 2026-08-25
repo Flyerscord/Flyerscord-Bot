@@ -1,5 +1,16 @@
-import { createModuleTable } from "@common/db/schema-types";
+import { createModuleEnum, createModuleTable } from "@common/db/schema-types";
 import { boolean, index, integer, serial, timestamp, unique, varchar } from "drizzle-orm/pg-core";
+
+/**
+ * Mirrors the NHL API's own `periodDescriptor.periodType` values, so actual game results can be
+ * compared to a prediction without any translation.
+ */
+export enum PeriodType {
+  REGULATION = "REG",
+  OVERTIME = "OT",
+  SHOOTOUT = "SO",
+}
+export const predictionsPeriodType = createModuleEnum("predictions__period_type_type", PeriodType);
 
 export const predictionsPredictions = createModuleTable(
   "predictions__predictions",
@@ -10,8 +21,10 @@ export const predictionsPredictions = createModuleTable(
     season: integer("season").notNull(),
     predictedHomeScore: integer("predicted_home_score").notNull(),
     predictedAwayScore: integer("predicted_away_score").notNull(),
+    predictedPeriodType: predictionsPeriodType("predicted_period_type").notNull(),
     actualHomeScore: integer("actual_home_score"),
     actualAwayScore: integer("actual_away_score"),
+    actualPeriodType: predictionsPeriodType("actual_period_type"),
     pointsAwarded: integer("points_awarded"),
     resolved: boolean("resolved").notNull().default(false),
     createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -37,6 +50,7 @@ export const predictionsState = createModuleTable("predictions__state", {
 });
 
 export default {
+  predictionsPeriodType,
   predictionsPredictions,
   predictionsState,
 };

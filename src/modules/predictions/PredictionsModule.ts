@@ -18,12 +18,21 @@ export const predictionsConfigSchema = [
     schema: Zod.string(),
   },
   {
-    key: "exactScorePoints",
-    description: "Points awarded for predicting the exact final score",
+    key: "exactPoints",
+    description: "Points awarded for predicting the exact final score and how the game ended (regulation/OT/shootout)",
     required: false,
     secret: false,
     requiresRestart: false,
     defaultValue: 3,
+    schema: Zod.number({ min: 0 }),
+  },
+  {
+    key: "exactScorePoints",
+    description: "Points awarded for predicting the exact final score, but the wrong ending (regulation/OT/shootout)",
+    required: false,
+    secret: false,
+    requiresRestart: false,
+    defaultValue: 2,
     schema: Zod.number({ min: 0 }),
   },
   {

@@ -1,20 +1,29 @@
 import { bold, EmbedBuilder } from "discord.js";
 import discord from "@common/utils/discord/discord";
 import Stumper from "stumper";
+import { PeriodType } from "../db/schema";
 import { PredictionOutcome } from "./scoring";
 
 export interface ResolvedPredictionResult {
   userId: string;
   predictedHomeScore: number;
   predictedAwayScore: number;
+  predictedPeriodType: PeriodType;
   outcome: PredictionOutcome;
   points: number;
 }
 
 const OUTCOME_LABEL: Record<PredictionOutcome, string> = {
-  [PredictionOutcome.EXACT]: "Exact score!",
+  [PredictionOutcome.EXACT]: "Exact score and ending!",
+  [PredictionOutcome.EXACT_SCORE]: "Exact score, wrong ending",
   [PredictionOutcome.CORRECT_WINNER]: "Correct winner",
   [PredictionOutcome.INCORRECT]: "Incorrect",
+};
+
+const PERIOD_TYPE_LABEL: Record<PeriodType, string> = {
+  [PeriodType.REGULATION]: "Regulation",
+  [PeriodType.OVERTIME]: "Overtime",
+  [PeriodType.SHOOTOUT]: "Shootout",
 };
 
 /**
@@ -26,11 +35,14 @@ export async function buildResultsEmbed(
   awayAbbrev: string,
   actualHomeScore: number,
   actualAwayScore: number,
+  actualPeriodType: PeriodType,
   results: ResolvedPredictionResult[],
 ): Promise<EmbedBuilder> {
   const embed = new EmbedBuilder()
     .setTitle("Prediction Results")
-    .setDescription(`Final Score: ${bold(awayAbbrev)} ${actualAwayScore} - ${actualHomeScore} ${bold(homeAbbrev)}`)
+    .setDescription(
+      `Final Score: ${bold(awayAbbrev)} ${actualAwayScore} - ${actualHomeScore} ${bold(homeAbbrev)} (${PERIOD_TYPE_LABEL[actualPeriodType]})`,
+    )
     .setColor("Random")
     .setTimestamp(Date.now());
 
@@ -54,7 +66,7 @@ export async function buildResultsEmbed(
 
     embed.addFields({
       name: username,
-      value: `Predicted: ${result.predictedAwayScore} - ${result.predictedHomeScore} | ${OUTCOME_LABEL[result.outcome]} | ${bold("Points:")} ${result.points}`,
+      value: `Predicted: ${result.predictedAwayScore} - ${result.predictedHomeScore} (${PERIOD_TYPE_LABEL[result.predictedPeriodType]}) | ${OUTCOME_LABEL[result.outcome]} | ${bold("Points:")} ${result.points}`,
     });
   }
 

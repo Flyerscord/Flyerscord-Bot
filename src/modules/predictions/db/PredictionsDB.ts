@@ -1,6 +1,6 @@
 import { ModuleDatabase } from "@common/models/ModuleDatabase";
 import { and, desc, eq, sql } from "drizzle-orm";
-import { Prediction, predictionsPredictions, predictionsState, PredictionsState } from "./schema";
+import { PeriodType, Prediction, predictionsPredictions, predictionsState, PredictionsState } from "./schema";
 
 export interface LeaderboardEntry {
   userId: string;
@@ -31,13 +31,14 @@ export default class PredictionsDB extends ModuleDatabase {
     season: number,
     predictedHomeScore: number,
     predictedAwayScore: number,
+    predictedPeriodType: PeriodType,
   ): Promise<Prediction> {
     const inserted = await this.db
       .insert(predictionsPredictions)
-      .values({ gameId, userId, season, predictedHomeScore, predictedAwayScore })
+      .values({ gameId, userId, season, predictedHomeScore, predictedAwayScore, predictedPeriodType })
       .onConflictDoUpdate({
         target: [predictionsPredictions.gameId, predictionsPredictions.userId],
-        set: { predictedHomeScore, predictedAwayScore, updatedAt: new Date() },
+        set: { predictedHomeScore, predictedAwayScore, predictedPeriodType, updatedAt: new Date() },
       })
       .returning();
     return inserted[0];
@@ -50,10 +51,16 @@ export default class PredictionsDB extends ModuleDatabase {
       .where(and(eq(predictionsPredictions.gameId, gameId), eq(predictionsPredictions.resolved, false)));
   }
 
-  async resolvePrediction(id: number, actualHomeScore: number, actualAwayScore: number, pointsAwarded: number): Promise<void> {
+  async resolvePrediction(
+    id: number,
+    actualHomeScore: number,
+    actualAwayScore: number,
+    actualPeriodType: PeriodType,
+    pointsAwarded: number,
+  ): Promise<void> {
     await this.db
       .update(predictionsPredictions)
-      .set({ actualHomeScore, actualAwayScore, pointsAwarded, resolved: true, updatedAt: new Date() })
+      .set({ actualHomeScore, actualAwayScore, actualPeriodType, pointsAwarded, resolved: true, updatedAt: new Date() })
       .where(eq(predictionsPredictions.id, id));
   }
 

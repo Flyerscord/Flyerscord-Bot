@@ -9,6 +9,6 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("guildScheduledEventUpdate", async (_oldEvent, newEvent) => {
     const embed = getScheduledEventEmbed("updated", newEvent);
-    await logEvent("eventLogging:onGuildScheduledEventUpdate", "scheduledEventUpdated", embed, undefined, { eventId: newEvent.id });
+    logEvent("scheduledEventUpdated", embed, undefined, { eventId: newEvent.id });
   });
 };

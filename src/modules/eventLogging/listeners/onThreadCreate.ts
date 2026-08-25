@@ -9,6 +9,6 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("threadCreate", async (thread) => {
     const embed = getThreadEmbed("created", thread);
-    await logEvent("eventLogging:onThreadCreate", "threadCreated", embed, undefined, { threadId: thread.id });
+    logEvent("threadCreated", embed, undefined, { threadId: thread.id });
   });
 };

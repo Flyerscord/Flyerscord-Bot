@@ -9,6 +9,6 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("roleDelete", async (role) => {
     const embed = getRoleEmbed("deleted", role);
-    await logEvent("eventLogging:onRoleDelete", "roleDeleted", embed, undefined, { roleId: role.id });
+    logEvent("roleDeleted", embed, undefined, { roleId: role.id });
   });
 };

@@ -9,6 +9,6 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("emojiDelete", async (emoji) => {
     const embed = getEmojiEmbed("deleted", emoji);
-    await logEvent("eventLogging:onEmojiDelete", "emojiDeleted", embed, undefined, { emojiId: emoji.id });
+    logEvent("emojiDeleted", embed, undefined, { emojiId: emoji.id });
   });
 };

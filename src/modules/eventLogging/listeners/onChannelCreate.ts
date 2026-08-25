@@ -9,6 +9,6 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("channelCreate", async (channel) => {
     const embed = getChannelEmbed("created", channel);
-    await logEvent("eventLogging:onChannelCreate", "channelCreated", embed, undefined, { channelId: channel.id });
+    logEvent("channelCreated", embed, undefined, { channelId: channel.id });
   });
 };

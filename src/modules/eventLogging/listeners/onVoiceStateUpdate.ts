@@ -14,13 +14,13 @@ export default (): void => {
 
     if (!oldState.channelId && newState.channelId) {
       const embed = getVoiceStateEmbed("Voice Channel Joined", newState, `Joined ${newState.channel}`);
-      await logEvent("eventLogging:onVoiceStateUpdate", "voiceJoined", embed, userId, { channelId: newState.channelId });
+      logEvent("voiceJoined", embed, userId, { channelId: newState.channelId });
     } else if (oldState.channelId && !newState.channelId) {
       const embed = getVoiceStateEmbed("Voice Channel Left", oldState, `Left ${oldState.channel}`);
-      await logEvent("eventLogging:onVoiceStateUpdate", "voiceLeft", embed, userId, { channelId: oldState.channelId });
+      logEvent("voiceLeft", embed, userId, { channelId: oldState.channelId });
     } else if (oldState.channelId && newState.channelId && oldState.channelId !== newState.channelId) {
       const embed = getVoiceStateEmbed("Voice Channel Moved", newState, `Moved from ${oldState.channel} to ${newState.channel}`);
-      await logEvent("eventLogging:onVoiceStateUpdate", "voiceMoved", embed, userId, {
+      logEvent("voiceMoved", embed, userId, {
         fromChannelId: oldState.channelId,
         toChannelId: newState.channelId,
       });
@@ -28,17 +28,17 @@ export default (): void => {
 
     if (oldState.selfMute !== newState.selfMute) {
       const embed = getVoiceStateEmbed("Voice Mute Toggled", newState, `${newState.selfMute ? "Muted" : "Unmuted"} themselves`);
-      await logEvent("eventLogging:onVoiceStateUpdate", "voiceMuteToggled", embed, userId, { muted: Boolean(newState.selfMute) });
+      logEvent("voiceMuteToggled", embed, userId, { muted: Boolean(newState.selfMute) });
     }
 
     if (oldState.selfDeaf !== newState.selfDeaf) {
       const embed = getVoiceStateEmbed("Voice Deafen Toggled", newState, `${newState.selfDeaf ? "Deafened" : "Undeafened"} themselves`);
-      await logEvent("eventLogging:onVoiceStateUpdate", "voiceDeafenToggled", embed, userId, { deafened: Boolean(newState.selfDeaf) });
+      logEvent("voiceDeafenToggled", embed, userId, { deafened: Boolean(newState.selfDeaf) });
     }
 
     if (oldState.streaming !== newState.streaming) {
       const embed = getVoiceStateEmbed("Voice Stream Toggled", newState, `${newState.streaming ? "Started" : "Stopped"} streaming`);
-      await logEvent("eventLogging:onVoiceStateUpdate", "voiceStreamToggled", embed, userId, { streaming: Boolean(newState.streaming) });
+      logEvent("voiceStreamToggled", embed, userId, { streaming: Boolean(newState.streaming) });
     }
   });
 };

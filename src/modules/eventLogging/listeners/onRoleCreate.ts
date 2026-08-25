@@ -9,6 +9,6 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("roleCreate", async (role) => {
     const embed = getRoleEmbed("created", role);
-    await logEvent("eventLogging:onRoleCreate", "roleCreated", embed, undefined, { roleId: role.id });
+    logEvent("roleCreated", embed, undefined, { roleId: role.id });
   });
 };

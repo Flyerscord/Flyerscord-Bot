@@ -30,12 +30,6 @@ export default (): void => {
     }
 
     const embed = getMemberRemoveEmbed(member, kick);
-    await logEvent(
-      "eventLogging:onGuildMemberRemove",
-      kick ? "memberKicked" : "memberLeft",
-      embed,
-      member.id,
-      kick?.reason ? { reason: kick.reason } : undefined,
-    );
+    logEvent(kick ? "memberKicked" : "memberLeft", embed, member.id, kick?.reason ? { reason: kick.reason } : undefined);
   });
 };

@@ -12,7 +12,7 @@ export default (): void => {
   client.on("guildMemberUpdate", async (oldMember, newMember) => {
     if (oldMember.nickname !== newMember.nickname) {
       const embed = getNicknameChangeEmbed(newMember, oldMember.nickname, newMember.nickname);
-      await logEvent("eventLogging:onGuildMemberUpdate", "nicknameChanged", embed, newMember.id);
+      logEvent("nicknameChanged", embed, newMember.id);
     }
 
     const oldRoles = oldMember.roles.cache;
@@ -21,7 +21,7 @@ export default (): void => {
     const removedRoles = oldRoles.filter((role) => !newRoles.has(role.id)).map((role) => role);
     if (addedRoles.length > 0 || removedRoles.length > 0) {
       const embed = getRoleChangeEmbed(newMember, addedRoles, removedRoles);
-      await logEvent("eventLogging:onGuildMemberUpdate", "rolesChanged", embed, newMember.id, {
+      logEvent("rolesChanged", embed, newMember.id, {
         added: addedRoles.map((role) => role.id),
         removed: removedRoles.map((role) => role.id),
       });
@@ -32,7 +32,7 @@ export default (): void => {
     if (oldTimeout !== newTimeout) {
       const applied = newTimeout != null && newTimeout > Date.now();
       const embed = getTimeoutEmbed(newMember, applied, newTimeout);
-      await logEvent("eventLogging:onGuildMemberUpdate", applied ? "timeoutApplied" : "timeoutRemoved", embed, newMember.id);
+      logEvent(applied ? "timeoutApplied" : "timeoutRemoved", embed, newMember.id);
     }
 
     const oldBoost = oldMember.premiumSinceTimestamp ?? null;
@@ -40,7 +40,7 @@ export default (): void => {
     if (oldBoost !== newBoost) {
       const started = newBoost != null;
       const embed = getBoostEmbed(newMember, started);
-      await logEvent("eventLogging:onGuildMemberUpdate", started ? "boostStarted" : "boostStopped", embed, newMember.id);
+      logEvent(started ? "boostStarted" : "boostStopped", embed, newMember.id);
     }
   });
 };

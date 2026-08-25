@@ -11,7 +11,7 @@ export default (): void => {
     if (message.author?.bot) return;
 
     const embed = getMessageDeleteEmbed(message);
-    await logEvent("eventLogging:onMessageDelete", "messageDeleted", embed, message.author?.id, {
+    logEvent("messageDeleted", embed, message.author?.id, {
       channelId: message.channelId,
       messageId: message.id,
     });

@@ -9,6 +9,6 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("inviteCreate", async (invite) => {
     const embed = getInviteEmbed(true, invite);
-    await logEvent("eventLogging:onInviteCreate", "inviteCreated", embed, invite.inviter?.id, { code: invite.code });
+    logEvent("inviteCreated", embed, invite.inviter?.id, { code: invite.code });
   });
 };

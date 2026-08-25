@@ -10,7 +10,7 @@ export default (): void => {
   client.on("threadUpdate", async (oldThread, newThread) => {
     if (oldThread.archived !== newThread.archived) {
       const embed = getThreadArchiveEmbed(newThread, Boolean(newThread.archived));
-      await logEvent("eventLogging:onThreadUpdate", newThread.archived ? "threadArchived" : "threadUnarchived", embed, undefined, {
+      logEvent(newThread.archived ? "threadArchived" : "threadUnarchived", embed, undefined, {
         threadId: newThread.id,
       });
       return;
@@ -19,6 +19,6 @@ export default (): void => {
     if (oldThread.name === newThread.name) return;
 
     const embed = getThreadUpdateEmbed(oldThread, newThread);
-    await logEvent("eventLogging:onThreadUpdate", "threadUpdated", embed, undefined, { threadId: newThread.id });
+    logEvent("threadUpdated", embed, undefined, { threadId: newThread.id });
   });
 };

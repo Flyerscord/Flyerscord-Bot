@@ -9,6 +9,6 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("channelDelete", async (channel) => {
     const embed = getChannelEmbed("deleted", channel);
-    await logEvent("eventLogging:onChannelDelete", "channelDeleted", embed, undefined, { channelId: channel.id });
+    logEvent("channelDeleted", embed, undefined, { channelId: channel.id });
   });
 };

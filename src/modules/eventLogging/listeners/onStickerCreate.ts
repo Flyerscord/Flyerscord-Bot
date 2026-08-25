@@ -9,6 +9,6 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("stickerCreate", async (sticker) => {
     const embed = getStickerEmbed("created", sticker);
-    await logEvent("eventLogging:onStickerCreate", "stickerCreated", embed, undefined, { stickerId: sticker.id });
+    logEvent("stickerCreated", embed, undefined, { stickerId: sticker.id });
   });
 };

@@ -9,7 +9,7 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("autoModerationActionExecution", async (execution) => {
     const embed = getAutoModerationEmbed(execution);
-    await logEvent("eventLogging:onAutoModerationActionExecution", "autoModTriggered", embed, execution.userId, {
+    logEvent("autoModTriggered", embed, execution.userId, {
       ruleId: execution.ruleId,
     });
   });

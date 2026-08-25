@@ -12,7 +12,7 @@ export default (): void => {
     if (!oldMessage.partial && oldMessage.content === newMessage.content) return;
 
     const embed = getMessageUpdateEmbed(oldMessage, newMessage);
-    await logEvent("eventLogging:onMessageUpdate", "messageEdited", embed, newMessage.author?.id, {
+    logEvent("messageEdited", embed, newMessage.author?.id, {
       channelId: newMessage.channelId,
       messageId: newMessage.id,
     });

@@ -9,7 +9,7 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("messageDeleteBulk", async (messages, channel) => {
     const embed = getMessageDeleteBulkEmbed(messages.size, channel);
-    await logEvent("eventLogging:onMessageDeleteBulk", "messagesBulkDeleted", embed, undefined, {
+    logEvent("messagesBulkDeleted", embed, undefined, {
       channelId: channel.id,
       count: messages.size,
     });

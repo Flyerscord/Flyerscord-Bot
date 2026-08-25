@@ -9,6 +9,6 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("inviteDelete", async (invite) => {
     const embed = getInviteEmbed(false, invite);
-    await logEvent("eventLogging:onInviteDelete", "inviteDeleted", embed, undefined, { code: invite.code });
+    logEvent("inviteDeleted", embed, undefined, { code: invite.code });
   });
 };

@@ -9,6 +9,6 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("guildBanRemove", async (ban) => {
     const embed = getBanEmbed(false, ban);
-    await logEvent("eventLogging:onGuildBanRemove", "memberUnbanned", embed, ban.user.id);
+    logEvent("memberUnbanned", embed, ban.user.id);
   });
 };

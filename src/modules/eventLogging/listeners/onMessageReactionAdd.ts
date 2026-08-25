@@ -13,7 +13,7 @@ export default (): void => {
     if (user.bot) return;
 
     const embed = getReactionEmbed(true, reaction, user);
-    await logEvent("eventLogging:onMessageReactionAdd", "reactionAdded", embed, user.id, {
+    logEvent("reactionAdded", embed, user.id, {
       channelId: reaction.message.channelId,
       messageId: reaction.message.id,
     });

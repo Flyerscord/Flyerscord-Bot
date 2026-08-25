@@ -1,31 +1,18 @@
 import { EmbedBuilder } from "discord.js";
-import ConfigManager from "@common/managers/ConfigManager";
-import discord from "@common/utils/discord/discord";
 import MyAuditLog from "@common/utils/MyAuditLog";
-import Stumper from "stumper";
+import EventLogQueue from "./EventLogQueue";
 
 /**
- * Sends an event log embed to the configured EventLogging channel and records an audit log entry.
- * Errors sending the embed are caught and reported via Stumper so a single failed listener never crashes the bot.
- * @param source - The Stumper log tag identifying the calling listener
+ * Records an audit log entry for an event and enqueues its embed to be sent to the configured
+ * EventLogging channel on the next queue drain. The audit log write is fire-and-forget (not
+ * awaited) so it never blocks the caller, and is the durable record of the event independent of
+ * whether/when the embed makes it to Discord.
  * @param action - The audit log action name to record
- * @param embed - The embed to send to the log channel
+ * @param embed - The embed to enqueue for the log channel
  * @param userId - The Discord user ID the event relates to, if any
  * @param details - Extra structured data to store in the audit log entry
  */
-export default async function logEvent(
-  source: string,
-  action: string,
-  embed: EmbedBuilder,
-  userId?: string,
-  details?: Record<string, unknown>,
-): Promise<void> {
-  try {
-    const logChannelId = ConfigManager.getInstance().getConfig("EventLogging").logChannelId;
-    await discord.messages.sendEmbedToChannel(logChannelId, embed);
-  } catch (error) {
-    Stumper.caughtError(error, source);
-  } finally {
-    void MyAuditLog.createAuditLog("EventLogging", { action, userId, details });
-  }
+export default function logEvent(action: string, embed: EmbedBuilder, userId?: string, details?: Record<string, unknown>): void {
+  void MyAuditLog.createAuditLog("EventLogging", { action, userId, details });
+  EventLogQueue.getInstance().enqueue(embed);
 }

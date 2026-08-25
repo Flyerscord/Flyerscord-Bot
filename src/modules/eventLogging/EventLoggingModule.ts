@@ -34,6 +34,8 @@ import onThreadUpdate from "./listeners/onThreadUpdate";
 import onThreadDelete from "./listeners/onThreadDelete";
 import onVoiceStateUpdate from "./listeners/onVoiceStateUpdate";
 import onAutoModerationActionExecution from "./listeners/onAutoModerationActionExecution";
+import ConfigManager from "@common/managers/ConfigManager";
+import EventLogQueue from "./utils/EventLogQueue";
 
 export const eventLoggingConfigSchema = [
   {
@@ -54,6 +56,15 @@ export const eventLoggingConfigSchema = [
     defaultValue: false,
     schema: Zod.boolean(),
   },
+  {
+    key: "queueDrainIntervalSeconds",
+    description: "How often, in seconds, to batch-send queued event log embeds to the log channel",
+    required: false,
+    secret: false,
+    requiresRestart: true,
+    defaultValue: 3,
+    schema: Zod.number({ min: 1, max: 60 }),
+  },
 ] as const satisfies readonly IModuleConfigSchema[];
 
 export default class EventLoggingModule extends Module {
@@ -65,9 +76,13 @@ export default class EventLoggingModule extends Module {
 
   protected async setup(): Promise<void> {
     this.registerListeners();
+    const drainIntervalSeconds = ConfigManager.getInstance().getConfig("EventLogging").queueDrainIntervalSeconds;
+    EventLogQueue.getInstance().start(drainIntervalSeconds);
   }
 
-  protected async cleanup(): Promise<void> {}
+  protected async cleanup(): Promise<void> {
+    EventLogQueue.getInstance().stop();
+  }
 
   private registerListeners(): void {
     onMessageUpdate();

@@ -11,6 +11,6 @@ export default (): void => {
     if (oldGuild.name === newGuild.name && oldGuild.icon === newGuild.icon) return;
 
     const embed = getGuildUpdateEmbed(oldGuild, newGuild);
-    await logEvent("eventLogging:onGuildUpdate", "guildUpdated", embed);
+    logEvent("guildUpdated", embed);
   });
 };

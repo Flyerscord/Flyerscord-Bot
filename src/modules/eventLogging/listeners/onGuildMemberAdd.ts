@@ -9,6 +9,6 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("guildMemberAdd", async (member) => {
     const embed = getMemberAddEmbed(member);
-    await logEvent("eventLogging:onGuildMemberAdd", "memberJoined", embed, member.id);
+    logEvent("memberJoined", embed, member.id);
   });
 };

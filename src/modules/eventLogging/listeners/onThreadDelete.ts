@@ -9,6 +9,6 @@ export default (): void => {
   const client = ClientManager.getInstance().client;
   client.on("threadDelete", async (thread) => {
     const embed = getThreadEmbed("deleted", thread);
-    await logEvent("eventLogging:onThreadDelete", "threadDeleted", embed, undefined, { threadId: thread.id });
+    logEvent("threadDeleted", embed, undefined, { threadId: thread.id });
   });
 };

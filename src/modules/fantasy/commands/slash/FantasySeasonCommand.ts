@@ -163,7 +163,7 @@ export default class FantasySeasonCommand extends AdminSlashCommand {
 
   /**
    * Reports the current season's status and signup counts per skill level, flagging any skill level
-   * that doesn't currently split evenly into teams of 8, 10, or 12.
+   * that doesn't currently split evenly into valid-sized teams.
    */
   private async executeStatus(): Promise<void> {
     const db = new FantasyDB();
@@ -182,7 +182,7 @@ export default class FantasySeasonCommand extends AdminSlashCommand {
 
     for (const skillLevel of Object.values(SkillLevel)) {
       const signedUp = await db.countSignupsBySkillLevel(season.id, skillLevel);
-      const teamSizes = signedUp > 0 ? computeTeamSizes(signedUp) : [];
+      const teamSizes = signedUp > 0 ? computeTeamSizes(signedUp, skillLevel) : [];
       const preview = teamSizes && teamSizes.length > 0 ? ` -> ${teamSizes.length} team(s) of ${teamSizes.join("/")}` : "";
       const flag = signedUp > 0 && !teamSizes ? " ⚠️ no valid team-size combination yet" : "";
       lines.push(`${skillLevel}: ${signedUp} signed up${preview}${flag}`);

@@ -18,9 +18,10 @@ export const fantasySeasonStatus = createModuleEnum("fantasy__season_status_type
 
 /**
  * Allowed player counts for a single team. Team sizes for a skill level don't all have to match -
- * see `computeTeamSizes` in `utils/closeSeason.ts` for how a signup total gets split across them.
+ * see `computeTeamSizes` in `utils/closeSeason.ts` for how a signup total gets split across them, and
+ * `SKILL_LEVEL_PREFERRED_TEAM_SIZES` there for which sizes each skill level prefers.
  */
-export const VALID_TEAM_SIZES = [8, 10, 12] as const;
+export const VALID_TEAM_SIZES = [8, 10, 12, 14, 16] as const;
 
 export const fantasySeasons = createModuleTable("fantasy__seasons", {
   id: serial("id").primaryKey(),

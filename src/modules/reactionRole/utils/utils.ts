@@ -13,10 +13,9 @@ export async function createRoleReactionMessagesIfNeeded(): Promise<void> {
   const reactionRoles = config.reactionRoles;
 
   for (const reactionRole of reactionRoles) {
-    if (
-      !db.hasReactionMessage(reactionRole.name) ||
-      (await discord.messages.getMessage(config.channelId, (await db.getReactionMessage(reactionRole.name))!)) == undefined
-    ) {
+    const existingMessageId = await db.getReactionMessage(reactionRole.name);
+
+    if (existingMessageId === undefined || (await discord.messages.getMessage(config.channelId, existingMessageId)) === undefined) {
       await createRoleReactionMessage(reactionRole);
     } else {
       Stumper.debug(`Reaction role message for ${reactionRole.name} already exists!`, "reactionRole:utils:createRoleReactionMessagesIfNeeded");
